@@ -1,7 +1,7 @@
 <?php
 // {{{ HEADER
 /********************************************************************************************************************
- * $Id: $
+ * $Id$
  *
  * Copyright (c) 2005, Oancea Aurelian
  *
@@ -23,7 +23,6 @@
 // }}}
 /**
  * @package locknet7.action.controller.route
- * $Id $
  * ActionControllerMap is a better name?
  * Create an instance of requested controller
  */

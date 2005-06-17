@@ -7,7 +7,7 @@
  * 
  * @package locknet7.start
  * @author Oancea Aurelian 
- * $Id $
+ * $Id$
  */
 
 error_reporting(E_ALL);
