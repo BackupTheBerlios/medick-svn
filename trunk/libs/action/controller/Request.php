@@ -1,6 +1,8 @@
 <?php
 
-// @package locknet7.Action.Controller.Request
+/** @package locknet7.Action.Controller.Request
+ * $Id $
+ */
 
 interface Request {     }
 

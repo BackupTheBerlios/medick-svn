@@ -1,6 +1,8 @@
 <?php
 
-/** @package locknet7.dependency */
+/** @package locknet7.dependency 
+ * $Id $
+ */
 
 class ModelInjector {
 

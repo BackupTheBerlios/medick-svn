@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * $Id $
+ */
+    
 include_once('action/controller/Dependency.php');
 
 // @package locknet7.action.controller.base

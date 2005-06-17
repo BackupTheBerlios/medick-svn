@@ -7,8 +7,7 @@
  * 
  * @package locknet7.start
  * @author Oancea Aurelian 
- * @copyright 
- * @version $Revision$
+ * $Id $
  */
 
 error_reporting(E_ALL);
@@ -28,7 +27,7 @@ $logger = Logger::getInstance();
 $logger->attach(new StdoutOutputter());
 // $logger->attach(new JavaScriptOutputter());
 $logger->attach(new FileOutputter(TOP_LOCATION . 'log' . DIRECTORY_SEPARATOR . 'locknet7.log'));
-$logger->attach(new MailOutputter('aurelian@locknet.ro', 'Fatality...'));
+$logger->attach(new MailOutputter('XXXXX@XXXXX.XXXXX', 'Fatality...'));
 $logger->setLevel(Logger::DEBUG);
 $logger->setFormatter(new SimpleFormatter());
 // $logger->setFormatter(new DefaultFormatter());
