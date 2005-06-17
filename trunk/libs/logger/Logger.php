@@ -1,11 +1,10 @@
 <?php
-// $Id$
-
 /**
  * @package locknet7.logger
- *
- * @version 0.0.4
+ * @author Oancea Aurelian
+ * $Id$
  */
+ 
 class Logger implements ILogger {
 
     /** a fancy way of telling the level */
@@ -259,7 +258,7 @@ class FileOutputter extends Outputter {
             fclose($this->handler);
         }
     }
-    
+    /** todo: add file locking*/
     protected function write($message) {
         fwrite($this->handler, $message . "\n");
     }
@@ -281,7 +280,8 @@ class MailOutputter extends Outputter {
     public function getId() {
         return __CLASS__;
     }
-    public function write($message) {
+    
+    protected function write($message) {
         @mail($this->mail, $this->subject, $message);
     }
 }
