@@ -60,7 +60,7 @@ class ActionControllerRoute {
     /**
      * A nice method to check if the given Route Exists.
      * <code>
-     *      ActionControllerRoute::exists(new MedickRoute($request->getController(), $request->getAction());
+     *      ActionControllerRoute::exists(new MedickRoute($request->getController());
      * </code>
      * @access public
      * @param Route, route, the route
