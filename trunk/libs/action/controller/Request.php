@@ -74,15 +74,6 @@ abstract class AbstractHTTPRequest implements Request {
         $this->route = $route;
     }
     
-    /*
-    public function getControllerPath() {
-        return TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
-    }
-    
-    public function getControllerName() {
-        return ucfirst($this->params['controller']) . 'Controller';
-    }
-    */
     //
     public function getMethod() {
         return $this->method;

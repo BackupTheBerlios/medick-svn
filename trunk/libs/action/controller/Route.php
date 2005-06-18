@@ -52,12 +52,13 @@ class ActionControllerRoute {
     public static function createController(Request $request) {
         $logger     = Logger::getInstance();
         $route      = new MedickRoute($request->getParam('controller'));
-        $request->setRoute($route);
 
         //xxx[1]
         if (!self::exists($route)) throw new Exception ('Route Failure!');
         
-        $logger->debug('Incoming Controller:: ' . $route);
+        $logger->debug('Incoming Controller:: ');
+        $logger->debug($route);
+        $request->setRoute($route);
         
         include_once('application.php');
         include_once($route->getControllerFile());
@@ -133,12 +134,10 @@ class MedickRoute implements Route {
     }
     /** a Representation of this object as a string */
     public function toString() {
-        return "Controller Name::<br />" . $this->ctrl_name . "<br />" . 
-               "Controller Path::<br />" . $this->ctrl_path . "<br />" .
-               "Controller File::<br />" . $this->ctrl_file . "<br />";
+        return $this->ctrl_name;
     }
     /** php magic, in 5.0.4 is toString() not __toString(). */
-    public function __toString() {
-        return $this->toString();
-    }
+    // public function __toString() {
+    //    return $this->toString();
+    //}
 }

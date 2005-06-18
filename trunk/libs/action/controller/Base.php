@@ -57,16 +57,6 @@ class ActionControllerBase {
     /** values for template class */
     protected $assigns;
 
-    /** XXX:
-    public static function controllerName() {
-        return __CONTROLLER__NAME__;
-    }
-
-    public static function controllerPath() {
-        return __CONTROLLER__PATH__;
-    }
-    */
-
     /**
      * Will process the request returning the resulting response
      * @param Request request, the request
@@ -74,9 +64,8 @@ class ActionControllerBase {
      * @return Response
      */
     public function process(Request $request, Response $response) {
-        // start template.
+        // todo. start template.
         $this->assign_shortcuts($request, $response);
-        $this->logger->debug('Shortcuts assigned...');
 
         $this->add_before_filters();
         $this->add_models();
@@ -95,8 +84,8 @@ class ActionControllerBase {
         $this->request  = $request;
         $this->response = $response;
         $this->logger   = Logger::getInstance();
-        // $this->session = $request->getSession();
-        // $this->params  = $request->params;
+        $this->session  = $request->getSession();
+        $this->params   = $request->getParams();
     }
 
     // do we need smthing like this???
@@ -129,20 +118,45 @@ class ActionControllerBase {
      * @return result, the result of the action invocation.
      */
     private function perform_action($action_name) {
-        if( is_null($action_name) ) $action_name = 'index';
+        $forbidden_actions = array('process', '__construct', '__destruct');
+        if( 
+            (is_null($action_name)) OR 
+            (in_array($action_name, $forbidden_actions))
+          )
+        {
+            $action_name = 'index';
+        }
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
-        if ($action_name == 'process') throw new Exception('Cannot call internal process method');
-        $action = $this->callMethod($action_name);
-        if ($action->isConstructor()) throw new Exception('Calling constructor is not allowed');
-        if ($action->isDestructor())  throw new Exception('Cannot call destructor');
-        if ($action->isStatic())      throw new Exception('Cannot invoke a static method!');
+        $action = $this->createMethod(strtolower($action_name));
+        if ($action->isStatic()) throw new Exception('Cannot invoke a static method!');
         return $action->invoke($this);
     }
-
+    
+    /**
+     * It executes before filters
+     *
+     * Loop on before_filter array, invoking the method before the action
+     * <code>
+     *      class news_controller extends ActionControllerBase {
+     *          // use protected on before_filter member
+     *          protected before_filter = array('authenticate');
+     *          // an action
+     *          public function index() {
+     *              return News::find_all();
+     *          }
+     *          // Notes: 1) use protected for internal filters
+     *          // 2) a filter must return void, in case of a failure, use the redirect method.
+     *          protected function authenticate() {
+     *              // authentication code here
+     *          }
+     *      }
+     * </code>
+     * @access private
+     */
     private function add_before_filters() {
         if (isset($this->before_filter)) {
             foreach($this->before_filter AS $filter_name) {
-                $filter = $this->callMethod($filter_name);
+                $filter = $this->createMethod($filter_name);
                 if (!$filter->isProtected()) throw new Exception('Your filter is declared as public!');
                 $this->$filter_name();
                 // $filter->invoke($this); will work only for public methods.
@@ -154,7 +168,7 @@ class ActionControllerBase {
         if (isset($this->model)) {
 
             if ( count($this->model) > 1 ) {
-                $this->logger->warn('Only One Model allowed, running on the first one...');
+                $this->logger->warn('At this point, only One Model is allowed, running on the first one...');
             }
 
             $this->logger->debug("We have Models...");
@@ -164,9 +178,10 @@ class ActionControllerBase {
             // }
         }
     }
-
-    private function callMethod($method_name) {
+    
+    private function createMethod($method_name) {
         return new ReflectionMethod($this, strtolower($method_name));
     }
+    
 
 }
