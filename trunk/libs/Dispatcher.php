@@ -55,7 +55,7 @@ class Dispatcher {
         $response = new HTTPResponse();
         try {
             $ac = ActionControllerRoute::createController($request);
-            $ac->process($request, $response);
+            $ac->process($request, $response)->dump();
         } catch (Exception $e) {
             $logger->warn($e->getMessage());
         }
