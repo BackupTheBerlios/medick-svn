@@ -33,8 +33,10 @@
 // }}}
 
 /** 
- * @package locknet7.action.view
+ * @package locknet7.action.view.base
  */
+
+include_once('action/view/HTML.php');
 
 /**
  * Abstract Template Engine.
