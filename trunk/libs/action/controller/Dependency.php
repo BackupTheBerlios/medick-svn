@@ -53,6 +53,8 @@ class ModelInjector {
         // FIXME: a custom error.
         if (!is_file($model_location)) throw new Exception ('No such file or directory!');
         
+        include_once('active/record/Base.php');
+        
         include_once($model_location);
 
         $model_name = ucfirst($model);
