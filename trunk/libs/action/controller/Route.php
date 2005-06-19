@@ -56,8 +56,8 @@ class ActionControllerRoute {
         //xxx[1]
         if (!self::exists($route)) throw new Exception ('Route Failure!');
         
-        $logger->debug('Incoming Controller:: ');
-        $logger->debug($route);
+        $logger->debug('Incoming controller:: ' . $route->getControllerName());
+        
         $request->setRoute($route);
         
         include_once('application.php');
