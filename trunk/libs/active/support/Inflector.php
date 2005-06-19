@@ -75,7 +75,46 @@ class Inflector {
         return preg_replace($search, $replace, $word);
 	}
 	
-	public static function singularize($word) { }
+    /** 
+     * Transform word from plural to singular
+     * @param string word, the word we want to singularize
+     */
+	public static function singularize($word) {
+    
+        $search = array('/(f)ish$/i',
+                        '/(x|ch|ss|sh)es$/i',
+                        '/(m)ovies$/i', 
+                        '/(s)eries$/i', 
+                        '/([^aeiouy]|qu)ies$/i', 
+                        '/([lr])ves$/i', 
+                        '/(tive)s$/i', 
+                        '/([^f])ves$/i', 
+                        '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i', 
+                        '/([ti])a$/i', 
+                        '/(p)eople$/i', 
+                        '/(m)en$/i', 
+                        '/(s)tatus$/i', 
+                        '/(c)hildren$/i', 
+                        '/(n)ews$/i', 
+                        '/s$/i');
+                        
+        $replace = array('\1\2ish', 
+                         '\1',
+                         '\1\2ovie',
+                         '\1\2eries',
+                         '\1y',
+                         '\1f', 
+                         '\1',
+                         '\1fe',
+                         '\1\2sis',
+                         '\1um',
+                         '\1\2erson',
+                         '\1\2an', 
+                         '\1\2tatus', 
+                         '\1\2hild', 
+                         '\1\2ews',
+                         '');
 
+        return preg_replace($search, $replace, $word);
+    }
 }
-
