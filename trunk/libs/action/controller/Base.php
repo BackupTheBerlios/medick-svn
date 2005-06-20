@@ -31,19 +31,19 @@
 // 
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
+
 /**
  * @package locknet7.action.controller
  */
     
 include_once('action/controller/Dependency.php');
-
 include_once('action/view/Base.php');
  
-
 /**
  * Base Class For Our Application Controllers
  */
 class ActionControllerBase {
+    
     /** logger instance */
     protected $logger;
     /** Request */
@@ -64,6 +64,7 @@ class ActionControllerBase {
 	protected $template;
     /** Flag to indicate that the current action was performed.*/
     private $action_performed = FALSE;
+    
     /**
      * Will process the request returning the resulting response
      * @param Request request, the request
@@ -74,39 +75,60 @@ class ActionControllerBase {
         $this->instantiate($request, $response);
         $this->add_before_filters();
         $this->add_models();
-
         $this->perform_action($request->getParam('action'));
         return $response;
     }
 
-	// {{{ render.
+	// {{{ renders.
 
     /**
      * It renders the template name witch can be the name of the curent action.
      * <code>
      *  class news_controller extends ActionController {
      *      public function add {
-     *          // grab some data.        
+     *          // grab some data and pass it on the template
+     *          $this->template->bazaas = Bazaas::find();
      *          $this->render(); // will load the template /app/views/news/add.phtml
+     *          // the template assgnment will not work anymore
+     *          $this->template->item = 'foo';
      *      }
      *  }
      * </code>
      * @param string template_name, [optional], the template name, default is null, the curent action.
      * @param Response::SC_*, status, [optional] status code, default is 200 OK
+     * @return void
      */
     protected function render($template_name = NULL, $status = NULL) {
 		if (is_null($template_name)) $template_name = $this->params['action'];
-		return $this->render_file($this->template_root . $template_name . '.phtml', $status);
+		$this->render_file($this->template_root . $template_name . '.phtml', $status);
 	}
 	
-    protected function render_file($template_file = NULL, $status = NULL) {
+    /**
+     * It renders the template file.
+     * This method is usefull when you nat use the default template_root
+     * @param string, template_file location of the template file, default NULL
+     * @param Response::SC_*, status, [optional] status code, default is 200 OK
+     * @throws Exception if the template file don`t exist on the specified location.
+     * @return void
+     */
+    protected function render_file($template_file, $status = NULL) {
         if (!is_file($template_file)) throw new Exception ('Cannot render unexistent template file:' . $template_file);
 		$this->logger->debug($template_file);
 		$this->render_text($this->template->render_file($template_file), $status);
-		
 	}
 	
-    protected function render_text($text, $status = NULL) {
+    /**
+     * Will render some text.
+     * Is the _base_ method for render_file
+     * This method is useful when you want to output some text without using the template engine
+     * In case the action was already performed we will silently exit, 
+     * otherwise, we set the response status and body and 
+     * switch the <code>action_performed</code> flag to <code>TRUE</code>
+     * @param string text, [optional]the text you want to send, default is an empty string
+     * @param Response::SC_*, status, [optional] status code, default is 200 OK
+     * @return void
+     */
+    protected function render_text($text = '', $status = NULL) {
         if ($this->action_performed) {
             $this->logger->info('Action already performed...');
             RETURN;
@@ -169,7 +191,6 @@ class ActionControllerBase {
         if ($action->isStatic()) throw new Exception('Cannot invoke a static method!');
         $action->invoke($this);
         $this->render();
-        // return $this->render($action->invoke($this));
     }
     
     /**
