@@ -103,7 +103,7 @@ class ActiveRecordBase {
 		// TODO: a singleton?
 	    if(self::$conn === NULL) {
 	    	// TODO: configurator.
-	        $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'sacosica','database'=>'todo');
+	        $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'','database'=>'todo');
 	        self::$conn = self::connect($dsn);
 	    }
 	    
@@ -297,7 +297,7 @@ class ActiveRecordBase {
                             'phptype'=>'mysql',
                             'hostspec'=>'localhost',
                             'username'=>'root',
-                            'password'=>'sacosica',
+                            'password'=>'',
                             'database'=>'todo'));
         }
         
