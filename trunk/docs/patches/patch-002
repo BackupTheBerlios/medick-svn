@@ -1,0 +1,370 @@
+Index: libs/active/record/Base.php
+===================================================================
+--- libs/active/record/Base.php	(revision 29)
++++ libs/active/record/Base.php	(working copy)
+@@ -45,7 +45,7 @@
+ include_once('active/support/Inflector.php');
+ 
+ 
+-class AcriveRecordException extends Exception {     }
++class ActiveRecordException extends Exception {     }
+ 
+ 
+ class ActiveRecordBase {
+@@ -56,7 +56,11 @@
+ 	/** DB Connection */
+ 	protected static $conn = NULL;
+ 	
+-	/** Current SQL Stmt */
++    /**
++     * Current SQL Stmt
++     * [@deprecated]
++     * TODO: get the stmt on every method!
++     */
+     protected $stmt = NULL;
+ 	
+ 	/** Table Info */
+@@ -93,13 +97,13 @@
+ 	 * @throws SQLException
+ 	 */
+ 	public final function __construct($params = array()) {
+-		// logger:
++		// logger (X):
+ 		$this->logger = Logger::getInstance();
+ 		// connection
+ 		// TODO: a singleton?
+ 	    if(self::$conn === NULL) {
+ 	    	// TODO: configurator.
+-	        $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'virus','database'=>'todo');
++	        $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'sacosica','database'=>'todo');
+ 	        self::$conn = self::connect($dsn);
+ 	    }
+ 	    
+@@ -112,7 +116,7 @@
+ 	    foreach($this->tbl_info->getColumns() as $field) {
+         	$this->fields[] = $field->getName();
+         }
+-        
++
+         if(!empty($params)) {
+             foreach($params AS $field=>$value) {
+                 $this->$field = $value;
+@@ -168,15 +172,15 @@
+ 
+         // TODO: 1. aditional check`s, if the pk was not set (a select by counting?)
+         // TODO: 2. what if we don`t have a pk?
+-        if(in_array($this->pk,array_keys($this->af_fields))) {
++        if (in_array($this->pk, array_keys($this->af_fields))) {
+             $sql = $this->doUpdateSQL();
+         } else {
+             $sql = $this->doInsertSQL();
+         }
+         
+-        $this->stmt = self::$conn->prepareStatement($sql);
+-        $this->populateStmtValues();
+-        $af_rows = $this->stmt->executeUpdate();
++        $stmt = self::$conn->prepareStatement($sql);
++        self::populateStmtValues($stmt, $this->tbl_info, $this->af_fields);
++        $af_rows = $stmt->executeUpdate();
+         
+         $this->logger->debug($this->fields);
+         $this->logger->debug("Primary Key:: " . $this->pk);
+@@ -184,8 +188,7 @@
+         $this->logger->debug($sql);
+         $this->logger->debug(self::$conn->lastQuery);
+         
+-        $this->stmt->close(); // save some resources.
+-        
++        $stmt->close(); // save some resources.
+         if(!is_null($_pk)) {
+         	$keyGen = self::$conn->getIdGenerator();
+             $id = $keyGen->getId($this->pk);
+@@ -195,7 +198,39 @@
+         // no pk.
+         return $af_rows;
+     }
+-	
++
++    /** TODO: params: INT sau ARRAY! */
++    public function destroy($params = array()) {
++        if (empty($params)) {
++            if (empty($this->af_fields)) {
++                throw new ActiveRecordException('Foo Is BAR ONCE AGAIN!');
++            }
++        } else {
++            // TODO: a new method.
++            foreach($params AS $field=>$value) {
++                $this->$field = $value;
++            }
++        }
++
++        // $whereClause: __nume-camp__= ? 
++
++        $whereClause = array();
++
++        foreach (array_keys($this->af_fields) as $col) {
++            $whereClause[] = $col . ' = ? ';
++        }
++        
++        $sql = 'DELETE FROM ' . self::$__table . ' WHERE ' . implode(" AND ", $whereClause);
++
++        $stmt = self::$conn->prepareStatement($sql);
++        
++        self::populateStmtValues($stmt, $this->tbl_info, $this->af_fields);
++        
++        $af_rows = $stmt->executeUpdate();
++        $stmt->close();
++        return $af_rows;
++    }
++    
+     /** SQL Fragment for update */
+     private function doUpdateSQL() {
+         $sqlSnippet = $this->pk . " = " . $this->af_fields[$this->pk];
+@@ -213,63 +248,94 @@
+                . " VALUES (" . substr(str_repeat("?,", count($this->af_fields)), 0, -1) . ")";
+     }
+     
+-    /** populates stmt values (?,?,?) on sql querys */
+-    private function populateStmtValues() {
+-        if(count($this->af_fields) == 0) return;
++    /** populates stmt values (?,?,?) on sql querys
++     * @param PreparedStatement, stmt, the prepared statement.
++     * @param TableInfo, table_info, info`s about the curent table
++     * @param array, fields, the affected fields
++     * inspired by Propel::BasePeer::populateStmtValues
++     */
++    private static function populateStmtValues($stmt, $table_info, $fields) {
++        if(count($fields) == 0) return; // -> it should be removed, there is no reason for checking again this thing!
++        if (is_null($stmt)) throw new ActiveRecordException('STMT cannot be null!');
+         $i = 1;
+-        foreach($this->af_fields AS $field=>$value) {
++        foreach($fields AS $field=>$value) {
+             if($value === NULL){
+-                $this->stmt->setNull($i++);
++                $stmt->setNull($i++);
+             } else {
+-                $cMap = $this->tbl_info->getColumn($field);
++                $cMap = $table_info->getColumn($field);
+                 if(strtoupper($cMap->getNativeType()) == 'INT') {
+                     $setter = 'set' . CreoleTypes::getAffix(CreoleTypes::INTEGER);
+                 } else {
+                     $setter = 'set' . CreoleTypes::getAffix(CreoleTypes::getCreoleCode(strtoupper($cMap->getNativeType())));
+                 }
+-                $this->stmt->$setter($i++, $value);
++                $stmt->$setter($i++, $value);
+             }
+-        } // foreach
++        }
+     }
+ 	
+ 	
+-	public static function find() {
++    public static function find() {
++        // (X)
++        $logger = Logger::getInstance();
++        
+ 		$numargs = func_num_args();
+         if($numargs == 0) return self::find('all');
++
++        $logger->debug('Nr. of args: ' . $numargs);
+         
+         // all passed arguments:
+         $params = func_get_args();
+         
+         $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$__table)));       
+         
+-        if ($class->isInstantiable()) {
+-            if (self::$conn === NULL){
+-                self::$conn = self::connect(
++        if (!$class->isInstantiable()) {
++            throw new ActiveRecordException('Model is not instantiable!');
++        }
++        if (self::$conn === NULL){
++            self::$conn = self::connect(
+                         array(
+                             'phptype'=>'mysql',
+                             'hostspec'=>'localhost',
+                             'username'=>'root',
+-                            'password'=>'virus',
++                            'password'=>'sacosica',
+                             'database'=>'todo'));
+-            }                
++        }
++        
++        if ($params[0] == 'all') {
+             $sql = "SELECT * FROM " . self::$__table;
++        } elseif (is_numeric($params[0]) && $numargs == 1) {
++            // (X::static) (XX::prepareStmt())
++            $tbl_info = ARTableInfo::getTableInfo(self::$conn, self::$__table);
++            $pk       = $tbl_info->getPrimaryKey()->getName();
++            $sql      = "SELECT * FROM " . self::$__table . " WHERE " . $pk . " = " . $params[0];
++        }
++        else {
++            throw new ActiveRecordException('Case not implemented!');
++        }
+             
+-            $stmt = self::$conn->prepareStatement($sql);
+-            $rs = $stmt->executeQuery();
+-            $results = new ActiveRecordList();
+-            foreach($rs as $row) {
+-                $results->add($class->newInstance($row));
+-            }
++        $stmt = self::$conn->prepareStatement($sql);
++        $rs = $stmt->executeQuery();
++        if ($rs->getRecordCount() == 1) {
++            $rs->next();
++            return $class->newInstance($rs->getFields());
+         }
+-//        
++        $results = new ActiveRecordList();
++        // foreach($rs as $row) {
++        while ($rs->next()) {
++            $results->add($class->newInstance($rs->getFields()));
++        }
+         return $results;
+-        
++	}
+ 
+-	}
+-	
++    /** an alias for self::find('all') */
+ 	public static function find_all() {
+ 		return self::find('all');
+-	}
++    }
++    
++    // TO BE replaced by __call()
++    public static function find_by_sql() {
++        throw new Exception ("Method " . __METHOD__ . " Not Implemented!");
++    }
+ 	
+     /**
+      * opens a DB connection 
+Index: libs/action/controller/Base.php
+===================================================================
+--- libs/action/controller/Base.php	(revision 29)
++++ libs/action/controller/Base.php	(working copy)
+@@ -105,7 +105,7 @@
+ 	
+     /**
+      * It renders the template file.
+-     * This method is usefull when you nat use the default template_root
++     * This method is usefull when you don`t want to use the default template_root
+      * @param string, template_file location of the template file, default NULL
+      * @param Response::SC_*, status, [optional] status code, default is 200 OK
+      * @throws Exception if the template file don`t exist on the specified location.
+@@ -169,9 +169,26 @@
+         // $options['filename'] = File->basename($location);
+     }
+ 
++    // {{{ redirects
++    
+     // XXX: not done.
+-    protected function redirect() { }
++    protected function redirect_to($action, $controller = NULL) {
++        // get the curent controller, if NULL is passed.
++        if (is_null($controller)) $controller= $this->params['controller'];
++        $this->response->redirect('http://' . $_SERVER['HTTP_HOST'] . '/index.php?controller=' . $controller . '&action=' . $action);
++        $this->action_performed = TRUE;
++        
++    }
++    
++    // XXX: not done.
++    // redirects to a know path (eg. /images/pic.jpg)
++    protected function redirect_to_path($path) {   }
++    
++    // XXX: not done.
++    protected function redirect($url, $message = '', $timeout = 0, $template = NULL) {     }
+ 
++    // }}}
++    
+     /**
+      * Performs the action
+      * @param string the action name
+Index: libs/action/controller/Response.php
+===================================================================
+--- libs/action/controller/Response.php	(revision 29)
++++ libs/action/controller/Response.php	(working copy)
+@@ -118,6 +118,10 @@
+         header("HTTP/1.1 " . $status . $message, TRUE, $status);
+     }
+ 
++    public function redirect($location) {
++        $this->setHeader('Location', $location);
++        $this->body = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
++    }
+ 	
+ 	/**
+ 	 * Sets body content 
+Index: libs/action/view/Base.php
+===================================================================
+--- libs/action/view/Base.php	(revision 29)
++++ libs/action/view/Base.php	(working copy)
+@@ -84,13 +84,11 @@
+      * @throws Exception if the file is wrong.
+      */
+ 	public function render($file) {
+-		
+ 		if (!is_file($file)) throw new Exception ('Cannot Find Template: ' . $file);
+-		if (empty($this->vars)) return file_get_contents($file);
+-		
+-        if(!get_magic_quotes_gpc()) $this->vars = self::stripslashes_deep($this->vars);
+-        
+-        extract($this->vars,EXTR_SKIP);
++		if (!empty($this->vars)) {
++            if(!get_magic_quotes_gpc()) $this->vars = self::stripslashes_deep($this->vars);
++            extract($this->vars,EXTR_SKIP);
++        }
+         ob_start();
+         include_once($file);
+         $c = ob_get_contents();
+@@ -102,7 +100,7 @@
+ 	public function getVars() {
+ 		return $this->vars;
+ 	}
+-	
++
+ 	/**
+      * Wrapper for __set
+      * A convenient way to make the migration from Smarty smoother
+Index: libs/action/view/HTML.php
+===================================================================
+--- libs/action/view/HTML.php	(revision 29)
++++ libs/action/view/HTML.php	(working copy)
+@@ -35,12 +35,34 @@
+ /**
+  * @package locknet7.action.view.HTML
+  */
+- 
++
++// NLT!
++class HTMLElement {
++    public function __construct() {     }
++}
++// NLT!
++class URL {
++    public static function create($controller, $action, $params=array()) {
++        $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
++        if (!empty($params)) {
++            foreach ($params AS $key=>$value) {
++                $buff .= '&amp;' . $key . '=' . $value;
++            }
++        }
++        return $buff;
++    }
++}
++
+ class Form {
+     
+     public function __construct($action, $method) {  }
+     
+-    function text($name, $value = null, $attr = '') {
++    public static function submit($name, $value = 'Submit', $attr = '') {
++        $buff = '<input type="submit" name="' . $name . '" value="' . $value . '" ';
++        return $buff . self::parseAttributes($attr) . ' />';
++    }
++    
++    public static function text($name, $value = null, $attr = '') {
+         $buff  = '<input type="text" name="' . $name . '" ';
+         if (!is_null($value)) $buff .= 'value="' . $value . '" ';
+         return $buff . self::parseAttributes($attr) . ' />';
