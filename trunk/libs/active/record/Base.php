@@ -45,7 +45,7 @@ include_once('active/record/List.php');
 include_once('active/support/Inflector.php');
 
 
-class AcriveRecordException extends Exception {     }
+class ActiveRecordException extends Exception {     }
 
 
 class ActiveRecordBase {
@@ -56,7 +56,11 @@ class ActiveRecordBase {
 	/** DB Connection */
 	protected static $conn = NULL;
 	
-	/** Current SQL Stmt */
+    /**
+     * Current SQL Stmt
+     * [@deprecated]
+     * TODO: get the stmt on every method!
+     */
     protected $stmt = NULL;
 	
 	/** Table Info */
@@ -93,13 +97,13 @@ class ActiveRecordBase {
 	 * @throws SQLException
 	 */
 	public final function __construct($params = array()) {
-		// logger:
+		// logger (X):
 		$this->logger = Logger::getInstance();
 		// connection
 		// TODO: a singleton?
 	    if(self::$conn === NULL) {
 	    	// TODO: configurator.
-	        $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'virus','database'=>'todo');
+	        $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'sacosica','database'=>'todo');
 	        self::$conn = self::connect($dsn);
 	    }
 	    
@@ -112,7 +116,7 @@ class ActiveRecordBase {
 	    foreach($this->tbl_info->getColumns() as $field) {
         	$this->fields[] = $field->getName();
         }
-        
+
         if(!empty($params)) {
             foreach($params AS $field=>$value) {
                 $this->$field = $value;
@@ -168,15 +172,15 @@ class ActiveRecordBase {
 
         // TODO: 1. aditional check`s, if the pk was not set (a select by counting?)
         // TODO: 2. what if we don`t have a pk?
-        if(in_array($this->pk,array_keys($this->af_fields))) {
+        if (in_array($this->pk, array_keys($this->af_fields))) {
             $sql = $this->doUpdateSQL();
         } else {
             $sql = $this->doInsertSQL();
         }
         
-        $this->stmt = self::$conn->prepareStatement($sql);
-        $this->populateStmtValues();
-        $af_rows = $this->stmt->executeUpdate();
+        $stmt = self::$conn->prepareStatement($sql);
+        self::populateStmtValues($stmt, $this->tbl_info, $this->af_fields);
+        $af_rows = $stmt->executeUpdate();
         
         $this->logger->debug($this->fields);
         $this->logger->debug("Primary Key:: " . $this->pk);
@@ -184,8 +188,7 @@ class ActiveRecordBase {
         $this->logger->debug($sql);
         $this->logger->debug(self::$conn->lastQuery);
         
-        $this->stmt->close(); // save some resources.
-        
+        $stmt->close(); // save some resources.
         if(!is_null($_pk)) {
         	$keyGen = self::$conn->getIdGenerator();
             $id = $keyGen->getId($this->pk);
@@ -195,7 +198,39 @@ class ActiveRecordBase {
         // no pk.
         return $af_rows;
     }
-	
+
+    /** TODO: params: INT sau ARRAY! */
+    public function destroy($params = array()) {
+        if (empty($params)) {
+            if (empty($this->af_fields)) {
+                throw new ActiveRecordException('Foo Is BAR ONCE AGAIN!');
+            }
+        } else {
+            // TODO: a new method.
+            foreach($params AS $field=>$value) {
+                $this->$field = $value;
+            }
+        }
+
+        // $whereClause: __nume-camp__= ? 
+
+        $whereClause = array();
+
+        foreach (array_keys($this->af_fields) as $col) {
+            $whereClause[] = $col . ' = ? ';
+        }
+        
+        $sql = 'DELETE FROM ' . self::$__table . ' WHERE ' . implode(" AND ", $whereClause);
+
+        $stmt = self::$conn->prepareStatement($sql);
+        
+        self::populateStmtValues($stmt, $this->tbl_info, $this->af_fields);
+        
+        $af_rows = $stmt->executeUpdate();
+        $stmt->close();
+        return $af_rows;
+    }
+    
     /** SQL Fragment for update */
     private function doUpdateSQL() {
         $sqlSnippet = $this->pk . " = " . $this->af_fields[$this->pk];
@@ -213,63 +248,94 @@ class ActiveRecordBase {
                . " VALUES (" . substr(str_repeat("?,", count($this->af_fields)), 0, -1) . ")";
     }
     
-    /** populates stmt values (?,?,?) on sql querys */
-    private function populateStmtValues() {
-        if(count($this->af_fields) == 0) return;
+    /** populates stmt values (?,?,?) on sql querys
+     * @param PreparedStatement, stmt, the prepared statement.
+     * @param TableInfo, table_info, info`s about the curent table
+     * @param array, fields, the affected fields
+     * inspired by Propel::BasePeer::populateStmtValues
+     */
+    private static function populateStmtValues($stmt, $table_info, $fields) {
+        if(count($fields) == 0) return; // -> it should be removed, there is no reason for checking again this thing!
+        if (is_null($stmt)) throw new ActiveRecordException('STMT cannot be null!');
         $i = 1;
-        foreach($this->af_fields AS $field=>$value) {
+        foreach($fields AS $field=>$value) {
             if($value === NULL){
-                $this->stmt->setNull($i++);
+                $stmt->setNull($i++);
             } else {
-                $cMap = $this->tbl_info->getColumn($field);
+                $cMap = $table_info->getColumn($field);
                 if(strtoupper($cMap->getNativeType()) == 'INT') {
                     $setter = 'set' . CreoleTypes::getAffix(CreoleTypes::INTEGER);
                 } else {
                     $setter = 'set' . CreoleTypes::getAffix(CreoleTypes::getCreoleCode(strtoupper($cMap->getNativeType())));
                 }
-                $this->stmt->$setter($i++, $value);
+                $stmt->$setter($i++, $value);
             }
-        } // foreach
+        }
     }
 	
 	
-	public static function find() {
+    public static function find() {
+        // (X)
+        $logger = Logger::getInstance();
+        
 		$numargs = func_num_args();
         if($numargs == 0) return self::find('all');
+
+        $logger->debug('Nr. of args: ' . $numargs);
         
         // all passed arguments:
         $params = func_get_args();
         
         $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$__table)));       
         
-        if ($class->isInstantiable()) {
-            if (self::$conn === NULL){
-                self::$conn = self::connect(
+        if (!$class->isInstantiable()) {
+            throw new ActiveRecordException('Model is not instantiable!');
+        }
+        if (self::$conn === NULL){
+            self::$conn = self::connect(
                         array(
                             'phptype'=>'mysql',
                             'hostspec'=>'localhost',
                             'username'=>'root',
-                            'password'=>'virus',
+                            'password'=>'sacosica',
                             'database'=>'todo'));
-            }                
-            $sql = "SELECT * FROM " . self::$__table;
-            
-            $stmt = self::$conn->prepareStatement($sql);
-            $rs = $stmt->executeQuery();
-            $results = new ActiveRecordList();
-            foreach($rs as $row) {
-                $results->add($class->newInstance($row));
-            }
         }
-//        
-        return $results;
         
-
+        if ($params[0] == 'all') {
+            $sql = "SELECT * FROM " . self::$__table;
+        } elseif (is_numeric($params[0]) && $numargs == 1) {
+            // (X::static) (XX::prepareStmt())
+            $tbl_info = ARTableInfo::getTableInfo(self::$conn, self::$__table);
+            $pk       = $tbl_info->getPrimaryKey()->getName();
+            $sql      = "SELECT * FROM " . self::$__table . " WHERE " . $pk . " = " . $params[0];
+        }
+        else {
+            throw new ActiveRecordException('Case not implemented!');
+        }
+            
+        $stmt = self::$conn->prepareStatement($sql);
+        $rs = $stmt->executeQuery();
+        if ($rs->getRecordCount() == 1) {
+            $rs->next();
+            return $class->newInstance($rs->getFields());
+        }
+        $results = new ActiveRecordList();
+        // foreach($rs as $row) {
+        while ($rs->next()) {
+            $results->add($class->newInstance($rs->getFields()));
+        }
+        return $results;
 	}
-	
+
+    /** an alias for self::find('all') */
 	public static function find_all() {
 		return self::find('all');
-	}
+    }
+    
+    // TO BE replaced by __call()
+    public static function find_by_sql() {
+        throw new Exception ("Method " . __METHOD__ . " Not Implemented!");
+    }
 	
     /**
      * opens a DB connection 

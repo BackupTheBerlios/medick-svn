@@ -118,6 +118,10 @@ class HTTPResponse implements Response {
         header("HTTP/1.1 " . $status . $message, TRUE, $status);
     }
 
+    public function redirect($location) {
+        $this->setHeader('Location', $location);
+        $this->body = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
+    }
 	
 	/**
 	 * Sets body content 

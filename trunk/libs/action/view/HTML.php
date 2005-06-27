@@ -35,12 +35,34 @@
 /**
  * @package locknet7.action.view.HTML
  */
- 
+
+// NLT!
+class HTMLElement {
+    public function __construct() {     }
+}
+// NLT!
+class URL {
+    public static function create($controller, $action, $params=array()) {
+        $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
+        if (!empty($params)) {
+            foreach ($params AS $key=>$value) {
+                $buff .= '&amp;' . $key . '=' . $value;
+            }
+        }
+        return $buff;
+    }
+}
+
 class Form {
     
     public function __construct($action, $method) {  }
     
-    function text($name, $value = null, $attr = '') {
+    public static function submit($name, $value = 'Submit', $attr = '') {
+        $buff = '<input type="submit" name="' . $name . '" value="' . $value . '" ';
+        return $buff . self::parseAttributes($attr) . ' />';
+    }
+    
+    public static function text($name, $value = null, $attr = '') {
         $buff  = '<input type="text" name="' . $name . '" ';
         if (!is_null($value)) $buff .= 'value="' . $value . '" ';
         return $buff . self::parseAttributes($attr) . ' />';

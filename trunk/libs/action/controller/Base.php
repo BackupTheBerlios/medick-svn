@@ -105,7 +105,7 @@ class ActionControllerBase {
 	
     /**
      * It renders the template file.
-     * This method is usefull when you nat use the default template_root
+     * This method is usefull when you don`t want to use the default template_root
      * @param string, template_file location of the template file, default NULL
      * @param Response::SC_*, status, [optional] status code, default is 200 OK
      * @throws Exception if the template file don`t exist on the specified location.
@@ -169,9 +169,26 @@ class ActionControllerBase {
         // $options['filename'] = File->basename($location);
     }
 
+    // {{{ redirects
+    
     // XXX: not done.
-    protected function redirect() { }
+    protected function redirect_to($action, $controller = NULL) {
+        // get the curent controller, if NULL is passed.
+        if (is_null($controller)) $controller= $this->params['controller'];
+        $this->response->redirect('http://' . $_SERVER['HTTP_HOST'] . '/index.php?controller=' . $controller . '&action=' . $action);
+        $this->action_performed = TRUE;
+        
+    }
+    
+    // XXX: not done.
+    // redirects to a know path (eg. /images/pic.jpg)
+    protected function redirect_to_path($path) {   }
+    
+    // XXX: not done.
+    protected function redirect($url, $message = '', $timeout = 0, $template = NULL) {     }
 
+    // }}}
+    
     /**
      * Performs the action
      * @param string the action name

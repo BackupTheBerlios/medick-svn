@@ -84,13 +84,11 @@ class Sonart extends ActionViewBase {
      * @throws Exception if the file is wrong.
      */
 	public function render($file) {
-		
 		if (!is_file($file)) throw new Exception ('Cannot Find Template: ' . $file);
-		if (empty($this->vars)) return file_get_contents($file);
-		
-        if(!get_magic_quotes_gpc()) $this->vars = self::stripslashes_deep($this->vars);
-        
-        extract($this->vars,EXTR_SKIP);
+		if (!empty($this->vars)) {
+            if(!get_magic_quotes_gpc()) $this->vars = self::stripslashes_deep($this->vars);
+            extract($this->vars,EXTR_SKIP);
+        }
         ob_start();
         include_once($file);
         $c = ob_get_contents();
@@ -102,7 +100,7 @@ class Sonart extends ActionViewBase {
 	public function getVars() {
 		return $this->vars;
 	}
-	
+
 	/**
      * Wrapper for __set
      * A convenient way to make the migration from Smarty smoother
