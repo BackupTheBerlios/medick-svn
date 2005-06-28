@@ -35,7 +35,7 @@
 /**
  * Configurator Interface.
  * Provides methods that needs to be implemented
- * @package locknet7.start
+ * @package locknet7.config
  */
 
 interface Configurator {
@@ -46,6 +46,25 @@ interface Configurator {
      * @return string, the section property
      */
     function getSectionProperty($section, $property);
+    
+    /**
+     * It gets the logger outputters.
+     * @return Iterator
+     */
+    function getLoggerOutputters();
+    
+    /**
+     * Based on id we return the dsn array
+     * <code>
+     *      // for Creole this dsn format will do the job:
+     *      $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'','database'=>'test'); 
+     * </code>
+     * @param string, id, the dsn id
+     * @return array, dsn ready to use
+     * @throws ConfiguratorException if the id is not found
+     */
+    function getDatabaseDsn($id);
+    
 }
 
 class XMLConfigurator implements Configurator {
@@ -66,6 +85,7 @@ class XMLConfigurator implements Configurator {
         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
     }
 
+    /** It gets the current Configurator instance */
     public static function getInstance($xml) {
         if (self::$instance === NULL) {
             self::$instance = new XMLConfigurator($xml);
@@ -88,34 +108,31 @@ class XMLConfigurator implements Configurator {
             return (string)$_query;
         }
     }
-
-    // {{{ wrappers.
-    public function getDatabaseProperty($property) {
-        return $this->getSectionProperty('database',$property);
-    }
-    // }}}
     
-    // {{{ logger
+    /** @see Configurator::getDatabaseDsn() */
+    public function getDatabaseDsn($id) {
+        foreach( $this->sxe->database->dsn as  $dsn ) {
+            if($dsn['id']==$id){
+                return array (
+                    'phptype'  => (string)trim($dsn['phptype']),
+                    'hostspec' => (string)trim($dsn['hostspec']),
+                    'username' => (string)trim($dsn['username']),
+                    'password' => (string)trim($dsn['password']),
+                    'database' => (string)trim($dsn['database'])
+                );
+            }
+        }
+        throw new ConfiguratorException('Id ' . $id . 'not found!');
+    }
+    
+    /**
+     * @see Configurator::getLoggerOutputters
+     * @return SimpleXMLIterator
+     */
     public function getLoggerOutputters() {
         return $this->sxe->logger->outputters;
     }
-    // }}}
-    
+
 }
 
 class ConfiguratorException extends Exception {     }
-
-/*
-$o = XMLConfigurator::getInstance('libs/configurator/application.xml');
-
-$sxe = $o->getLoggerOutputters();
-
-for ($sxe->rewind(); $sxe->valid(); $sxe->next()) {   
-    foreach($sxe->getChildren() as $outputter) {
-        echo (string)trim($outputter['name']) . "\n";
-        echo (string)trim($outputter['level']) . "\n";
-        echo (string)trim($outputter['value']) . "\n";
-        echo "----------\n";
-    }
-}
-*/
