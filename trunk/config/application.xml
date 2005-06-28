@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ! $Id$
+ -->
+
+<application name="todo" state="test">
+	<!--  ====================== -->
+	<!--     Logger System       -->
+    <!--  ====================== -->
+    
+    <logger>
+        <outputters>
+            <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
+            <outputter name="mail"    level="2" value="xxxx@xxxx.xxxx" />
+            <outputter name="stdout"  level="0" />
+        </outputters>
+    </logger>
+
+</application>

@@ -215,7 +215,7 @@ class JavaScriptOutputter extends Outputter {
 
     private $code;
     
-    public function __construct() {
+    public function __construct($level) {
         $this->code  = "<script language=\"javascript\">\n";
         $this->code .= "\ndebugWindow = window.open(\"\",\"debugWindow\",\"width=600,height=500,scrollbars=yes,resizable=yes\");\n";
         $this->code .= "</script>\n";
@@ -243,7 +243,7 @@ class StdoutOutputter extends Outputter {
     private $eol;
     private $output;
     
-    public function __construct() {
+    public function __construct($level) {
         if (php_sapi_name() == 'cli') {
             $this->isCLI = TRUE;
             $this->eol = "\n";
@@ -280,7 +280,7 @@ class FileOutputter extends Outputter {
 
     private $handler;
 
-    public function __construct($file) {
+    public function __construct($level, $file) {
         $this->handler = fopen($file, 'a');
     }
     
@@ -304,7 +304,7 @@ class MailOutputter extends Outputter {
     private $mail;
     private $subject;
 
-    public function __construct($mail, $subject) {
+    public function __construct($level, $mail, $subject='Fatality...') {
         $this->mail = $mail;
         $this->subject = $subject;
     }

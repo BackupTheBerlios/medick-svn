@@ -39,26 +39,83 @@
  */
 
 interface Configurator {
-    function getSection($section);
+    /**
+     * It gets the section property
+     * @param string, section, the section
+     * @param string, property, the property
+     * @return string, the section property
+     */
+    function getSectionProperty($section, $property);
 }
 
 class XMLConfigurator implements Configurator {
-    
-    private static function $instance = NULL;
-    
-    private function __construct($file) {
-        echo __METHOD__ . "\n";
+
+    /** SimpleXML Object */
+    protected $sxe;
+
+    /** This Configurator Instance */
+    private static $instance = NULL;
+
+    /**
+     * Constructor.
+     * @param string, xml, configuration file/string
+     */
+    private function __construct($xml) {
+        if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
+        else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
+        if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
     }
 
-    public static function getInstance($file) {
+    public static function getInstance($xml) {
         if (self::$instance === NULL) {
-            self::$instance = new XMLConfigurator($file);
+            self::$instance = new XMLConfigurator($xml);
         }
         return self::$instance;
     }
 
-    public function getSection() {      }
+    /** @see Configurator::getSectionProperty() */
+    public function getSectionProperty($section, $property) {
+        if(!$this->sxe->$section) {
+            throw new Exception("Cannot find " . $system . " section in your Configuration File: " . $this->configFile . "!",100);
+        }
+        $_sys   = $this->sxe->$section->$property;
+        $_query = (string)trim($_sys['value']);
+        if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == 0) ){
+            return false;
+        } elseif( ($_query=='true') OR ($_query=='on') OR ($_query == 1) ) {
+            return true;
+        } else {
+            return (string)$_query;
+        }
+    }
+
+    // {{{ wrappers.
+    public function getDatabaseProperty($property) {
+        return $this->getSectionProperty('database',$property);
+    }
+    // }}}
+    
+    // {{{ logger
+    public function getLoggerOutputters() {
+        return $this->sxe->logger->outputters;
+    }
+    // }}}
     
 }
 
 class ConfiguratorException extends Exception {     }
+
+/*
+$o = XMLConfigurator::getInstance('libs/configurator/application.xml');
+
+$sxe = $o->getLoggerOutputters();
+
+for ($sxe->rewind(); $sxe->valid(); $sxe->next()) {   
+    foreach($sxe->getChildren() as $outputter) {
+        echo (string)trim($outputter['name']) . "\n";
+        echo (string)trim($outputter['level']) . "\n";
+        echo (string)trim($outputter['value']) . "\n";
+        echo "----------\n";
+    }
+}
+*/

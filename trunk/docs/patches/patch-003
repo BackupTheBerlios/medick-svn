@@ -1,0 +1,267 @@
+Index: config/application.xml
+===================================================================
+--- config/application.xml	(revision 0)
++++ config/application.xml	(revision 0)
+@@ -0,0 +1,81 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!--
++config-draft-0.0.2.XML -> for locknet
++
++app name(!), state (degub,production)
++    render, ptr folosire viitoare
++entry fost ENTRYPOINT
++rewrite daca mode = true  ->> se adauga automat " " la linkuri
++        daca mode = false ->> se adauga automat index.php la linkuri
++
++componentele cerute si care nu sunt definite aici au access guest
++
++obtinerea valorilor:
++ ^ Instantiere: $config = &LocknetConfig::singleton('application.xml');
++ ^ General:     $config->getApplicationName();
++                $config->getApplicationState();
++                $config->getApplicationRender();
++ ^ Property   : $config->getProperty(_PROPERTY_NAME_)
++
++
++ Removed:
++ state="debug" render="smarty"
++
++    <render>
++        <template value = "templates/default" />
++        <compile  value = "tmp" />
++        <temp     value = "" />
++    </render>
++        
++-->
++<application name="locknet-development" state="test">
++    
++	<!--  ====================== -->
++	<!--   General properties    --> 
++	<!--  ====================== -->
++    <property name="controller"    value="blog" />
++    <property name="httpServer"    value="http://localhost" />
++    <property name="httpLocation"  value="/locknet7" />
++    <property name="rewrite"       value="on" />
++  	
++    <sonart>
++        <template_location value="templates/default" />
++        <use_cache value="true" />
++        <cache_expire value="1" />
++        <cache_folder value="tmp" />
++    </sonart>
++        
++	<!--  ====================== -->
++	<!--     Logger System       -->
++	<!--  ====================== -->
++    <logger>
++        <outputters>
++            <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
++            <outputter name="mail"    level="5" value="aurelian@localhost.biz" />
++            <outputter name="stdout"  level="0" />
++        </outputters>
++    </logger>
++
++	<!-- ======================= -->
++	<!--     Database Engine     -->
++    <!-- ======================= -->
++	<database>
++		<db_driver   value = "mysql" />
++		<db_engine   value = "Creole" />
++		<db_user     value = "root" />
++		<db_pass     value = "virus" />
++		<db_host     value = "localhost" />
++		<db_database value = "locknet" />
++	</database>
++		
++	<!--  ====================== -->
++	<!--    Session Setings      -->
++	<!--  ====================== -->
++	<session>
++		<sess_name     value = "LOCKNET" />
++		<sess_driver   value = "Creole" />
++        <sess_time     value = "300" />
++        <sess_db_table value = "core_sessions" />
++	</session>
++
++</application>
+Index: config/bootstrap.php
+===================================================================
+--- config/bootstrap.php	(revision 33)
++++ config/bootstrap.php	(working copy)
+@@ -53,11 +53,36 @@
+ 
+ // {{{ Logger Setup
+ include_once('logger/Logger.php');
++include_once('configurator/Configurator.php');
++
+ $logger = Logger::getInstance();
+-$logger->attach(new StdoutOutputter());
++
++$configurator = XMLConfigurator::getInstance(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
++
++$outputters = $configurator->getLoggerOutputters();
++
++for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {   
++    foreach($outputters->getChildren() as $outputter) {
++        try {
++            $class= new ReflectionClass(ucfirst((string)trim($outputter['name'])) . 'Outputter');
++            $logger->attach( $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
++        } catch (ReflectionException $rEx) {
++            print_r($rEx->getMessage());
++        }
++        // $logger->attach(new $c_name);
++        // echo (string)trim($outputter['name']) . "\n";
++        // echo (string)trim($outputter['level']) . "\n";
++        // echo (string)trim($outputter['value']) . "\n";
++        // echo "----------\n";
++    }
++}
++
++// exit();
++
++// $logger->attach(new StdoutOutputter());
+ // $logger->attach(new JavaScriptOutputter());
+-$logger->attach(new FileOutputter(TOP_LOCATION . 'log' . DIRECTORY_SEPARATOR . 'locknet7.log'));
+-$logger->attach(new MailOutputter('XXXXX@XXXXX.XXXXX', 'Fatality...'));
++// $logger->attach(new FileOutputter(TOP_LOCATION . 'log' . DIRECTORY_SEPARATOR . 'locknet7.log'));
++// $logger->attach(new MailOutputter('XXXXX@XXXXX.XXXXX', 'Fatality...'));
+ $logger->setLevel(Logger::DEBUG);
+ $logger->setFormatter(new SimpleFormatter());
+ // $logger->setFormatter(new DefaultFormatter());
+Index: libs/logger/Logger.php
+===================================================================
+--- libs/logger/Logger.php	(revision 33)
++++ libs/logger/Logger.php	(working copy)
+@@ -215,7 +215,7 @@
+ 
+     private $code;
+     
+-    public function __construct() {
++    public function __construct($level) {
+         $this->code  = "<script language=\"javascript\">\n";
+         $this->code .= "\ndebugWindow = window.open(\"\",\"debugWindow\",\"width=600,height=500,scrollbars=yes,resizable=yes\");\n";
+         $this->code .= "</script>\n";
+@@ -243,7 +243,7 @@
+     private $eol;
+     private $output;
+     
+-    public function __construct() {
++    public function __construct($level) {
+         if (php_sapi_name() == 'cli') {
+             $this->isCLI = TRUE;
+             $this->eol = "\n";
+@@ -280,7 +280,7 @@
+ 
+     private $handler;
+ 
+-    public function __construct($file) {
++    public function __construct($level, $file) {
+         $this->handler = fopen($file, 'a');
+     }
+     
+@@ -304,7 +304,7 @@
+     private $mail;
+     private $subject;
+ 
+-    public function __construct($mail, $subject) {
++    public function __construct($level, $mail, $subject='Fatality...') {
+         $this->mail = $mail;
+         $this->subject = $subject;
+     }
+Index: libs/configurator/Configurator.php
+===================================================================
+--- libs/configurator/Configurator.php	(revision 33)
++++ libs/configurator/Configurator.php	(working copy)
+@@ -39,26 +39,83 @@
+  */
+ 
+ interface Configurator {
+-    function getSection($section);
++    /**
++     * It gets the section property
++     * @param string, section, the section
++     * @param string, property, the property
++     * @return string, the section property
++     */
++    function getSectionProperty($section, $property);
+ }
+ 
+ class XMLConfigurator implements Configurator {
+-    
+-    private static function $instance = NULL;
+-    
+-    private function __construct($file) {
+-        echo __METHOD__ . "\n";
++
++    /** SimpleXML Object */
++    protected $sxe;
++
++    /** This Configurator Instance */
++    private static $instance = NULL;
++
++    /**
++     * Constructor.
++     * @param string, xml, configuration file/string
++     */
++    private function __construct($xml) {
++        if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
++        else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
++        if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
+     }
+ 
+-    public static function getInstance($file) {
++    public static function getInstance($xml) {
+         if (self::$instance === NULL) {
+-            self::$instance = new XMLConfigurator($file);
++            self::$instance = new XMLConfigurator($xml);
+         }
+         return self::$instance;
+     }
+ 
+-    public function getSection() {      }
++    /** @see Configurator::getSectionProperty() */
++    public function getSectionProperty($section, $property) {
++        if(!$this->sxe->$section) {
++            throw new Exception("Cannot find " . $system . " section in your Configuration File: " . $this->configFile . "!",100);
++        }
++        $_sys   = $this->sxe->$section->$property;
++        $_query = (string)trim($_sys['value']);
++        if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == 0) ){
++            return false;
++        } elseif( ($_query=='true') OR ($_query=='on') OR ($_query == 1) ) {
++            return true;
++        } else {
++            return (string)$_query;
++        }
++    }
++
++    // {{{ wrappers.
++    public function getDatabaseProperty($property) {
++        return $this->getSectionProperty('database',$property);
++    }
++    // }}}
+     
++    // {{{ logger
++    public function getLoggerOutputters() {
++        return $this->sxe->logger->outputters;
++    }
++    // }}}
++    
+ }
+ 
+ class ConfiguratorException extends Exception {     }
++
++/*
++$o = XMLConfigurator::getInstance('libs/configurator/application.xml');
++
++$sxe = $o->getLoggerOutputters();
++
++for ($sxe->rewind(); $sxe->valid(); $sxe->next()) {   
++    foreach($sxe->getChildren() as $outputter) {
++        echo (string)trim($outputter['name']) . "\n";
++        echo (string)trim($outputter['level']) . "\n";
++        echo (string)trim($outputter['value']) . "\n";
++        echo "----------\n";
++    }
++}
++*/
