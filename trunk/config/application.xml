@@ -3,11 +3,11 @@
  ! $Id$
  -->
 
-<application name="todo" state="test">
-	<!--  ====================== -->
-	<!--     Logger System       -->
+<application state="test">
+     
     <!--  ====================== -->
-    
+    <!--     Logger System       -->
+    <!--  ====================== -->
     <logger>
         <outputters>
             <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
@@ -15,5 +15,23 @@
             <outputter name="stdout"  level="0" />
         </outputters>
     </logger>
+
+    <!-- ======================= -->
+    <!--   Database(s) Settings  -->
+    <!-- ======================= -->
+    <database>
+        <dsn id="one"
+             driver="mysql"
+             host="localhost"
+             database="todo"
+             username="root"
+             password="virus" />
+        <dsn id="two"
+             driver="pgsql"
+             host="192.18.1.1"
+             database="test"
+             username="antonescu"
+             password="x-creeme" />
+    </database>
 
 </application>
