@@ -19,19 +19,19 @@
     <!-- ======================= -->
     <!--   Database(s) Settings  -->
     <!-- ======================= -->
-    <database>
-        <dsn id="one"
-             driver="mysql"
-             host="localhost"
-             database="todo"
-             username="root"
-             password="virus" />
-        <dsn id="two"
-             driver="pgsql"
-             host="192.18.1.1"
-             database="test"
-             username="antonescu"
-             password="x-creeme" />
+    <database default="one">
+        <dsn id = "one"
+             phptype  = "mysql"
+             hostspec = "localhost"
+             database = "todo"
+             username = "root"
+             password = "virus" />
+        <dsn id = "two"
+             phptype  = "pgsql"
+             hostspec = "192.18.1.1"
+             database ="test"
+             username ="antonescu"
+             password ="x-creeme" />
     </database>
 
 </application>
