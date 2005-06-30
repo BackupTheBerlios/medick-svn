@@ -62,8 +62,29 @@ class Logger implements ILogger {
     /** the event to log */
     private $event = NULL;
     
-    /** constructor. not so sure about his responsabilities */
-    private final function __construct() {  }
+    /**
+     * Constructor.
+     * It reads the config file and setup the logging system 
+     */
+    private final function __construct() {
+    
+        $configurator = XMLConfigurator::getInstance(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+        $outputters   = $configurator->getLoggerOutputters();
+
+        for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {   
+            foreach($outputters->getChildren() as $outputter) {
+                try {
+                    $class= new ReflectionClass(ucfirst((string)trim($outputter['name'])) . 'Outputter');
+                    $this->attach( $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
+                } catch (ReflectionException $rEx) {
+                    $this->warn($rEx->getMessage());
+                }
+            }
+        }
+        $this->setLevel(Logger::DEBUG);
+        $this->setFormatter(new SimpleFormatter());
+        $this->debug('Logger ready');
+    }
 
     /** the pefect singleton :) */
     private final function __clone() {      }

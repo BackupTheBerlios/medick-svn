@@ -45,37 +45,13 @@ error_reporting(E_ALL);
 // main TOP_LOCATION.
 define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
-// include_path, rewrite the existing one 
+// include_path, rewrite the existing one
 set_include_path( TOP_LOCATION . 'libs' . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
                   TOP_LOCATION . 'app'  . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . PATH_SEPARATOR .  
                   TOP_LOCATION . 'app'  . DIRECTORY_SEPARATOR . 'models'      . DIRECTORY_SEPARATOR 
                 );
 
-// {{{ Logger Setup
-include_once('logger/Logger.php');
+
 include_once('configurator/Configurator.php');
-
-$logger = Logger::getInstance();
-
-$logger->setLevel(Logger::DEBUG);
-$logger->setFormatter(new SimpleFormatter());
-
-$configurator = XMLConfigurator::getInstance(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
-
-$outputters = $configurator->getLoggerOutputters();
-
-for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {   
-    foreach($outputters->getChildren() as $outputter) {
-        try {
-            $class= new ReflectionClass(ucfirst((string)trim($outputter['name'])) . 'Outputter');
-            $logger->attach( $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
-        } catch (ReflectionException $rEx) {
-            $logger->warn($rEx->getMessage());
-        }
-    }
-}
-
-$logger->debug('Logger ready');
-// }}}
-
+include_once('logger/Logger.php');
 include_once('Dispatcher.php');
