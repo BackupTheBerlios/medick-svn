@@ -113,7 +113,13 @@ class ActionControllerBase {
      */
     protected function render_file($template_file, $status = NULL) {
         if (!is_file($template_file)) throw new Exception ('Cannot render unexistent template file:' . $template_file);
-		$this->logger->debug($template_file);
+        $this->logger->debug($template_file);
+        // include helper?
+        $helper_location = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
+        if (is_file($helper_location)) {
+            $this->logger->debug('Helper included...\n<br />' . $helper_location);
+            include_once($helper_location);
+        }
 		$this->render_text($this->template->render_file($template_file), $status);
 	}
 	
@@ -207,6 +213,7 @@ class ActionControllerBase {
         $action = $this->createMethod(strtolower($action_name));
         if ($action->isStatic()) throw new Exception('Cannot invoke a static method!');
         $action->invoke($this);
+        if ($this->action_performed) return;
         $this->render();
     }
     
@@ -258,6 +265,7 @@ class ActionControllerBase {
             $this->logger->debug('Injecting Model:: ' . $this->model[0]);
             ModelInjector::inject($this->model[0]);
             // }
+            ModelInjector::prepareARBase();
         }
     }
     

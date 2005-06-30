@@ -51,17 +51,14 @@ class ActiveRecordException extends Exception {     }
 class ActiveRecordBase {
 	
 	/** a Logger instance */
-	protected $logger;
-	
-	/** DB Connection */
-	protected static $conn = NULL;
+	// protected $logger;
 	
     /**
      * Current SQL Stmt
      * [@deprecated]
      * TODO: get the stmt on every method!
      */
-    protected $stmt = NULL;
+    // protected $stmt = NULL;
 	
 	/** Table Info */
 	private $tbl_info;
@@ -80,11 +77,21 @@ class ActiveRecordBase {
 	/**
 	 * Affected fields during the run
 	 */
-	protected $af_fields;
+	protected $af_fields = array();
 	
 	// {{{ static helpers
 	/** injected table name */
-	private static $__table = NULL;
+    private static $__table = NULL;
+
+    /** DB connection */
+    protected static $conn = NULL;
+    /** logger instance */
+    protected static $logger = NULL;
+
+    /** self instantiated flag
+     * is changed to true in <code>ARBase::initialize()</code>
+     */
+    private static $initialized = FALSE;
 	// }}}
 	
 	/**
@@ -97,16 +104,7 @@ class ActiveRecordBase {
 	 * @throws SQLException
 	 */
 	public final function __construct($params = array()) {
-		// logger (X):
-		$this->logger = Logger::getInstance();
-		// connection
-		// TODO: a singleton?
-	    if(self::$conn === NULL) {
-	    	// TODO: configurator.
-	        $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'','database'=>'todo');
-	        self::$conn = self::connect($dsn);
-	    }
-	    
+
 	    $this->table = Inflector::pluralize(strtolower(get_class($this)));
 	    
 	    $this->tbl_info = ARTableInfo::getTableInfo(self::$conn, $this->table);
@@ -125,11 +123,15 @@ class ActiveRecordBase {
 	    
 	}
 	
-	public function __destruct() {  }
-	
-	
     // {{{ Magic.
-    public function __set($name,$value) {
+    /**
+     * It sets the value of the field
+     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+     * @param string, name, the field name
+     * @param mixed, value, field value
+     * @throw ActiveRecordException
+     */
+    public function __set($name, $value) {
         if(in_array($name,$this->fields)) {
             $this->af_fields[$name] = $value;
         } else {
@@ -137,7 +139,14 @@ class ActiveRecordBase {
 				"Cannot Set the Value for field: " . $name . "\n<br />No such field: " . $name);
         }
     }
-
+    
+    /**
+     * It gets the value of the field
+     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+     * @param string, name, the field name
+     * @throw ActiveRecordException
+     * @return field value
+     */
     public function __get($name) {
         if(in_array($name,$this->fields)) {
             return isset($this->af_fields[$name]) ? $this->af_fields[$name] : NULL;
@@ -182,11 +191,11 @@ class ActiveRecordBase {
         self::populateStmtValues($stmt, $this->tbl_info, $this->af_fields);
         $af_rows = $stmt->executeUpdate();
         
-        $this->logger->debug($this->fields);
-        $this->logger->debug("Primary Key:: " . $this->pk);
-        $this->logger->debug($this->af_fields);
-        $this->logger->debug($sql);
-        $this->logger->debug(self::$conn->lastQuery);
+        self::$logger->debug($this->fields);
+        self::$logger->debug("Primary Key:: " . $this->pk);
+        self::$logger->debug($this->af_fields);
+        self::$logger->debug($sql);
+        self::$logger->debug(self::$conn->lastQuery);
         
         $stmt->close(); // save some resources.
         if(!is_null($_pk)) {
@@ -273,85 +282,102 @@ class ActiveRecordBase {
         }
     }
 	
-	
+	// {{{ find.
     public static function find() {
-        // (X)
-        $logger = Logger::getInstance();
-        
 		$numargs = func_num_args();
         if($numargs == 0) return self::find('all');
 
-        $logger->debug('Nr. of args: ' . $numargs);
+        self::$logger->debug('Nr. of args: ' . $numargs);
         
         // all passed arguments:
         $params = func_get_args();
-        
-        $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$__table)));       
-        
-        if (!$class->isInstantiable()) {
+
+        // the object (type?) we want to return.
+        $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$__table)));               
+        if (!$class->isInstantiable()) { // remove this check!
             throw new ActiveRecordException('Model is not instantiable!');
         }
-        if (self::$conn === NULL){
-            self::$conn = self::connect(
-                        array(
-                            'phptype'=>'mysql',
-                            'hostspec'=>'localhost',
-                            'username'=>'root',
-                            'password'=>'',
-                            'database'=>'todo'));
-        }
         
-        if ($params[0] == 'all') {
+        if ($params[0] == 'all' && $numargs == 1 ) {
+            // all table fields and one arg.
             $sql = "SELECT * FROM " . self::$__table;
+
+            $stmt = self::$conn->prepareStatement($sql);
+            $rs = $stmt->executeQuery();
+            // build a list with objects of this type
+            $results = new ActiveRecordList();
+            while ($rs->next()) {
+                $results->add($class->newInstance($rs->getFields()));
+            }
+            return $results;
         } elseif (is_numeric($params[0]) && $numargs == 1) {
-            // (X::static) (XX::prepareStmt())
+            // one int param, this is the pk. value
             $tbl_info = ARTableInfo::getTableInfo(self::$conn, self::$__table);
             $pk       = $tbl_info->getPrimaryKey()->getName();
-            $sql      = "SELECT * FROM " . self::$__table . " WHERE " . $pk . " = " . $params[0];
+            
+            $sql  = "SELECT * FROM " . self::$__table . " WHERE " . $pk . " = ?";
+            $stmt = self::$conn->prepareStatement($sql);
+            $stmt->setInt(1, $params[0]);
+            $rs   = $stmt->executeQuery();  
+            
+            if ($rs->getRecordCount() == 1) {
+                $rs->next();
+                return $class->newInstance($rs->getFields());
+            }
+        } elseif ( ($params[0]=='all') && ($numargs == 2) && (is_array($params[1])) ) {
+            $sql  = "SELECT * FROM " . self::$__table . " WHERE " . $params[1]['condition'];
+            $stmt = self::$conn->prepareStatement($sql);
+            $rs = $stmt->executeQuery();
+            // build a list with objects of this type
+            $results = new ActiveRecordList();
+            while ($rs->next()) {
+                $results->add($class->newInstance($rs->getFields()));
+            }
+            return $results;
         }
         else {
             throw new ActiveRecordException('Case not implemented!');
         }
-            
-        $stmt = self::$conn->prepareStatement($sql);
-        $rs = $stmt->executeQuery();
-        if ($rs->getRecordCount() == 1) {
-            $rs->next();
-            return $class->newInstance($rs->getFields());
-        }
-        $results = new ActiveRecordList();
-        // foreach($rs as $row) {
-        while ($rs->next()) {
-            $results->add($class->newInstance($rs->getFields()));
-        }
-        return $results;
 	}
-
+    // }}}
+    
     /** an alias for self::find('all') */
 	public static function find_all() {
 		return self::find('all');
     }
     
-    // TO BE replaced by __call()
-    public static function find_by_sql() {
-        throw new Exception ("Method " . __METHOD__ . " Not Implemented!");
+    /** returns a ResultSet */
+    public static function find_by_sql($stmt) {
+        return $stmt->executeQuery();
     }
 	
     /**
-     * opens a DB connection 
-     * XXX: make this one act like a singleton.
+     * some sort of static instantiator that prepares static members: self::$conn, self::logger
+     * This should be called after setting the table name with
+     * <code>ARBase::setTable(__TABLE__NAME__);</code>
+     * Is called from ACBase::add_models() via ModelInjector::instaniate()
      */
-    protected static function connect($dsn) {
-    	return Creole::getConnection($dsn);
+    public static function initialize() {
+        if (self::$initialized) return;
+        if (self::$conn === NULL) {
+            self::$conn = Creole::getConnection(
+                XMLConfigurator::getInstance(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml')->getDatabaseDsn('one'));
+        }
+        if (self::$logger === NULL) self::$logger = Logger::getInstance();
+        self::$initialized = TRUE;
     }
-	
+    
 	/** 
 	 * Accept the table name injection
-	 * TODO: pluralizare. 
-	 * 
 	 */
     public static function setTable($table) {
     	self::$__table = Inflector::pluralize(strtolower($table));
-	}
+    }
+
+    /** for future use */
+    public static function setInheritanceMap($inheritanceMap) {
+
+    }
 	
 }
+

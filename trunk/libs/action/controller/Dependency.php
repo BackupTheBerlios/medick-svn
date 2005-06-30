@@ -63,11 +63,16 @@ class ModelInjector {
         
         $model_object = new ReflectionClass($model_name);
 
-        if ($model_object->getParentClass()->name != 'ActiveRecordBase')
-            throw new Exception ('Wrong Definition of your Model, he must extend ActiveRecordBase object!');
-
-        ActiveRecordBase::setTable($model);
+        if ($model_object->getParentClass()->name != 'ActiveRecordBase') {
+            throw new Exception ('Wrong Definition of your Model, ' . $model_name . ' must extend ActiveRecordBase object!');
+        }
         
+        ActiveRecordBase::setTable($model);
     }
 
+    /** prepare static members for our model */
+    public static function prepareARBase() {
+        return ActiveRecordBase::initialize();
+    }
 }
+
