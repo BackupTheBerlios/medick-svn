@@ -9,6 +9,7 @@
     <!--     Logger System       -->
     <!--  ====================== -->
     <logger>
+    	<formatter>simple</formatter>
         <outputters>
             <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
             <outputter name="mail"    level="2" value="xxxx@xxxx.xxxx" />
