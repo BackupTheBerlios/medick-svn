@@ -53,5 +53,8 @@ set_include_path( TOP_LOCATION . 'libs' . DIRECTORY_SEPARATOR . PATH_SEPARATOR .
 
 
 include_once('configurator/Configurator.php');
+
+Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+
 include_once('logger/Logger.php');
 include_once('Dispatcher.php');
