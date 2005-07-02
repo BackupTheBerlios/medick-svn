@@ -43,28 +43,14 @@ include_once('action/controller/Base.php');
 
 class Dispatcher {
 
-    /** logger instance */
-    private static $logger;
-
     /** our entry point */
     public static function dispatch() {
-        $logger = Logger::getInstance();
-        // self::prepare();
-        $logger->debug('Dispatcher is HIT!!!');
         $request  = new HTTPRequest();
         $response = new HTTPResponse();
         try {
-            $ac = ActionControllerRoute::createController($request);
-            $ac->process($request, $response)->dump();
+            ActionControllerRoute::createController($request)->process($request, $response)->dump();
         } catch (Exception $e) {
-            $logger->warn($e->getMessage());
+            Logger::getInstance()->warn($e->getMessage());
         }
-        // self::close();
     }
-
-    // XXX.
-    private static function prepare() {}
-    // XXX.
-    private static function close() {}
-
 }
