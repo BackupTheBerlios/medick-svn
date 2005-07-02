@@ -73,6 +73,15 @@ class HTTPRequest implements Request {
     }
     
     /**
+     * It sets a param.
+     * @param string, name, the name of the param to set
+     * @param mixed, value, value of the param
+     */
+    public function setParam($name, $value) {
+        $this->params[$name] = $value;
+    }
+    
+    /**
      * It gets the Session
      * @return Session, the curent Session
      */
