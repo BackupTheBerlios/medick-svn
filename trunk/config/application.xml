@@ -6,6 +6,12 @@
 <application state="test">
      
     <!--  ====================== -->
+    <!--   General properties    -->
+    <!--  ====================== -->
+    <property name="server_name"   value="http://localhost" />
+    <property name="document_root" value="/locknet7/public_html" />
+     
+    <!--  ====================== -->
     <!--     Logger System       -->
     <!--  ====================== -->
     <logger>
@@ -18,9 +24,12 @@
     </logger>
 
 	<!-- ======================= -->
-	<!--      Default Route      -->
+	<!--          Routing        -->
 	<!-- ======================= -->
-	<route controller="todo" action="all" />
+	<route name="default">
+		<controller>todo</controller>
+		<action>all</action>
+	</route>
 
     <!-- ======================= -->
     <!--   Database(s) Settings  -->

@@ -44,21 +44,22 @@ class ActionControllerRoute {
      * @param Request, request, the request
      * @return ActionController
      * @throws RouteException
+     * TODO: refactor.
      */
     public static function createController(Request $request) {
-
-        $route = new MedickRoute($request->getParam('controller'));
-
-        if (!self::exists($route)) {
-            // failure, load the default.
-            $default_route= Configurator::getInstance()->getDefaultRoute();
-            $route = new MedickRoute($default_route['controller']);
-            if (!self::exists($route)) {
-                throw new RouteException ('Default Route Failure!\n<br />Check your config settings!');
+        $controller = $request->getParam('controller');
+        $passed     = 0;
+        do {
+            if ($passed == 1) {
+                $controller = Configurator::getInstance()->getDefaultRoute()->controller;
+                $request->setParam('controller', $controller);
+            } elseif ($passed == 2) {
+                throw new RouteException('Cannot create a Controller...');
             }
-            $request->setParam('controller', $default_route['controller']);
-        }
-        
+            $route = new MedickRoute($controller);
+            $passed++;
+        } while (!self::exists($route));
+
         $request->setRoute($route);
         
         include_once('application.php');
@@ -66,7 +67,16 @@ class ActionControllerRoute {
         
         $controller_class = new ReflectionClass($route->getControllerName());
         // start inspection.
-        if ( ($controller_class->isInstantiable()) AND ($controller_class->getParentClass()->name=='ApplicationController') ) {
+        if ( 
+            ($controller_class->isInstantiable()) 
+            AND 
+            (
+                ($controller_class->getParentClass()->name=='ApplicationController')
+                OR
+                ($controller_class->getParentClass()->name=='ActionControllerBase')
+            ) 
+            )
+        {
             return $controller_class->newInstance();
         }
         throw new RouteException ('Cannot create Controller...');
@@ -97,16 +107,21 @@ interface Route {
 
 class MedickRoute implements Route {
 
-    /** We recieve from request the controller in this form <tt>news</tt>
-     *  the internal object name for this controller will be <tt>NewsController</tt> */
+    /** 
+     * We recieve from request the controller in this form <tt>news</tt>
+     * the internal object name for this controller will be <tt>NewsController</tt>
+     */
     private $ctrl_name;
     
-    /** By default, 
-     * all the controllers resids in <code>TOP_LOCATION/app/controllers/</code>*/
+    /** 
+     * By default, all the controllers resids in <tt>TOP_LOCATION/app/controllers/</tt>
+     */
     private $ctrl_path;
     
-    /** By default, 
-     *  the controller file will be located on $controller_path/$request->getParam('controller')_controller.php*/
+    /**
+     * By default, the controller file will be located 
+     * on <tt>$controller_path/$request->getParam('controller')_controller.php</tt>
+     */ 
     private $ctrl_file;
     
     /**
@@ -134,14 +149,11 @@ class MedickRoute implements Route {
     public function getControllerFile() {
         return $this->ctrl_file;
     }
+    
     /** a Representation of this object as a string */
     public function toString() {
         return $this->ctrl_name;
     }
-    /** php magic, in 5.0.4 is toString() not __toString(). */
-    // public function __toString() {
-    //    return $this->toString();
-    //}
 }
 
 class RouteException extends Exception {    }

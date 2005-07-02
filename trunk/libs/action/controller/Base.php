@@ -64,6 +64,8 @@ class ActionControllerBase {
 	protected $template;
     /** Flag to indicate that the current action was performed.*/
     private $action_performed = FALSE;
+    /** Configurator instance */
+    private $config;
     
     /**
      * Will process the request returning the resulting response
@@ -137,7 +139,7 @@ class ActionControllerBase {
     protected function render_text($text = '', $status = NULL) {
         if ($this->action_performed) {
             $this->logger->info('Action already performed...');
-            RETURN;
+            return;
         }
         if (is_null($status)) $status = Response::SC_OK;
 		$this->response->setStatus($status);
@@ -159,11 +161,11 @@ class ActionControllerBase {
         $this->logger   = Logger::getInstance();
         $this->session  = $request->getSession();
         $this->params   = $request->getParams();
-        $this->template_root = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR . 
+        $this->config   = Configurator::getInstance();
+        $this->template_root = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR .
 			 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
 			 
 		$this->template = ActionViewBase::factory();
-		
     }
 
     // XXX: not-done!
@@ -181,9 +183,12 @@ class ActionControllerBase {
     protected function redirect_to($action, $controller = NULL) {
         // get the curent controller, if NULL is passed.
         if (is_null($controller)) $controller= $this->params['controller'];
-        $this->response->redirect('http://' . $_SERVER['HTTP_HOST'] . '/index.php?controller=' . $controller . '&action=' . $action);
+        $this->response->redirect(
+                $this->config->getProperty('server_name') . 
+                $this->config->getProperty('document_root') . 
+                '/index.php?controller=' . $controller . '&action=' . $action
+            );
         $this->action_performed = TRUE;
-        
     }
     
     // XXX: not done.
@@ -197,8 +202,8 @@ class ActionControllerBase {
     
     /**
      * Performs the action
-     * @param string the action name
-     * @return result, the result of the action invocation.
+     * @param string, action_name, the action to perform
+     * TODO: still to refactor.
      */
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct');
@@ -207,11 +212,24 @@ class ActionControllerBase {
             (in_array($action_name, $forbidden_actions))
           )
         {
-            $default_route = Configurator::getInstance()->getDefaultRoute();
-            $action_name = $default_route['action'];
+            $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
         }
+        
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
-        $action = $this->createMethod(strtolower($action_name));
+        
+        try {
+            $action = $this->createMethod(strtolower($action_name));
+        } catch (ReflectionException $rEx) {
+            $this->logger->debug('Trying to get the default action...');
+            try{
+                $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
+                $action = $this->createMethod(strtolower($action_name));
+                $this->params['action'] = $this->config->getDefaultRoute()->action;
+            } catch (ReflectionException $rEx) {
+                throw new Exception('Cannot use default action!');   
+            }
+        }
+        
         if ($action->isStatic()) throw new Exception('Cannot invoke a static method!');
         $action->invoke($this);
         if ($this->action_performed) return;

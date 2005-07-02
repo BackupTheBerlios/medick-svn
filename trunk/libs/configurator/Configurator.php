@@ -54,7 +54,8 @@ abstract class Configurator {
     
     public static function getInstance($type = 'XML') {
         if (self::$instance === NULL) {
-            self::$instance = self::factory($type, TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+            self::$instance = self::factory($type, 
+                TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
         }
         return self::$instance;
     }
@@ -80,9 +81,16 @@ abstract class Configurator {
      abstract function getLoggerFormatter();
     
     /**
+     * Propery parser
+     * @param String the property name
+     * @return String, the property value
+     * @throws Exception if the property is not found
+     */
+    abstract function getProperty($name);
+    
+    /**
      * It gets the default application route.
-     * If action is omitted from configuration, default medick action (index) should be used
-     * @return array containing pairs: controller and action, and their values.
+     * @return Object, so we can access properties as members.
      */
     abstract function getDefaultRoute();
     
@@ -153,9 +161,7 @@ class XMLConfigurator extends Configurator {
      * @see Configurator::getDatabaseDsn() 
      */
     public function getDatabaseDsn($id = FALSE) {
-        if (!$id) {
-            $id = $this->sxe->database['default'];
-        }
+        if (!$id) $id = $this->sxe->database['default'];
         foreach( $this->sxe->database->dsn as  $dsn ) {
             if($dsn['id']==$id){
                 return array (
@@ -193,21 +199,31 @@ class XMLConfigurator extends Configurator {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
     }
     
+    /** @see Configurator::getProperty */
+    public function getProperty($name) {
+        foreach($this->sxe->property as  $properties ) {
+            if($properties['name']==$name) {
+                return (string)trim($properties['value']);
+            }
+        }
+        throw new Exception("Property " . $name . " not found!");
+    }    
+    
     /** 
      * Configuration Example:
      * <code>
-     *      <route controller="foo" action="bar" />
+     *      <route name="default">
+     *          <controller>foo</controller>
+     *          <action>someaction</action>
+     *      </route>
      * </code>
      * or, to use the default medick action (index):
      * <code>
-     *      <route controller="foo" />
+     *      <route><controller>foo</controller></route>
      * </code>
-     * @see Configurator::getRoute() */
+     * @see Configurator::getDefaultRoute() */
     public function getDefaultRoute() {
-        return array(
-                'controller'=>(string)trim($this->sxe->route['controller']),
-                'action'=>(string)trim($this->sxe->route['action']) == '' ? 'index' : (string)trim($this->sxe->route['action'])
-                );
+        return $this->sxe->route[0];
     }
 
 }
