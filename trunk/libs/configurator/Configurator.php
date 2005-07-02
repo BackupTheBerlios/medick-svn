@@ -33,25 +33,51 @@
 // }}}
 
 /**
- * Configurator Interface.
- * Provides methods that needs to be implemented
+ * Configurator
  * @package locknet7.config
  */
 
-interface Configurator {
+abstract class Configurator {
+    
+    /** Configurator instance */
+    public static $instance = NULL;
+    
+    /** A factory witch builds configurator object 
+     * TODO: this is just to pass the tests
+     */
+    public static function factory($type, $file) {
+        if (!is_null(self::$instance)) return self::$instance;
+        $_klazz = $type . 'Configurator';
+        self::$instance = new $_klazz($file);
+        return self::$instance;
+    }
+    
+    public static function getInstance($type = 'XML') {
+        if (self::$instance === NULL) {
+            self::$instance = self::factory($type, TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+        }
+        return self::$instance;
+    }
+    
     /**
      * It gets the section property
      * @param string, section, the section
      * @param string, property, the property
      * @return string, the section property
      */
-    function getSectionProperty($section, $property);
+    abstract function getSectionProperty($section, $property);
     
     /**
      * It gets the logger outputters.
      * @return Iterator
      */
-    function getLoggerOutputters();
+    abstract function getLoggerOutputters();
+    
+    /**
+     * It get logger formatter
+     * @return string, Logger formatter name eg. FooFormatter.
+     */
+     abstract function getLoggerFormatter();
     
     /**
      * Based on id we return the dsn array
@@ -59,44 +85,34 @@ interface Configurator {
      *      // for Creole this dsn format will do the job:
      *      $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'','database'=>'test'); 
      * </code>
-     * @param string, id, the dsn id
+     * @param string, id, [optional]the dsn id, if none is specified, we will use the default
      * @return array, dsn ready to use
      * @throws ConfiguratorException if the id is not found
      */
-    function getDatabaseDsn($id);
+    abstract function getDatabaseDsn($id = FALSE);
     
 }
 
-class XMLConfigurator implements Configurator {
+/** xml file base Configurator. */
+class XMLConfigurator extends Configurator {
 
     /** SimpleXML Object */
     protected $sxe;
-
-    /** This Configurator Instance */
-    private static $instance = NULL;
 
     /**
      * Constructor.
      * @param string, xml, configuration file/string
      */
-    private function __construct($xml) {
+    public function __construct($xml) {
         if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
         else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
     }
 
-    /** It gets the current Configurator instance */
-    public static function getInstance($xml) {
-        if (self::$instance === NULL) {
-            self::$instance = new XMLConfigurator($xml);
-        }
-        return self::$instance;
-    }
-
     /** @see Configurator::getSectionProperty() */
     public function getSectionProperty($section, $property) {
         if(!$this->sxe->$section) {
-            throw new Exception("Cannot find " . $system . " section in your Configuration File: " . $this->configFile . "!",100);
+            throw new Exception("Cannot find " . $section . " section in your Configuration File: " . $this->configFile . "!",100);
         }
         $_sys   = $this->sxe->$section->$property;
         $_query = (string)trim($_sys['value']);
@@ -109,8 +125,30 @@ class XMLConfigurator implements Configurator {
         }
     }
     
-    /** @see Configurator::getDatabaseDsn() */
-    public function getDatabaseDsn($id) {
+    /** 
+     * Configuration Example:
+     * <code>
+     *      <database default="foo">
+     *          <dsn id="one"
+     *               phptype  = "mysql"
+     *               hostspec = "localhost"
+     *               database = "todo"
+     *               username = "root"
+     *               password = "zzz" />
+     *          <dsn id = "foo"
+     *               phptype  = "pgsql"
+     *               hostspec = "192.18.1.1"
+     *               database ="test"
+     *               username ="antonescu"
+     *               password ="x-creeme" />
+     *      </database>
+     * </code>
+     * @see Configurator::getDatabaseDsn() 
+     */
+    public function getDatabaseDsn($id = FALSE) {
+        if (!$id) {
+            $id = $this->sxe->database['default'];
+        }
         foreach( $this->sxe->database->dsn as  $dsn ) {
             if($dsn['id']==$id){
                 return array (
@@ -126,11 +164,26 @@ class XMLConfigurator implements Configurator {
     }
     
     /**
+     * Configuration example:
+     * <code>
+     *      <logger>
+     *          <outputters>
+     *              <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
+     *              <outputter name="mail"    level="2" value="xxxx@xxxx.xxxx" />
+     *              <outputter name="stdout"  level="0" />
+     *          </outputters>
+     *      </logger>
+     * </code>
      * @see Configurator::getLoggerOutputters
      * @return SimpleXMLIterator
      */
     public function getLoggerOutputters() {
         return $this->sxe->logger->outputters;
+    }
+    
+    /** @see Configurator::getLoggerFormatter */
+    public function getLoggerFormatter() {
+        return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
     }
 
 }
