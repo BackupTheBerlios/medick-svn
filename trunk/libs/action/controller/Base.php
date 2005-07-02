@@ -117,7 +117,7 @@ class ActionControllerBase {
         // include helper?
         $helper_location = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
         if (is_file($helper_location)) {
-            $this->logger->debug('Helper included...\n<br />' . $helper_location);
+            $this->logger->debug('Helper: ' . $helper_location);
             include_once($helper_location);
         }
 		$this->render_text($this->template->render_file($template_file), $status);
@@ -207,7 +207,8 @@ class ActionControllerBase {
             (in_array($action_name, $forbidden_actions))
           )
         {
-            $action_name = 'index';
+            $default_route = Configurator::getInstance()->getDefaultRoute();
+            $action_name = $default_route['action'];
         }
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
         $action = $this->createMethod(strtolower($action_name));

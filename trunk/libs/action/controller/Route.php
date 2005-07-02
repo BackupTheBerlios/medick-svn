@@ -35,28 +35,29 @@
 
 /**
  * @package locknet7.action.controller.route
- * ActionControllerMap is a better name?
- * Create an instance of requested controller
  */
 class ActionControllerRoute {
-
-    //
-    public function add(Route $route) {       }
     
     /**
      * Creates an instance of the requested Controller
-     * TODO: In case of a failure we must try to load the default controller (see [1])
+     * In case the route fails, we try to load the default controller specified in the config file 
      * @param Request, request, the request
      * @return ActionController
+     * @throws RouteException
      */
     public static function createController(Request $request) {
-        $logger     = Logger::getInstance();
-        $route      = new MedickRoute($request->getParam('controller'));
 
-        //xxx[1]
-        if (!self::exists($route)) throw new Exception ('Route Failure!');
-        
-        $logger->debug('Incoming controller:: ' . $route->getControllerName());
+        $route = new MedickRoute($request->getParam('controller'));
+
+        if (!self::exists($route)) {
+            // failure, load the default.
+            $default_route= Configurator::getInstance()->getDefaultRoute();
+            $route = new MedickRoute($default_route['controller']);
+            if (!self::exists($route)) {
+                throw new RouteException ('Default Route Failure!\n<br />Check your config settings!');
+            }
+            $request->setParam('controller', $default_route['controller']);
+        }
         
         $request->setRoute($route);
         
@@ -67,7 +68,8 @@ class ActionControllerRoute {
         // start inspection.
         if ( ($controller_class->isInstantiable()) AND ($controller_class->getParentClass()->name=='ApplicationController') ) {
             return $controller_class->newInstance();
-        } 
+        }
+        throw new RouteException ('Cannot create Controller...');
     }
 
     /**
@@ -100,7 +102,7 @@ class MedickRoute implements Route {
     private $ctrl_name;
     
     /** By default, 
-     * all the controllers resids in top_location/app/controllers/*/
+     * all the controllers resids in <code>TOP_LOCATION/app/controllers/</code>*/
     private $ctrl_path;
     
     /** By default, 
@@ -141,3 +143,6 @@ class MedickRoute implements Route {
     //    return $this->toString();
     //}
 }
+
+class RouteException extends Exception {    }
+
