@@ -50,16 +50,6 @@ class ActiveRecordException extends Exception {     }
 
 class ActiveRecordBase {
 	
-	/** a Logger instance */
-	// protected $logger;
-	
-    /**
-     * Current SQL Stmt
-     * [@deprecated]
-     * TODO: get the stmt on every method!
-     */
-    // protected $stmt = NULL;
-	
 	/** Table Info */
 	private $tbl_info;
 	
@@ -352,17 +342,14 @@ class ActiveRecordBase {
     }
 	
     /**
-     * some sort of static instantiator that prepares static members: self::$conn, self::logger
+     * some sort of static instantiator that prepares static members: <code>self::$conn</code> and <code>self::$logger</code>
      * This should be called after setting the table name with
      * <code>ARBase::setTable(__TABLE__NAME__);</code>
      * Is called from ACBase::add_models() via ModelInjector::instaniate()
      */
     public static function initialize() {
         if (self::$initialized) return;
-        if (self::$conn === NULL) {
-            self::$conn = Creole::getConnection(
-                XMLConfigurator::getInstance(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml')->getDatabaseDsn('one'));
-        }
+        if (self::$conn   === NULL) self::$conn   = Creole::getConnection(Configurator::getInstance()->getDatabaseDsn());
         if (self::$logger === NULL) self::$logger = Logger::getInstance();
         self::$initialized = TRUE;
     }
