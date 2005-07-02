@@ -80,6 +80,13 @@ abstract class Configurator {
      abstract function getLoggerFormatter();
     
     /**
+     * It gets the default application route.
+     * If action is omitted from configuration, default medick action (index) should be used
+     * @return array containing pairs: controller and action, and their values.
+     */
+    abstract function getDefaultRoute();
+    
+    /**
      * Based on id we return the dsn array
      * <code>
      *      // for Creole this dsn format will do the job:
@@ -184,6 +191,23 @@ class XMLConfigurator extends Configurator {
     /** @see Configurator::getLoggerFormatter */
     public function getLoggerFormatter() {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
+    }
+    
+    /** 
+     * Configuration Example:
+     * <code>
+     *      <route controller="foo" action="bar" />
+     * </code>
+     * or, to use the default medick action (index):
+     * <code>
+     *      <route controller="foo" />
+     * </code>
+     * @see Configurator::getRoute() */
+    public function getDefaultRoute() {
+        return array(
+                'controller'=>(string)trim($this->sxe->route['controller']),
+                'action'=>(string)trim($this->sxe->route['action']) == '' ? 'index' : (string)trim($this->sxe->route['action'])
+                );
     }
 
 }
