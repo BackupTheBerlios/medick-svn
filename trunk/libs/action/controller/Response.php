@@ -76,7 +76,7 @@ interface Response {
 class HTTPResponse implements Response {
 
 	/** Page content */
-	private $body;
+	private $content;
 	
 	/** 
 	 * Sets the header $name with $value 
@@ -120,25 +120,25 @@ class HTTPResponse implements Response {
 
     public function redirect($location) {
         $this->setHeader('Location', $location);
-        $this->body = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
+        $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
     }
 	
 	/**
 	 * Sets body content 
 	 * @param string body, body content
 	 */
-	public function setBody($body) {
-		$this->body = $body;
+	public function setContent($content) {
+		$this->content = $content;
 	}
 	
 	/** It gets the body content */
-	public function getBody() {
-		return $this->body;
+	public function getContent() {
+		return $this->content;
 	}
 	
 	/** echo`s the body */
 	public function dump() {
-		echo $this->body;	
+		echo $this->content;	
 	}
 
 }

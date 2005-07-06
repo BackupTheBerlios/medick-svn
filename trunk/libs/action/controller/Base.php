@@ -143,7 +143,7 @@ class ActionControllerBase {
         }
         if (is_null($status)) $status = Response::SC_OK;
 		$this->response->setStatus($status);
-        $this->response->setBody($text);
+        $this->response->setContent($text);
         $this->action_performed = TRUE;
 	}
 	
