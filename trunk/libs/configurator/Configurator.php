@@ -32,11 +32,17 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+
 /**
- * Configurator
+ * Cofigurator Exception
  * @package locknet7.config
  */
+class ConfiguratorException extends Exception {       }
 
+/**
+ * Abstract Configurator
+ * @package locknet7.config
+ */
 abstract class Configurator {
     
     /** Configurator instance */
@@ -108,7 +114,10 @@ abstract class Configurator {
     
 }
 
-/** xml file base Configurator. */
+/**
+ * xml file-based Configurator.
+ * @package locknet7.config
+ */
 class XMLConfigurator extends Configurator {
 
     /** SimpleXML Object */
@@ -126,9 +135,7 @@ class XMLConfigurator extends Configurator {
 
     /** @see Configurator::getSectionProperty() */
     public function getSectionProperty($section, $property) {
-        if(!$this->sxe->$section) {
-            throw new Exception("Cannot find " . $section . " section in your Configuration File: " . $this->configFile . "!",100);
-        }
+        if(!$this->sxe->$section) throw new ConfiguratorException('Cannot find ' . $section . ' section in your Configuration!');
         $_sys   = $this->sxe->$section->$property;
         $_query = (string)trim($_sys['value']);
         if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == 0) ){
@@ -206,7 +213,7 @@ class XMLConfigurator extends Configurator {
                 return (string)trim($properties['value']);
             }
         }
-        throw new Exception("Property " . $name . " not found!");
+        throw new ConfiguratorException('Property ' . $name . ' not found!');
     }    
     
     /** 
@@ -225,7 +232,5 @@ class XMLConfigurator extends Configurator {
     public function getDefaultRoute() {
         return $this->sxe->route[0];
     }
-
 }
 
-class ConfiguratorException extends Exception {     }
