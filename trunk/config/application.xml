@@ -38,7 +38,7 @@
         <dsn id = "one"
              phptype  = "mysql"
              hostspec = "localhost"
-             database = "todo"
+             database = "todo2"
              username = "root"
              password = "virus" />
         <dsn id = "two"
