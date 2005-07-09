@@ -34,9 +34,8 @@
 
 /**
  * Will bootstrap the application by setting it`s propreties.
- * Required files are included here, the php include_path will point to our libs folder.
- * Here is the place where we start the first logging instance.
- * 
+ * Required files for start-up are included here
+ * TODO: can we move the php options in .htaccess file? 
  * @package locknet7.start
  */
 
@@ -46,9 +45,10 @@ error_reporting(E_ALL);
 define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
 // include_path, rewrite the existing one
-set_include_path( TOP_LOCATION . 'libs' . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
-                  TOP_LOCATION . 'app'  . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . PATH_SEPARATOR .  
-                  TOP_LOCATION . 'app'  . DIRECTORY_SEPARATOR . 'models'      . DIRECTORY_SEPARATOR 
+set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
+                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
+                  TOP_LOCATION . 'app'    . DIRECTORY_SEPARATOR . 'controllers'  . DIRECTORY_SEPARATOR . PATH_SEPARATOR .  
+                  TOP_LOCATION . 'app'    . DIRECTORY_SEPARATOR . 'models'       . DIRECTORY_SEPARATOR 
                 );
 
 
@@ -58,3 +58,4 @@ Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'ap
 
 include_once('logger/Logger.php');
 include_once('Dispatcher.php');
+
