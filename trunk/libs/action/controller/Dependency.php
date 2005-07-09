@@ -72,7 +72,7 @@ class ModelInjector {
 
     /** prepare static members for our model */
     public static function prepareARBase() {
-        return ActiveRecordBase::initialize();
+        return ActiveRecordBase::establish_connection();
     }
 }
 

@@ -114,7 +114,7 @@ class ActiveRecordBase {
                 return $it->current()->isAffected ? $it->current()->getValue() : NULL;
             }
         }
-        throw new ActiveRecordException ('Cannot Get the value of filed: ' . $filed_name . '. No such filed!');
+        throw new ActiveRecordException ('Cannot Get the value of filed: ' . $field_name . '. No such filed!');
     }
     
     /** removes some duplicate code */

@@ -72,7 +72,7 @@ class QuerryBuilder {
         }
     }
 
-    public function addArray(array $params) {
+    public function addArray(/*array*/ $params) {
         foreach ($params AS $type=>$value) {
             $this->add($type, $value);
         }
