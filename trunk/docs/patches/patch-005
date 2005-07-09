@@ -1,0 +1,1048 @@
+Index: libs/active/record/Base.php
+===================================================================
+--- libs/active/record/Base.php	(revision 53)
++++ libs/active/record/Base.php	(working copy)
+@@ -32,339 +32,282 @@
+ // ///////////////////////////////////////////////////////////////////////////////
+ // }}}
+ 
+-/**
+- * @package locknet7.active.record
+- */
+- 
++include_once('active/record/FieldsAggregate.php');
++include_once('active/record/RowsAggregate.php');
++include_once('active/record/QueryBuilder.php');
++include_once('active/support/Inflector.php');
+ include_once('creole/Creole.php');
+-include_once('creole/metadata/TableInfo.php');
+ 
+-include_once('active/record/TableInfo.php');
+-include_once('active/record/List.php');
+-
+-include_once('active/support/Inflector.php');
+-
+-
+ class ActiveRecordException extends Exception {     }
+ 
+-
+ class ActiveRecordBase {
+-	
+-	/** Table Info */
+-	private $tbl_info;
+-	
+-	/** the table name */
+-	public $table;
+-	
+-	/** primary key field name */
+-	protected $pk;
+-	
+-	/**
+-     * Name of the Table Fields
+-     */
+-    protected $fields = array();
+-	
+-	/**
+-	 * Affected fields during the run
+-	 */
+-	protected $af_fields = array();
+-	
+-	// {{{ static helpers
+-	/** injected table name */
+-    private static $__table = NULL;
+ 
+-    /** DB connection */
+-    protected static $conn = NULL;
+-    /** logger instance */
+-    protected static $logger = NULL;
++    /** DB Table Fields */
++    protected $fields;
+ 
+-    /** self instantiated flag
+-     * is changed to true in <code>ARBase::initialize()</code>
+-     */
+-    private static $initialized = FALSE;
+-	// }}}
+-	
+-	/**
+-	 * Constructor...
+-	 * Make him final, there is no reason to overwrite in parent classes.
+-	 * PHP Engine will call the parent constructor.
+-	 * @param array, params, parameters as pair of `field name` => `value`
+-	 * 						 if the primary key is touched, will do an update
+-	 * @return void
+-	 * @throws SQLException
+-	 */
+-	public final function __construct($params = array()) {
++    /** pk. name! */
++    private $pk;
++    
++    // {{{ static members
++    /** database connection*/
++    protected static $conn;
++    /** table name */
++    protected static $table_name;
++    // }}}
+ 
+-	    $this->table = Inflector::pluralize(strtolower(get_class($this)));
+-	    
+-	    $this->tbl_info = ARTableInfo::getTableInfo(self::$conn, $this->table);
+-            
+-        $this->pk = $this->tbl_info->getPrimaryKey()->getName();
+-	    
+-	    foreach($this->tbl_info->getColumns() as $field) {
+-        	$this->fields[] = $field->getName();
++    public static function establish_connection () {
++        if (self::$conn === NULL) {
++            self::$conn = Creole::getConnection(Configurator::getInstance()->getDatabaseDsn());
+         }
++    }
++    
++    public final function __construct($params = array()) {
++        self::establish_connection();
++        $this->fields = new FieldsAggregate();
++        self::$table_name = Inflector::pluralize(strtolower(get_class($this)));
++        $table_info = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
++        $this->pk = $table_info->getPrimaryKey()->getName();
++        
++        foreach( $table_info->getColumns() as $col) {
++            $field = new Field( $col->getName() );
++            // $field->size = $col->getSize();
++            $field->type = CreoleTypes::getCreoleName( $col->getType() ) ;
++            // $field->formattedName =  str_replace( '_', ' ', $col->getName() );
++            // set is_nullable
++            // $field->isNullable = (bool)$col->isNullable;
++            if ($this->pk == $col->getName() ) $field->isPk = TRUE;
++            // set the is_fk and fk_table
++            $pattern = '/^(.*)_id$/';
++            if ( preg_match($pattern, $col->getName(), $matches) ) {
++                $field->isFK = true;
++                $field->fKTable = $matches[ 1 ];
++            } else {
++                $field->isFK = false;
++            }
++            $this->fields->add( $field );
++        }
+ 
+-        if(!empty($params)) {
+-            foreach($params AS $field=>$value) {
+-                $this->$field = $value;
++        if ( !empty($params) ) {
++            foreach ($params AS $field_name=>$field_value) {
++                $this->$field_name = $field_value;
+             }
+         }
+-	    
+-	}
+-	
+-    // {{{ Magic.
+-    /**
+-     * It sets the value of the field
+-     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+-     * @param string, name, the field name
+-     * @param mixed, value, field value
+-     * @throw ActiveRecordException
+-     */
+-    public function __set($name, $value) {
+-        if(in_array($name,$this->fields)) {
+-            $this->af_fields[$name] = $value;
+-        } else {
+-            throw new ActiveRecordException (
+-				"Cannot Set the Value for field: " . $name . "\n<br />No such field: " . $name);
++
++    }
++
++    // {{{ __magic
++    public function __set($field_name, $field_value) {
++        for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
++            if ($it->current()->getName() == $field_name) {
++                $it->current()->setValue($field_value);
++                $it->current()->isAffected = TRUE;
++                $this->fields->setAffected(TRUE);
++                return;
++            }
+         }
++        throw new ActiveRecordException ('Cannot Set the value of field: ' . $field_name . '. No such field!');
++    }   
++
++    public function __get($field_name) {
++        for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
++            if ( $it->current()->getName() == $field_name ) {
++                return $it->current()->isAffected ? $it->current()->getValue() : NULL;
++            }
++        }
++        throw new ActiveRecordException ('Cannot Get the value of filed: ' . $filed_name . '. No such filed!');
+     }
+     
+-    /**
+-     * It gets the value of the field
+-     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+-     * @param string, name, the field name
+-     * @throw ActiveRecordException
+-     * @return field value
+-     */
+-    public function __get($name) {
+-        if(in_array($name,$this->fields)) {
+-            return isset($this->af_fields[$name]) ? $this->af_fields[$name] : NULL;
++    /** removes some duplicate code */
++    public function __call($method, $arguments) {
++        if ($method == 'destroy') return $this->delete();
++        $know_methods = array('save', 'insert', 'update', 'delete');
++        if (!in_array($method, $know_methods)) {
++            trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $method), E_USER_ERROR);
++        } elseif(!$this->fields->hasAffected()) {
++            throw new ActiveRecordException('No field was set before ' . $method);
+         } else {
+-        	throw new ActiveRecordException (
+-				"Cannot Get the Value for field: " . $name . "\n<br />No such field: " . $name);
++            $this->$method($arguments[0]);
+         }
+     }
++
++    /** returns a string representation of this object */
++    public function __toString() {
++        $string = '';
++        foreach ($this->fields->getAffectedFields() AS $field) {
++            $string .= "[ " . $field->type . " ] " . $field->getName() . " : " . $field->getValue() . "\n";
++        }
++        return $string;
++    }
+     // }}}
+-	
+-	
+-    /**
+-     * Save, 
+-     *    will do a SQL Insert and return the last_inserted_id or an Update returning the number of affected rows.
+-     * <code>
+-     *      $author = new Author();
+-     *      $author->name = 'Mihai';
+-     *      $author->firstName = 'Eminescu';
+-     *      $id = $author->save(); // will do the insert, returning the ID of the last field inserted.
+-     *      // a mistake, let`s update.
+-     *      $author->id = $id;
+-     *      $author->firstName = 'Sadoveanu';
+-     *      $author->save(); // performs the update and returns the number of affected rows.
+-     * </code>
+-     */
++    
++    
++    // {{{ save
+     public function save() {
+-        if(empty($this->af_fields)) {
+-        	throw new ActiveRecordException('No field was set before save!');
+-        }
+-        
+-        $_pk = $this->pk;
+-
+-        // TODO: 1. aditional check`s, if the pk was not set (a select by counting?)
+-        // TODO: 2. what if we don`t have a pk?
+-        if (in_array($this->pk, array_keys($this->af_fields))) {
+-            $sql = $this->doUpdateSQL();
++        if ($this->fields->getPrimaryKey()->isAffected) {
++            $sql = $this->getUpdateSql();
+         } else {
+-            $sql = $this->doInsertSQL();
++            $sql = $this->getInsertSql();
+         }
+-        
+-        $stmt = self::$conn->prepareStatement($sql);
+-        self::populateStmtValues($stmt, $this->tbl_info, $this->af_fields);
+-        $af_rows = $stmt->executeUpdate();
+-        
+-        self::$logger->debug($this->fields);
+-        self::$logger->debug("Primary Key:: " . $this->pk);
+-        self::$logger->debug($this->af_fields);
+-        self::$logger->debug($sql);
+-        self::$logger->debug(self::$conn->lastQuery);
+-        
+-        $stmt->close(); // save some resources.
+-        if(!is_null($_pk)) {
+-        	$keyGen = self::$conn->getIdGenerator();
+-            $id = $keyGen->getId($this->pk);
++        $af_rows = $this->_perform($sql);
++        if( $this->fields->getPrimaryKey() !== NULL ) {
++        	$id = self::$conn->getIdGenerator()->getId($this->pk);
++            $_pk = $this->pk;
+             $this->$_pk = $id;
+             return $id ? $id : $af_rows;
++        } else {
++            return $af_rows;
+         }
+-        // no pk.
+-        return $af_rows;
+     }
++    // }}}
+ 
+-    /** TODO: params: INT sau ARRAY! */
+-    public function destroy($params = array()) {
+-        if (empty($params)) {
+-            if (empty($this->af_fields)) {
+-                throw new ActiveRecordException('Foo Is BAR ONCE AGAIN!');
+-            }
++    // {{{ insert
++    public function insert() {
++        $af_rows = $this->_perform($this->getInsertSql());
++        if ($this->fields->getPrimaryKey() !== NULL) {
++            $id = self::$conn->getIdGenerator()->getId($this->pk);
++            $_pk = $this->pk;
++            $this->$_pk = $id;
++            return $id ? $id : $af_rows;
+         } else {
+-            // TODO: a new method.
+-            foreach($params AS $field=>$value) {
+-                $this->$field = $value;
+-            }
++            return $af_rows;
+         }
+ 
+-        // $whereClause: __nume-camp__= ? 
+-
++    }
++    // }}}
++    // {{{ update
++    public function update() {
++        return $this->_perform($this->getUpdateSql());
++    }
++    // }}}
++    // {{{ delete
++    public function delete() {
+         $whereClause = array();
+-
+-        foreach (array_keys($this->af_fields) as $col) {
+-            $whereClause[] = $col . ' = ? ';
++        foreach ($this->fields->getAffectedFields() as $col) {
++            $whereClause[] = $col->getName() . ' = ? ';
+         }
+-        
+-        $sql = 'DELETE FROM ' . self::$__table . ' WHERE ' . implode(" AND ", $whereClause);
++        $sql = 'DELETE FROM ' . self::$table_name . ' WHERE ' . implode(' AND ', $whereClause);
++        return $this->_perform($sql);
++    }
++    public function destroy() {
+ 
++    }
++    // }}}
++
++    private function _perform($sql) {
+         $stmt = self::$conn->prepareStatement($sql);
+-        
+-        self::populateStmtValues($stmt, $this->tbl_info, $this->af_fields);
+-        
++        self::populateStmtValues($stmt, $this->fields->getAffectedFields());
+         $af_rows = $stmt->executeUpdate();
+         $stmt->close();
++        // TODO: replace with logger.
++        echo "Performing: " . self::$conn->lastQuery . "\n";
++        // $this->_reset();
+         return $af_rows;
+     }
++
++    /** resets affected flag, this method is not used yet! */
++    private function _reset() {
++        foreach ($this->fields->getAffectedFields() AS $field) {
++            $field->isAffected = FALSE;
++        }
++    }
+     
+-    /** SQL Fragment for update */
+-    private function doUpdateSQL() {
+-        $sqlSnippet = $this->pk . " = " . $this->af_fields[$this->pk];
+-        $sql = "UPDATE " . $this->table . " SET ";
+-        foreach(array_keys($this->af_fields) as $col) {
+-            $sql .= $col . " = ?,";
++    /** FIXME:
++     * <tt>UPDATE __TABLE__ SET foo='12' WHERE bar='ee';</tt>
++     * is not working.
++     */
++    private function getUpdateSql() {
++        $sqlSnippet = '';
++        if ($this->pk !== NULL) {
++            $sqlSnippet = ' WHERE ' . $this->pk . ' = ' . $this->fields->getPrimaryKey()->getValue();
+         }
+-        return substr($sql, 0, -1) . " WHERE " . $sqlSnippet;
++        $sql = 'UPDATE ' . self::$table_name . ' SET ';
++        foreach($this->fields->getAffectedFields() as $field) {
++            $sql .= $field->getName() . ' = ?,';
++        }
++        return substr($sql, 0, -1) . $sqlSnippet;
++        
+     }
+ 
+-    /** SQL Fragment for Insert */
+-    private function doInsertSQL() {
+-        return "INSERT INTO " . $this->table 
+-               . " (" . implode(",", array_keys($this->af_fields)) . ")"
+-               . " VALUES (" . substr(str_repeat("?,", count($this->af_fields)), 0, -1) . ")";
++    private function getInsertSql() {
++        return 'INSERT INTO ' . self::$table_name 
++               . ' (' . implode(',', $this->fields->getAffectedFieldsNames()) . ')'
++               . ' VALUES (' . substr(str_repeat('?,', count($this->fields->getAffectedFields())), 0, -1) . ')';
+     }
+     
+-    /** populates stmt values (?,?,?) on sql querys
++    /**
++     * populates stmt values (?,?,?) on sql querys
+      * @param PreparedStatement, stmt, the prepared statement.
+-     * @param TableInfo, table_info, info`s about the curent table
+      * @param array, fields, the affected fields
+-     * inspired by Propel::BasePeer::populateStmtValues
+      */
+-    private static function populateStmtValues($stmt, $table_info, $fields) {
+-        if(count($fields) == 0) return; // -> it should be removed, there is no reason for checking again this thing!
+-        if (is_null($stmt)) throw new ActiveRecordException('STMT cannot be null!');
++    private static function populateStmtValues($stmt, $fields) {
+         $i = 1;
+-        foreach($fields AS $field=>$value) {
+-            if($value === NULL){
++        foreach($fields AS $field) {
++            if($field->getValue() === NULL){
+                 $stmt->setNull($i++);
+             } else {
+-                $cMap = $table_info->getColumn($field);
+-                if(strtoupper($cMap->getNativeType()) == 'INT') {
+-                    $setter = 'set' . CreoleTypes::getAffix(CreoleTypes::INTEGER);
+-                } else {
+-                    $setter = 'set' . CreoleTypes::getAffix(CreoleTypes::getCreoleCode(strtoupper($cMap->getNativeType())));
+-                }
+-                $stmt->$setter($i++, $value);
++                $setter = 'set' . CreoleTypes::getAffix(CreoleTypes::getCreoleCode(strtoupper($field->type)));
++                $stmt->$setter($i++, $field->getValue());
+             }
+         }
+     }
+-	
+-	// {{{ find.
++
++    // {{{ find monster
+     public static function find() {
+-		$numargs = func_num_args();
++        $numargs = func_num_args();
+         if($numargs == 0) return self::find('all');
+-
+-        self::$logger->debug('Nr. of args: ' . $numargs);
+-        
+-        // all passed arguments:
+         $params = func_get_args();
+ 
+-        // the object (type?) we want to return.
+-        $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$__table)));               
+-        if (!$class->isInstantiable()) { // remove this check!
+-            throw new ActiveRecordException('Model is not instantiable!');
+-        }
++        // $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$table_name)));
++        $_klazz = Inflector::singularize(ucfirst(self::$table_name));
+         
+-        if ($params[0] == 'all' && $numargs == 1 ) {
++        $query = new QuerryBuilder(self::$table_name);
++        
++        if ( $params[0] == 'all' && $numargs == 1 ) {
+             // all table fields and one arg.
+-            $sql = "SELECT * FROM " . self::$__table;
+-
+-            $stmt = self::$conn->prepareStatement($sql);
+-            $rs = $stmt->executeQuery();
+-            // build a list with objects of this type
+-            $results = new ActiveRecordList();
+-            while ($rs->next()) {
+-                $results->add($class->newInstance($rs->getFields()));
++        } elseif ( $params[0] == 'all' && $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
++            $query->addArray($params[1]);
++        } elseif ( is_numeric($params[0])) {
++            // we expect only one row!
++            // we need the pk name.
++            $pk_name = self::$conn->getDatabaseInfo()->getTable(self::$table_name)->getPrimaryKey()->getName();
++            if ( $numargs == 1 ) {
++                $query->add('condition', $pk_name . '=?');
++            } elseif ( $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
++                $query->add('condition', $pk_name . '=?');
++                $query->addArray($params[1]);
+             }
+-            return $results;
+-        } elseif (is_numeric($params[0]) && $numargs == 1) {
+-            // one int param, this is the pk. value
+-            $tbl_info = ARTableInfo::getTableInfo(self::$conn, self::$__table);
+-            $pk       = $tbl_info->getPrimaryKey()->getName();
+-            
+-            $sql  = "SELECT * FROM " . self::$__table . " WHERE " . $pk . " = ?";
+-            $stmt = self::$conn->prepareStatement($sql);
++            $stmt = self::$conn->prepareStatement($query->buildQuery());
+             $stmt->setInt(1, $params[0]);
+             $rs   = $stmt->executeQuery();  
+-            
+             if ($rs->getRecordCount() == 1) {
+                 $rs->next();
+-                return $class->newInstance($rs->getFields());
++                return new $_klazz($rs->getRow());
+             }
+-        } elseif ( ($params[0]=='all') && ($numargs == 2) && (is_array($params[1])) ) {
+-            $sql  = "SELECT * FROM " . self::$__table . " WHERE " . $params[1]['condition'];
+-            $stmt = self::$conn->prepareStatement($sql);
+-            $rs = $stmt->executeQuery();
+-            // build a list with objects of this type
+-            $results = new ActiveRecordList();
+-            while ($rs->next()) {
+-                $results->add($class->newInstance($rs->getFields()));
+-            }
+-            return $results;
++        } else {
++            throw new ActiveRecordException('Case Not Implemented yet!');
+         }
+-        else {
+-            throw new ActiveRecordException('Case not implemented!');
++
++        $stmt = self::$conn->prepareStatement($query->buildQuery());
++        // add limit and/or offset if requested
++        if ($limit = $query->getLimit())   $stmt->setLimit($limit);
++        if ($offset = $query->getOffset()) $stmt->setOffset($offset);
++        $rs = $stmt->executeQuery();
++        // build a list with objects of this type
++        $results = new RowsAggregate();
++        while ($rs->next()) {
++            // $results->add($class->newInstance($rs->getRow()));
++            $results->add(new $_klazz($rs->getRow()));
+         }
+-	}
+-    // }}}
+-    
+-    /** an alias for self::find('all') */
+-	public static function find_all() {
+-		return self::find('all');
++        // todo: log.
++        echo "Performing: " . self::$conn->lastQuery . "\n";
++        
++        return $results;
+     }
+-    
+-    /** returns a ResultSet */
+-    public static function find_by_sql($stmt) {
+-        return $stmt->executeQuery();
+-    }
+-	
+-    /**
+-     * some sort of static instantiator that prepares static members: <code>self::$conn</code> and <code>self::$logger</code>
+-     * This should be called after setting the table name with
+-     * <code>ARBase::setTable(__TABLE__NAME__);</code>
+-     * Is called from ACBase::add_models() via ModelInjector::instaniate()
+-     */
+-    public static function initialize() {
+-        if (self::$initialized) return;
+-        if (self::$conn   === NULL) self::$conn   = Creole::getConnection(Configurator::getInstance()->getDatabaseDsn());
+-        if (self::$logger === NULL) self::$logger = Logger::getInstance();
+-        self::$initialized = TRUE;
+-    }
+-    
+-	/** 
+-	 * Accept the table name injection
+-	 */
++    // }}}
++
+     public static function setTable($table) {
+-    	self::$__table = Inflector::pluralize(strtolower($table));
++        self::$table_name = Inflector::pluralize(strtolower($table));
+     }
+-
+-    /** for future use */
+-    public static function setInheritanceMap($inheritanceMap) {
+-
+-    }
+-	
++    
+ }
+ 
+Index: libs/active/record/List.php
+===================================================================
+--- libs/active/record/List.php	(revision 53)
++++ libs/active/record/List.php	(working copy)
+@@ -1,54 +0,0 @@
+-<?php
+-// {{{ License
+-// ///////////////////////////////////////////////////////////////////////////////
+-//
+-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+-//
+-// Redistribution and use in source and binary forms, with or without
+-// modification, are permitted provided that the following conditions are met:
+-//
+-//   * Redistributions of source code must retain the above copyright notice, 
+-//   this list of conditions and the following disclaimer. 
+-//   * Redistributions in binary form must reproduce the above copyright notice,
+-//   this list of conditions and the following disclaimer in the documentation 
+-//   and/or other materials provided with the distribution. 
+-//   * Neither the name of locknet.ro nor the names of its contributors may 
+-//   be used to endorse or promote products derived from this software without 
+-//   specific prior written permission.
+-//
+-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+-// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+-// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-// 
+-// $Id$
+-// 
+-// ///////////////////////////////////////////////////////////////////////////////
+-// }}}
+-
+-/**
+- * @package locknet7.active.record
+- */
+-
+-class ActiveRecordList implements IteratorAggregate {
+-
+-    private $items;
+-
+-    public function __construct() {
+-        $this->items = new ArrayObject(array());
+-    }
+-
+-    public function add($item){
+-        $this->items[] = $item;
+-    }
+-
+-    public function getIterator() {
+-        return $this->items->getIterator();
+-    }
+-}
+Index: libs/active/record/QueryBuilder.php
+===================================================================
+--- libs/active/record/QueryBuilder.php	(revision 0)
++++ libs/active/record/QueryBuilder.php	(revision 0)
+@@ -0,0 +1,113 @@
++<?php
++// {{{ License
++// ///////////////////////////////////////////////////////////////////////////////
++//
++// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
++//
++// Redistribution and use in source and binary forms, with or without
++// modification, are permitted provided that the following conditions are met:
++//
++//   * Redistributions of source code must retain the above copyright notice, 
++//   this list of conditions and the following disclaimer. 
++//   * Redistributions in binary form must reproduce the above copyright notice,
++//   this list of conditions and the following disclaimer in the documentation 
++//   and/or other materials provided with the distribution. 
++//   * Neither the name of locknet.ro nor the names of its contributors may 
++//   be used to endorse or promote products derived from this software without 
++//   specific prior written permission.
++//
++// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
++// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
++// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
++// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
++// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++// 
++// $Id: $
++// 
++// ///////////////////////////////////////////////////////////////////////////////
++// }}}
++
++class QuerryBuilder {
++    
++    private $select  = array();
++    private $from;
++    private $where   = array();
++    private $orderBy;
++
++    private $table;
++
++    private $limit  = FALSE;
++    private $offset = FALSE;
++
++    
++    public function __construct($table) {
++        $this->table = $table;
++    }
++
++    public function add($type, $value) {
++        switch ($type) {
++            case 'include':
++                $this->addSelect($value);        
++                break;
++            case 'condition':
++                $this->addWhere($value);
++                break;
++            case 'limit':
++                $this->limit = (int)$value;
++                break;
++            case 'offset':
++                $this->offset = (int)$value;
++                break;
++            case 'order':
++                $this->orderBy = $value;
++                break;
++            default:
++                throw new ActiveRecordException ('Call to unknow modifier: ' . $type);
++                break;
++        }
++    }
++
++    public function addArray(array $params) {
++        foreach ($params AS $type=>$value) {
++            $this->add($type, $value);
++        }
++    }
++    
++    public function getLimit() {
++        return $this->limit;
++    }
++
++    public function getOffset() {
++        return $this->offset;
++    }
++    
++    public function buildQuery() {
++        return  "SELECT "
++                 . ($this->select ? implode(" ", $this->select) . " " : " * ")
++                 // .implode(", ", $selectClause)
++                 // . " FROM " . implode(", ", $fromClause)
++                 . " FROM " . $this->table
++                 . ($this->where ? " WHERE " . implode(" AND ", $this->where) : "")
++                 // .($groupByClause ? " GROUP BY ".implode(",", $groupByClause) : "")
++                 // .($havingString ? " HAVING ".$havingString : "")
++                 // . ($this->orderBy ? " ORDER BY " . implode(",", $this->orderBy) : "");
++                 . ($this->orderBy ? " ORDER BY " . $this->orderBy : "");
++                 
++
++    }
++    
++    public function addSelect($select) {
++        $this->select[] = $select;
++    }
++
++    public function addWhere($where) {
++        $this->where[] = $where;
++    }
++
++}
++
+Index: libs/active/record/FieldsAggregate.php
+===================================================================
+--- libs/active/record/FieldsAggregate.php	(revision 0)
++++ libs/active/record/FieldsAggregate.php	(revision 0)
+@@ -0,0 +1,113 @@
++<?php
++// {{{ License
++// ///////////////////////////////////////////////////////////////////////////////
++//
++// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
++//
++// Redistribution and use in source and binary forms, with or without
++// modification, are permitted provided that the following conditions are met:
++//
++//   * Redistributions of source code must retain the above copyright notice, 
++//   this list of conditions and the following disclaimer. 
++//   * Redistributions in binary form must reproduce the above copyright notice,
++//   this list of conditions and the following disclaimer in the documentation 
++//   and/or other materials provided with the distribution. 
++//   * Neither the name of locknet.ro nor the names of its contributors may 
++//   be used to endorse or promote products derived from this software without 
++//   specific prior written permission.
++//
++// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
++// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
++// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
++// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
++// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++// 
++// $Id: $
++// 
++// ///////////////////////////////////////////////////////////////////////////////
++// }}}
++
++include_once('active/record/Field.php');
++
++class FieldsAggregate implements IteratorAggregate {
++    
++    // container
++    private $fields;
++    // pk field @var Field
++    private $pk_filed = NULL;
++    // affected flag.
++    private $affected = FALSE;
++    
++    /** constructor...*/
++    public function __construct() {
++        $this->fields = new ArrayObject();
++    }
++
++    /** add a new Field on the fields container */
++    public function add(Field $field) {
++        if (!$this->contains($field)) $this->fields[] = $field;
++        if ($field->isPk) $this->pk_field = $field;
++    }
++    
++    /** check if the container contains the Field */
++    public function contains(Field $field) {
++        for ( $it = $this->getIterator(); $it->valid(); $it->next() ) {
++            if ($it->current()->getName() == $field->getName()) {
++                return TRUE;
++            }
++        }
++        return FALSE;
++    }
++
++    /** it gets the iterator */
++    public function getIterator() {
++        return $this->fields->getIterator();
++    }
++
++    /** set the affected modifier */
++    public function setAffected($affected) {
++        $this->affected = (bool)$affected;
++    }
++
++    /** has affected fields by this run */
++    public function hasAffected() {
++        return $this->affected;
++    }
++
++    /**
++     * it gets the primary key filed
++     * @return Field, the field containing the pk.
++     */
++    public function getPrimaryKey() {
++        return $this->pk_field;
++    }
++    
++    /** It gets an array with the names of the affected fields */
++    public function getAffectedFieldsNames() {
++        $names= array();
++        for ($it = $this->getIterator(); $it->valid(); $it->next()) {
++            if ($it->current()->isAffected) {
++                $names[] = $it->current()->getName();
++            }
++        }
++        return $names;
++    }
++
++    /** get an array of objects Field[] that are affected(changed) by this run*/
++    public function getAffectedFields() {
++        if (!$this->affected) return array();
++        $affected_fields = array();
++        for ( $it = $this->getIterator(); $it->valid(); $it->next() ) {
++            if ($it->current()->isAffected) {
++                $affected_fields[] = $it->current();
++            }
++        }
++        return $affected_fields;
++    }
++}
++
+Index: libs/active/record/RowsAggregate.php
+===================================================================
+--- libs/active/record/RowsAggregate.php	(revision 0)
++++ libs/active/record/RowsAggregate.php	(revision 0)
+@@ -0,0 +1,68 @@
++<?php
++// {{{ License
++// ///////////////////////////////////////////////////////////////////////////////
++//
++// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
++//
++// Redistribution and use in source and binary forms, with or without
++// modification, are permitted provided that the following conditions are met:
++//
++//   * Redistributions of source code must retain the above copyright notice, 
++//   this list of conditions and the following disclaimer. 
++//   * Redistributions in binary form must reproduce the above copyright notice,
++//   this list of conditions and the following disclaimer in the documentation 
++//   and/or other materials provided with the distribution. 
++//   * Neither the name of locknet.ro nor the names of its contributors may 
++//   be used to endorse or promote products derived from this software without 
++//   specific prior written permission.
++//
++// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
++// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
++// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
++// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
++// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++// 
++// $Id: $
++// 
++// ///////////////////////////////////////////////////////////////////////////////
++// }}}
++
++
++class RowsAggregate implements IteratorAggregate {
++    
++    /** rows container */
++    private $container;
++    
++    /** it builds a new container*/
++    public function __construct() {
++        $this->container = new ArrayObject();
++    }
++    
++    /** It adds a new row on this container*/
++    public function add(ActiveRecordBase $row) {
++        $this->container->append($row);
++    }
++
++    /** it gets the iterator */
++    public function getIterator() {
++        return $this->container->getIterator();
++    }
++
++    public function count() {
++        return $this->getIterator()->count();
++    }
++
++    public function toArray() {
++        return iterator_to_array($this->getIterator());
++    }
++    
++    public function offsetGet($index) {
++        return $this->container->offsetGet($index);
++    }
++}
++
+Index: libs/active/record/TableInfo.php
+===================================================================
+--- libs/active/record/TableInfo.php	(revision 53)
++++ libs/active/record/TableInfo.php	(working copy)
+@@ -1,50 +0,0 @@
+-<?php
+-// {{{ License
+-// ///////////////////////////////////////////////////////////////////////////////
+-//
+-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+-//
+-// Redistribution and use in source and binary forms, with or without
+-// modification, are permitted provided that the following conditions are met:
+-//
+-//   * Redistributions of source code must retain the above copyright notice, 
+-//   this list of conditions and the following disclaimer. 
+-//   * Redistributions in binary form must reproduce the above copyright notice,
+-//   this list of conditions and the following disclaimer in the documentation 
+-//   and/or other materials provided with the distribution. 
+-//   * Neither the name of locknet.ro nor the names of its contributors may 
+-//   be used to endorse or promote products derived from this software without 
+-//   specific prior written permission.
+-//
+-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+-// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+-// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-// 
+-// $Id$
+-// 
+-// ///////////////////////////////////////////////////////////////////////////////
+-// }}}
+-
+-
+-/**
+- * @package locknet7.active.record
+- */
+-
+-/** It gets the Table Info. */
+-class ARTableInfo {
+-    private static $tableInfo = NULL;
+-    public function getTableInfo($connection, $table) {
+-        if(self::$tableInfo === NULL) {
+-            $dbinfo = $connection->getDatabaseInfo();
+-            self::$tableInfo = $dbinfo->getTable($table);
+-        }
+-        return self::$tableInfo;
+-    }
+-}
+Index: libs/active/record/Field.php
+===================================================================
+--- libs/active/record/Field.php	(revision 0)
++++ libs/active/record/Field.php	(revision 0)
+@@ -0,0 +1,69 @@
++<?php
++// {{{ License
++// ///////////////////////////////////////////////////////////////////////////////
++//
++// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
++//
++// Redistribution and use in source and binary forms, with or without
++// modification, are permitted provided that the following conditions are met:
++//
++//   * Redistributions of source code must retain the above copyright notice, 
++//   this list of conditions and the following disclaimer. 
++//   * Redistributions in binary form must reproduce the above copyright notice,
++//   this list of conditions and the following disclaimer in the documentation 
++//   and/or other materials provided with the distribution. 
++//   * Neither the name of locknet.ro nor the names of its contributors may 
++//   be used to endorse or promote products derived from this software without 
++//   specific prior written permission.
++//
++// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
++// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
++// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
++// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
++// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++// 
++// $Id: $
++// 
++// ///////////////////////////////////////////////////////////////////////////////
++// }}}
++
++
++class Field {
++
++    private $name;
++
++    private $value;
++    
++    public $type;
++
++    public $isPk = FALSE;
++
++    public $isFk = FALSE;
++
++    public $isAffected = FALSE;
++
++    public $fkTable;
++    
++    public function __construct($name) {
++        $this->name = $name;
++    }
++
++    public function getName() {
++        return $this->name;
++    }
++
++    public function getValue() {
++        return $this->value;
++    }
++
++    public function setValue($value) {
++        $this->value = $value;
++    }
++    
++}
++
