@@ -61,6 +61,13 @@ class ActiveRecordBase {
         }
     }
     
+    /**
+     * Constructor
+     *
+     * Is final, because there is no reason to overwrite in parent classes.
+     * PHP Engine will call this constructor by default.
+     * @param array, params, parameters as pair of `field name` => `value`
+     */
     public final function __construct($params = array()) {
         self::establish_connection();
         $this->fields = new FieldsAggregate();
@@ -95,7 +102,14 @@ class ActiveRecordBase {
 
     }
 
-    // {{{ __magic
+    // {{{ __magic functions
+    /**
+     * It sets the value of the field
+     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+     * @param string, field_name, the field name
+     * @param mixed, field_value, field value
+     * @throw ActiveRecordException if the field is not found.
+     */
     public function __set($field_name, $field_value) {
         for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
             if ($it->current()->getName() == $field_name) {
@@ -106,8 +120,15 @@ class ActiveRecordBase {
             }
         }
         throw new ActiveRecordException ('Cannot Set the value of field: ' . $field_name . '. No such field!');
-    }   
-
+    }
+    
+    /**
+     * It gets the value of the field
+     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+     * @param string, field_name, the field name
+     * @throw ActiveRecordException
+     * @return field value
+     */
     public function __get($field_name) {
         for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
             if ( $it->current()->getName() == $field_name ) {
@@ -119,7 +140,7 @@ class ActiveRecordBase {
     
     /** removes some duplicate code */
     public function __call($method, $arguments) {
-        if ($method == 'destroy') return $this->delete();
+        // if ($method == 'destroy') return $this->delete();
         $know_methods = array('save', 'insert', 'update', 'delete');
         if (!in_array($method, $know_methods)) {
             trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $method), E_USER_ERROR);
@@ -142,41 +163,42 @@ class ActiveRecordBase {
     
     
     // {{{ save
+    /**
+     * Save,
+     *    will do a SQL Insert and return the last_inserted_id or an Update returning the number of affected rows.
+     * If the primary key is affected (changed) on this run we will do an update, otherwise an insert.
+     * <code>
+     *      $author = new Author();
+     *      $author->name = 'Mihai';
+     *      $author->firstName = 'Eminescu';
+     *      $author->save(); // will do the insert, returning the ID of the last field inserted.
+     *      // a mistake, let`s update.
+     *      $author->firstName = 'Sadoveanu';
+     *      $author->save(); // performs the update and returns the number of affected rows (1).
+     * </code>
+     */
     public function save() {
         if ($this->fields->getPrimaryKey()->isAffected) {
             $sql = $this->getUpdateSql();
         } else {
             $sql = $this->getInsertSql();
         }
-        $af_rows = $this->_perform($sql);
-        if( $this->fields->getPrimaryKey() !== NULL ) {
-        	$id = self::$conn->getIdGenerator()->getId($this->pk);
-            $_pk = $this->pk;
-            $this->$_pk = $id;
-            return $id ? $id : $af_rows;
-        } else {
-            return $af_rows;
-        }
+        $af_rows = $this->performQuery($sql);
+        $id = $this->getNextId();
+        return $id ? $id : $af_rows;
     }
     // }}}
 
     // {{{ insert
     public function insert() {
-        $af_rows = $this->_perform($this->getInsertSql());
-        if ($this->fields->getPrimaryKey() !== NULL) {
-            $id = self::$conn->getIdGenerator()->getId($this->pk);
-            $_pk = $this->pk;
-            $this->$_pk = $id;
-            return $id ? $id : $af_rows;
-        } else {
-            return $af_rows;
-        }
-
+        $af_rows = $this->performQuery($this->getInsertSql());
+        $id = $this->getNextId();
+        return $id ? $id : $af_rows;
     }
     // }}}
     // {{{ update
     public function update() {
-        return $this->_perform($this->getUpdateSql());
+        return $this->performQuery($this->getUpdateSql());
     }
     // }}}
     // {{{ delete
@@ -186,20 +208,28 @@ class ActiveRecordBase {
             $whereClause[] = $col->getName() . ' = ? ';
         }
         $sql = 'DELETE FROM ' . self::$table_name . ' WHERE ' . implode(' AND ', $whereClause);
-        return $this->_perform($sql);
-    }
-    public function destroy() {
-
+        return $this->performQuery($sql);
     }
     // }}}
+    
+    // {{{ private methods (internal helpers)
+    private function getNextId() {
+        if ($this->fields->getPrimaryKey() !== NULL) {
+            $_pk = $this->pk;
+            $id  = self::$conn->getIdGenerator()->getId($this->pk);
+            $this->$_pk = $id;
+            return $id;
+        } else {
+            return FALSE;
+        }
+    }
 
-    private function _perform($sql) {
+    private function performQuery($sql) {
         $stmt = self::$conn->prepareStatement($sql);
         self::populateStmtValues($stmt, $this->fields->getAffectedFields());
         $af_rows = $stmt->executeUpdate();
         $stmt->close();
-        // TODO: replace with logger.
-        echo "Performing: " . self::$conn->lastQuery . "\n";
+        Logger::getInstance()->debug('Performing sql query: ' . self::$conn->lastQuery);
         // $this->_reset();
         return $af_rows;
     }
@@ -250,6 +280,7 @@ class ActiveRecordBase {
             }
         }
     }
+    // }}}
 
     // {{{ find monster
     public static function find() {
@@ -298,8 +329,8 @@ class ActiveRecordBase {
             // $results->add($class->newInstance($rs->getRow()));
             $results->add(new $_klazz($rs->getRow()));
         }
-        // todo: log.
-        echo "Performing: " . self::$conn->lastQuery . "\n";
+        
+        Logger::getInstance()->debug('Performing sql query: ' . self::$conn->lastQuery);
         
         return $results;
     }
@@ -308,6 +339,4 @@ class ActiveRecordBase {
     public static function setTable($table) {
         self::$table_name = Inflector::pluralize(strtolower($table));
     }
-    
 }
-
