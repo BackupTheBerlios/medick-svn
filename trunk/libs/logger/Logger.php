@@ -62,6 +62,9 @@ class Logger implements ILogger {
     /** the event to log */
     private $event = NULL;
     
+    /** message level */
+    private $messageLevel;
+    
     /**
      * Constructor.
      * It reads the config file and setup the logging system 
@@ -100,6 +103,7 @@ class Logger implements ILogger {
             if($_name == $method) break;
         }
         if ($_level < $this->level) return;
+        $this->messageLevel = $_level;
         $this->event = new LoggingEvent($message[0], $method);
         $this->notify();
     }
@@ -136,7 +140,7 @@ class Logger implements ILogger {
     }
     
     /**
-     * check to see if the list with observers contains the given observer.
+     * check to see if the list outputters contains the given outputter.
      * @param IObserver $observer a observer
      * @return bool
      */
@@ -163,6 +167,14 @@ class Logger implements ILogger {
     public function getOutputters() {
         return $this->outputters;
     }
+    
+    /**
+     * It gets the last message level
+     * @return int, the message level
+     */
+    public function getMessageLevel() {
+        return $this->messageLevel;
+    }    
     
     /**
      * It gets the event
@@ -223,20 +235,20 @@ class Logger implements ILogger {
 
 /** Abstract Outputter */
 abstract class Outputter implements IOutputter {
+
     /** individual outputter level*/
     protected $level;
-    /** it gets the outputter level*/
-    public function getLevel() {
-        return $this->level;
-    }
     
     /**
      * Receive the Logger update 
      * and writes the log event using to the formatter
      */
     public function update(ILogger $logger) {
-        $this->write($logger->getFormatter()->format($logger->getEvent())); 
+        if ($this->level <= $logger->getMessageLevel()){
+            $this->write($logger->getFormatter()->format($logger->getEvent()));
+        }
     }
+    
     // {{{ abstract methods
     /** gets the outputter Id, usually the outputter class name */
     public abstract function getId();
@@ -321,9 +333,12 @@ class FileOutputter extends Outputter {
         }
     }
     
-    /** TODO: add file locking*/
+    /** it writes the message */
     protected function write($message) {
-        fwrite($this->handler, $message . "\n");
+        if (flock($this->handler, LOCK_EX|LOCK_NB)) {
+            fwrite($this->handler, $message . "\n");
+        }
+        return;
     }
 
     public function getId() {
