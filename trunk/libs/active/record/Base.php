@@ -140,7 +140,7 @@ class ActiveRecordBase {
     
     /** removes some duplicate code */
     public function __call($method, $arguments) {
-        // if ($method == 'destroy') return $this->delete();
+        if ($method == 'destroy') return $this->delete();
         $know_methods = array('save', 'insert', 'update', 'delete');
         if (!in_array($method, $know_methods)) {
             trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $method), E_USER_ERROR);
