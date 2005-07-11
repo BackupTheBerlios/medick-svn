@@ -116,7 +116,7 @@ class ActionControllerBase {
     protected function render_file($template_file, $status = NULL) {
         if (!is_file($template_file)) throw new Exception ('Cannot render unexistent template file:' . $template_file);
         $this->logger->debug($template_file);
-        // include helper?
+        // include helper? TODO: application.xml should define this location.
         $helper_location = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
         if (is_file($helper_location)) {
             $this->logger->debug('Helper: ' . $helper_location);
@@ -162,6 +162,7 @@ class ActionControllerBase {
         $this->session  = $request->getSession();
         $this->params   = $request->getParams();
         $this->config   = Configurator::getInstance();
+        // TODO: application.xml should specify this location.
         $this->template_root = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR .
 			 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
 			 
@@ -206,33 +207,26 @@ class ActionControllerBase {
      * TODO: still to refactor.
      */
     private function perform_action($action_name) {
+        if ($this->action_performed) return;
+        
         $forbidden_actions = array('process', '__construct', '__destruct');
-        if( 
-            (is_null($action_name)) OR 
-            (in_array($action_name, $forbidden_actions))
-          )
-        {
+        
+        if( (is_null($action_name)) OR (in_array($action_name, $forbidden_actions)) ) {
             $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
-        }
-        
-        $this->logger->debug('Incoming action:: ' . strtolower($action_name));
-        
-        try {
-            $action = $this->createMethod(strtolower($action_name));
-        } catch (ReflectionException $rEx) {
-            $this->logger->debug('Trying to get the default action...');
-            try{
+            $action = $this->createMethod($action_name);
+            if (!$action OR $action->isStatic()) throw new Exception('Cannot perform default action: ' . $action_name);
+        } else {
+            $action = $this->createMethod($action_name);
+            if (!$action OR $action->isStatic()) {
                 $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
-                $action = $this->createMethod(strtolower($action_name));
-                $this->params['action'] = $this->config->getDefaultRoute()->action;
-            } catch (ReflectionException $rEx) {
-                throw new Exception('Cannot use default action!');   
+                $this->perform_action($action_name);
+                $this->action_performed = TRUE;
+                return;
             }
         }
-        
-        if ($action->isStatic()) throw new Exception('Cannot invoke a static method!');
+        $this->params['action'] = strtolower($action_name);
+        $this->logger->debug('Incoming action:: ' . strtolower($action_name));
         $action->invoke($this);
-        if ($this->action_performed) return;
         $this->render();
     }
     
@@ -296,10 +290,14 @@ class ActionControllerBase {
      * and also when we perform the action
      * @param string method_name, the method.
      * 							  NOTE: We force the name to be on lower case.
-     * @return RelfectionMethod
-     * @throws RelfectionException in case of failure. 
+     * @return RelfectionMethod or FALSE in case of failure. 
      */ 
     private function createMethod($method_name) {
-        return new ReflectionMethod($this, strtolower($method_name));
+        try {
+            return new ReflectionMethod($this, strtolower($method_name));
+        } catch (ReflectionException $rEx) {
+            $this->logger->debug($rEx->getMessage());
+            return FALSE;
+        }
     }
 }
