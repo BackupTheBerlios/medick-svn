@@ -115,11 +115,11 @@ class ActionControllerBase {
      */
     protected function render_file($template_file, $status = NULL) {
         if (!is_file($template_file)) throw new Exception ('Cannot render unexistent template file:' . $template_file);
-        $this->logger->debug($template_file);
-        // include helper? TODO: application.xml should define this location.
-        $helper_location = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
+        // $this->logger->debug($template_file);
+        $helper_location = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR . 
+                           'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
         if (is_file($helper_location)) {
-            $this->logger->debug('Helper: ' . $helper_location);
+            // $this->logger->debug('Helper: ' . $helper_location);
             include_once($helper_location);
         }
 		$this->render_text($this->template->render_file($template_file), $status);
@@ -162,10 +162,8 @@ class ActionControllerBase {
         $this->session  = $request->getSession();
         $this->params   = $request->getParams();
         $this->config   = Configurator::getInstance();
-        // TODO: application.xml should specify this location.
-        $this->template_root = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR .
+        $this->template_root = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR . 
 			 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
-			 
 		$this->template = ActionViewBase::factory();
     }
 

@@ -8,8 +8,9 @@
     <!--  ====================== -->
     <!--   General properties    -->
     <!--  ====================== -->
-    <property name="server_name"   value="http://localhost" />
-    <property name="document_root" value="/locknet7/public_html" />
+    <property name="server_name"      value="http://localhost" />
+    <property name="document_root"    value="/locknet7/public_html" />
+    <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
      
     <!--  ====================== -->
     <!--     Logger System       -->
@@ -17,10 +18,8 @@
     <logger>
     	<formatter>simple</formatter>
         <outputters>
-            <!--
             <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
-            <outputter name="mail"    level="2" value="xxxx@xxxx.xxxx" />
-            -->
+            <outputter name="mail"    level="3" value="xxxx@xxxx.xxxx" />
             <outputter name="stdout"  level="0" />
         </outputters>
     </logger>

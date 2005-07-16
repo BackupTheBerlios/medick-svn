@@ -46,16 +46,21 @@ define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTOR
 
 // include_path, rewrite the existing one
 set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
-                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
-                  TOP_LOCATION . 'app'    . DIRECTORY_SEPARATOR . 'controllers'  . DIRECTORY_SEPARATOR . PATH_SEPARATOR .  
-                  TOP_LOCATION . 'app'    . DIRECTORY_SEPARATOR . 'models'       . DIRECTORY_SEPARATOR 
+                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
                 );
 
 
 include_once('configurator/Configurator.php');
 
-Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+$c = Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+
+$app = $c->getProperty('application_path');
+
+// append application controllers and models path
+set_include_path(get_include_path() . PATH_SEPARATOR . 
+                 $app . DIRECTORY_SEPARATOR . 'controllers'  . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
+                 $app . DIRECTORY_SEPARATOR . 'models'       . DIRECTORY_SEPARATOR 
+                 );
 
 include_once('logger/Logger.php');
 include_once('Dispatcher.php');
-

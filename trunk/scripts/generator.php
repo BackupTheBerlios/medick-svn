@@ -31,3 +31,59 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
+
+error_reporting(E_ALL);
+
+// main TOP_LOCATION.
+define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+
+// integrity chck
+$handler = fopen('scripts/targets/files.ini', 'r');
+print_header('Integrity check');
+while (!feof($handler)) {
+	$file = trim(fgets($handler));
+    if ($file == '') continue;
+    // echo $file . " .....";
+    if (is_file($file)) {
+        // echo "..... [ OK ]\n";
+    } else {
+        done(".....[ FAILED ]\n" . $file . " is not a file!", 255);
+    }
+}
+fclose($handler);
+
+// include_path, rewrite the existing one
+set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
+                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR . PATH_SEPARATOR
+                );
+echo "Setting the path..........[ OK ]\n";
+include_once('configurator/Configurator.php');
+Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+echo "Configurator loaded..........[ OK ]\n";
+print_header('Scaffolding Todo Model');
+include_once('creole/Creole.php');
+
+try {
+    echo "Establish a DB Connection";
+    Creole::getConnection(Configurator::getInstance()->getDatabaseDsn());
+} catch (SQLException $sqlEx) {
+    echo "..........[ FAILED ]\n";
+    done ($sqlEx->getMessage, 255);
+}
+echo "..........[ OK ]\n";
+
+
+
+
+
+
+function print_header($text) {
+    echo "////////////////////\n" .
+         "======> $text.\n" .
+         "////////////////////\n";
+}
+
+function done ($message = '', $error_code = 0) {
+    echo $message . "\n";
+    exit ($error_code);
+}
