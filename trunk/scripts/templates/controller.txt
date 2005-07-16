@@ -8,7 +8,10 @@ class ${Model}Controller extends ApplicationController {
 
     /** List all items */
     public function all() {
-        $this->template->items = ${Model}::find('all');
+        $this->template->${models} = ${Model}::find('all');
     }
+    
+    /** Print the form for adding a new ${model} */
+    public function anew() {    }
 
 }
