@@ -13,5 +13,52 @@ class ${Model}Controller extends ApplicationController {
     
     /** Print the form for adding a new ${model} */
     public function anew() {    }
+    
+    /** Process the form */
+    public function create() {
+        $${model} = new ${Model}();
+        ${__FIELDS__}
+        // $item->description=$this->params['description'];
+        $${model}->author_id  = 1;
+        try {
+            $${model}->save();
+            $this->redirect_to('all');
+        } catch (SQLException $sqlEx) {
+            $this->logger->warn('SQLException caught!' . $sqlEx->getMessage());
+            $this->render_text('Cannot Save!');
+        }
+    }
+
+    /** Print the form for adding editing the ${model} */
+    public function edit() {
+    	$this->template->${model} = ${Model}::find($this->params['${__PK__}']);
+    }
+
+	/** Process the edit form */
+	public function update() {
+	    $${model} = new ${Model}(array('${__PK__}'=>$this->params['${__PK__}']));
+        ${__FIELDS__}
+        // $item->description=$this->params['description'];
+        // $${model}->author_id  = 1;
+        try {
+            $${model}->save();
+            $this->redirect_to('all');
+        } catch (SQLException $sqlEx) {
+            $this->logger->warn('SQLException caught!' . $sqlEx->getMessage());
+            $this->render_text('Cannot Save!');
+        }
+	}
+
+    /** removes an item from the DB */
+    public function delete() {
+        $${model} = new ${Model}(array('${__PK__}'=>$this->params['${__PK__}']));
+        try {
+            $${model}->delete();
+            $this->redirect_to('all');
+        } catch (SQLException $sqlEx) {
+            $this->logger->warn('SQLException Caugth!' . $sqlEx->getMessage());
+            $this->render_text('Cannot Delete!');
+        }
+    }
 
 }

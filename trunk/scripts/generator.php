@@ -144,7 +144,19 @@ if (is_file($file)) {
     $_app = file_get_contents('scripts/templates/controller.txt');
     $s1 = str_replace('${__USER__}', $user, $_app);
     $s2 = str_replace('${__DATE__}', $date, $s1);
-    $s3 = str_replace('${model}', $model, $s2);
+    
+    $buff = '';
+    foreach( $table_info->getColumns() as $col) {
+        if ($col->getName() == $pk) continue;
+        if ( preg_match($pattern, $col->getName(), $matches) ) continue;
+        $buff .= "\$${model}->" . $col->getName() . " = \$this->params['" . $col->getName() . "'];\n\t\t";
+    }
+    
+    $s21 = str_replace('${__FIELDS__}', $buff, $s2);
+    
+    $s22 = str_replace('${__PK__}', $pk, $s21);
+
+    $s3 = str_replace('${model}', $model, $s22);
     $s4 = str_replace('${Model}', $Umodel, $s3);
     $s5 = str_replace('${models}', $models, $s4);
     file_put_contents($file, $s5);
@@ -196,20 +208,73 @@ if (is_file($file)) {
     $_app = file_get_contents('scripts/templates/anew.txt');
     $s1 = str_replace('${__USER__}', $user, $_app);
     $s2 = str_replace('${__DATE__}', $date, $s1);
-    $s3 = str_replace('${model}', $model, $s2);
-    $s4 = str_replace('${Model}', $Umodel, $s3);
-    $s5 = str_replace('${models}', $models, $s4);
-    
-    $buff = '';
-    
-    // $table_info = $conn->getDatabaseInfo()->getTable($models);
-    // $pk = $table_info->getPrimaryKey()->getName();
+
+    $buff = '<br />';
     
     foreach( $table_info->getColumns() as $col) {
+        if ($col->getName() == $pk) continue;
+        if ( preg_match($pattern, $col->getName(), $matches) ) continue;
         $name = $col->getName();
         $size = $col->getSize();
         $type = CreoleTypes::getCreoleName($col->getType());
+        switch ($type) {
+            case 'INT':
+            case 'INTEGER':
+            case 'VARCHAR':
+            default:
+                $buff .= ucfirst($name) . 
+                    ': <?= Form::text(\'' . $name . '\', NULL, array(\'size\'=>' . $size . ')); ?><br />';
+                break;
+        }
     }
+    
+    $s21 = str_replace('${__BUFFER__}', $buff, $s2);
+    
+    $s3 = str_replace('${model}', $model, $s21);
+    $s4 = str_replace('${Model}', $Umodel, $s3);
+    $s5 = str_replace('${models}', $models, $s4);
+    
+    
+    file_put_contents($file, $s5);
+    echo ".....[ OK ]\n";
+}
+
+
+// ------------------------- EDIT
+$file = $views_dir . DIRECTORY_SEPARATOR . 'edit.phtml';
+echo " -- creating edit form for " . $model . " : " . $file;
+if (is_file($file)) {
+    echo ".....[ FILE EXISTS - SKIPING ]\n";
+} else {
+    $_app = file_get_contents('scripts/templates/edit.txt');
+    $s1 = str_replace('${__USER__}', $user, $_app);
+    $s2 = str_replace('${__DATE__}', $date, $s1);
+
+    $buff = '<br />';
+    
+    foreach( $table_info->getColumns() as $col) {
+        if ($col->getName() == $pk) continue;
+
+        if ( preg_match($pattern, $col->getName(), $matches) ) continue;
+        $name = $col->getName();
+        $size = $col->getSize();
+        $type = CreoleTypes::getCreoleName($col->getType());
+        switch ($type) {
+            case 'INT':
+            case 'INTEGER':
+            case 'VARCHAR':
+            default:
+                $buff .= ucfirst($name) . 
+                    ': <?= Form::text(\'' . $name . '\', $${model}->' . $name . ', array(\'size\'=>' . $size . ')); ?><br />';
+                break;
+        }
+    }
+    
+    $s21 = str_replace('${__BUFFER__}', $buff, $s2);
+    $s22 = str_replace('${__PK__}', $pk, $s21);
+    $s3 = str_replace('${model}', $model, $s22);
+    $s4 = str_replace('${Model}', $Umodel, $s3);
+    $s5 = str_replace('${models}', $models, $s4);
     
     
     file_put_contents($file, $s5);

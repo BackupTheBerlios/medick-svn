@@ -6,16 +6,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="author"    content="${__USER__}" />
     <meta name="generator" content="Medick :: scripts/generator.php" />
-    <title>Add a new ${model}</title>
+    <title>Edit ${model}</title>
   </head>
   
   <body>
-    <h2>Add a new ${model}</h2>
-  	<form action="<?= URL::create('${model}','create');?>" method="post">
-  		<p>
-  		${__BUFFER__}
-  		<?= Form::submit('submit', 'Add New ${Model}') ?>
-  		</p>
+    <h2>Edit ${model}</h2>
+  	<form action="<?= URL::create('${model}','update');?>" method="post">
+  	  <p>
+  	    <?= Form::hidden('${__PK__}', $${model}->${__PK__}); ?>
+  	    ${__BUFFER__}
+  	    <?= Form::submit('submit', 'Edit ${Model}') ?>
+  	  </p>
 	</form>
   </body>  
 </html>
