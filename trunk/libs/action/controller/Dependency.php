@@ -48,7 +48,8 @@ class ModelInjector {
      */
     public static function inject($model) {
         $logger = Logger::getInstance();
-        $model_location = TOP_LOCATION . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $model . '.php';
+        $model_location = Configurator::getInstance()->getProperty('application_path') . 
+            DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $model . '.php';
         $logger->debug('Model Location:: ' . $model_location);
         // FIXME: a custom error.
         if (!is_file($model_location)) throw new Exception ('No such file or directory!');
