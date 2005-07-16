@@ -68,8 +68,19 @@ class Form {
         return $buff . self::parseAttributes($attr) . ' />';
     }
     
+    public static function hidden($name, $value) {
+        return '<input type="hidden" name="' . $name . '" value="' . $value . '" />';
+    }
+    
+    public static function textarea($name, $value = null) {
+        $buff  = '<textarea name="' . $name . '">';
+        if (!is_null($value)) $buff .= $value;
+        $buff .= '</textarea>';
+        return $buff;
+    }
+    
     public static function checkbox($name, $checked = false, $attr = '') {
-        $buff = '<INPUT type="checkbox" name="' . $name . '" ';
+        $buff = '<input type="checkbox" name="' . $name . '" ';
         if ($checked && $checked !== 'off') $buff .= ' checked="checked"';
         return $buff . self::parseAttributes($attr) . ' />';
     }
