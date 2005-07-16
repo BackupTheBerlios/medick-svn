@@ -32,34 +32,61 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('action/controller/route/IRoute.php');
+
 /**
- * Will bootstrap the application by setting it`s propreties.
- * Required files for start-up are included here
- * TODO: can we move the php options in .htaccess file? 
- * @package locknet7.start
+ * @package locknet7.action.controller.route
  */
+class MedickRoute implements IRoute {
 
-error_reporting(E_ALL);
+    /** 
+     * We recieve from request the controller in this form <tt>news</tt>
+     * the internal object name for this controller will be <tt>NewsController</tt>
+     */
+    private $ctrl_name;
+    
+    /** 
+     * By default, all the controllers resids in <tt>TOP_LOCATION/app/controllers/</tt>
+     */
+    private $ctrl_path;
+    
+    /**
+     * By default, the controller file will be located 
+     * on <tt>$controller_path/$request->getParam('controller')_controller.php</tt>
+     */ 
+    private $ctrl_file;
+    
+    /**
+     * Constructor...
+     * It builds this ROUTE
+     * @param string, controller_name, controller name
+     */
+    public function __construct($controller_name) {
+        $this->ctrl_name = is_null($controller_name) ? NULL : ucfirst($controller_name) . 'Controller';
+        $this->ctrl_path = 
+            Configurator::getInstance()->getProperty('application_path') . 
+            DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
+        $this->ctrl_file = strtolower($controller_name) . '_controller.php';
+    }
 
-// main TOP_LOCATION.
-define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+    /** @see: IRoute::getControllerName */
+    public function getControllerName() {
+        return $this->ctrl_name;
+    }
 
-// include_path, rewrite the existing one
-set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
-                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
-                );
+    /** @see: IRoute::getControllerPath */
+    public function getControllerPath() {
+        return $this->ctrl_path;
+    }
 
-
-include_once('configurator/Configurator.php');
-
-$c = Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
-
-$app = $c->getProperty('application_path');
-
-// append application controllers and models path
-set_include_path(get_include_path() . PATH_SEPARATOR .  
-                 $app . DIRECTORY_SEPARATOR . 'models'       . DIRECTORY_SEPARATOR 
-                 );
-
-include_once('logger/Logger.php');
-include_once('Dispatcher.php');
+    /** @see: IRoute::getControllerFile */
+    public function getControllerFile() {
+        return $this->ctrl_file;
+    }
+    
+    /** a string representation of this object*/
+    public function toString() {
+        return $this->ctrl_name;
+    }
+}
+ 

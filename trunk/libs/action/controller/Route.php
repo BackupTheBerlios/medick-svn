@@ -32,6 +32,8 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('action/controller/route/MedickRoute.php');
+include_once('action/controller/route/RouteException.php');
 
 /**
  * @package locknet7.action.controller.route
@@ -62,8 +64,8 @@ class ActionControllerRoute {
 
         $request->setRoute($route);
         
-        include_once('application.php');
-        include_once($route->getControllerFile());
+        include_once($route->getControllerPath() . 'application.php');
+        include_once($route->getControllerPath() . $route->getControllerFile());
         
         $controller_class = new ReflectionClass($route->getControllerName());
         // start inspection.
@@ -91,70 +93,11 @@ class ActionControllerRoute {
      * @param Route, route, the route
      * @return bool, true if the controller exists false otherwise.
      */
-    public static function exists(Route $route) {
-        if ($route->getControllerName() === NULL) return FALSE;
-        if (!is_file($route->getControllerPath() . $route->getControllerFile())) return FALSE;
+    public static function exists(IRoute $route) {
+        if ($route->getControllerName() === NULL)
+            return FALSE;
+        if (!is_file($route->getControllerPath() . $route->getControllerFile())) 
+            return FALSE;
         return TRUE;
     }
-
 }
-
-interface Route {
-    function getControllerName();
-    function getControllerPath();
-    function getControllerFile();
-}
-
-class MedickRoute implements Route {
-
-    /** 
-     * We recieve from request the controller in this form <tt>news</tt>
-     * the internal object name for this controller will be <tt>NewsController</tt>
-     */
-    private $ctrl_name;
-    
-    /** 
-     * By default, all the controllers resids in <tt>TOP_LOCATION/app/controllers/</tt>
-     */
-    private $ctrl_path;
-    
-    /**
-     * By default, the controller file will be located 
-     * on <tt>$controller_path/$request->getParam('controller')_controller.php</tt>
-     */ 
-    private $ctrl_file;
-    
-    /**
-     * Constructor...
-     * It builds this ROUTE
-     * @param string, controller_name, controller name
-     */
-    public function __construct($controller_name) {
-        $this->ctrl_name = is_null($controller_name) ? NULL : ucfirst($controller_name) . 'Controller';
-        $this->ctrl_path = TOP_LOCATION . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
-        $this->ctrl_file = strtolower($controller_name) . '_controller.php';
-    }
-
-    /** It gets the Controller Name */
-    public function getControllerName() {
-        return $this->ctrl_name;
-    }
-
-    /** It gets the controller path */
-    public function getControllerPath() {
-        return $this->ctrl_path;
-    }
-
-    /** It gets the controller file */
-    public function getControllerFile() {
-        return $this->ctrl_file;
-    }
-    
-    /** a Representation of this object as a string */
-    public function toString() {
-        return $this->ctrl_name;
-    }
-}
-
-class RouteException extends Exception {    }
-

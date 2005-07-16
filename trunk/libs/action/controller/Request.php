@@ -111,7 +111,7 @@ class HTTPRequest implements Request {
      * @param Route route, the route to set on this Request
      * @return void
      */
-    public function setRoute(Route $route) {
+    public function setRoute(IRoute $route) {
         $this->route = $route;
     }
     

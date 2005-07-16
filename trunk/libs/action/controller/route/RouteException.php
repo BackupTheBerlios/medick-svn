@@ -33,33 +33,6 @@
 // }}}
 
 /**
- * Will bootstrap the application by setting it`s propreties.
- * Required files for start-up are included here
- * TODO: can we move the php options in .htaccess file? 
- * @package locknet7.start
+ * @package locknet7.action.controller.route
  */
-
-error_reporting(E_ALL);
-
-// main TOP_LOCATION.
-define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-
-// include_path, rewrite the existing one
-set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
-                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
-                );
-
-
-include_once('configurator/Configurator.php');
-
-$c = Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
-
-$app = $c->getProperty('application_path');
-
-// append application controllers and models path
-set_include_path(get_include_path() . PATH_SEPARATOR .  
-                 $app . DIRECTORY_SEPARATOR . 'models'       . DIRECTORY_SEPARATOR 
-                 );
-
-include_once('logger/Logger.php');
-include_once('Dispatcher.php');
+class RouteException extends Exception {    }
