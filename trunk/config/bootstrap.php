@@ -49,17 +49,9 @@ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR
                   TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
                 );
 
-
 include_once('configurator/Configurator.php');
 
-$c = Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
-
-$app = $c->getProperty('application_path');
-
-// append application controllers and models path
-set_include_path(get_include_path() . PATH_SEPARATOR .  
-                 $app . DIRECTORY_SEPARATOR . 'models'       . DIRECTORY_SEPARATOR 
-                 );
+Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
 
 include_once('logger/Logger.php');
 include_once('Dispatcher.php');
