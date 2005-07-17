@@ -35,4 +35,4 @@
 /**
  * @package locknet7.action.controller.route
  */
-class RouteException extends Exception {    }
+class RouteException extends MedickException {    }

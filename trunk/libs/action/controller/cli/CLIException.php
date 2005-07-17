@@ -35,4 +35,4 @@
 /** 
  * @package locknet7.action.controller.request
  */
-class CLIException extends Exception {      }
+class CLIException extends MedickException {      }

@@ -49,6 +49,8 @@ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR
                   TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
                 );
 
+include_once('MedickException.php');
+
 include_once('configurator/Configurator.php');
 
 Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
