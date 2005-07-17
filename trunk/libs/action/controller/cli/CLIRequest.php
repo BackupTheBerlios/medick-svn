@@ -39,12 +39,6 @@ include_once('action/controller/cli/CLIException.php');
  */
 class CLIRequest extends Request {
 
-    /** CLI Arguments */
-    protected $params;
-    
-    /** The Route */
-    protected $route;
-
     /**
      * Constructor.
      * It builds the HTTPRequest object
@@ -56,49 +50,8 @@ class CLIRequest extends Request {
        $this->params = $_SERVER['argv'];
     }
     
-    /**
-     * It gets all the parameters of this Request
-     * @return array params
-     */
-    public function getParams() {
-        return $this->params;
+    /** ??? */
+    public function getSession() {
+        return TRUE;
     }
-    
-    /**
-     * It sets a param.
-     * @param string, name, the name of the param to set
-     * @param mixed, value, value of the param
-     */
-    public function setParam($name, $value) {
-        $this->params[$name] = $value;
-    }
-    
-    /**
-     * It gets the param
-     * @param mixed, param, the paremeter name
-     * @return the param value of NULL if this param was not passed with this Resuest
-     */
-    public function getParam($param) {
-        return isset($this->params[$param]) ? $this->params[$param] : NULL;
-    }
-
-    public function getSession() {  }
-
-    /**
-     * It gets the Route used for this Request
-     * @return Route, the route 
-     */
-    public function getRoute() {
-        return $this->route;
-    }
-    
-    /**
-     * It sets the Request Route
-     * @param Route route, the route to set on this Request
-     * @return void
-     */
-    public function setRoute(IRoute $route) {
-        $this->route = $route;
-    }
-    
 }

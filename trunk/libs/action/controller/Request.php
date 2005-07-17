@@ -42,8 +42,52 @@ if (php_sapi_name() == 'cli') {
  * @package locknet7.action.controller.request
  */
 abstract class Request {
+    
+    protected $params = array();
+    
+    protected $route;
+    
+    /**
+     * It gets the param
+     * @param mixed, param, the paremeter name
+     * @return the param value of NULL if this param was not passed with this Resuest
+     */
+    public function getParam($param) {
+        return isset($this->params[$param]) ? $this->params[$param] : NULL;
+    }    
+    
+    /**
+     * 
+     */
+    public function hasParam($param) {
+        return isset($this->params[$param]);
+    }
+    
     /** It gets all the parameters of this Request */
-    abstract function getParams();
+    public function getParams() {
+        return $this->params;   
+    }
+    
+    /**
+     * It sets a param.
+     * @param string, name, the name of the param to set
+     * @param mixed, value, value of the param
+     */
+    public function setParam($name, $value) {
+        $this->params[$name] = $value;
+    }    
+    
+    /**
+     * It sets the Request Route
+     * @param Route route, the route to set on this Request
+     * @return void
+     */
+    public function setRoute(IRoute $route) {
+        $this->route = $route;
+    }    
+    
     /** It gets the Route */
-    abstract function getRoute();
+    public function getRoute() {
+        return $this->route;
+    }
 }

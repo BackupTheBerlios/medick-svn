@@ -37,18 +37,11 @@
  */
 class HTTPRequest extends Request {
 
-    /** HTTP Parameters 
-        via GET __and__ POST */
-    protected $params;
-    
     /** HTTP method */
     protected $method;
     
-    /** Session */
+    /** HTTP Session */
     protected $session;
-    
-    /** The Route */
-    protected $route;
 
     /**
      * Constructor.
@@ -59,24 +52,7 @@ class HTTPRequest extends Request {
         $this->params  = $_REQUEST; // to test!
         unset($_REQUEST); // hack or feature? :)
     }
-    
-    /**
-     * It gets all the parameters of this Request
-     * @return array params
-     */
-    public function getParams() {
-        return $this->params;
-    }
-    
-    /**
-     * It sets a param.
-     * @param string, name, the name of the param to set
-     * @param mixed, value, value of the param
-     */
-    public function setParam($name, $value) {
-        $this->params[$name] = $value;
-    }
-    
+
     /**
      * It gets the Session
      * @return Session, the curent Session
@@ -84,59 +60,13 @@ class HTTPRequest extends Request {
     public function getSession() {
         return $this->session;
     }
-    
-    /**
-     * It gets the param
-     * @param mixed, param, the paremeter name
-     * @return the param value of NULL if this param was not passed with this Resuest
-     */
-    public function getParam($param) {
-        return isset($this->params[$param]) ? $this->params[$param] : NULL;
-    }
 
-    /**
-     * It gets the Route used for this Request
-     * @return Route, the route 
-     */
-    public function getRoute() {
-        return $this->route;
-    }
-    
-    /**
-     * It sets the Request Route
-     * @param Route route, the route to set on this Request
-     * @return void
-     */
-    public function setRoute(IRoute $route) {
-        $this->route = $route;
-    }
-    
     /**
      * It get the method name used for this Request (GET or POST)
      * @return string method name (GET/POST)
      */
     public function getMethod() {
         return $this->method;
-    }
-    
-    /**
-     * Check if the current method is get
-     * TODO: do I need smthing like this?
-     * @return bool TRUE if the method is GET, false otherwise
-     * @deprecated: I will remove this method next week
-     */
-    public function isGet() {
-        return $this->method == 'GET';
-    }
-    
-    /**
-     * Check if the current method is post
-     * TODO: do I need smthing like this?
-     * @return bool TRUE if the method is POST, false otherwise
-     * @deprecated: I will remove this method next week
-     */
-    public function isPost() {
-        return $this->method == 'POST';
     }
     
     // {{{ todos.
