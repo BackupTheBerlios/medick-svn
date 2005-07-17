@@ -205,8 +205,6 @@ class ActionControllerBase {
      * TODO: still to refactor.
      */
     private function perform_action($action_name) {
-        if ($this->action_performed) return;
-        
         $forbidden_actions = array('process', '__construct', '__destruct');
         
         if( (is_null($action_name)) OR (in_array($action_name, $forbidden_actions)) ) {
@@ -225,6 +223,7 @@ class ActionControllerBase {
         $this->params['action'] = strtolower($action_name);
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
         $action->invoke($this);
+        if ($this->action_performed) return;
         $this->render();
     }
     
