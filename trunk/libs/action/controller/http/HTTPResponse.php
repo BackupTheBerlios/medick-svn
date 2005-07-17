@@ -80,28 +80,33 @@ class HTTPResponse implements IResponse {
         }
         header("HTTP/1.1 " . $status . $message, TRUE, $status);
     }
-
+    
+    /** Perform a HTTP redirection */
     public function redirect($location) {
         $this->setHeader('Location', $location);
         $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
     }
     
     /**
-     * Sets body content 
-     * @param string body, body content
+     * Set the content 
+     * @param mixed content, the content
      */
     public function setContent($content) {
         $this->content = $content;
     }
     
-    /** It gets the body content */
+    /** Appends some content */
+    public function append($content) {
+        $this->content .= $content;
+    } 
+    
+    /** It gets the content */
     public function getContent() {
         return $this->content;
     }
     
-    /** echo`s the body */
+    /** echo`s the content */
     public function dump() {
         echo $this->content;    
     }
-
 }
