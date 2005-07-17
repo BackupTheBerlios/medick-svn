@@ -35,11 +35,13 @@
 include_once('active/record/FieldsAggregate.php');
 include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
+include_once('active/record/ActiveRecordException.php');
 include_once('active/support/Inflector.php');
 include_once('creole/Creole.php');
 
-class ActiveRecordException extends Exception {     }
-
+/**
+ * @package locknet7.active.record
+ */
 class ActiveRecordBase {
 
     /** DB Table Fields */
