@@ -70,6 +70,31 @@ abstract class Response {
         is temporarily overloaded, and unable to handle the request. */
     const SC_SERVICE_UNAVAILABLE = 503;
     
+    protected $content;
+    
+    /**
+     * Set the content 
+     * @param mixed content, the content
+     */
+    public function setContent($content) {
+        $this->content = $content;
+    }
+    
+    /** Appends some content */
+    public function append($content) {
+        $this->content .= $content;
+    } 
+    
+    /** It gets the content */
+    public function getContent() {
+        return $this->content;
+    }
+    
+    /** echo`s the content */
+    public function dump() {
+        echo $this->content;    
+    }
+    
     /** 
      * Sets the status of this response
      * @param Response::SC_*, status, the status of this response

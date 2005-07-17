@@ -37,9 +37,6 @@
  */
 
 class HTTPResponse extends Response {
-
-    /** Page content */
-    private $content;
     
     /** 
      * Sets the header $name with $value 
@@ -85,28 +82,5 @@ class HTTPResponse extends Response {
     public function redirect($location) {
         $this->setHeader('Location', $location);
         $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
-    }
-    
-    /**
-     * Set the content 
-     * @param mixed content, the content
-     */
-    public function setContent($content) {
-        $this->content = $content;
-    }
-    
-    /** Appends some content */
-    public function append($content) {
-        $this->content .= $content;
-    } 
-    
-    /** It gets the content */
-    public function getContent() {
-        return $this->content;
-    }
-    
-    /** echo`s the content */
-    public function dump() {
-        echo $this->content;    
     }
 }

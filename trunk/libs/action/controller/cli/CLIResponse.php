@@ -41,15 +41,6 @@ class CLIResponse extends Response {
     private $content;
     
     public function setStatus($status) {
-            
+                    
     }
-    
-    public function setContent($content) {
-        $this->content=$content;   
-    }
-    
-    public function dump() {
-        echo $this->content;
-    }
-    
 }
