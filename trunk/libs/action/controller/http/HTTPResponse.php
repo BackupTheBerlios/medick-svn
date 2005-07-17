@@ -35,54 +35,17 @@
 /**
  * @package locknet7.action.controller.response
  */
- 
-interface Response {
 
-	/** Status code (200) indicating the request succeeded normally. */
-    const SC_OK = 200;
+class HTTPResponse implements IResponse {
 
-    /** Status code (304) indicating that a conditional GET
-        operation found that the resource was available and not modified. */
-    const SC_NOT_MODIFIED = 304;
-
-    /** Status code (400) indicating the request sent by the
-        client was syntactically incorrect. */
-    const SC_BAD_REQUEST = 400;
-
-    /** Status code (403) indicating the server
-        understood the request but refused to fulfill it. */
-    const SC_FORBIDDEN = 403;
-
-    /** Status code (404) indicating that the requested
-        resource is not available. */
-    const SC_NOT_FOUND = 404;
-
-    /** Status code (500) indicating an error inside
-        the HTTP server which prevented it from fulfilling the request. */
-    const SC_INTERNAL_SERVER_ERROR = 500;
-
-    /** Status code (503) indicating that the HTTP server
-        is temporarily overloaded, and unable to handle the request. */
-    const SC_SERVICE_UNAVAILABLE = 503;
+    /** Page content */
+    private $content;
     
     /** 
-     * Sets the status of this response
-     * @param Response::SC_*, status, the status of this response
+     * Sets the header $name with $value 
+     * @param string, name the name of the header
+     * @param mixed, value, the value of this header
      */
-    function setStatus($status);
-
-}
-
-class HTTPResponse implements Response {
-
-	/** Page content */
-	private $content;
-	
-	/** 
-	 * Sets the header $name with $value 
-	 * @param string, name the name of the header
-	 * @param mixed, value, the value of this header
-	 */
     public function setHeader($name,$value) {
         header($name . ": " . $value);
     }
@@ -122,23 +85,23 @@ class HTTPResponse implements Response {
         $this->setHeader('Location', $location);
         $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
     }
-	
-	/**
-	 * Sets body content 
-	 * @param string body, body content
-	 */
-	public function setContent($content) {
-		$this->content = $content;
-	}
-	
-	/** It gets the body content */
-	public function getContent() {
-		return $this->content;
-	}
-	
-	/** echo`s the body */
-	public function dump() {
-		echo $this->content;	
-	}
+    
+    /**
+     * Sets body content 
+     * @param string body, body content
+     */
+    public function setContent($content) {
+        $this->content = $content;
+    }
+    
+    /** It gets the body content */
+    public function getContent() {
+        return $this->content;
+    }
+    
+    /** echo`s the body */
+    public function dump() {
+        echo $this->content;    
+    }
 
 }
