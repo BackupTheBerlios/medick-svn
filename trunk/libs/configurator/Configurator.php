@@ -32,6 +32,8 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('configurator/ConfiguratorException.php');
+
 /**
  * Abstract Configurator
  * @package locknet7.config

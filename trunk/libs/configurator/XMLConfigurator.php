@@ -98,7 +98,7 @@ class XMLConfigurator extends Configurator {
                 );
             }
         }
-        throw new ConfiguratorException('Id ' . $id . 'not found!');
+        throw new ConfiguratorException('Database Id ' . $id . 'not found!');
     }
     
     /**
@@ -124,6 +124,14 @@ class XMLConfigurator extends Configurator {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
     }
     
+    /**
+     * Dinamically sets the logger formatter
+     * @param string, formatter, the formatter to use for logger
+     */
+    public function setLoggerFormatter($formatter) {
+        $this->sxe->logger->formatter = $formatter;
+    }
+    
     /** @see Configurator::getProperty */
     public function getProperty($name) {
         foreach($this->sxe->property as  $properties ) {
@@ -132,7 +140,33 @@ class XMLConfigurator extends Configurator {
             }
         }
         throw new ConfiguratorException('Property ' . $name . ' not found!');
-    }    
+    }
+    
+    /**
+     * Dinamically sets a proprety on runtime.
+     * 
+     * Example:
+     * Assuming that we have 
+     * <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
+     * To change the value of application_path property:
+     * <code>
+     *      $config->setProperty('application_path', 'C:\\Fast\\www\\medick\\app');
+     * </code>
+     * @param string, name, the name of the property.
+     * @param string, value, the value of the property.
+     * @throws ConfiguratorException if the property that we want to set don't exists in the xml file/string
+     */
+    public function setProperty($name, $value) {
+        $xp = new domxpath($dom = $this->toDom());
+        $property = $xp->query("//application/property[@name=\"" . $name . "\"]");
+        if ($property->length != 1) {
+            throw new ConfiguratorException('Cannot set the property name: ' . $name . 
+                'Property don\'t exist or there are two propreties with the same name');
+        }
+        $property->item(0)->setAttribute('value', $value);
+        // save the new xml tree 
+        $this->sxe = simplexml_import_dom($dom, 'SimpleXMLIterator');
+    }
     
     /** 
      * Configuration Example:
@@ -150,4 +184,25 @@ class XMLConfigurator extends Configurator {
     public function getDefaultRoute() {
         return $this->sxe->route[0];
     }
+ 
+    /** sets the default route */
+    public function setDefaultRoute($controller, $action){
+        $this->sxe->route[0]->controller = $controller;
+        $this->sxe->route[0]->action     = $action;
+    }
+    
+    /** */
+    public function toDom() {
+        $dom_sxe = dom_import_simplexml($this->sxe);
+        $dom = new DomDocument();
+        $dom_sxe = $dom->importNode($dom_sxe, true);
+        $dom_sxe = $dom->appendChild($dom_sxe);
+        return $dom;  
+    }
+    
+    /** return the string representation of this object */
+    public function __toString() {
+        return $this->sxe->asXML();
+    }
+    
 }
