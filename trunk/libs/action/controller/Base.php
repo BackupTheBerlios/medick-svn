@@ -73,7 +73,7 @@ class ActionControllerBase {
      * @param Response response, the response
      * @return Response
      */
-    public function process(IRequest $request, IResponse $response) {
+    public function process(Request $request, Response $response) {
         $this->instantiate($request, $response);
         $this->add_before_filters();
         $this->add_models();
@@ -141,7 +141,7 @@ class ActionControllerBase {
             $this->logger->info('Action already performed...');
             return;
         }
-        if (is_null($status)) $status = IResponse::SC_OK;
+        if (is_null($status)) $status = Response::SC_OK;
 		$this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
@@ -155,7 +155,7 @@ class ActionControllerBase {
      * @param Response response, the response
      * @return void
      */
-    private function instantiate(IRequest $request, IResponse $response) {
+    private function instantiate(Request $request, Response $response) {
         $this->request  = $request;
         $this->response = $response;
         $this->logger   = Logger::getInstance();

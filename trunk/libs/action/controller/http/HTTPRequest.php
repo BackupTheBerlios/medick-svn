@@ -35,7 +35,7 @@
 /** 
  * @package locknet7.action.controller.request
  */
-class HTTPRequest implements IRequest {
+class HTTPRequest extends Request {
 
     /** HTTP Parameters 
         via GET __and__ POST */

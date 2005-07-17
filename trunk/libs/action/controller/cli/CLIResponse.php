@@ -36,7 +36,7 @@
  * @package locknet7.action.controller.response
  */
  
-class CLIResponse implements IResponse {
+class CLIResponse extends Response {
     
     private $content;
     

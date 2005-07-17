@@ -41,7 +41,7 @@ if (php_sapi_name() == 'cli') {
 /**
  * @package locknet7.action.controller.response
  */
-interface IResponse {
+abstract class Response {
 
     /** Status code (200) indicating the request succeeded normally. */
     const SC_OK = 200;
@@ -74,6 +74,6 @@ interface IResponse {
      * Sets the status of this response
      * @param Response::SC_*, status, the status of this response
      */
-    function setStatus($status);
+    abstract function setStatus($status);
 
 }

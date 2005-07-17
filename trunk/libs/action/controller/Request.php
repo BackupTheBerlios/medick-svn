@@ -41,9 +41,9 @@ if (php_sapi_name() == 'cli') {
 /** 
  * @package locknet7.action.controller.request
  */
-interface IRequest {
+abstract class Request {
     /** It gets all the parameters of this Request */
-    function getParams();
+    abstract function getParams();
     /** It gets the Route */
-    function getRoute();
+    abstract function getRoute();
 }

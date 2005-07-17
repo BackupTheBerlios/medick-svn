@@ -36,7 +36,7 @@
  * @package locknet7.action.controller.response
  */
 
-class HTTPResponse implements IResponse {
+class HTTPResponse extends Response {
 
     /** Page content */
     private $content;

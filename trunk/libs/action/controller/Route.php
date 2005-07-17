@@ -48,7 +48,7 @@ class ActionControllerRoute {
      * @throws RouteException
      * TODO: refactor.
      */
-    public static function createController(IRequest $request) {
+    public static function createController(Request $request) {
         $controller = $request->getParam('controller');
         $passed     = 0;
         do {

@@ -37,7 +37,7 @@ include_once('action/controller/cli/CLIException.php');
 /** 
  * @package locknet7.action.controller.request
  */
-class CLIRequest implements IRequest {
+class CLIRequest extends Request {
 
     /** CLI Arguments */
     protected $params;
