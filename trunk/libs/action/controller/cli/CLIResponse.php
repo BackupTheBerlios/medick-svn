@@ -37,10 +37,7 @@
  */
  
 class CLIResponse extends Response {
-    
-    private $content;
-    
     public function setStatus($status) {
-                    
+        
     }
 }

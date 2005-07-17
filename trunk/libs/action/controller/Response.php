@@ -92,7 +92,7 @@ abstract class Response {
     
     /** echo`s the content */
     public function dump() {
-        echo $this->content;    
+        echo $this->content;
     }
     
     /** 

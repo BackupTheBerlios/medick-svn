@@ -41,16 +41,20 @@ class CLIRequest extends Request {
 
     /**
      * Constructor.
-     * It builds the HTTPRequest object
+     * It builds the CLIRequest object
      */
     public function __construct() {
         if (!isset($_SERVER['argv']) || !is_array($_SERVER['argv'])) {
             throw new CLIException ('Command Line Agruments must be available!');
         }
-       $this->params = $_SERVER['argv'];
+        foreach ($_SERVER['argv'] AS $key=>$value) {
+            if ($key % 2) {
+                $this->params[$value]=$_SERVER['argv'][$key+1];
+            }
+        }
     }
     
-    /** ??? */
+    /** this is needed by ACBase :) */
     public function getSession() {
         return TRUE;
     }
