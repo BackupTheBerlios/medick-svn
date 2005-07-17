@@ -32,7 +32,11 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('action/controller/http/HTTPResponse.php');
+if (php_sapi_name() == 'cli') {
+    include_once('action/controller/cli/CLIResponse.php');   
+} else {
+    include_once('action/controller/http/HTTPResponse.php');
+}
 
 /**
  * @package locknet7.action.controller.response

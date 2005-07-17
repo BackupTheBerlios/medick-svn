@@ -1,6 +1,6 @@
 <?php
 // {{{ License
-// ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
 //
@@ -29,34 +29,23 @@
 // 
 // $Id$
 // 
-// ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/**
- * @package locknet7.start
- */
-    
-include_once('action/controller/Route.php');
-include_once('action/controller/IRequest.php');
-include_once('action/controller/IResponse.php');
-include_once('action/controller/Base.php');
 
-class Dispatcher {
-
-    /** our entry point */
-    public static function dispatch() {
-
-        if (php_sapi_name() == 'cli') {
-            $request  = new CLIRequest();
-            $response = new CLIResponse();
-        } else {
-            $request  = new HTTPRequest();
-            $response = new HTTPResponse();
-        }
-        try {
-            ActionControllerRoute::createController($request)->process($request, $response)->dump();
-        } catch (Exception $e) {
-            Logger::getInstance()->warn($e->getMessage());
-        }
+// integrity chck
+$handler = fopen('scripts/targets/files.ini', 'r');
+print_header('Integrity check');
+while (!feof($handler)) {
+    $file = trim(fgets($handler));
+    if ($file == '') continue;
+    if(VERBOSE) echo $file . " .....";
+    if (is_file($file)) {
+        if(VERBOSE) echo "..... [ OK ]\n";
+    } else {
+        done(".....[ FAILED ]\n" . $file . " is not a file!", 255);
     }
 }
+fclose($handler);
+
+echo "............[ OK ]\n";

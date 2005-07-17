@@ -32,31 +32,73 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/**
- * @package locknet7.start
+include_once('action/controller/cli/CLIException.php');
+
+/** 
+ * @package locknet7.action.controller.request
  */
+class CLIRequest implements IRequest {
+
+    /** CLI Arguments */
+    protected $params;
     
-include_once('action/controller/Route.php');
-include_once('action/controller/IRequest.php');
-include_once('action/controller/IResponse.php');
-include_once('action/controller/Base.php');
+    /** The Route */
+    protected $route;
 
-class Dispatcher {
-
-    /** our entry point */
-    public static function dispatch() {
-
-        if (php_sapi_name() == 'cli') {
-            $request  = new CLIRequest();
-            $response = new CLIResponse();
-        } else {
-            $request  = new HTTPRequest();
-            $response = new HTTPResponse();
+    /**
+     * Constructor.
+     * It builds the HTTPRequest object
+     */
+    public function __construct() {
+        if (!isset($_SERVER['argv']) || !is_array($_SERVER['argv'])) {
+            throw new CLIException ('Command Line Agruments must be available!');
         }
-        try {
-            ActionControllerRoute::createController($request)->process($request, $response)->dump();
-        } catch (Exception $e) {
-            Logger::getInstance()->warn($e->getMessage());
-        }
+       $this->params = $_SERVER['argv'];
     }
+    
+    /**
+     * It gets all the parameters of this Request
+     * @return array params
+     */
+    public function getParams() {
+        return $this->params;
+    }
+    
+    /**
+     * It sets a param.
+     * @param string, name, the name of the param to set
+     * @param mixed, value, value of the param
+     */
+    public function setParam($name, $value) {
+        $this->params[$name] = $value;
+    }
+    
+    /**
+     * It gets the param
+     * @param mixed, param, the paremeter name
+     * @return the param value of NULL if this param was not passed with this Resuest
+     */
+    public function getParam($param) {
+        return isset($this->params[$param]) ? $this->params[$param] : NULL;
+    }
+
+    public function getSession() {  }
+
+    /**
+     * It gets the Route used for this Request
+     * @return Route, the route 
+     */
+    public function getRoute() {
+        return $this->route;
+    }
+    
+    /**
+     * It sets the Request Route
+     * @param Route route, the route to set on this Request
+     * @return void
+     */
+    public function setRoute(IRoute $route) {
+        $this->route = $route;
+    }
+    
 }

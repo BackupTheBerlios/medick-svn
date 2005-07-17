@@ -33,30 +33,23 @@
 // }}}
 
 /**
- * @package locknet7.start
+ * @package locknet7.action.controller.response
  */
+ 
+class CLIResponse implements IResponse {
     
-include_once('action/controller/Route.php');
-include_once('action/controller/IRequest.php');
-include_once('action/controller/IResponse.php');
-include_once('action/controller/Base.php');
-
-class Dispatcher {
-
-    /** our entry point */
-    public static function dispatch() {
-
-        if (php_sapi_name() == 'cli') {
-            $request  = new CLIRequest();
-            $response = new CLIResponse();
-        } else {
-            $request  = new HTTPRequest();
-            $response = new HTTPResponse();
-        }
-        try {
-            ActionControllerRoute::createController($request)->process($request, $response)->dump();
-        } catch (Exception $e) {
-            Logger::getInstance()->warn($e->getMessage());
-        }
+    private $content;
+    
+    public function setStatus($status) {
+            
     }
+    
+    public function setContent($content) {
+        $this->content=$content;   
+    }
+    
+    public function dump() {
+        echo $this->content;
+    }
+    
 }
