@@ -73,7 +73,7 @@ class ActionControllerBase {
      * @param Response response, the response
      * @return Response
      */
-    public function process(Request $request, Response $response) {
+    public function process(IRequest $request, Response $response) {
         $this->instantiate($request, $response);
         $this->add_before_filters();
         $this->add_models();
@@ -155,7 +155,7 @@ class ActionControllerBase {
      * @param Response response, the response
      * @return void
      */
-    private function instantiate(Request $request, Response $response) {
+    private function instantiate(IRequest $request, Response $response) {
         $this->request  = $request;
         $this->response = $response;
         $this->logger   = Logger::getInstance();
@@ -179,7 +179,7 @@ class ActionControllerBase {
     // {{{ redirects
     
     // XXX: not done.
-    protected function redirect_to($action, $controller = NULL) {
+    protected function redirect_to($action, $params = array(), $controller = NULL) {
         // get the curent controller, if NULL is passed.
         if (is_null($controller)) $controller= $this->params['controller'];
         $this->response->redirect(
