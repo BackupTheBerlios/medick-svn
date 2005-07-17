@@ -275,6 +275,7 @@ class StdoutOutputter extends Outputter {
         if (php_sapi_name() == 'cli') {
             $this->isCLI = TRUE;
             $this->eol = "\n";
+            $this->output .= "\n";
         } else {
             $this->output .= '<table border="1" style="font-family: verdana;font-size: 0.7em;" width="100%"><tr><td>';
             $this->eol =  '</td></tr><tr><td>';

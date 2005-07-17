@@ -47,11 +47,27 @@ class CLIRequest extends Request {
         if (!isset($_SERVER['argv']) || !is_array($_SERVER['argv'])) {
             throw new CLIException ('Command Line Agruments must be available!');
         }
+        
+        
+//        foreach ($_SERVER['argv'] AS $key=>$value) {
+//            if ($key % 2) {
+//                $this->params[$value]=$_SERVER['argv'][$key+1];
+//            }
+//        }
+        
+        // array_shift($_SERVER['argv']);
+        $this->params['controller'] = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : NULL;
+        $this->params['action']     = 'index';
+        $this->params['args'] = array();
+        
         foreach ($_SERVER['argv'] AS $key=>$value) {
-            if ($key % 2) {
-                $this->params[$value]=$_SERVER['argv'][$key+1];
+            if ($key >= 2) {
+                $this->params['args'][] = $value;
             }
         }
+        
+        // print_r($this->params);
+        
     }
     
     /** this is needed by ACBase :) */

@@ -186,7 +186,7 @@ class XMLConfigurator extends Configurator {
     }
  
     /** sets the default route */
-    public function setDefaultRoute($controller, $action){
+    public function setDefaultRoute($controller, $action = 'index') {
         $this->sxe->route[0]->controller = $controller;
         $this->sxe->route[0]->action     = $action;
     }

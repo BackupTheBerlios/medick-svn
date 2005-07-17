@@ -63,7 +63,7 @@ class ActionControllerRoute {
         } while (!self::exists($route));
 
         $request->setRoute($route);
-        
+        Logger::getInstance()->debug('Running on controller: ' . $controller);
         include_once($route->getControllerPath() . 'application.php');
         include_once($route->getControllerPath() . $route->getControllerFile());
         

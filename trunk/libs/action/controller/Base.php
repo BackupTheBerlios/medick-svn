@@ -115,7 +115,6 @@ class ActionControllerBase {
      */
     protected function render_file($template_file, $status = NULL) {
         if (!is_file($template_file)) throw new Exception ('Cannot render unexistent template file:' . $template_file);
-        // $this->logger->debug($template_file);
         $helper_location = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR . 
                            'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
         if (is_file($helper_location)) {
