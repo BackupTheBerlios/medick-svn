@@ -44,6 +44,8 @@ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR
                 
 define('VERBOSE', FALSE);
 
+include_once('MedickException.php');
+
 // {{{ integrity chck
 include_once('targets/integrity.php');
 // }}}
