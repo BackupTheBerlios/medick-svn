@@ -40,18 +40,33 @@
 class HTMLElement {
     public function __construct() {     }
 }
+
 // NLT!
 class URL {
     public static function create($controller, $action, $params=array()) {
-        $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
-        if (!empty($params)) {
-            foreach ($params AS $key=>$value) {
-                $buff .= '&amp;' . $key . '=' . $value;
+        if (!Configurator::getInstance()->getProperty('rewrite')) {
+            // rewrite-off:
+            $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
+            if (!empty($params)) {
+                foreach ($params AS $key=>$value) {
+                    $buff .= '&amp;' . $key . '=' . $value;
+                }
             }
+            return $buff;
+        } else {
+            // rewrite-on:
+            $buff= '/' . $controller . '/' . $action;
+            if (!empty($params)) {
+                foreach ($params AS $key=>$value) {
+                    $buff .= '/' . $value;
+                }
+                $buff .= '.html';
+            }
+            return $buff;
         }
-        return $buff;
     }
 }
+
 
 class Form {
     
@@ -89,7 +104,7 @@ class Form {
         $buff = '';
         if (is_array($attr)) {
             foreach ($attr AS $atribute=>$val) {
-                $buff .= '"' . $atribute . '"="' . $val . '" ';
+                $buff .= $atribute . '="' . $val . '" ';
             }
         } elseif($attr != '') {
             $buff .= $attr;

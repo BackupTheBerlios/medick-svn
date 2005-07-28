@@ -8,9 +8,10 @@
     <!--  ====================== -->
     <!--   General properties    -->
     <!--  ====================== -->
-    <property name="server_name"      value="http://localhost" />
-    <property name="document_root"    value="/locknet7/public_html" />
+    <property name="server_name"      value="http://morgan:8091" />
+    <property name="document_root"    value="/" />
     <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
+    <property name="rewrite"          value="on" />
      
     <!--  ====================== -->
     <!--     Logger System       -->
@@ -51,3 +52,4 @@
     </database>
 
 </application>
+

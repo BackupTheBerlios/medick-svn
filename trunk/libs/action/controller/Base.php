@@ -181,11 +181,19 @@ class ActionControllerBase {
     protected function redirect_to($action, $params = array(), $controller = NULL) {
         // get the curent controller, if NULL is passed.
         if (is_null($controller)) $controller= $this->params['controller'];
-        $this->response->redirect(
+        
+        if ($this->config->getProperty('rewrite')) {
+            $this->response->redirect(
+                $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . 
+                $controller . '/' . $action);
+        } else {
+            // rewrite-off
+            $this->response->redirect(
                 $this->config->getProperty('server_name') . 
                 $this->config->getProperty('document_root') . 
                 '/index.php?controller=' . $controller . '&action=' . $action
             );
+        }
         $this->action_performed = TRUE;
     }
     

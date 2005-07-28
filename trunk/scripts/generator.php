@@ -206,8 +206,8 @@ if (is_file($file)) {
             case 'INTEGER':
             case 'VARCHAR':
             default:
-                $buff .= ucfirst($name) . 
-                    ': <?= Form::text(\'' . $name . '\', NULL, array(\'size\'=>' . $size . ')); ?><br />';
+                $buff .= '<label>' . ucfirst($name) . ': </label>' .
+            '<?= Form::text(\'' . $name . '\', NULL, array(\'maxlength\'=>' . $size . ',\'size\'=>' . $size . ')); ?><br />';
                 break;
         }
     }
@@ -248,8 +248,8 @@ if (is_file($file)) {
             case 'INTEGER':
             case 'VARCHAR':
             default:
-                $buff .= ucfirst($name) . 
-                    ': <?= Form::text(\'' . $name . '\', $${model}->' . $name . ', array(\'size\'=>' . $size . ')); ?><br />';
+                $buff .= '<label>' . ucfirst($name) . ': </label>' . 
+            '<?= Form::text(\'' . $name . '\', $${model}->' . $name . ', array(\'maxlength\'=>' . $size . ',\'size\'=>' . $size . ')); ?><br />';
                 break;
         }
     }

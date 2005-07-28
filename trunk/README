@@ -1,0 +1,91 @@
+============================
+Medick :: One PHP Framework
+$Id:$
+============================
+
+ABOUT:
+------
+    Medick is a free software licensed under BSD License, see LICENSE file for details.
+    Medick is a PHP Framework and the main task is to ease the work of programmers 
+    by providing a ground for rapid and clean development.
+
+    At this point, the project is on pre-alpha stage.
+    The stable version will require at least php 5.1.0 and it will be released around 1.february.2006
+
+REQUIREMENTS:
+-------------
+    1. php 5.0.3 or higher (http://php.net/downloads).
+        The fallowing PHP extensions are required: simplexml and spl.
+        For changing application settings on runtime you will also need domxml.
+        This extensions are enbled by default on every php installation.
+        
+    2. for web application you will need, of course a web server, Apache is recommended.
+    
+    3. Apache recomanded settings: 
+            3.1 AllowOverride directive from httpd.conf must be set to All, to allow .htaccess files
+                and of course, mod_access must be turned on.
+            3.2 for nice URL`s mod_rewrite should be installed and turnded on.
+            Usualy, all Web Hosters provide this settings.
+            
+    3. to use a Database Engine you need to install one of the RDBMS suported by Creole:
+        - MySQL, SQLite, PostgreSQL or MS SQL Server
+
+INSTALL:
+--------
+    1. checkout Medick sources from svn:
+    
+        $ svn checkout svn://svn.berlios.de/medick/trunk medick
+
+    this will create the medick folder and will download the source code from svn.
+    The folder layout after the checkout (ignoring .svn folders and the content of docs and libs):
+    
+        medick/
+            config/
+                application.xml
+                bootstrap.php
+            docs/
+                ...............
+            scripts/
+                updater.sh
+                generator.php
+            public_html/
+                images/
+                javascript/
+                stylesheet/
+                index.php
+                default.htaccess
+            libs/
+                .................
+            README
+            LICENSE
+            VERSION
+
+    2. Install Medick dependencies:
+    
+        $ cd medick/
+        $ scripts/updater.sh
+
+        This script will checkout Creole (database abstraction layer for PHP5) and SimpleTest (PHP Test Framework)
+    from their CVS repositories into the vendor folder:
+    
+        medick/
+            vendor/
+                creole/
+                    ..........
+                simpletest/
+                    ..........
+
+    More details about creole and simpletest:
+    simpletest: http://www.lastcraft.com/simple_test.php
+    creole:     http://creole.phpdb.org/wiki
+    
+    3. There is no step 3, just start to code.
+
+GETTING STARTED.
+----------------
+  To be Done
+  
+CONTACT:
+--------
+    aurelian [ AT ] locknet [ DOT ] ro
+
