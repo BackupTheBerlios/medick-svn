@@ -1,0 +1,257 @@
+Index: public_html/default.htaccess
+===================================================================
+--- public_html/default.htaccess	(revision 98)
++++ public_html/default.htaccess	(working copy)
+@@ -1,3 +1,17 @@
+ # default.htaccess file for Medick framework.
+ # rename-it to .htaccess
+ # $Id$
++
++RewriteEngine on
++
++RewriteCond    %{REQUEST_FILENAME}  -d
++RewriteRule    ^(.+[^/])$           $1/  [R]
++
++RewriteRule ^([A-Za-z]+)/?([A-Za-z]+)/?\.html$ index.php?controller=$1&action=$2 [NS]
++RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)\.html?$ index.php?controller=$1&action=$2&id=$3 [L]
++
++# ##
++#RewriteRule ^todo/edit/(.*)$ /index.php?controller=todo&action=edit&id=$1 [NE,L]
++#RewriteRule ^todo/(.*)$ /index.php?controller=todo&action=$1 [NE,L]
++# ##
++
+Index: config/application.xml
+===================================================================
+--- config/application.xml	(revision 98)
++++ config/application.xml	(working copy)
+@@ -8,9 +8,10 @@
+     <!--  ====================== -->
+     <!--   General properties    -->
+     <!--  ====================== -->
+-    <property name="server_name"      value="http://localhost" />
+-    <property name="document_root"    value="/locknet7/public_html" />
++    <property name="server_name"      value="http://morgan:8091" />
++    <property name="document_root"    value="/" />
+     <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
++    <property name="rewrite"          value="on" />
+      
+     <!--  ====================== -->
+     <!--     Logger System       -->
+@@ -39,9 +40,9 @@
+         <dsn id = "one"
+              phptype  = "mysql"
+              hostspec = "localhost"
+-             database = "todo2"
++             database = "todo"
+              username = "root"
+-             password = "virus" />
++             password = "sacosica" />
+         <dsn id = "two"
+              phptype  = "pgsql"
+              hostspec = "192.18.1.1"
+Index: VERSION
+===================================================================
+--- VERSION	(revision 0)
++++ VERSION	(revision 0)
+@@ -0,0 +1 @@
++0.0.1
+Index: scripts/generator.php
+===================================================================
+--- scripts/generator.php	(revision 98)
++++ scripts/generator.php	(working copy)
+@@ -206,8 +206,8 @@
+             case 'INTEGER':
+             case 'VARCHAR':
+             default:
+-                $buff .= ucfirst($name) . 
+-                    ': <?= Form::text(\'' . $name . '\', NULL, array(\'size\'=>' . $size . ')); ?><br />';
++                $buff .= '<label>' . ucfirst($name) . ': </label>' .
++            '<?= Form::text(\'' . $name . '\', NULL, array(\'maxlength\'=>' . $size . ',\'size\'=>' . $size . ')); ?><br />';
+                 break;
+         }
+     }
+@@ -248,8 +248,8 @@
+             case 'INTEGER':
+             case 'VARCHAR':
+             default:
+-                $buff .= ucfirst($name) . 
+-                    ': <?= Form::text(\'' . $name . '\', $${model}->' . $name . ', array(\'size\'=>' . $size . ')); ?><br />';
++                $buff .= '<label>' . ucfirst($name) . ': </label>' . 
++            '<?= Form::text(\'' . $name . '\', $${model}->' . $name . ', array(\'maxlength\'=>' . $size . ',\'size\'=>' . $size . ')); ?><br />';
+                 break;
+         }
+     }
+Index: libs/action/controller/Base.php
+===================================================================
+--- libs/action/controller/Base.php	(revision 98)
++++ libs/action/controller/Base.php	(working copy)
+@@ -181,11 +181,19 @@
+     protected function redirect_to($action, $params = array(), $controller = NULL) {
+         // get the curent controller, if NULL is passed.
+         if (is_null($controller)) $controller= $this->params['controller'];
+-        $this->response->redirect(
++        
++        if ($this->config->getProperty('rewrite')) {
++            $this->response->redirect(
++                $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . 
++                $controller . '/' . $action);
++        } else {
++            // rewrite-off
++            $this->response->redirect(
+                 $this->config->getProperty('server_name') . 
+                 $this->config->getProperty('document_root') . 
+                 '/index.php?controller=' . $controller . '&action=' . $action
+             );
++        }
+         $this->action_performed = TRUE;
+     }
+     
+Index: libs/action/view/HTML.php
+===================================================================
+--- libs/action/view/HTML.php	(revision 98)
++++ libs/action/view/HTML.php	(working copy)
+@@ -40,19 +40,34 @@
+ class HTMLElement {
+     public function __construct() {     }
+ }
++
+ // NLT!
+ class URL {
+     public static function create($controller, $action, $params=array()) {
+-        $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
+-        if (!empty($params)) {
+-            foreach ($params AS $key=>$value) {
+-                $buff .= '&amp;' . $key . '=' . $value;
++        if (!Configurator::getInstance()->getProperty('rewrite')) {
++            // rewrite-off:
++            $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
++            if (!empty($params)) {
++                foreach ($params AS $key=>$value) {
++                    $buff .= '&amp;' . $key . '=' . $value;
++                }
+             }
++            return $buff;
++        } else {
++            // rewrite-on:
++            $buff= '/' . $controller . '/' . $action;
++            if (!empty($params)) {
++                foreach ($params AS $key=>$value) {
++                    $buff .= '/' . $value;
++                }
++                $buff .= '.html';
++            }
++            return $buff;
+         }
+-        return $buff;
+     }
+ }
+ 
++
+ class Form {
+     
+     public function __construct($action, $method) {  }
+@@ -89,7 +104,7 @@
+         $buff = '';
+         if (is_array($attr)) {
+             foreach ($attr AS $atribute=>$val) {
+-                $buff .= '"' . $atribute . '"="' . $val . '" ';
++                $buff .= $atribute . '="' . $val . '" ';
+             }
+         } elseif($attr != '') {
+             $buff .= $attr;
+Index: README
+===================================================================
+--- README	(revision 98)
++++ README	(working copy)
+@@ -0,0 +1,91 @@
++============================
++Medick :: One PHP Framework
++$Id:$
++============================
++
++ABOUT:
++------
++    Medick is a free software licensed under BSD License, see LICENSE file for details.
++    Medick is a PHP Framework and the main task is to ease the work of programmers 
++    by providing a ground for rapid and clean development.
++
++    At this point, the project is on pre-alpha stage.
++    The stable version will require at least php 5.1.0 and it will be released around 1.february.2006
++
++REQUIREMENTS:
++-------------
++    1. php 5.0.3 or higher (http://php.net/downloads).
++        The fallowing PHP extensions are required: simplexml and spl.
++        For changing application settings on runtime you will also need domxml.
++        This extensions are enbled by default on every php installation.
++        
++    2. for web application you will need, of course a web server, Apache is recommended.
++    
++    3. Apache recomanded settings: 
++            3.1 AllowOverride directive from httpd.conf must be set to All, to allow .htaccess files
++                and of course, mod_access must be turned on.
++            3.2 for nice URL`s mod_rewrite should be installed and turnded on.
++            Usualy, all Web Hosters provide this settings.
++            
++    3. to use a Database Engine you need to install one of the RDBMS suported by Creole:
++        - MySQL, SQLite, PostgreSQL or MS SQL Server
++
++INSTALL:
++--------
++    1. checkout Medick sources from svn:
++    
++        $ svn checkout svn://svn.berlios.de/medick/trunk medick
++
++    this will create the medick folder and will download the source code from svn.
++    The folder layout after the checkout (ignoring .svn folders and the content of docs and libs):
++    
++        medick/
++            config/
++                application.xml
++                bootstrap.php
++            docs/
++                ...............
++            scripts/
++                updater.sh
++                generator.php
++            public_html/
++                images/
++                javascript/
++                stylesheet/
++                index.php
++                default.htaccess
++            libs/
++                .................
++            README
++            LICENSE
++            VERSION
++
++    2. Install Medick dependencies:
++    
++        $ cd medick/
++        $ scripts/updater.sh
++
++        This script will checkout Creole (database abstraction layer for PHP5) and SimpleTest (PHP Test Framework)
++    from their CVS repositories into the vendor folder:
++    
++        medick/
++            vendor/
++                creole/
++                    ..........
++                simpletest/
++                    ..........
++
++    More details about creole and simpletest:
++    simpletest: http://www.lastcraft.com/simple_test.php
++    creole:     http://creole.phpdb.org/wiki
++    
++    3. There is no step 3, just start to code.
++
++GETTING STARTED.
++----------------
++  To be Done
++  
++CONTACT:
++--------
++    aurelian [ AT ] locknet [ DOT ] ro
++
