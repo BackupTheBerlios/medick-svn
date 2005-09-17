@@ -11,13 +11,11 @@
 
   <body>
   	<h2>All ${models}</h2>
-    <div>
-	  <a href="<?= URL::create('${model}', 'anew');?>">Add a new ${Model}</a>
-    </div>
+    <div><a href="<?= URL::create('${model}', 'anew');?>">Add a new ${Model}</a></div>
     <hr />
     
     <? foreach ($${models} AS $${model}): ?>
-	  <p>
+	    <p>
         <a href="<?= URL::create('${model}', 'edit', array('id'=>$${model}->${__PK__}));?>">Edit</a>
         <a href="<?= URL::create('${model}', 'delete', array('id'=>$${model}->${__PK__}));?>">Distroy</a>
         ${__BUFFER__}
@@ -31,3 +29,4 @@
     
   </body>
 </html>
+

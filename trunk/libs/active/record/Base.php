@@ -254,9 +254,9 @@ class ActiveRecordBase {
         }
         $sql = 'UPDATE ' . self::$table_name . ' SET ';
         foreach($this->fields->getAffectedFields() as $field) {
-            $sql .= $field->getName() . ' = ?,';
+            $sql .= $field->getName() . ' = ?, ';
         }
-        return substr($sql, 0, -1) . $sqlSnippet;
+        return substr($sql, 0, -2) . $sqlSnippet;
         
     }
 

@@ -13,9 +13,10 @@
     <h2>Add a new ${model}</h2>
   	<form action="<?= URL::create('${model}','create');?>" method="post">
   		<p>
-  		${__BUFFER__}
-  		<?= Form::submit('submit', 'Add New ${Model}') ?>
+  		  ${__BUFFER__}
+  		  <?= Form::submit('submit', 'Add New ${Model}') ?>
   		</p>
 	</form>
   </body>  
 </html>
+
