@@ -61,7 +61,7 @@ try {
     $conn = Creole::getConnection($config->getDatabaseDsn());
 } catch (SQLException $sqlEx) {
     echo "..........[ FAILED ]\n";
-    done ($sqlEx->getMessage, 255);
+    done ($sqlEx->getMessage(), 255);
 }
 if(VERBOSE) echo "..........[ OK ]\n";
 
