@@ -60,6 +60,8 @@ class ActionControllerBase {
     protected $assigns;
     /** Default location for template files*/
 	protected $template_root;
+	/** Application path*/
+	protected $app_path;
     /** Template Engine */
 	protected $template;
     /** Flag to indicate that the current action was performed.*/
@@ -107,7 +109,11 @@ class ActionControllerBase {
 	
     /**
      * It renders the template file.
+     * 
      * This method is usefull when you don`t want to use the default template_root
+     * Special helper file is included.
+     * Magic __layout.phtml is loaded if exists.
+     * 
      * @param string, template_file location of the template file, default NULL
      * @param Response::SC_*, status, [optional] status code, default is 200 OK
      * @throws Exception if the template file don`t exist on the specified location.
@@ -115,13 +121,16 @@ class ActionControllerBase {
      */
     protected function render_file($template_file, $status = NULL) {
         if (!is_file($template_file)) throw new Exception ('Cannot render unexistent template file:' . $template_file);
-        $helper_location = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR . 
-                           'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
+        $helper_location = $this->app_path . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
         if (is_file($helper_location)) {
-            // $this->logger->debug('Helper: ' . $helper_location);
             include_once($helper_location);
         }
-		$this->render_text($this->template->render_file($template_file), $status);
+        if (is_file($_layout=$this->app_path . 'views' . DIRECTORY_SEPARATOR .  '__layout.phtml')) {
+            $this->template->content= $this->params['controller'] . DIRECTORY_SEPARATOR . $this->params['action'];
+            $this->render_text($this->template->render_file($_layout), $status);
+        } else {
+    	   $this->render_text($this->template->render_file($template_file), $status);
+        }
 	}
 	
     /**
@@ -161,8 +170,8 @@ class ActionControllerBase {
         $this->session  = $request->getSession();
         $this->params   = $request->getParams();
         $this->config   = Configurator::getInstance();
-        $this->template_root = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR . 
-			 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
+        $this->app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
+        $this->template_root = $this->app_path . 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
 		$this->template = ActionViewBase::factory();
     }
 
@@ -185,7 +194,7 @@ class ActionControllerBase {
         if ($this->config->getProperty('rewrite')) {
             $this->response->redirect(
                 $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . 
-                $controller . '/' . $action);
+                $controller . '/' . $action . '.html');
         } else {
             // rewrite-off
             $this->response->redirect(
@@ -208,6 +217,8 @@ class ActionControllerBase {
     
     /**
      * Performs the action
+     * 
+     * Also, the magic __common method is invoked.
      * @param string, action_name, the action to perform
      * TODO: still to refactor.
      */
@@ -231,6 +242,9 @@ class ActionControllerBase {
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
         $action->invoke($this);
         if ($this->action_performed) return;
+        if ($_common= $this->createMethod('__common')) {
+            $_common->invoke($this);
+        }
         $this->render();
     }
     
