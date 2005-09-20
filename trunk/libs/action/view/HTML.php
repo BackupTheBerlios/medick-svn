@@ -60,9 +60,8 @@ class URL {
                 foreach ($params AS $key=>$value) {
                     $buff .= '/' . $value;
                 }
-                $buff .= '.html';
             }
-            return $buff;
+            return $buff . '.html';
         }
     }
 }
@@ -111,5 +110,4 @@ class Form {
         }
         return $buff;
     }
-    
 }

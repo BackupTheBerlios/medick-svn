@@ -26,9 +26,9 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
@@ -49,7 +49,7 @@ class ActiveRecordBase {
 
     /** pk. name! */
     private $pk;
-    
+
     // {{{ static members
     /** database connection*/
     protected static $conn;
@@ -62,7 +62,7 @@ class ActiveRecordBase {
             self::$conn = Creole::getConnection(Configurator::getInstance()->getDatabaseDsn());
         }
     }
-    
+
     /**
      * Constructor
      *
@@ -76,7 +76,7 @@ class ActiveRecordBase {
         self::$table_name = Inflector::pluralize(strtolower(get_class($this)));
         $table_info = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
         $this->pk = $table_info->getPrimaryKey()->getName();
-        
+
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
@@ -101,7 +101,6 @@ class ActiveRecordBase {
                 $this->$field_name = $field_value;
             }
         }
-
     }
 
     // {{{ __magic functions
@@ -123,7 +122,7 @@ class ActiveRecordBase {
         }
         throw new ActiveRecordException ('Cannot Set the value of field: ' . $field_name . '. No such field!');
     }
-    
+
     /**
      * It gets the value of the field
      * @see http://uk.php.net/manual/en/language.oop5.overloading.php
@@ -137,9 +136,21 @@ class ActiveRecordBase {
                 return $it->current()->isAffected ? $it->current()->getValue() : NULL;
             }
         }
+        if ($this->has_one AND in_array($field_name, $this->has_one)) {
+            $fk= $field_name.'_id';
+            for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
+                if ( $it->current()->getName() == $fk ) {
+                    $_table= Inflector::singularize(self::$table_name);
+                    self::setTable($field_name);
+                    $ret= self::find($it->current()->getValue());
+                    self::setTable($_table);
+                    return $ret;
+                }
+            }
+        }
         throw new ActiveRecordException ('Cannot Get the value of filed: ' . $field_name . '. No such filed!');
     }
-    
+
     /** removes some duplicate code */
     public function __call($method, $arguments) {
         if ($method == 'destroy') return $this->delete();
@@ -162,8 +173,7 @@ class ActiveRecordBase {
         return $string;
     }
     // }}}
-    
-    
+
     // {{{ save
     /**
      * Save,
@@ -198,11 +208,13 @@ class ActiveRecordBase {
         return $id ? $id : $af_rows;
     }
     // }}}
+
     // {{{ update
     public function update() {
         return $this->performQuery($this->getUpdateSql());
     }
     // }}}
+
     // {{{ delete
     public function delete() {
         $whereClause = array();
@@ -213,7 +225,7 @@ class ActiveRecordBase {
         return $this->performQuery($sql);
     }
     // }}}
-    
+
     // {{{ private methods (internal helpers)
     private function getNextId() {
         if ($this->fields->getPrimaryKey() !== NULL) {
@@ -242,7 +254,7 @@ class ActiveRecordBase {
             $field->isAffected = FALSE;
         }
     }
-    
+
     /** FIXME:
      * <tt>UPDATE __TABLE__ SET foo='12' WHERE bar='ee';</tt>
      * is not working.
@@ -257,7 +269,6 @@ class ActiveRecordBase {
             $sql .= $field->getName() . ' = ?, ';
         }
         return substr($sql, 0, -2) . $sqlSnippet;
-        
     }
 
     private function getInsertSql() {
@@ -265,7 +276,7 @@ class ActiveRecordBase {
                . ' (' . implode(',', $this->fields->getAffectedFieldsNames()) . ')'
                . ' VALUES (' . substr(str_repeat('?,', count($this->fields->getAffectedFields())), 0, -1) . ')';
     }
-    
+
     /**
      * populates stmt values (?,?,?) on sql querys
      * @param PreparedStatement, stmt, the prepared statement.
@@ -292,9 +303,9 @@ class ActiveRecordBase {
 
         // $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$table_name)));
         $_klazz = Inflector::singularize(ucfirst(self::$table_name));
-        
+
         $query = new QuerryBuilder(self::$table_name);
-        
+
         if ( $params[0] == 'all' && $numargs == 1 ) {
             // all table fields and one arg.
         } elseif ( $params[0] == 'all' && $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
@@ -302,6 +313,7 @@ class ActiveRecordBase {
         } elseif ( is_numeric($params[0])) {
             // we expect only one row!
             // we need the pk name.
+            self::establish_connection();
             $pk_name = self::$conn->getDatabaseInfo()->getTable(self::$table_name)->getPrimaryKey()->getName();
             if ( $numargs == 1 ) {
                 $query->add('condition', $pk_name . '=?');
@@ -331,9 +343,7 @@ class ActiveRecordBase {
             // $results->add($class->newInstance($rs->getRow()));
             $results->add(new $_klazz($rs->getRow()));
         }
-        
         Logger::getInstance()->debug('Performing sql query: ' . self::$conn->lastQuery);
-        
         return $results;
     }
     // }}}
