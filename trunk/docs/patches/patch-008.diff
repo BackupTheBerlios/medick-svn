@@ -1,0 +1,113 @@
+Index: config/bootstrap.php
+===================================================================
+--- config/bootstrap.php	(revision 107)
++++ config/bootstrap.php	(working copy)
+@@ -40,20 +40,15 @@
+  */
+ 
+ error_reporting(E_ALL);
+-
+ // main TOP_LOCATION.
+ define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+-
+ // include_path, rewrite the existing one
+ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
+                   TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
+                 );
+-
+ include_once('MedickException.php');
++include_once('configurator/XMLConfigurator.php');
+ 
+-include_once('configurator/Configurator.php');
+-
+-Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+-
++Configurator::factory();
+ include_once('logger/Logger.php');
+ include_once('Dispatcher.php');
+Index: libs/logger/Logger.php
+===================================================================
+--- libs/logger/Logger.php	(revision 107)
++++ libs/logger/Logger.php	(working copy)
+@@ -78,7 +78,8 @@
+             foreach($outputters->getChildren() as $outputter) {
+                 try {
+                     $class= new ReflectionClass(ucfirst((string)trim($outputter['name'])) . 'Outputter');
+-                    $this->attach( $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
++                    $this->attach( 
++                        $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
+                 } catch (ReflectionException $rEx) {
+                     $this->warn($rEx->getMessage());
+                 }
+Index: libs/configurator/ConfiguratorException.php
+===================================================================
+--- libs/configurator/ConfiguratorException.php	(revision 107)
++++ libs/configurator/ConfiguratorException.php	(working copy)
+@@ -32,7 +32,6 @@
+ // ///////////////////////////////////////////////////////////////////////////////
+ // }}}
+ 
+-
+ /**
+  * Cofigurator Exception
+  * @package locknet7.config
+Index: libs/configurator/Configurator.php
+===================================================================
+--- libs/configurator/Configurator.php	(revision 107)
++++ libs/configurator/Configurator.php	(working copy)
+@@ -46,18 +46,16 @@
+     /** A factory witch builds configurator object 
+      * TODO: this is just to pass the tests
+      */
+-    public static function factory($type, $file) {
++    public static function factory($type) {
+         if (!is_null(self::$instance)) return self::$instance;
+         $_klazz = $type . 'Configurator';
+-        include_once('configurator/' . $_klazz . '.php');
+-        self::$instance = new $_klazz($file);
++        self::$instance = new $_klazz();
+         return self::$instance;
+     }
+     
+     public static function getInstance($type = 'XML') {
+         if (self::$instance === NULL) {
+-            self::$instance = self::factory($type, 
+-                TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
++            self::$instance = self::factory($type);
+         }
+         return self::$instance;
+     }
+Index: libs/configurator/XMLConfigurator.php
+===================================================================
+--- libs/configurator/XMLConfigurator.php	(revision 107)
++++ libs/configurator/XMLConfigurator.php	(working copy)
+@@ -32,6 +32,9 @@
+ // ///////////////////////////////////////////////////////////////////////////////
+ // }}}
+ 
++
++include_once('configurator/Configurator.php');
++
+ /**
+  * xml file-based Configurator.
+  * @package locknet7.config
+@@ -45,7 +48,7 @@
+      * Constructor.
+      * @param string, xml, configuration file/string
+      */
+-    public function __construct($xml) {
++    public function __construct($xml= TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml') {
+         if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
+         else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
+         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
+@@ -53,7 +56,9 @@
+ 
+     /** @see Configurator::getSectionProperty() */
+     public function getSectionProperty($section, $property) {
+-        if(!$this->sxe->$section) throw new ConfiguratorException('Cannot find ' . $section . ' section in your Configuration!');
++        if(!$this->sxe->$section) {
++            throw new ConfiguratorException('Cannot find ' . $section . ' section in your Configuration!');
++        }
+         $_sys   = $this->sxe->$section->$property;
+         $_query = (string)trim($_sys['value']);
+         if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == 0) ){

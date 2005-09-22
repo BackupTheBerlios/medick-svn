@@ -46,18 +46,16 @@ abstract class Configurator {
     /** A factory witch builds configurator object 
      * TODO: this is just to pass the tests
      */
-    public static function factory($type, $file) {
+    public static function factory($type) {
         if (!is_null(self::$instance)) return self::$instance;
         $_klazz = $type . 'Configurator';
-        include_once('configurator/' . $_klazz . '.php');
-        self::$instance = new $_klazz($file);
+        self::$instance = new $_klazz();
         return self::$instance;
     }
     
     public static function getInstance($type = 'XML') {
         if (self::$instance === NULL) {
-            self::$instance = self::factory($type, 
-                TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+            self::$instance = self::factory($type);
         }
         return self::$instance;
     }

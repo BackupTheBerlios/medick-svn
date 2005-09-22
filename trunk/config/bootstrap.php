@@ -40,20 +40,15 @@
  */
 
 error_reporting(E_ALL);
-
 // main TOP_LOCATION.
 define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-
 // include_path, rewrite the existing one
 set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
                   TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
                 );
-
 include_once('MedickException.php');
+include_once('configurator/XMLConfigurator.php');
 
-include_once('configurator/Configurator.php');
-
-Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
-
+Configurator::factory();
 include_once('logger/Logger.php');
 include_once('Dispatcher.php');

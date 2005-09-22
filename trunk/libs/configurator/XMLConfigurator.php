@@ -32,6 +32,9 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+
+include_once('configurator/Configurator.php');
+
 /**
  * xml file-based Configurator.
  * @package locknet7.config
@@ -45,7 +48,7 @@ class XMLConfigurator extends Configurator {
      * Constructor.
      * @param string, xml, configuration file/string
      */
-    public function __construct($xml) {
+    public function __construct($xml= TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml') {
         if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
         else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
@@ -53,7 +56,9 @@ class XMLConfigurator extends Configurator {
 
     /** @see Configurator::getSectionProperty() */
     public function getSectionProperty($section, $property) {
-        if(!$this->sxe->$section) throw new ConfiguratorException('Cannot find ' . $section . ' section in your Configuration!');
+        if(!$this->sxe->$section) {
+            throw new ConfiguratorException('Cannot find ' . $section . ' section in your Configuration!');
+        }
         $_sys   = $this->sxe->$section->$property;
         $_query = (string)trim($_sys['value']);
         if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == 0) ){

@@ -78,7 +78,8 @@ class Logger implements ILogger {
             foreach($outputters->getChildren() as $outputter) {
                 try {
                     $class= new ReflectionClass(ucfirst((string)trim($outputter['name'])) . 'Outputter');
-                    $this->attach( $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
+                    $this->attach( 
+                        $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
                 } catch (ReflectionException $rEx) {
                     $this->warn($rEx->getMessage());
                 }
