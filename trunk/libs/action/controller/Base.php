@@ -292,10 +292,10 @@ class ActionControllerBase {
             }
 
             $this->logger->debug("We have Models...");
-            // foreach ($this->model AS $model) {
-            $this->logger->debug('Injecting Model:: ' . $this->model[0]);
-            ModelInjector::inject($this->model[0]);
-            // }
+            foreach ($this->model AS $model) {
+                $this->logger->debug('Injecting Model:: ' . $model);
+                ModelInjector::inject($model);
+            }
             ModelInjector::prepareARBase();
         }
     }
