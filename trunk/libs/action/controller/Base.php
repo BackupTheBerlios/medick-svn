@@ -282,15 +282,10 @@ class ActionControllerBase {
 
 	/**
 	 * Injects model names into ActiveRecordBase by using the ModelInjector.
-	 * TODO: table inheritance.
+	 * TODO: table inheritance ?
 	 */
     private function add_models() {
         if (isset($this->model)) {
-
-            if ( count($this->model) > 1 ) {
-                $this->logger->warn('At this point, only One Model is allowed, running on the first one...');
-            }
-
             $this->logger->debug("We have Models...");
             foreach ($this->model AS $model) {
                 $this->logger->debug('Injecting Model:: ' . $model);
