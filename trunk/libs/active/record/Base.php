@@ -328,6 +328,8 @@ class ActiveRecordBase {
                 $rs->next();
                 return new $_klazz($rs->getRow());
             }
+        } elseif(is_array($params[0])) {
+            $query->addArray($params[0]);
         } else {
             throw new ActiveRecordException('Case Not Implemented yet!');
         }
