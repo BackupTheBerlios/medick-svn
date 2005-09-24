@@ -67,7 +67,7 @@ class ModelInjector {
         if ($model_object->getParentClass()->name != 'ActiveRecordBase') {
             throw new Exception ('Wrong Definition of your Model, ' . $model_name . ' must extend ActiveRecordBase object!');
         }
-        
+        $logger->debug('Table:: ' .$model);
         ActiveRecordBase::setTable($model);
     }
 
