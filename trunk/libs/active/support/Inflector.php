@@ -55,7 +55,8 @@ class Inflector {
 						'/(p)erson$/i',
 						'/(m)an$/i',
                         '/(c)hild$/i',
-                        '/s$/i'
+                        '/s$/i',
+                        '/$/'
                         );
 
 		$replace = array('\1\2',
@@ -69,6 +70,7 @@ class Inflector {
 						 '\1\2eople',
 						 '\1\2en',
                          '\1\2hildren',
+                         's',
                          's'
                          );
                          
