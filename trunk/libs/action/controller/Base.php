@@ -120,13 +120,18 @@ class ActionControllerBase {
      * @return void
      */
     protected function render_file($template_file, $status = NULL) {
-        if (!is_file($template_file)) throw new Exception ('Cannot render unexistent template file:' . $template_file);
-        $helper_location = $this->app_path . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
+        if (!is_file($template_file)) {
+            throw new Exception ('Cannot render unexistent template file:' . $template_file);
+        }
+        $helper_location = 
+            $this->app_path . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
         if (is_file($helper_location)) {
             include_once($helper_location);
         }
         if (is_file($_layout=$this->app_path . 'views' . DIRECTORY_SEPARATOR .  '__layout.phtml')) {
-            $this->template->content= $this->params['controller'] . DIRECTORY_SEPARATOR . $this->params['action'];
+            $this->logger->debug('Found magick __layout description file...');
+            $this->template->__content= 
+                $this->params['controller'] . DIRECTORY_SEPARATOR . $this->params['action'] . '.phtml';
             $this->render_text($this->template->render_file($_layout), $status);
         } else {
     	   $this->render_text($this->template->render_file($template_file), $status);
@@ -171,13 +176,14 @@ class ActionControllerBase {
         $this->params   = $request->getParams();
         $this->config   = Configurator::getInstance();
         $this->app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
-        $this->template_root = $this->app_path . 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
+        $this->template_root = 
+            $this->app_path . 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
 		$this->template = ActionViewBase::factory();
     }
 
     // XXX: not-done!
     protected function sendFile($location, $options = array()) {
-        if(!is_file()) {
+        if(!is_file($location)) {
             throw new Exception("File not found...");
         }
         // $options['length'] = File->size($location);
