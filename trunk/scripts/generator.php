@@ -32,7 +32,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
 
-exec('rm -rf app/');
+// exec('rm -rf app/');
 
 error_reporting(E_ALL);
 
@@ -50,10 +50,13 @@ include_once('MedickException.php');
 include_once('targets/integrity.php');
 // }}}
 
-include_once('configurator/Configurator.php');
-$config = Configurator::factory('XML', TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
+include_once('configurator/XMLConfigurator.php');
+$config = Configurator::factory('XML');//, TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml');
 
-print_header('Scaffolding Todo Model');
+
+$model = $argv[1];
+
+print_header('Scaffolding ' . ucfirst($model) .' Model');
 include_once('creole/Creole.php');
 include_once('active/support/Inflector.php');
 try {
@@ -66,7 +69,6 @@ try {
 if(VERBOSE) echo "..........[ OK ]\n";
 
 
-$model = 'todo';
 $Umodel = ucfirst($model);
 $models = Inflector::pluralize($model);
 $table_info = $conn->getDatabaseInfo()->getTable($models);
