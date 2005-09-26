@@ -54,9 +54,12 @@ class Dispatcher {
             $response = new HTTPResponse();
         }
         try {
-            ActionControllerRoute::createController($request)->process($request, $response)->dump();
+            ActionControllerRoute::recognize($request)->process($request, $response)->dump();
         } catch (Exception $e) {
             Logger::getInstance()->warn($e->getMessage());
+            echo '<div style="border:1px solid red"><h1 style="text-align:center">Cannot process your request due to an exception</h1>';
+            echo '<span style="color:red">' . $e->getMessage() . '</span>';
+            echo '<pre>' . $e->getTraceAsString() . '</pre></div>';
         }
     }
 }
