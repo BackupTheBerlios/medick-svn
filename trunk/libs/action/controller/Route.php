@@ -40,6 +40,24 @@ include_once('action/controller/route/RouteException.php');
  */
 class ActionControllerRoute {
     
+    public static function recognize(Request $request) {
+        $controller= $request->getParam('controller');
+        $action    = $request->getParam('action');
+        
+        $map= Map::getInstance();
+        
+        if ($route= $map->contains(new _Route($controller, $action))) {
+            $params= $route->getParams();
+            foreach ($params AS $param) {
+                if (!$request->hasParam($param->getName()) or ($request->getParam($param->getName()) =='')) {
+                    // load failure due to missing parameters.
+                }
+            }
+            
+        }
+        
+    }
+    
     /**
      * Creates an instance of the requested Controller
      * In case the route fails, we try to load the default controller specified in the config file 
