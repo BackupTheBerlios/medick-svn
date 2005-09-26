@@ -98,7 +98,9 @@ class Logger implements ILogger {
     public function __call($method, $message) {
         if (!$message) return;
         if (!in_array($method, $this->levels)) {
-            trigger_error(sprintf('Call to undefined function: %s::%s(%s).', get_class($this), $method, $message), E_USER_ERROR);
+            trigger_error(
+              sprintf('Call to undefined function: %s::%s(%s).', get_class($this), $method, $message), E_USER_ERROR
+            );
         }
         foreach ($this->levels AS $_level=>$_name) {
             if($_name == $method) break;
