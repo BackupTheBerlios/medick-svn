@@ -1,0 +1,15 @@
+$Id$
+
+Medick TODO list.
+
+(*) done tasks.
+(?) do we need something like this?
+
+1. Validators.
+    1.1 Error messages.
+2. Session.
+3. Auth.
+4. Caching system.
+5. A new naming convention, so we can use __autoload function.
+6. XML template engine (?)
+
