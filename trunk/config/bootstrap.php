@@ -35,20 +35,35 @@
 /**
  * Will bootstrap the application by setting it`s propreties.
  * Required files for start-up are included here
- * TODO: can we move the php options in .htaccess file? 
  * @package locknet7.start
  */
 
-error_reporting(E_ALL);
+// error reporting level, turn this off in production!
+error_reporting(E_ALL|E_STRICT);
+
 // main TOP_LOCATION.
 define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+
 // include_path, rewrite the existing one
 set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
                   TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
                 );
+
+// XXX.
+if (phpversion()=='6.0.0-dev') {
+     // strict sdandards.
+     date_default_timezone_set("Europe/Bucharest");
+}
+
+// load core classes.    
 include_once('MedickException.php');
 include_once('configurator/XMLConfigurator.php');
+// setup a Configurator.
+Configurator::factory('XML');
+// get some orientation.
+include_once('action/controller/Map.php');
+// load application map.
+include_once(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'routes.php');
 
-Configurator::factory();
 include_once('logger/Logger.php');
 include_once('Dispatcher.php');
