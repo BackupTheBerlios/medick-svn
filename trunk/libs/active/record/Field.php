@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,37 +33,59 @@
 // }}}
 
 
+/**
+ * It represents a field from DB
+ * @package locknet7.active.record.field
+ */
 class Field {
-
+    
+    /** @var string name of the field */
     private $name;
-
+    /** @var mixed value of the field */
     private $value;
     
+    /** @var */
     public $type;
-
+    /** @var bool is primary key flag */
     public $isPk = FALSE;
-
+    /** @var bool is foreign key flag */
     public $isFk = FALSE;
-
+    /** @var bool if this field was affected by the current run */
     public $isAffected = FALSE;
-
+    /** @var string the foreign key table */
     public $fkTable;
     
+    /**
+     * Creates a new Field Object
+     * @param string the name of this Field
+     */
     public function __construct($name) {
         $this->name = $name;
     }
-
+    
+    /**
+     * It gets the name of this field
+     * @return string name
+     */
     public function getName() {
         return $this->name;
     }
 
+    /**
+     * It gets the value of this Field
+     * @return string
+     */
     public function getValue() {
         return $this->value;
     }
 
+    /**
+     * It sets the value of this Field
+     * @param mixed value
+     */
     public function setValue($value) {
         $this->value = $value;
     }
-    
+
 }
 
