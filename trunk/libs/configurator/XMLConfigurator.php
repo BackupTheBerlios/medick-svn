@@ -48,7 +48,8 @@ class XMLConfigurator extends Configurator {
      * Constructor.
      * @param string, xml, configuration file/string
      */
-    public function __construct($xml= TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml') {
+    public function __construct() {
+        $xml= TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml';
         if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
         else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
