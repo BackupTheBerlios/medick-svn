@@ -86,8 +86,12 @@ class Form {
         return '<input type="hidden" name="' . $name . '" value="' . $value . '" />';
     }
     
-    public static function textarea($name, $value = null) {
-        $buff  = '<textarea name="' . $name . '">';
+    public static function textarea($name, $value = null, $attr='') {
+        $buff  = '<textarea name="' . $name . '"';
+        if ($attr!='') {
+            $buff .= self::parseAttributes($attr);   
+        }
+        $buff .= '>';
         if (!is_null($value)) $buff .= $value;
         $buff .= '</textarea>';
         return $buff;
