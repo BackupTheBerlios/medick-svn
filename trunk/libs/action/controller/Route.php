@@ -32,74 +32,169 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-// include_once('action/controller/route/MedickRoute.php');
-include_once('action/controller/route/RouteException.php');
-
 /**
  * @package locknet7.action.controller.route
  */
-class ActionControllerRoute {
+class Route {
 
-    public static function recognize(Request $request) {
-        // XXX. if failed?
-        $controller= $request->getParam('controller');
-        // XXX. if failed?
-        $action    = $request->getParam('action');
-        $map= Map::getInstance();
-        if ($route= $map->contains(new Route($controller,$action))) {
-            foreach ($route->getParams() AS $param) {
-                if (!$request->hasParam($param->getName()) OR ($request->getParam($param->getName()) =='')) {
-                    // XXX. load failure due to missing parameters.
-                    $route= $map->getRouteByName($route->getFailure());
-                    // XXX. failure message.
-                    $request->setParam('controller', $route->getController());
-                    $request->setParam('action', $route->getAction());
-                    break;
-                    // throw new RouteException('Route failed due to the missing parameters!');
+    // this route name
+    private $name;
+    // route controller name
+    private $controller;
+    // route action name
+    private $action;
+    // unique route identifier.
+    private $id;
+    // route parameters.
+    private $params;
+    // route access level.
+    private $access;
+    // distinctive route header.
+    private $header;
+    // name of the failure Route.
+    private $failure;
 
-                }
-                if ($param->hasValidators()) {
-                    foreach($param->getValidators() AS $validator) {
-                        $validator->setValue($request->getParam($param->getName()));
-                        if (!$validator->validate()) {
-                          // XXX. validation failed.
-                          throw new RouteException('Route validation failed!');
-                        }
-                    }
-                }
-            }
-            return self::createController($route);
-        }
-        // XXX. no exception here, default rout must be loaded.
-        throw new RouteException('Our map do not contain this Route!');
+    /**
+     * Constructor.
+     * @param string controller name
+     * @param string action name
+     */
+    public function __construct($controller, $action= '') {
+        $this->controller= $controller;
+        $this->action= $action;
+        $this->id= md5($this->controller . $this->action);
+        $this->params= array();
+    }
+    
+    /**
+     * Set the failure Route name
+     * @param string name, the name of the failure route.
+     */
+    public function setFailure($name) {
+        $this->failure= $name;
     }
 
     /**
-     * Creates an instance of the requested Controller
-     * In case the route fails, we try to load the default controller specified in the config file
-     * @param Request, request, the request
-     * @return ActionController
-     * @throws RouteException
+     * Gets the failure Route name
      */
-    private static function createController(Route $route) {
-        // this will fail in ReflectionClass.
-        @include_once($route->getControllerPath() . 'application.php');
-        @include_once($route->getControllerPath() . $route->getControllerFile());
-        // XXX. try/catch here.
-        $controller_class = new ReflectionClass($route->getControllerName());
+    public function getFailure() {
+        return $this->failure;
+    }
 
-        if (
-            ($controller_class->isInstantiable())
-            AND
-            (
-                ($controller_class->getParentClass()->name=='ApplicationController')
-                OR
-                ($controller_class->getParentClass()->name=='ActionControllerBase')
-            )
-            )
-        {
-            return $controller_class->newInstance();
-        }
-        throw new RouteException ('Cannot create Controller...');
+    /**
+     * It gets this route id,
+     * a md5`ed concat`ed string between controller+action
+     * @return string
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Sets the name of this route.
+     * @param string name
+     */
+    public function setName($name) {
+        $this->name= $name;
+    }
+
+    /**
+     * Gets the name of this route.
+     * @return string name of this route.
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * It sets the action for this route.
+     * @param string action action name
+     */
+    public function setAction($action) {
+        $this->action= $action;
+    }
+
+    /**
+     * It gets the action.
+     * @return string action
+     */
+    public function getAction() {
+        return $this->action;
+    }
+
+    /**
+     * It get the controller
+     * @return string controller, like 'todo'
+     */
+    public function getController() {
+        return $this->controller;
+    }
+
+    /**
+     * The controller name like 'TodoController'
+     * @return string controller name
+     */
+    public function getControllerName() {
+      return ucfirst($this->controller) . 'Controller';
+    }
+
+    /**
+     * It gets the controller path
+     * like /home/user/app/controllers/
+     * @deprecated, this method should be merged with getControllerFile.
+     * @return string the controller path
+     */
+    public function getControllerPath() {
+        return
+            Configurator::getInstance()->getProperty('application_path') .
+            DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * It gets the controller file like 'todo_controller.php'
+     * @deprecated, this method should be merged with getControllerPath()
+     * @return string the controller file
+     */
+    public function getControllerFile() {
+        return strtolower($this->controller) . '_controller.php';
+    }
+
+    /**
+     * It sets the access level.
+     * @param AccessLevel access
+     */
+    public function setAccess($access) {
+        $this->access= $access;
+    }
+
+    /**
+     * Adds a new Parameter on this route.
+     * @param param Param
+     */
+    public function add(RouteParam $param) {
+        $this->params[]= $param;
+    }
+
+    /**
+     * Gets the list with the attached params
+     * @return array RouteParam[]
+     */
+    public function getParams() {
+        return $this->params;
+    }
+
+    /** xxx. this should be a list of headers!
+     * Sets a specific route header that we should expect to have on this request.
+     * @param header string the header
+     */
+    public function setHeader($header) {
+        $this->header= $header;
+    }
+
+    /** xxx. this should be a list of headers
+     * @return the header
+     */
+    public function getHeader() {
+        return $this->header;
     }
 }
