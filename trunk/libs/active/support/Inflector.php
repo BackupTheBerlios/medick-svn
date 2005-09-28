@@ -38,11 +38,11 @@
  */
  
 class Inflector {
-	
-	/** 
-	 * Transform word from singular to plural
-	 * @param string word, the word we want to pluralize
-	 */
+
+    /** 
+     * Transform word from singular to plural
+     * @param string word, the word we want to pluralize
+     */
     public static function pluralize($word) {
         $rules = array(
             '/(quiz)$/i'               => '\1zes', 
@@ -64,45 +64,45 @@ class Inflector {
             '/s$/i'                    => 's',
             '/$/'                      => 's'
         );
-	
-      	foreach ($rules AS $rule => $replacement) {
-      	    if (preg_match($rule, $word)) {
+        
+        foreach ($rules AS $rule => $replacement) {
+            if (preg_match($rule, $word)) {
                 return preg_replace($rule, $replacement, $word);
             }
         }
         return $word;
     }
-	
+
     /** 
      * Transform word from plural to singular
      * @param string word, the word we want to singularize
      */
     public static function singularize($word) {
         $rules = array(
-	        '/s$/i'                 => '',
-  	      '/(n)ews$/i'            => '\1ews',
-	        '/([ti])a$/i'           => '\1um',
-	        '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis',
-	        '/(^analy)ses$/i'       => '\1sis',
-	        '/([^f])ves$/i'         => '\1fe',
-  	      '/(hive)s$/i'           => '\1',
-	        '/(tive)s$/i'           => '\1',
-	        '/([lr])ves$/i'         => '\1f',
-	        '/([^aeiouy]|qu)ies$/i' => '\1y',
-	        '/(s)eries$/i'          => '\1eries',
-  	      '/(m)ovies$/i'          => '\1ovie',
-	        '/(x|ch|ss|sh)es$/i'    => '\1',
-	        '/([m|l])ice$/i'        => '\1ouse',
-	        '/(bus)es$/i'           => '\1',
-	        '/(o)es$/i'             => '\1',
-  	      '/(shoe)s$/i'           => '\1',
-	        '/(cris|ax|test)es$/i'  => '\1is',
-	        '/([octop|vir])i$/i'    => '\1us',
-	        '/(alias|status)es$/i'  => '\1',
-	        '/^(ox)en/i'            => '\1',
-  	      '/(vert|ind)ices$/i'    => '\1ex',
-	        '/(matr)ices$/i'        => '\1ix',
-	        '/(quiz)zes$/i'         => '\1'
+            '/s$/i'                 => '',
+            '/(n)ews$/i'            => '\1ews',
+            '/([ti])a$/i'           => '\1um',
+            '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis',
+            '/(^analy)ses$/i'       => '\1sis',
+            '/([^f])ves$/i'         => '\1fe',
+            '/(hive)s$/i'           => '\1',
+            '/(tive)s$/i'           => '\1',
+            '/([lr])ves$/i'         => '\1f',
+            '/([^aeiouy]|qu)ies$/i' => '\1y',
+            '/(s)eries$/i'          => '\1eries',
+            '/(m)ovies$/i'          => '\1ovie',
+            '/(x|ch|ss|sh)es$/i'    => '\1',
+            '/([m|l])ice$/i'        => '\1ouse',
+            '/(bus)es$/i'           => '\1',
+            '/(o)es$/i'             => '\1',
+            '/(shoe)s$/i'           => '\1',
+            '/(cris|ax|test)es$/i'  => '\1is',
+            '/([octop|vir])i$/i'    => '\1us',
+            '/(alias|status)es$/i'  => '\1',
+            '/^(ox)en/i'            => '\1',
+            '/(vert|ind)ices$/i'    => '\1ex',
+            '/(matr)ices$/i'        => '\1ix',
+            '/(quiz)zes$/i'         => '\1'
         );
         
         foreach (array_reverse($rules) as $rule => $replacement) {
