@@ -31,19 +31,21 @@
 // 
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
-
-/**
- * @package locknet7.medick
- */
     
 include_once('action/controller/Routing.php');
 include_once('action/controller/Request.php');
 include_once('action/controller/Response.php');
 include_once('action/controller/Base.php');
 
-class MedickDispatcher {
+/**
+ * @package locknet7.medick
+ */
+class MedickDispatcher extends MedickObject {
 
-    /** our entry point */
+    /** 
+     * Framework entry point 
+     * @return void.
+     */
     public static function dispatch() {
 
         if (php_sapi_name() == 'cli') {
