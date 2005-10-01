@@ -39,8 +39,8 @@
 class Registry extends Object {
 
     /** we want only one instance of the Registry */
-    private final __construct() {   }
-    private final __clone() {   }
+    private final function __construct() {   }
+    private final function __clone() {   }
     
     // {{{ static
     
