@@ -31,3 +31,23 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
+
+/**
+ * It`s a route header
+ * @package locknet7.action.controller.route
+ */
+
+class RouteHeader extends Object {
+
+    private $value;
+
+    public function __construct($value) {
+        $this->value = $value;
+    }
+
+    public function getValue() {
+        return $this->value;
+    }
+
+}
+
