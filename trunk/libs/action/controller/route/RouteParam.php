@@ -36,7 +36,7 @@
  * Its a Route Parameter.
  * @package locknet7.action.controller.route
  */
- class RouteParam {
+ class RouteParam extends MedickObject {
 
     private $name;
     private $value;
