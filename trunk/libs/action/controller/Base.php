@@ -36,7 +36,7 @@
  * @package locknet7.action.controller
  */
     
-include_once('action/controller/Dependency.php');
+include_once('action/controller/Injector.php');
 include_once('action/view/Base.php');
  
 /**
@@ -44,29 +44,52 @@ include_once('action/view/Base.php');
  */
 class ActionControllerBase extends Object {
     
-    /** logger instance */
+    /** @var Logger 
+        logger instance */
     protected $logger;
-    /** Request */
+    
+    /** @var Request 
+        current request */
     protected $request;
-    /** Request parameters */
+    
+    /** @var array 
+        Request parameters */
     protected $params;
-    /** Response */
+    
+    /** @var Response 
+        Response that we are building */
     protected $response;
-    /** Request Heders */
+    
+    /** @var array 
+        request heders */
     protected $headers;
-    /** Session */
+    
+    /** @var Session 
+        current request session */
     protected $session;
-    /** values for template class */
+    
+    /** @var array 
+        values for template class */
     protected $assigns;
-    /** Default location for template files*/
+    
+    /** @var string 
+        Default location for template files*/
 	protected $template_root;
-	/** Application path*/
+    
+	/** @var string 
+        application path*/
 	protected $app_path;
-    /** Template Engine */
+    
+    /** @var ActiveViewBase 
+        Template Engine */
 	protected $template;
-    /** Flag to indicate that the current action was performed.*/
+    
+    /** @var bool 
+        Flag to indicate that the current action was performed.*/
     private $action_performed = FALSE;
-    /** Configurator instance */
+    
+    /** @var Configurator 
+        configurator instance */
     private $config;
     
     /**
@@ -184,7 +207,7 @@ class ActionControllerBase extends Object {
     // XXX: not-done!
     protected function sendFile($location, $options = array()) {
         if(!is_file($location)) {
-            throw new Exception("File not found...");
+            throw new MedickException("File not found...");
         }
         // $options['length'] = File->size($location);
         // $options['filename'] = File->basename($location);
@@ -259,7 +282,7 @@ class ActionControllerBase extends Object {
      *
      * Loop on before_filter array, invoking the method before the action
      * <code>
-     *      class news_controller extends ActionControllerBase {
+     *      class NewsController extends ActionControllerBase {
      *          // use protected on before_filter member
      *          protected before_filter = array('authenticate');
      *          // an action
@@ -289,15 +312,16 @@ class ActionControllerBase extends Object {
 	/**
 	 * Injects model names into ActiveRecordBase by using the ModelInjector.
 	 * TODO: table inheritance ?
+     * TODO: can we hook a Registry here?
 	 */
     private function add_models() {
         if (isset($this->model)) {
             $this->logger->debug("We have Models...");
             foreach ($this->model AS $model) {
                 $this->logger->debug('Injecting Model:: ' . $model);
-                ModelInjector::inject($model);
+                Injector::inject($model);
             }
-            ModelInjector::prepareARBase();
+            Injector::prepareARBase();
         }
     }
     
@@ -307,6 +331,7 @@ class ActionControllerBase extends Object {
      * 
      * This method is used to perform the actions given by before/pre filters
      * and also when we perform the action
+     * TODO: can we move this to the Object class?
      * @param string method_name, the method.
      * 							  NOTE: We force the name to be on lower case.
      * @return RelfectionMethod or FALSE in case of failure. 
