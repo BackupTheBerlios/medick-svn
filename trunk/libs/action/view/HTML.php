@@ -33,18 +33,17 @@
 // }}}
 
 /**
+ * This package will be deprecated soon and replaced by a modern view.
  * @package locknet7.action.view.HTML
  */
 
-// NLT!
-class HTMLElement {
+class HTMLElement extends Object {
     public function __construct() {     }
 }
 
-// NLT!
-class URL {
+class URL extends Object {
     public static function create($controller, $action, $params=array()) {
-        if (!Configurator::getInstance()->getProperty('rewrite')) {
+        if (!Registry::get('__configurator')->getProperty('rewrite')) {
             // rewrite-off:
             $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
             if (!empty($params)) {
@@ -67,7 +66,7 @@ class URL {
 }
 
 
-class Form {
+class Form extends Object {
     
     public function __construct($action, $method) {  }
     
@@ -115,3 +114,4 @@ class Form {
         return $buff;
     }
 }
+

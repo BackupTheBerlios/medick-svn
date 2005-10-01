@@ -44,7 +44,7 @@ include_once('action/view/HTML.php');
  * 
  * This object, is a factory that builds concrete Template Engine
  */
-abstract class ActionViewBase {
+abstract class ActionViewBase extends Object {
 
     /** Safe way of keeping the assigned vars */
 	protected $vars = array();
