@@ -37,27 +37,32 @@ include_once('action/controller/route/RouteException.php');
 /**
  * @package locknet7.action.controller.route
  */
-class ActionControllerRouting {
+class ActionControllerRouting extends Object {
 
     public static function recognize(Request $request) {
         // XXX. if failed?
         $controller= $request->getParam('controller');
         // XXX. if failed?
         $action    = $request->getParam('action');
-        $map= Map::getInstance();
+        $map= Registry::get('__map');
+        // do we know this Route?
         if ($route= $map->contains(new Route($controller,$action))) {
+            // loop throught the Route Parameters
             foreach ($route->getParams() AS $param) {
+                // if this Request has the current parameter, try to validate him.
                 if (!$request->hasParam($param->getName()) OR ($request->getParam($param->getName()) =='')) {
                     // XXX. load failure due to missing parameters.
                     $route= $map->getRouteByName($route->getFailure());
                     // XXX. failure message.
+                    // highjak the current request.
                     $request->setParam('controller', $route->getController());
                     $request->setParam('action', $route->getAction());
                     break;
                     // throw new RouteException('Route failed due to the missing parameters!');
-
                 }
+                // {{{ if this paramester has attached validators,
                 if ($param->hasValidators()) {
+                    // loop throught the validators and validate this parameter value.
                     foreach($param->getValidators() AS $validator) {
                         $validator->setValue($request->getParam($param->getName()));
                         if (!$validator->validate()) {
@@ -65,11 +70,11 @@ class ActionControllerRouting {
                           throw new RouteException('Route validation failed!');
                         }
                     }
-                }
+                } // }}}
             }
             return self::createController($route);
         }
-        // XXX. no exception here, default rout must be loaded.
+        // XXX. no exception here, default route must be loaded.
         throw new RouteException('Our map do not contain this Route!');
     }
 
@@ -102,3 +107,4 @@ class ActionControllerRouting {
         throw new RouteException ('Cannot create Controller...');
     }
 }
+
