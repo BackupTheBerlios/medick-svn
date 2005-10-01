@@ -42,7 +42,7 @@ include_once('creole/Creole.php');
 /**
  * @package locknet7.active.record
  */
-class ActiveRecordBase {
+class ActiveRecordBase extends Object {
 
     /** DB Table Fields */
     protected $fields;
@@ -59,7 +59,7 @@ class ActiveRecordBase {
 
     public static function establish_connection () {
         if (self::$conn === NULL) {
-            self::$conn = Creole::getConnection(Configurator::getInstance()->getDatabaseDsn());
+            self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
     }
 
@@ -243,7 +243,7 @@ class ActiveRecordBase {
         self::populateStmtValues($stmt, $this->fields->getAffectedFields());
         $af_rows = $stmt->executeUpdate();
         $stmt->close();
-        Logger::getInstance()->debug('Performing sql query: ' . self::$conn->lastQuery);
+        Registry::get('__logger')->debug('Performing sql query: ' . self::$conn->lastQuery);
         // $this->_reset();
         return $af_rows;
     }
@@ -345,7 +345,7 @@ class ActiveRecordBase {
             // $results->add($class->newInstance($rs->getRow()));
             $results->add(new $_klazz($rs->getRow()));
         }
-        Logger::getInstance()->debug('Performing sql query: ' . self::$conn->lastQuery);
+        Registry::get('__logger')->debug('Performing sql query: ' . self::$conn->lastQuery);
         return $results;
     }
     // }}}
