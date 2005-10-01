@@ -36,10 +36,10 @@ include_once('action/controller/Route.php');
 include_once('action/controller/route/RouteParam.php');
 
 /**
- * @package locknet7.action.controller.map
+ * @package locknet7.action.controller
  */
 
-class Map {
+class Map extends MedickObject {
 
     /** @var Map, the current Map */
     private static $instance = NULL;
@@ -48,6 +48,9 @@ class Map {
      * It gets our map instance
      */
     public static function getInstance() {
+        if (self::$instance===NULL) {
+            self::$instance= new Map();
+        }
         return self::$instance;
     }
 
