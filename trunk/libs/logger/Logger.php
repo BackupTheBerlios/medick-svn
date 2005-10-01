@@ -32,11 +32,18 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('logger/ILogger.php');
+include_once('logger/LoggingException.php');
+include_once('logger/LoggingEvent.php');
+include_once('logger/outputter/IOutputter.php');
+include_once('logger/outputter/Outputter.php');
+include_once('logger/formatter/Formatter.php');
+
 /**
  * @package locknet7.logger
  */
  
-class Logger implements ILogger {
+class Logger extends MedickObject implements ILogger {
 
     /** a fancy way of telling the level */
     const DEBUG = 0;
@@ -71,13 +78,16 @@ class Logger implements ILogger {
      */
     private final function __construct() {
     
-        $configurator = Configurator::getInstance();
+        $configurator = MedickRegistry::get('__configurator');
         $outputters   = $configurator->getLoggerOutputters();
 
         for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {   
             foreach($outputters->getChildren() as $outputter) {
                 try {
-                    $class= new ReflectionClass(ucfirst((string)trim($outputter['name'])) . 'Outputter');
+                    $class_name= ucfirst((string)trim($outputter['name'])) . 'Outputter';
+                    $class_file= 'logger' . DIRECTORY_SEPARATOR . 'outputter' . DIRECTORY_SEPARATOR . $class_name . '.php';
+                    include_once($class_file);
+                    $class= new ReflectionClass($class_name);
                     $this->attach( 
                         $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
                 } catch (ReflectionException $rEx) {
@@ -87,7 +97,8 @@ class Logger implements ILogger {
         }
         $this->setLevel(Logger::DEBUG);
         $_klazz = $configurator->getLoggerFormatter();
-        $this->setFormatter(new $_klazz);
+        include_once('logger' . DIRECTORY_SEPARATOR . 'formatter' . DIRECTORY_SEPARATOR . $_klazz . '.php');
+        $this->formatter= new $_klazz;
         $this->debug('Logger ready');
     }
 
@@ -154,13 +165,6 @@ class Logger implements ILogger {
             }
         }
         return false;
-    }
-    
-    /** Q: is this usefull? */
-    public function detach(IOutputter $outputter) {
-        if ($this->contains(outputter)) {
-            unset($this->outputters[$outputter]);
-        }
     }
     
     /**
@@ -232,244 +236,3 @@ class Logger implements ILogger {
         return self::$instance;
     }
 }
-
-
-// {{{ Outputters
-
-/** Abstract Outputter */
-abstract class Outputter implements IOutputter {
-
-    /** individual outputter level*/
-    protected $level;
-    
-    /**
-     * Receive the Logger update 
-     * and writes the log event using to the formatter
-     */
-    public function update(ILogger $logger) {
-        if ($this->level <= $logger->getMessageLevel()){
-            $this->write($logger->getFormatter()->format($logger->getEvent()));
-        }
-    }
-    
-    // {{{ abstract methods
-    /** gets the outputter Id, usually the outputter class name */
-    public abstract function getId();
-    /** it writes the message */
-    protected abstract function write($message);
-    // }}}
-}
-
-/** standard output */
-class StdoutOutputter extends Outputter {
-    
-    /** the sapi name */
-    private $isCLI = FALSE;
-    /** end of line style (can be \n for cli or html)*/
-    private $eol;
-    /** buffer */
-    private $output;
-    
-    /**
-     * It builds a new StdOutputter
-     * @param int, level, logger level.
-     */
-    public function __construct($level) {
-        if (php_sapi_name() == 'cli') {
-            $this->isCLI = TRUE;
-            $this->eol = "\n";
-            $this->output .= "\n";
-        } else {
-            $this->output .= '<table border="1" style="font-family: verdana;font-size: 0.7em;" width="100%"><tr><td>';
-            $this->eol =  '</td></tr><tr><td>';
-        }
-        $this->level = $level;
-    }
-    
-    /** It flushes (echoes) the output buffer on exit */
-    public function __destruct() {
-        if ($this->isCLI) {
-            $this->output .= $this->eol;
-        } else {
-            $this->output .= '</td></tr></table>';
-        }
-        echo $this->output;
-    }
-    
-    /** it writes the message to the buffer */
-    protected function write($message) {
-        $this->output .= $message . $this->eol;
-    }
-    
-    /** It gets the output */ 
-    public function getOutput() {
-        return $this->output;
-    }
-    
-    /** @return this class name as an identifier */ 
-    public function getId() {
-        return __CLASS__;
-    }
-}
-
-/** it writes logging messages to a file */
-class FileOutputter extends Outputter {
-    
-    /** file handler */
-    private $handler;
-    
-    /**
-     * It builds this outputter 
-     * @param int, level, this outputter individual level
-     * @param string the file to write on
-     */
-    public function __construct($level, $file) {
-        $this->handler = fopen($file, 'a');
-        $this->level = $level;
-    }
-    
-    /**
-     * Closes the handler on exit
-     */
-    public function __destruct() {
-        if ($this->handler) {
-            fclose($this->handler);
-        }
-    }
-    
-    /** it writes the message */
-    protected function write($message) {
-        if (flock($this->handler, LOCK_EX|LOCK_NB)) {
-            fwrite($this->handler, $message . "\n");
-        }
-        return;
-    }
-
-    public function getId() {
-        return __CLASS__;
-    }
-}
-
-/**
- * @TODO: ignore multiple messages by using a file pid (or smthing)
- * It sends an email message with the logger event
- */
-class MailOutputter extends Outputter {
-    
-    /** the email address */
-    private $email;
-    /** email subject */
-    private $subject;
-
-    public function __construct($level, $email, $subject='Fatality...') {
-        $this->level   = $level;
-        $this->email   = $email;
-        $this->subject = $subject;
-    }
-    public function getId() {
-        return __CLASS__;
-    }
-    
-    protected function write($message) {
-        @mail($this->email, $this->subject, $message);
-    }
-}
-// }}}
-
-// {{{ Formatters
-
-/** Base abstract Event Formatter. */ 
-abstract class Formatter {
-    /**
-     * Formats the event
-     * @param LoggingEvent event, the event
-     * @return string
-     */ 
-    abstract public function format(LoggingEvent $event);
-
-    /**
-     * Returns the string representation of the message data.
-     * @param  mixed $message   The original message data.  This may be a
-     *                          string or any object.
-     * @return string           The string representation of the message.
-     * @access protected
-     */
-    protected function extractMessage($message) {
-        if(!is_string($message)) $message = print_r($message, TRUE);
-        return $message;
-    }
-}
-
-/** Default formatter. */ 
-class DefaultFormatter extends Formatter {
-    /** @see Formatter::formatter */
-    public function format(LoggingEvent $event) {
-        return $event->level . " >>> " . $event->message;
-    }
-}
-
-/** Simple formatter */
-class SimpleFormatter extends Formatter {
-    /** @see Formatter::format */
-    public function format(LoggingEvent $event) {
-        $_oo = $event->class ? $event->class . '::' . $event->function : $event->function;
-        return strftime("%d/%m/%Y %H:%M:%S", $event->date) . 
-               ' [ ' . $event->file . ' / ' . $event->line . ' ] ' . 
-               $_oo . ' '. $event->level . ' >>> ' . $this->extractMessage($event->message);
-    }
-}
-
-// }}}
-
-// {{{ Logging Event
-
-class LoggingEvent {
-    /** @var array */
-    public $backtrace = array();
-    /** @var mixed */
-    public $message;
-    /** @var int */
-    public $level;
-    /** @var string */
-    public $file;
-    /** @var int */
-    public $line;
-    /** @var string */
-    public $function;
-    /** @var string */
-    public $class;
-    /** @var string */
-    public $date;
-    
-    /**
-     * Constructor, set`s the properties
-     * @param mixed, message, the message
-     * @param string, this event level
-     */ 
-    public function __construct($message, $level) {
-        $this->backtrace = debug_backtrace();
-        $this->message   = $message;
-        $this->level     = strtoupper($level);
-        $this->date      = time();
-        $this->file      = end(@explode(DIRECTORY_SEPARATOR,@$this->backtrace[1]['file']));
-        $this->line      = @$this->backtrace[2]['line'];
-        $this->class     = @$this->backtrace[3]['class'];
-        $this->function  = @$this->backtrace[3]['function'];
-    }
-}
-
-// }}}
-
-// {{{ Interfaces
-
-interface IOutputter {
-    function update(ILogger $logger);
-}
-
-interface ILogger {
-    function attach(IOutputter $appender);
-    function detach(IOutputter $appender);
-    function notify();
-}
-// }}}
-
