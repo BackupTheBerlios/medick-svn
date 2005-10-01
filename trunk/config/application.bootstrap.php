@@ -63,21 +63,21 @@ if (phpversion()=='6.0.0-dev') {
 }
 
 // load core classes.
-include_once('medick/MedickObject.php');
-include_once('medick/MedickException.php');
-include_once('medick/MedickRegistry.php');
-include_once('medick/MedickDispatcher.php');
+include_once('medick/Object.php');
+include_once('medick/Exception.php');
+include_once('medick/Registry.php');
+include_once('medick/Dispatcher.php');
 
 // hook a Configurator into Registry.
 include_once('configurator/XMLConfigurator.php');
-MedickRegistry::put(XMLConfigurator::getInstance(), '__configurator');
+Registry::put(new XMLConfigurator(), '__configurator');
 
 // get some orientation.
 include_once('action/controller/Map.php');
-$map= MedickRegistry::put(Map::getInstance(), '__map');
+$map= Registry::put(new Map(), '__map');
 
 include_once('logger/Logger.php');
-MedickRegistry::put(Logger::getInstance(), '__logger');
+Registry::put(new Logger(), '__logger');
 
 // load application map.
 include_once(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.routes.php');
