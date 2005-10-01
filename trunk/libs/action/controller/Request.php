@@ -41,10 +41,13 @@ if (php_sapi_name() == 'cli') {
 /** 
  * @package locknet7.action.controller.request
  */
-abstract class Request {
+abstract class Request extends Object {
     
+    /** @var array
+        current request parameters */
     protected $params = array();
     
+    /** @var Route current request Route */ // XXX. is this used anymore?
     protected $route;
     
     /**
@@ -57,13 +60,18 @@ abstract class Request {
     }    
     
     /**
-     * 
+     * Check if the current Request has the parameter with the specified name
+     * @param string param_name the parameter name
+     * @return bool TRUE if the parameter_name is included in this request, FALSE otherwise
      */
-    public function hasParam($param) {
-        return isset($this->params[$param]);
+    public function hasParam($param_name) {
+        return isset($this->params[$param_name]);
     }
     
-    /** It gets all the parameters of this Request */
+    /** 
+     * It gets all the parameters of this Request 
+     * @return array this request parameters.
+     */
     public function getParams() {
         return $this->params;   
     }
@@ -72,12 +80,13 @@ abstract class Request {
      * It sets a param.
      * @param string, name, the name of the param to set
      * @param mixed, value, value of the param
+     * @return void
      */
     public function setParam($name, $value) {
         $this->params[$name] = $value;
     }    
     
-    /**
+    /** XXX. is this used anymore?
      * It sets the Request Route
      * @param Route route, the route to set on this Request
      * @return void
@@ -91,3 +100,4 @@ abstract class Request {
         return $this->route;
     }
 }
+

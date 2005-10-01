@@ -41,7 +41,7 @@ if (php_sapi_name() == 'cli') {
 /**
  * @package locknet7.action.controller.response
  */
-abstract class Response {
+abstract class Response extends Object {
 
     /** Status code (200) indicating the request succeeded normally. */
     const SC_OK = 200;
@@ -102,3 +102,4 @@ abstract class Response {
     abstract function setStatus($status);
 
 }
+
