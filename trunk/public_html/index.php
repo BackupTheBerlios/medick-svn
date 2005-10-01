@@ -33,9 +33,10 @@
 // }}}
 
 /**
- * Index file, the only one.
- * @package locknet7.start
+ * Index.php file.
+ * The file __APPLICATION__NAME__.bootstrap.php should be included here.
  */
 
-include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'bootstrap.php');
-Dispatcher::dispatch();
+include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'applcation.bootstrap.php');
+
+MedickDispatcher::dispatch();
