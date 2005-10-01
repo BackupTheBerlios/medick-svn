@@ -1,0 +1,14 @@
+$Id$
+* work in progress.
+
+
+0.0.2(*)
+    - added Mapping concept.
+    - added core classes (Object, Registry, etc.)
+    - class organization (^)
+    - implement the Registry system to hold our classes instances
+    - Model is capable of getting values by foreign keys. Eg.: $todo->project->name
+
+0.0.1
+    - minimal functional version
+    
