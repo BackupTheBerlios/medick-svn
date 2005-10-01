@@ -36,13 +36,15 @@
  * Its a Route Parameter.
  * @package locknet7.action.controller.route
  */
- class RouteParam extends MedickObject {
+class RouteParam extends Object {
 
+    /** @var string param name */
     private $name;
+    /** @var string param value */
     private $value;
-
+    /** XXX. NotUsed */
     private $type;
-
+    /** @var IValidators[] param validators */
     private $validators;
 
     /**
@@ -50,11 +52,11 @@
      * @param string name of this Route Parameter
      */
     public function __construct($name) {
-        $this->name= $name;
-        $this->validators=array();
+        $this->name = $name;
+        $this->validators = array();
     }
 
-    /**
+    /** XXX. NotUsed.
      * Sets this parameter Type
      * @param string type
      */
@@ -62,7 +64,7 @@
         $this->type= $type;
     }
 
-    /**
+    /** XXX. NotUsed
      * It gets this param type
      * @return string type
      */
@@ -71,22 +73,35 @@
     }
 
     /**
-     * Adds a validator for this param.
+     * Adds a validator for this parameter
      * @param IValidator validators
      */
     public function add(IValidator $validator) {
         if ($this->contains($validator)) return;
         $this->validators[]= $validator;
     }
-
+    
+    /**
+     * It gets the list of Validators
+     * @return IValidators[]
+     */
     public function getValidators() {
         return $this->validator;
     }
-
+    
+    /**
+     * Check if this parameter hav attached Validators
+     * @return bool, TRUE if the parameter has at least one IValidator attached, FALSE otherwise
+     */
     public function hasValidators() {
       return sizeof($this->validators) > 0;
     }
-
+    
+    /** XXX. NotDone.
+     * Check if the parameter contains the given Validator
+     * @param IValidator validator to check if is already in the stack of IValidators elements
+     * @return IValidator if this parameter has the IValidator attached or FALSE if the stack of IValidator dont contains this IValidator
+     */
     public function contains (IValidator $validator) {
         foreach ($this->validators AS $_validator) {
 
@@ -112,8 +127,10 @@
 
     /**
      * It gets the name of this parameter
+     * @return string
      */
     public function getName() {
         return $this->name;
     }
 }
+
