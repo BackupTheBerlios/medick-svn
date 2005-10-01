@@ -32,29 +32,30 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('active/record/Base.php');
+
 /** 
  * Model Injector.
  * Injects the model name into Active Record Base Class.
  * @package locknet7.action.controller.dependency 
  */
 
-class ModelInjector {
+class ModelInjector extends Object {
 
     /**
      * Tasks:
      * 1) include the model file
      * 2) investigate the Model class
-     * 3) set ActiveRecordBase::$__klass
+     * 3) set ActiveRecordBase::$__klass, aka the table name.
+     * @TODO: can we hook a Registry here?
      */
     public static function inject($model) {
-        $logger = Logger::getInstance();
-        $model_location = Configurator::getInstance()->getProperty('application_path') . 
+        $logger = Registry::get('__logger');
+        $model_location = Registry::get('__configurator')->getProperty('application_path') . 
             DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $model . '.php';
         $logger->debug('Model Location:: ' . $model_location);
         // FIXME: a custom error.
-        if (!is_file($model_location)) throw new Exception ('No such file or directory!');
-        
-        include_once('active/record/Base.php');
+        if (!is_file($model_location)) throw new MedickException ('No such file or directory!');
         
         include_once($model_location);
 
@@ -65,7 +66,7 @@ class ModelInjector {
         $model_object = new ReflectionClass($model_name);
 
         if ($model_object->getParentClass()->name != 'ActiveRecordBase') {
-            throw new Exception ('Wrong Definition of your Model, ' . $model_name . ' must extend ActiveRecordBase object!');
+            throw new MedickException ('Wrong Definition of your Model, ' . $model_name . ' must extend ActiveRecordBase object!');
         }
         $logger->debug('Table:: ' .$model);
         ActiveRecordBase::setTable($model);
