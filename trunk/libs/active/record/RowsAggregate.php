@@ -32,35 +32,60 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-
-class RowsAggregate implements IteratorAggregate {
+/**
+ * @package locknet7.active.record
+ */
+class RowsAggregate extends Object implements IteratorAggregate {
     
-    /** rows container */
+    /** @var ArrayObject
+        rows container */
     private $container;
     
-    /** it builds a new container*/
+    /** 
+     * Constructor
+     */
     public function __construct() {
         $this->container = new ArrayObject();
     }
     
-    /** It adds a new row on this container*/
+    /** 
+     * It adds a new row on this container
+     * @param ActiveRecordBase row the row to add into this container
+     * @return ActiveRecordBase
+     */
     public function add(ActiveRecordBase $row) {
         $this->container->append($row);
+        return $row;
     }
 
-    /** it gets the iterator */
+    /** 
+     * It gets the iterator 
+     * @return Iterator
+     */
     public function getIterator() {
         return $this->container->getIterator();
     }
-
+    
+    /**
+     * Count the number of rows in this container
+     * @return int
+     */
     public function count() {
         return $this->getIterator()->count();
     }
-
+    
+    /**
+     * Returns an array representation of this object
+     * @return array
+     */
     public function toArray() {
         return iterator_to_array($this->getIterator());
     }
     
+    /**
+     * @param index
+     * @return
+     */
     public function offsetGet($index) {
         return $this->container->offsetGet($index);
     }
