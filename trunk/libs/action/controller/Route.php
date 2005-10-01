@@ -35,23 +35,38 @@
 /**
  * @package locknet7.action.controller.route
  */
-class Route {
+class Route extends Object {
 
-    // this route name
+    /** @var string
+        this route name */
     private $name;
-    // route controller name
+    
+    /** @var string
+        route controller name */
     private $controller;
-    // route action name
+    
+    /** @var string
+        route action name */
     private $action;
-    // unique route identifier.
+    
+    /** @var string 
+        unique route identifier. */
     private $id;
-    // route parameters.
+    
+    /** @var array RouteParam[]
+        route parameters. */
     private $params;
-    // route access level.
+    
+    /** @var mixed
+        route access level.*/
     private $access;
-    // distinctive route header.
-    private $header;
-    // name of the failure Route.
+    
+    /** @var array
+        distinctive route headers*/
+    private $headers;
+    
+    /** @var string 
+        name of the failure Route.*/
     private $failure;
 
     /**
@@ -71,11 +86,12 @@ class Route {
      * @param string name, the name of the failure route.
      */
     public function setFailure($name) {
-        $this->failure= $name;
+        $this->failure = $name;
     }
 
     /**
      * Gets the failure Route name
+     * @return string
      */
     public function getFailure() {
         return $this->failure;
@@ -146,7 +162,7 @@ class Route {
      */
     public function getControllerPath() {
         return
-            Configurator::getInstance()->getProperty('application_path') .
+            Registry::get('__configurator')->getProperty('application_path') .
             DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
     }
 
@@ -168,11 +184,18 @@ class Route {
     }
 
     /**
-     * Adds a new Parameter on this route.
-     * @param param Param
+     * Adds a new Parameter on this route or a Header.
+     * @param Object argument
      */
-    public function add(RouteParam $param) {
-        $this->params[]= $param;
+    public function add($argument) {
+        if ($argument instanceof RouteParam) {
+            $this->params[]  = $argument;
+        } elseif ($argument instanceof RouteHeader) {
+            $this->headers[] = $argument;
+        } else {
+            throw new RouteException('Wrong Argument Type in ' . __METHOD__ . ', Argument should be one of RouteParam or RouteHeader objects!');
+        }
+        return $argument;
     }
 
     /**
@@ -183,18 +206,11 @@ class Route {
         return $this->params;
     }
 
-    /** xxx. this should be a list of headers!
-     * Sets a specific route header that we should expect to have on this request.
-     * @param header string the header
+    /** 
+     * It gets the list of headers
+     * @return array RouteHeaders
      */
-    public function setHeader($header) {
-        $this->header= $header;
-    }
-
-    /** xxx. this should be a list of headers
-     * @return the header
-     */
-    public function getHeader() {
-        return $this->header;
+    public function getHeaders() {
+        return $this->headers;
     }
 }
