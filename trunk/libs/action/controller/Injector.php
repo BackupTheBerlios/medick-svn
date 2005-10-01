@@ -37,10 +37,10 @@ include_once('active/record/Base.php');
 /** 
  * Model Injector.
  * Injects the model name into Active Record Base Class.
- * @package locknet7.action.controller.dependency 
+ * @package locknet7.action.controller
  */
 
-class ModelInjector extends Object {
+class Injector extends Object {
 
     /**
      * Tasks:
