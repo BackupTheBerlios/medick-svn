@@ -42,7 +42,7 @@ include_once('action/view/Base.php');
 /**
  * Base Class For Our Application Controllers
  */
-class ActionControllerBase {
+class ActionControllerBase extends Object {
     
     /** logger instance */
     protected $logger;
@@ -171,10 +171,10 @@ class ActionControllerBase {
     private function instantiate(Request $request, Response $response) {
         $this->request  = $request;
         $this->response = $response;
-        $this->logger   = Logger::getInstance();
+        $this->logger   = Registry::get('__logger');
         $this->session  = $request->getSession();
         $this->params   = $request->getParams();
-        $this->config   = Configurator::getInstance();
+        $this->config   = Registry::get('__configurator');
         $this->app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
         $this->template_root = 
             $this->app_path . 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
@@ -279,7 +279,7 @@ class ActionControllerBase {
         if (isset($this->before_filter)) {
             foreach($this->before_filter AS $filter_name) {
                 $filter = $this->createMethod($filter_name);
-                if (!$filter->isProtected()) throw new Exception('Your filter is declared as public!');
+                if (!$filter->isProtected()) throw new MedickException('Your filter is declared as public!');
                 $this->$filter_name();
                 // $filter->invoke($this); will work only for public methods.
             }
@@ -320,3 +320,4 @@ class ActionControllerBase {
         }
     }
 }
+
