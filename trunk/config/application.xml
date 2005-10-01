@@ -3,35 +3,36 @@
  ! $Id$
  -->
 
-<application state="test">
+<application state="test" name="elshop">
      
     <!--  ====================== -->
     <!--   General properties    -->
     <!--  ====================== -->
-    <property name="server_name"      value="http://morgan:8091" />
+    <property name="server_name"      value="http://gremlin" />
     <property name="document_root"    value="/" />
-    <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
+    <property name="application_path" value="/wwwroot/htdocs/locknet7/elshop" />
     <property name="rewrite"          value="on" />
      
     <!--  ====================== -->
     <!--     Logger System       -->
     <!--  ====================== -->
     <logger>
-    	<formatter>simple</formatter>
+        <formatter>simple</formatter>
         <outputters>
             <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
-            <outputter name="mail"    level="3" value="xxxx@xxxx.xxxx" />
-            <outputter name="stdout"  level="0" />
+            <!-- <outputter name="mail"    level="3" value="xxxx@xxxx.xxxx" /> -->
+            <!-- <outputter name="stdout"  level="0" /> -->
+            
         </outputters>
     </logger>
 
-	<!-- ======================= -->
-	<!--          Routing        -->
-	<!-- ======================= -->
-	<route name="default">
-		<controller>todo</controller>
-		<action>all</action>
-	</route>
+    <!-- ======================= -->
+    <!--          Routing        -->
+    <!-- ======================= -->
+    <route name="default">
+        <controller>product</controller>
+        <action>all</action>
+    </route>
 
     <!-- ======================= -->
     <!--   Database(s) Settings  -->
@@ -40,7 +41,7 @@
         <dsn id = "one"
              phptype  = "mysql"
              hostspec = "localhost"
-             database = "todo2"
+             database = "elshop"
              username = "root"
              password = "virus" />
         <dsn id = "two"

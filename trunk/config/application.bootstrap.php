@@ -33,6 +33,7 @@
 // }}}
 
 /**
+ * Sample __APPLICATION__NAME__.bootsrap.php file
  * Will bootstrap the application by setting it`s propreties.
  * Required files for start-up are included here
  * @package locknet7.start
@@ -40,6 +41,12 @@
 
 // error reporting level, turn this off in production!
 error_reporting(E_ALL|E_STRICT);
+
+$pathinfo = pathinfo(__FILE__);
+$file     = explode('.',$pathinfo['basename']);
+
+// application name
+define('APP_NAME', $file[0]);
 
 // main TOP_LOCATION.
 define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
@@ -49,21 +56,30 @@ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR
                   TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
                 );
 
-// XXX.
+// XXX, strict standards for php >= 5.1
 if (phpversion()=='6.0.0-dev') {
      // strict sdandards.
      date_default_timezone_set("Europe/Bucharest");
 }
 
-// load core classes.    
-include_once('MedickException.php');
+// load core classes.
+include_once('medick/MedickObject.php');
+include_once('medick/MedickException.php');
+include_once('medick/MedickRegistry.php');
+include_once('medick/MedickDispatcher.php');
+
+// hook a Configurator into Registry.
 include_once('configurator/XMLConfigurator.php');
-// setup a Configurator.
-Configurator::factory('XML');
+MedickRegistry::put(XMLConfigurator::getInstance(), '__configurator');
+
 // get some orientation.
 include_once('action/controller/Map.php');
-// load application map.
-include_once(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'routes.php');
+$map= MedickRegistry::put(Map::getInstance(), '__map');
 
 include_once('logger/Logger.php');
-include_once('Dispatcher.php');
+MedickRegistry::put(Logger::getInstance(), '__logger');
+
+// load application map.
+include_once(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.routes.php');
+
+?>
