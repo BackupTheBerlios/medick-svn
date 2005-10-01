@@ -33,36 +33,24 @@
 // }}}
 
 
-// include_once('configurator/Configurator.php');
+include_once('configurator/IConfigurator.php');
 
 /**
  * xml file-based Configurator.
  * @package locknet7.config
  */
-class XMLConfigurator {
-//extends Configurator {
+ 
+class XMLConfigurator extends Object implements IConfigurator {
 
-    private static $instance= NULL;
-    
     /** SimpleXML Object */
     protected $sxe;
 
-    public static function getInstance() {
-
-        if (self::$instance===NULL) {
-            self::$instance= new XMLConfigurator(APP_NAME);
-        }
-
-        return self::$instance;
-
-    }
-    
     /**
      * Constructor.
      * @param string, xml, configuration file/string
      */
     public function __construct() {
-        $xml= TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . 'application.xml';
+        $xml= TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.xml';
         if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
         else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
