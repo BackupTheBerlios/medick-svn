@@ -51,34 +51,31 @@ class Logger extends Object implements ILogger {
     const WARN  = 2;
     const ERROR = 3;
     
-    /** list with allowed levels */
+    /** @var array list with allowed levels */
     private $levels = array('debug','info','warn','error');
 
-    /** default priority level */
+    /** @var int default priority level */
     private $level = 0;
     
-    /** formatter */
+    /** @var Formatter */
     private $formatter;
 
-    /** this logger instance */
-    private static $instance = NULL;
-
-    /** list of appenders */
+    /** @var array list of IOutputters[] */
     private $outputters = array();
 
-    /** the event to log */
+    /** @var LoggingEvent the event to log */
     private $event = NULL;
     
-    /** message level */
+    /** @var int message level */
     private $messageLevel;
     
     /**
      * Constructor.
      * It reads the config file and setup the logging system 
      */
-    private final function __construct() {
+    public function __construct() {
     
-        $configurator = MedickRegistry::get('__configurator');
+        $configurator = Registry::get('__configurator');
         $outputters   = $configurator->getLoggerOutputters();
 
         for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {   
@@ -102,9 +99,6 @@ class Logger extends Object implements ILogger {
         $this->debug('Logger ready');
     }
 
-    /** the pefect singleton :) */
-    private final function __clone() {      }
-    
     /** __magic __overloading__ */
     public function __call($method, $message) {
         if (!$message) return;
@@ -224,15 +218,5 @@ class Logger extends Object implements ILogger {
     public function getLevel() {
         return $this->level;
     }
-    
-    /**
-     * returns this instance of logger.
-     * @return Logger, a logger instance
-     */  
-    public static function getInstance() {
-        if (self::$instance === NULL) {
-            self::$instance = new Logger();
-        }
-        return self::$instance;
-    }
 }
+
