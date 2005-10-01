@@ -34,27 +34,44 @@
 
 include_once('active/record/Field.php');
 
-class FieldsAggregate implements IteratorAggregate {
+/**
+ * @package locknet7.active.record
+ */
+
+class FieldsAggregate extends Object implements IteratorAggregate {
     
-    // container
+    /** @var ArrayObject
+        fields container */
     private $fields;
-    // pk field @var Field
+    
+    /** @var Field
+        pk field*/
     private $pk_filed = NULL;
-    // affected flag.
+    
+    /** @var bool 
+        affected flag. */
     private $affected = FALSE;
     
-    /** constructor...*/
+    /**
+     * FieldsAggregate Constructor
+     */
     public function __construct() {
         $this->fields = new ArrayObject();
     }
 
-    /** add a new Field on the fields container */
+    /** 
+     * Add a new Field on the fields container 
+     */
     public function add(Field $field) {
         if (!$this->contains($field)) $this->fields[] = $field;
         if ($field->isPk) $this->pk_field = $field;
+        return $field;
     }
     
-    /** check if the container contains the Field */
+    /** 
+     * Check if the container contains the given Field
+     * @return bool, TRUE if it contains this Field, FALSE otherwise
+     */
     public function contains(Field $field) {
         for ( $it = $this->getIterator(); $it->valid(); $it->next() ) {
             if ($it->current()->getName() == $field->getName()) {
@@ -64,17 +81,26 @@ class FieldsAggregate implements IteratorAggregate {
         return FALSE;
     }
 
-    /** it gets the iterator */
+    /** 
+     * It gets the iterator
+     * @return Iterator
+     */
     public function getIterator() {
         return $this->fields->getIterator();
     }
 
-    /** set the affected modifier */
+    /** 
+     * Set the affected modifier 
+     * @param bool affected
+     */
     public function setAffected($affected) {
         $this->affected = (bool)$affected;
     }
 
-    /** has affected fields by this run */
+    /** 
+     * It checks if it has affected fields by this run
+     * @return bool TRUE if it has, FALSE otherwise
+     */
     public function hasAffected() {
         return $this->affected;
     }
@@ -87,7 +113,10 @@ class FieldsAggregate implements IteratorAggregate {
         return $this->pk_field;
     }
     
-    /** It gets an array with the names of the affected fields */
+    /** 
+     * It gets an array with the names of the affected fields 
+     * @return array
+     */
     public function getAffectedFieldsNames() {
         $names= array();
         for ($it = $this->getIterator(); $it->valid(); $it->next()) {
@@ -98,7 +127,10 @@ class FieldsAggregate implements IteratorAggregate {
         return $names;
     }
 
-    /** get an array of objects Field[] that are affected(changed) by this run*/
+    /** 
+     * Get an array of objects Field[] that are affected(changed) by this run
+     * @return Field[]
+     */
     public function getAffectedFields() {
         if (!$this->affected) return array();
         $affected_fields = array();
