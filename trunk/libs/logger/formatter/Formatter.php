@@ -37,7 +37,7 @@
  * @package locknet7.logger.formatter
  */
 
-abstract class Formatter extends MedickObject {
+abstract class Formatter extends Object {
     /**
      * Formats the event
      * @param LoggingEvent event, the event

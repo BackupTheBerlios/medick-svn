@@ -37,7 +37,7 @@
  * @package locknet7.logger.outputter
  */
 
-abstract class Outputter extends MedickObject implements IOutputter {
+abstract class Outputter extends Object implements IOutputter {
 
     /** individual outputter level*/
     protected $level;

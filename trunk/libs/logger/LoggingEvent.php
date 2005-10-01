@@ -37,7 +37,7 @@
  * @package locknet7.logger
  */
 
-class LoggingEvent extends MedickObject {
+class LoggingEvent extends Object {
     /** @var array */
     public $backtrace = array();
     /** @var mixed */
@@ -71,3 +71,4 @@ class LoggingEvent extends MedickObject {
         $this->function  = @$this->backtrace[3]['function'];
     }
 }
+

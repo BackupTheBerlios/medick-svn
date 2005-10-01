@@ -43,7 +43,7 @@ include_once('logger/formatter/Formatter.php');
  * @package locknet7.logger
  */
  
-class Logger extends MedickObject implements ILogger {
+class Logger extends Object implements ILogger {
 
     /** a fancy way of telling the level */
     const DEBUG = 0;
