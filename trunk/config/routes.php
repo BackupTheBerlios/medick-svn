@@ -6,18 +6,59 @@
 // an example of route configuration in medick.
 $map= new Map(); {
 
-    { // /todo/all.html
-        $route= new Route('todo', 'all');
+    { // /size/all.html
+        $route= new Route('size', 'all');
         $route->setName('default');
-        $route->setAccess(0);
-        $map->add($route);
-    }
-    
-    { // /todo/anew.html
-        $route= new Route('todo', 'anew');
         $route->setAccess(1);
         $map->add($route);
     }
+    
+    { // /size/anew.html
+        $route= new Route('size', 'anew');
+        $route->setAccess(1);
+        $map->add($route);
+    }
+    
+    { // /style/all.html
+        $route= new Route('style', 'all');
+        $route->setName('style/all');
+        $route->setAccess(1);
+        $map->add($route);
+    }
+    
+    { // /style/anew.html
+        $route= new Route('style', 'anew');
+        $route->setAccess(1);
+        $map->add($route);
+    }
+    
+    { // /author/all.html
+        $route= new Route('author', 'all');
+        $route->setName('author/all');
+        $route->setAccess(1);
+        $map->add($route);
+    }
+    
+    { // /author/anew.html
+        $route= new Route('author', 'anew');
+        $route->setAccess(1);
+        $map->add($route);
+    }
+    
+    { // /subject/all.html
+        $route= new Route('subject', 'all');
+        $route->setName('subject/all');
+        $route->setAccess(1);
+        $map->add($route);
+    }
+    
+    { // /subject/anew.html
+        $route= new Route('subject', 'anew');
+        $route->setAccess(1);
+        $map->add($route);
+    }    
+    
+    // {{{ tbr.
     
     { // /todo/edit/id.html
         $route= new Route('todo', 'edit');
@@ -52,5 +93,7 @@ $map= new Map(); {
         $route->add(new RouteParam('id'));
         $map->add($route);
     }
+    
+    // }}}
 }
 ?>
