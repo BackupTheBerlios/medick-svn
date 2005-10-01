@@ -32,27 +32,38 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-
 /**
  * It represents a field from DB
- * @package locknet7.active.record.field
+ * @package locknet7.active.record
  */
-class Field {
+class Field extends Object {
     
-    /** @var string name of the field */
+    /** @var string 
+        name of the field */
     private $name;
-    /** @var mixed value of the field */
+    
+    /** @var 
+        mixed value of the field */
     private $value;
     
-    /** @var */
+    /** @var string 
+        field sql type*/
     public $type;
-    /** @var bool is primary key flag */
+    
+    /** @var bool 
+        is primary key flag */
     public $isPk = FALSE;
-    /** @var bool is foreign key flag */
+    
+    /** @var bool 
+        is foreign key flag */
     public $isFk = FALSE;
-    /** @var bool if this field was affected by the current run */
+    
+    /** @var bool 
+        if this field was affected by the current run */
     public $isAffected = FALSE;
-    /** @var string the foreign key table */
+    
+    /** @var string 
+        the foreign key table */
     public $fkTable;
     
     /**
