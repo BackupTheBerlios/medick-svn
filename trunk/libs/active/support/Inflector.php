@@ -37,7 +37,7 @@
  * Based on: http://dev.rubyonrails.com/file/trunk/activesupport/lib/active_support/inflections.rb
  */
  
-class Inflector {
+class Inflector extends Object {
 
     /** 
      * Transform word from singular to plural
