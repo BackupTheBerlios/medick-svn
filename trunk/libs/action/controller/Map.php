@@ -39,29 +39,12 @@ include_once('action/controller/route/RouteParam.php');
  * @package locknet7.action.controller
  */
 
-class Map extends MedickObject {
+class Map extends Object {
 
-    /** @var Map, the current Map */
-    private static $instance = NULL;
-
-    /**
-     * It gets our map instance
+    /** 
+     * @var array, routes, container for Routes
      */
-    public static function getInstance() {
-        if (self::$instance===NULL) {
-            self::$instance= new Map();
-        }
-        return self::$instance;
-    }
-
-    /** @var array, routes */
-    private $routes;
-
-    /** Create a new Map Object */
-    public function __construct() {
-        $this->routes= array();
-        self::$instance= $this;
-    }
+    private $routes = array();
 
     /**
      * Adds a route to this map
@@ -75,7 +58,7 @@ class Map extends MedickObject {
     /**
      * It gets a route by his name
      * @param string the name of the route to look for.
-     * @throw MedickRouteException
+     * @throw RouteException
      */
     public function getRouteByName($name) {
         foreach ($this->routes AS $route) {
@@ -101,3 +84,4 @@ class Map extends MedickObject {
         return FALSE;
     }
 }
+
