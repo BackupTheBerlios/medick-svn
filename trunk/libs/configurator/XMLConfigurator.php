@@ -33,17 +33,30 @@
 // }}}
 
 
-include_once('configurator/Configurator.php');
+// include_once('configurator/Configurator.php');
 
 /**
  * xml file-based Configurator.
  * @package locknet7.config
  */
-class XMLConfigurator extends Configurator {
+class XMLConfigurator {
+//extends Configurator {
 
+    private static $instance= NULL;
+    
     /** SimpleXML Object */
     protected $sxe;
 
+    public static function getInstance() {
+
+        if (self::$instance===NULL) {
+            self::$instance= new XMLConfigurator(APP_NAME);
+        }
+
+        return self::$instance;
+
+    }
+    
     /**
      * Constructor.
      * @param string, xml, configuration file/string
@@ -212,3 +225,4 @@ class XMLConfigurator extends Configurator {
     }
     
 }
+
