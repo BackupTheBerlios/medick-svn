@@ -32,7 +32,11 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-class QuerryBuilder {
+/**
+ * It builds SQL querys
+ * @package locknet7.active.record
+ */
+class QuerryBuilder extends Object {
     
     private $select  = array();
     private $from;
