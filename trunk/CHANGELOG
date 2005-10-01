@@ -9,6 +9,6 @@ $Id$
     - implement the Registry system to hold our classes instances
     - Model is capable of getting values by foreign keys. Eg.: $todo->project->name
 
-0.0.1
+0.0.1 (6.Jul.2005)
     - minimal functional version
     
