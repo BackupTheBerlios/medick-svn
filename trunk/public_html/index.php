@@ -37,6 +37,7 @@
  * The file __APPLICATION__NAME__.bootstrap.php should be included here.
  */
 
-include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'applcation.bootstrap.php');
+include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'application.bootstrap.php');
 
 MedickDispatcher::dispatch();
+
