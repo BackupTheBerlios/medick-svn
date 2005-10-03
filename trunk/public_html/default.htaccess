@@ -1,17 +1,20 @@
 # default.htaccess file for Medick framework.
 # rename-it to .htaccess
 # $Id$
-  
-RewriteEngine on
  
+ErrorDocument 404 /todo.html
+ 
+RewriteEngine on
+
 RewriteCond    %{REQUEST_FILENAME}  -d
 RewriteRule    ^(.+[^/])$           $1/  [R]
  
-RewriteRule ^([A-Za-z]+)/?([A-Za-z]+)/?\.html$ index.php?controller=$1&action=$2 [NS]
-RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)\.html?$ index.php?controller=$1&action=$2&id=$3 [L]
- 
-# ##
+# ## Works
 #RewriteRule ^todo/edit/(.*)$ /index.php?controller=todo&action=edit&id=$1 [NE,L]
 #RewriteRule ^todo/(.*)$ /index.php?controller=todo&action=$1 [NE,L]
 # ##
-
+  
+RewriteRule ^([A-Za-z]+)/?([A-Za-z]+)/?\.html$ index.php?controller=$1&action=$2 [NS]
+RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)\.html?$ index.php?controller=$1&action=$2&id=$3 [NS]
+RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)/?$ index.php?controller=$1&action=$2&id=$3 [L]
+ 
