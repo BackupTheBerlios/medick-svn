@@ -8,11 +8,14 @@ LEGEND:
 (*) done tasks.
 (?) do we need something like this?
 (^) lowest priority
+(!) highest priority
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 1. Routing Mechanism.
-    Must choose between some kind of RoR implementation or ivent a new and magick Routing system
+    ! Must choose between some kind of RoR implementation or ivent a new and magick Routing system
+    ! On setFailure use a Route as a parameter?
+    ! Connect two Routes (a Failure Route and a Route) this way, the Route will know what to expect from Failure.
     
 2. Validators.
     2.1 Error messages.
