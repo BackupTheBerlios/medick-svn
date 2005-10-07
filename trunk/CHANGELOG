@@ -3,8 +3,9 @@ $Id$
 
 
 0.0.2(*)
+    - session
     - added Mapping concept.
-    - added core classes (Object, Registry, etc.)
+    - added core classes (Object, Registry, Collection etc.)
     - class organization (^)
     - implement the Registry system to hold our classes instances
     - Model is capable of getting values by foreign keys. Eg.: $todo->project->name

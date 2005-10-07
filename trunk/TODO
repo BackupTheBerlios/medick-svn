@@ -1,15 +1,32 @@
 $Id$
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Medick TODO list.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+LEGEND:
 (*) done tasks.
 (?) do we need something like this?
+(^) lowest priority
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Validators.
-    1.1 Error messages.
-2. Session.
-3. Auth.
-4. Caching system.
-5. A new naming convention, so we can use __autoload function.
-6. XML template engine (?)
 
+1. Routing Mechanism.
+    Must choose between some kind of RoR implementation or ivent a new and magick Routing system
+    
+2. Validators.
+    2.1 Error messages.
+    
+3.^ Auth.
+
+4.^ Caching system.
+    This could be done using some sort of isRouteWalked methods.
+    
+5.^ A new naming convention, so we can use __autoload function.
+    Will result in long class names, yet this feature is on hold probably until we will have  namespaces in php.
+
+6.^ XML template engine (?)
+    Not so hard, must be without XSLT since there are a lot  of hosts that don't install this extension.
+
+7. Flash thing.
+    
