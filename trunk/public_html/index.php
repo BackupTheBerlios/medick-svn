@@ -37,7 +37,7 @@
  * The file __APPLICATION__NAME__.bootstrap.php should be included here.
  */
 
-include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'application.bootstrap.php');
+include_once(___PATH__TO__YOUR__bootstrap.php__FILE__HERE__);
 
 Dispatcher::dispatch();
 
