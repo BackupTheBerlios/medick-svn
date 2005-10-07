@@ -39,7 +39,7 @@ class Route extends Object {
 
     /** @var string
         this route name */
-    private $name;
+    private $name = '';
     
     /** @var string
         route controller name */
@@ -119,7 +119,7 @@ class Route extends Object {
      * @return string name of this route.
      */
     public function getName() {
-        return $this->name;
+        return $this->name == '' ? $this->controller . '/' . $this->action : $this->name;
     }
 
     /**
@@ -196,6 +196,12 @@ class Route extends Object {
             throw new RouteException('Wrong Argument Type in ' . __METHOD__ . ', Argument should be one of RouteParam or RouteHeader objects!');
         }
         return $argument;
+    }
+
+    public function addFromArray($params) {
+        foreach($params as $param) {
+            $this->add($param);   
+        }
     }
 
     /**

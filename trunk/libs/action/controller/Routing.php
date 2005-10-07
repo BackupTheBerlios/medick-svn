@@ -43,37 +43,39 @@ class ActionControllerRouting extends Object {
      * Check if the application Map contains the current Route.
      */
     public static function recognize(Request $request) {
-        $controller= $request->getParam('controller');
-        $action    = $request->getParam('action');
         $map= Registry::get('__map');
-        
         // do we know this Route?
-        if ($route= $map->contains(new Route($controller,$action))) {
+        if ($route= $map->contains(new Route($request->getParam('controller'), $request->getParam('action')))) {
+            $is_failure= FALSE;
+            $params= $route->getParams();
             // {{{ loop throught the Route Parameters
-            foreach ($route->getParams() AS $param) {
+            foreach ($params AS $param) {
                 
                 // {{{ if this Request has the current parameter, try to validate him.
                 if (!$request->hasParam($param->getName()) OR ($request->getParam($param->getName()) =='')) {
                     // XXX. load failure due to missing parameters.
-                    $route= $map->getRouteByName($route->getFailure());
+                    $is_failure= TRUE;
+                    
                     // XXX. failure message.
-                    break;
+                    // break;
                 } // }}}
-                
                 // {{{ if this paramester has attached validators,
                 if ($param->hasValidators()) {
                     // loop throught the validators and validate this parameter value.
                     foreach($param->getValidators() AS $validator) {
                         $validator->setValue($request->getParam($param->getName()));
                         if (!$validator->validate()) {
-                          // XXX. validation failed, handle automatically.
+                          // XXX. validation failed, handle automatically and break(?)
                           throw new RouteException('Route validation failed!');
                         }
                     }
                 } // }}}
-                
-            } // }}}
-            
+                $param->setValue($request->getParam($param->getName()));
+            } // end foreach. }}}
+            if ($is_failure) {
+                $route= $map->getRouteByName($route->getFailure());
+                $route->addFromArray($params);
+            }
         } else {
             $route= $map->getRouteByName('default');
         }
@@ -81,6 +83,7 @@ class ActionControllerRouting extends Object {
         // overwrite incoming core parameters.
         $request->setParam('controller', $route->getController());
         $request->setParam('action', $route->getAction());
+        $map->setCurrentRoute($route);
         return self::createController($route);
     }
 

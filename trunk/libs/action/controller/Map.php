@@ -46,6 +46,17 @@ class Map extends Object {
      */
     private $routes = array();
 
+
+    private $curent_route;
+    
+    public function setCurrentRoute(Route $route) {
+        $this->curent_route= $route;
+    }
+    
+    public function getCurrentRoute() {
+        return $this->curent_route;
+    }
+
     /**
      * Adds a route to this map
      * @param Route route

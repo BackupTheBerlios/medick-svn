@@ -151,6 +151,17 @@ class ActionControllerBase extends Object {
         if (is_file($helper_location)) {
             include_once($helper_location);
         }
+        
+        // {{{ hook RouteParams here.
+        $hij= array();
+        $route= Registry::get('__map')->getCurrentRoute();
+        foreach($route->getParams() as $param) {
+            $hij[$param->getName()]['message'] = 'foo';
+            $hij[$param->getName()]['value']   = $param->getValue();
+        }
+        $this->template->__param = $hij;
+        // }}}
+        
         if (is_file($_layout=$this->app_path . 'views' . DIRECTORY_SEPARATOR .  '__layout.phtml')) {
             $this->logger->debug('Found magick __layout description file...');
             $this->template->__content= 
