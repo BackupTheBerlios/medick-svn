@@ -3,14 +3,14 @@
  ! $Id$
  -->
 
-<application state="test" name="elshop">
+<application>
      
     <!--  ====================== -->
     <!--   General properties    -->
     <!--  ====================== -->
-    <property name="server_name"      value="http://gremlin" />
+    <property name="server_name"      value="http://morgan:8091" />
     <property name="document_root"    value="/" />
-    <property name="application_path" value="/wwwroot/htdocs/locknet7/elshop" />
+    <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
     <property name="rewrite"          value="on" />
      
     <!--  ====================== -->
@@ -20,19 +20,8 @@
         <formatter>simple</formatter>
         <outputters>
             <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
-            <!-- <outputter name="mail"    level="3" value="xxxx@xxxx.xxxx" /> -->
-            <!-- <outputter name="stdout"  level="0" /> -->
-            
         </outputters>
     </logger>
-
-    <!-- ======================= -->
-    <!--          Routing        -->
-    <!-- ======================= -->
-    <route name="default">
-        <controller>product</controller>
-        <action>all</action>
-    </route>
 
     <!-- ======================= -->
     <!--   Database(s) Settings  -->
@@ -41,15 +30,9 @@
         <dsn id = "one"
              phptype  = "mysql"
              hostspec = "localhost"
-             database = "elshop"
+             database = "elproto"
              username = "root"
-             password = "virus" />
-        <dsn id = "two"
-             phptype  = "pgsql"
-             hostspec = "192.18.1.1"
-             database ="test"
-             username ="antonescu"
-             password ="x-creeme" />
+             password = "sacosica" />
     </database>
 
 </application>
