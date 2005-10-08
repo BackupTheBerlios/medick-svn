@@ -197,7 +197,11 @@ class Route extends Object {
         }
         return $argument;
     }
-
+    
+    /**
+     * Add Routing Components from an array
+     * @param array params to add
+     */
     public function addFromArray($params) {
         foreach($params as $param) {
             $this->add($param);   
