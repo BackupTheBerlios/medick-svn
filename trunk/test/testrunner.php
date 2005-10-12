@@ -36,7 +36,7 @@ class RecursiveTestLoader extends RecursiveIteratorIterator {
     private static $test;
 	
     /** Constructor */
-	function __construct() 
+	function __construct() {
 		parent::__construct(
 		  new CachingRecursiveIterator(
 		      new RecursiveDirectoryIterator(
@@ -54,7 +54,7 @@ class RecursiveTestLoader extends RecursiveIteratorIterator {
 		for ($l=0; $l < $this->getDepth(); $l++) {
 			$tree .= $this->getSubIterator($l)->hasNext() ? '| ' : '  ';
 		}
-        if (preg_match("/Test.php/i", $this->key()) && is_file($this->key())) {
+        if (preg_match("/Test.php/i", $this->key()) && is_file($this->key()) && !preg_match("/.svn/i", $this->key())) {
             self::$test->addTestFile($this->key());
         }
 	}
