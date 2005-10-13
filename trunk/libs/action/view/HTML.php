@@ -45,7 +45,7 @@ class URL extends Object {
     public static function create($controller, $action, $params=array()) {
         if (!Registry::get('__configurator')->getProperty('rewrite')) {
             // rewrite-off:
-            $buff = 'index.php?controller=' . $controller . '&amp;action=' . $action;
+            $buff = Registry::get('__configurator')->getProperty('document_root') . '/index.php?controller=' . $controller . '&amp;action=' . $action;
             if (!empty($params)) {
                 foreach ($params AS $key=>$value) {
                     $buff .= '&amp;' . $key . '=' . $value;
@@ -54,7 +54,7 @@ class URL extends Object {
             return $buff;
         } else {
             // rewrite-on:
-            $buff= '/' . $controller . '/' . $action;
+            $buff= Registry::get('__configurator')->getProperty('document_root') . '/' . $controller . '/' . $action;
             if (!empty($params)) {
                 foreach ($params AS $key=>$value) {
                     $buff .= '/' . $value;

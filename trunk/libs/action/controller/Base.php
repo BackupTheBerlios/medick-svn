@@ -233,7 +233,7 @@ class ActionControllerBase extends Object {
         
         if ($this->config->getProperty('rewrite')) {
             $this->response->redirect(
-                $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . 
+                $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . '/' .
                 $controller . '/' . $action . '.html');
         } else {
             // rewrite-off
