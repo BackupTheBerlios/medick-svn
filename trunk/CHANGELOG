@@ -1,14 +1,16 @@
 $Id$
 * work in progress.
+^ small wish-list
 
+0.0.3(*)
+    - Unit test ActiveRecordBase (*)
 
-0.0.2(*)
-    - session
-    - added Mapping concept.
-    - added core classes (Object, Registry, Collection etc.)
-    - class organization (^)
-    - implement the Registry system to hold our classes instances
-    - Model is capable of getting values by foreign keys. Eg.: $todo->project->name
+0.0.2 (14.Oct.2005)
+    - initial import of Session
+    - added core classes (Object, Registry, Collection and Exception) and Mapping concept: Map->Route->Params->Validators-->Headers;
+    - implement the Registry system to hold our classes instances;
+    - Model is capable of getting values by foreign keys. Eg.: $todo->project->name;
+    - many minor fixes.
 
 0.0.1 (6.Jul.2005)
     - minimal functional version
