@@ -11,6 +11,9 @@ LEGEND:
 (!) highest priority
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.3 WishList:
+Implement Session management
+Fix && Clean-up Routing System
 
 1. Routing Mechanism.
     ! Must choose between some kind of RoR implementation or ivent a new and magick Routing system
