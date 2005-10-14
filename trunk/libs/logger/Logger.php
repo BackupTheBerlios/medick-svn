@@ -71,31 +71,23 @@ class Logger extends Object implements ILogger {
     
     /**
      * Constructor.
-     * It reads the config file and setup the logging system 
+     * It reads the config file and setup the logging system
      */
     public function __construct() {
-    
         $configurator = Registry::get('__configurator');
         $outputters   = $configurator->getLoggerOutputters();
-
-        for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {   
-            foreach($outputters->getChildren() as $outputter) {
-                try {
-                    $class_name= ucfirst((string)trim($outputter['name'])) . 'Outputter';
-                    $class_file= 'logger' . DIRECTORY_SEPARATOR . 'outputter' . DIRECTORY_SEPARATOR . $class_name . '.php';
-                    include_once($class_file);
-                    $class= new ReflectionClass($class_name);
-                    $this->attach( 
-                        $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
-                } catch (ReflectionException $rEx) {
-                    $this->warn($rEx->getMessage());
-                }
-            }
+        
+        if (sizeof($outputters) != 0) {
+            $this->load($outputters);
         }
-        $this->setLevel(Logger::DEBUG);
-        $_klazz = $configurator->getLoggerFormatter();
-        include_once('logger' . DIRECTORY_SEPARATOR . 'formatter' . DIRECTORY_SEPARATOR . $_klazz . '.php');
-        $this->formatter= new $_klazz;
+        
+        $this->setLevel(Logger::DEBUG); // TODO: check this line again please.
+        
+        if ($_klazz = $configurator->getLoggerFormatter()) {
+            include_once('logger' . DIRECTORY_SEPARATOR . 'formatter' . DIRECTORY_SEPARATOR . $_klazz . '.php');
+            $this->formatter= new $_klazz;
+        }
+        
         $this->debug('Logger ready');
     }
 
@@ -160,6 +152,28 @@ class Logger extends Object implements ILogger {
         }
         return false;
     }
+    
+    /**
+     * Loads the Outputters.
+     * TODO: why do we need 2 iterations?
+     * @param Iterator outputters collection
+     */
+    public function load(Iterator $outputters) {
+        for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {
+            foreach($outputters->getChildren() as $outputter) {
+                try {
+                    $class_name= ucfirst((string)trim($outputter['name'])) . 'Outputter';
+                    $class_file= 'logger' . DIRECTORY_SEPARATOR . 'outputter' . DIRECTORY_SEPARATOR . $class_name . '.php';
+                    include_once($class_file);
+                    $class= new ReflectionClass($class_name);
+                    $this->attach( 
+                        $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
+                } catch (ReflectionException $rEx) {
+                    $this->warn($rEx->getMessage());
+                }
+            }
+        }    
+    } 
     
     /**
      * It gets the list with attached outputters
