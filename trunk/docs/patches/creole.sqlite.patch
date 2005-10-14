@@ -1,0 +1,58 @@
+? LICENSE
+? creole.patch
+Index: drivers/sqlite/SQLiteConnection.php
+===================================================================
+RCS file: /cvs/creole/creole/classes/creole/drivers/sqlite/SQLiteConnection.php,v
+retrieving revision 1.12
+diff -u -r1.12 SQLiteConnection.php
+--- drivers/sqlite/SQLiteConnection.php	1 Sep 2004 14:00:29 -0000	1.12
++++ drivers/sqlite/SQLiteConnection.php	14 Oct 2005 19:12:08 -0000
+@@ -165,9 +165,10 @@
+     public function executeQuery($sql, $fetchmode = null)
+     {    
+         ini_set('sqlite.assoc_case', $this->sqliteAssocCase);
+-        $result = @sqlite_query($this->dblink, $sql);
++        $this->lastQuery = $sql;
++        $result = @sqlite_query($this->dblink, $this->lastQuery);
+         if (!$result) {
+-            throw new SQLException('Could not execute query', $php_errormsg, $sql); //sqlite_error_string(sqlite_last_error($this->dblink))
++            throw new SQLException('Could not execute query', $php_errormsg, $this->lastQuery); //sqlite_error_string(sqlite_last_error($this->dblink))
+         }
+         require_once 'creole/drivers/sqlite/SQLiteResultSet.php';
+         return new SQLiteResultSet($this, $result, $fetchmode);    
+@@ -178,9 +179,10 @@
+      */
+     function executeUpdate($sql)
+     {
+-        $result = @sqlite_query($this->dblink, $sql);
++        $this->lastQuery = $sql;
++        $result = @sqlite_query($this->dblink, $this->lastQuery);
+         if (!$result) {            
+-            throw new SQLException('Could not execute update', $php_errormsg, $sql); //sqlite_error_string(sqlite_last_error($this->dblink))
++            throw new SQLException('Could not execute update', $php_errormsg, $this->lastQuery); //sqlite_error_string(sqlite_last_error($this->dblink))
+         }
+         return (int) @sqlite_changes($this->dblink);
+     }
+@@ -235,4 +237,4 @@
+         return (int) @sqlite_changes($this->dblink);
+     }
+     
+-}
+\ No newline at end of file
++}
+Index: drivers/sqlite/metadata/SQLiteTableInfo.php
+===================================================================
+RCS file: /cvs/creole/creole/classes/creole/drivers/sqlite/metadata/SQLiteTableInfo.php,v
+retrieving revision 1.7
+diff -u -r1.7 SQLiteTableInfo.php
+--- drivers/sqlite/metadata/SQLiteTableInfo.php	29 Nov 2004 13:40:12 -0000	1.7
++++ drivers/sqlite/metadata/SQLiteTableInfo.php	14 Oct 2005 19:12:10 -0000
+@@ -72,7 +72,7 @@
+             
+             $this->columns[$name] = new ColumnInfo($this, $name, SQLiteTypes::getType($type), $type, $size, $scale, $is_nullable, $default_val);
+             
+-            if (strtolower($type) == 'integer primary key') {
++            if (($row['pk'] == 1) or (strtolower($type) == 'integer primary key')) {
+                 if ($this->primaryKey === null) {
+                     $this->primaryKey = new PrimaryKeyInfo($name);
+                 }
