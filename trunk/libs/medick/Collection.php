@@ -136,7 +136,7 @@ class Collection extends Object implements ArrayAccess {
      * @param ICollection
      * @return void
      */
-    public function addAll(ICollection $ic) {
+    public function addAll(Collection $ic) {
         for($it = $ic->getIterator(); $it->valid(); $it->next()) {
             $this->add($it->current());
         }
