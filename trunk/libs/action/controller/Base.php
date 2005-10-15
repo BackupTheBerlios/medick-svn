@@ -164,7 +164,7 @@ class ActionControllerBase extends Object {
         
         if (is_file($_layout=$this->app_path . 'views' . DIRECTORY_SEPARATOR .  '__layout.phtml')) {
             $this->logger->debug('Found magick __layout description file...');
-            $this->template->__content= 
+            $this->template->__page= 
                 $this->params['controller'] . DIRECTORY_SEPARATOR . $this->params['action'] . '.phtml';
             $this->render_text($this->template->render_file($_layout), $status);
         } else {
@@ -192,6 +192,7 @@ class ActionControllerBase extends Object {
         $this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
+        $this->logger->debug('Action performed.');
     }
     
     // }}}
