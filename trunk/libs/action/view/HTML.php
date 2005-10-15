@@ -33,7 +33,7 @@
 // }}}
 
 /**
- * This package will be deprecated soon and replaced by a modern view.
+ * This package will be deprecated at one point and replaced with a modern view.
  * @package locknet7.action.view.HTML
  */
 
@@ -42,23 +42,19 @@ class HTMLElement extends Object {
 }
 
 class URL extends Object {
-    public static function create($controller, $action, $params=array()) {
-        if (!Registry::get('__configurator')->getProperty('rewrite')) {
-            // rewrite-off:
-            $buff = Registry::get('__configurator')->getProperty('document_root') . '/index.php?controller=' . $controller . '&amp;action=' . $action;
-            if (!empty($params)) {
-                foreach ($params AS $key=>$value) {
-                    $buff .= '&amp;' . $key . '=' . $value;
-                }
+    public static function create($controller, $action, $params=array(), $separator='&amp;') {
+        $config = Registry::get('__configurator');
+        $base   = $config->getProperty('document_root');
+        if (!$config->getProperty('rewrite')) {
+            $buff = $base . '/index.php?controller=' . $controller . $separator . 'action=' . $action;
+            foreach ($params AS $key=>$value) {
+                $buff .= $separator . $key . '=' . $value;
             }
             return $buff;
         } else {
-            // rewrite-on:
-            $buff= Registry::get('__configurator')->getProperty('document_root') . '/' . $controller . '/' . $action;
-            if (!empty($params)) {
-                foreach ($params AS $key=>$value) {
-                    $buff .= '/' . $value;
-                }
+            $buff = $base . '/' . $controller . '/' . $action;
+            foreach ($params AS $key=>$value) {
+                $buff .= '/' . $value;
             }
             return $buff . '.html';
         }
@@ -92,8 +88,7 @@ class Form extends Object {
         }
         $buff .= '>';
         if (!is_null($value)) $buff .= $value;
-        $buff .= '</textarea>';
-        return $buff;
+        return $buff . '</textarea>';
     }
     
     public static function checkbox($name, $checked = false, $attr = '') {
