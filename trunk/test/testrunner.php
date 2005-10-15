@@ -30,10 +30,10 @@ include_once('simpletest/reporter.php');
 if (is_file('test.db')) unlink('test.db');
 
 $query=<<<__
-    CREATE TABLE todos (
+    CREATE TABLE authors (
         id INTEGER PRIMARY KEY,
-        description VARCHAR(100),
-        done INTEGER(1)
+        name VARCHAR(100),
+        email VARCHAR(150)
     );
 __;
 sqlite_query(sqlite_open('test.db'), $query);

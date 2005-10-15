@@ -2,23 +2,23 @@
 
 // $Id$
     
-include_once('dummy/models/todo.php');
+include_once('dummy/models/author.php');
 
 /** Tests insert, update, save (insert/update), delete. */
 class ARBaseBasicsTest extends UnitTestCase {
 
     /** <tt>save && delete test</tt> */
     public function testSave() {
-        $item= new Todo();
-        $item->description= 'A new Todo';
+        $item= new Author();
+        $item->name= 'Andrei Cristescu';
         $this->assertEqual($item->save(), $item->id);
         $this->assertEqual($item->delete(), 1);
     }
 
     /** <tt>save && delete test</tt> */
     public function testDelete() {
-        $item = new Todo();
-        $item->description = 'Brr';
+        $item = new Author();
+        $item->name = 'Andrei Cristescu';
         $item->save();
         $this->assertEqual($item->delete(), 1);
         $this->assertEqual($item->delete(), 0);
@@ -26,17 +26,17 @@ class ARBaseBasicsTest extends UnitTestCase {
     
     /** <tt>insert</tt> */
     public function testInsert() {
-        $item = new Todo();
-        $item->description = 'Inserting...';
+        $item = new Author();
+        $item->name = 'Andrei Cristescu';
         $this->assertEqual($item->insert(), $item->id);
         $item->delete();
     }
     /** <tt>update test</tt> */
     public function testUpdate() {
-        $item = new Todo();
-        $item->description = 'Foo...';
+        $item = new Author();
+        $item->name = 'Andrei Cristescu';
         $this->assertEqual($item->insert(), $item->id);
-        $item->description = 'Bar...';
+        $item->email = 'cristescu@yahoo.com';
         $this->assertEqual($item->update(), 1);
         $this->assertEqual($item->delete(), 1);
     }
