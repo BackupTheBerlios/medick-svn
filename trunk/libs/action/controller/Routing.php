@@ -43,17 +43,20 @@ class ActionControllerRouting extends Object {
      * Check if the application Map contains the current Route.
      */
     public static function recognize(Request $request) {
-        $map= Registry::get('__map');
+        $map   = Registry::get('__map');
+        $logger= Registry::get('__logger');
         // do we know this Route?
         if ($route= $map->contains(new Route($request->getParam('controller'), $request->getParam('action')))) {
+            $logger->debug('Route Recognized:' . $route->getName());
             $is_failure= FALSE;
             $params= $route->getParams();
             // {{{ loop throught the Route Parameters
             foreach ($params AS $param) {
-                
+                $logger->debug('Validating Route Parameter:' . $param->getName());
                 // {{{ if this Request has the current parameter, try to validate him.
                 if (!$request->hasParam($param->getName()) OR ($request->getParam($param->getName()) =='')) {
                     // XXX. load failure due to missing parameters.
+                    $logger->debug('Validation failed.');
                     $is_failure= TRUE;
                     
                     // XXX. failure message.
@@ -77,12 +80,17 @@ class ActionControllerRouting extends Object {
                 $route->addFromArray($params);
             }
         } else {
+            $logger->debug('Unknown Route! Loading default...');
             $route= $map->getRouteByName('default');
         }
 
         // overwrite incoming core parameters.
         $request->setParam('controller', $route->getController());
         $request->setParam('action', $route->getAction());
+        $logger->debug(
+            'Running on Route: ' . $route->getName() .
+            ' with controller: ' . $route->getController() .
+            ' and action: ' . $route->getAction());
         $map->setCurrentRoute($route);
         return self::createController($route);
     }
@@ -113,7 +121,7 @@ class ActionControllerRouting extends Object {
         {
             return $controller_class->newInstance();
         }
-        throw new RouteException ('Cannot create Controller...');
+        throw new RouteException ('Cannot create a Controller instance...');
     }
 }
 
