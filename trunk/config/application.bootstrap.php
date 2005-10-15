@@ -56,12 +56,6 @@ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR
                   TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
                 );
 
-// XXX, strict standards for php >= 5.1
-if (phpversion()=='6.0.0-dev') {
-     // strict sdandards.
-     date_default_timezone_set("Europe/Bucharest");
-}
-
 // load core classes.
 include_once('medick/Object.php');
 include_once('medick/Exception.php');
@@ -77,9 +71,12 @@ include_once('action/controller/Map.php');
 $map= Registry::put(new Map(), '__map');
 
 include_once('logger/Logger.php');
-Registry::put(new Logger(), '__logger');
+$logger= new Logger();
+$logger->debug('Incoming request for medick-' . trim(@file_get_contents(TOP_LOCATION . 'VERSION')));
+Registry::put($logger, '__logger');
 
 // load application map.
 include_once(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.routes.php');
 
+$logger->debug('Routes Loaded. Application Ready.');
 ?>
