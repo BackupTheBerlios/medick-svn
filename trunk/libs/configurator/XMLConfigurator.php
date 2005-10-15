@@ -55,22 +55,6 @@ class XMLConfigurator extends Object implements IConfigurator {
         else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
     }
-
-    /** @see Configurator::getSectionProperty() */
-    public function getSectionProperty($section, $property) {
-        if(!$this->sxe->$section) {
-            throw new ConfiguratorException('Cannot find ' . $section . ' section in your Configuration!');
-        }
-        $_sys   = $this->sxe->$section->$property;
-        $_query = (string)trim($_sys['value']);
-        if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == 0) ){
-            return false;
-        } elseif( ($_query=='true') OR ($_query=='on') OR ($_query == 1) ) {
-            return true;
-        } else {
-            return (string)$_query;
-        }
-    }
     
     /** 
      * Configuration Example:
@@ -142,9 +126,15 @@ class XMLConfigurator extends Object implements IConfigurator {
     /** @see Configurator::getProperty */
     public function getProperty($name) {
         foreach($this->sxe->property as  $properties ) {
-            if($properties['name']==$name) {
-                return (string)trim($properties['value']);
-            }
+            if($properties['name'] != $name)
+                continue;
+            $_query= (string)trim($properties['value']);
+            if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == '0') )
+                return (bool)false;
+            elseif( ($_query=='true') OR ($_query=='on') OR ($_query == '1') ) 
+                return (bool)true;
+            else 
+                return (string)$_query;
         }
         throw new ConfiguratorException('Property ' . $name . ' not found!');
     }
@@ -175,30 +165,10 @@ class XMLConfigurator extends Object implements IConfigurator {
         $this->sxe = simplexml_import_dom($dom, 'SimpleXMLIterator');
     }
     
-    /** 
-     * Configuration Example:
-     * <code>
-     *      <route name="default">
-     *          <controller>foo</controller>
-     *          <action>someaction</action>
-     *      </route>
-     * </code>
-     * or, to use the default medick action (index):
-     * <code>
-     *      <route><controller>foo</controller></route>
-     * </code>
-     * @see Configurator::getDefaultRoute() */
-    public function getDefaultRoute() {
-        return $this->sxe->route[0];
-    }
- 
-    /** sets the default route */
-    public function setDefaultRoute($controller, $action = 'index') {
-        $this->sxe->route[0]->controller = $controller;
-        $this->sxe->route[0]->action     = $action;
-    }
-    
-    /** */
+    /**
+     * Convert this document from SXE to DOM
+     * @return DomDocument
+     */
     public function toDom() {
         $dom_sxe = dom_import_simplexml($this->sxe);
         $dom = new DomDocument();
@@ -213,4 +183,3 @@ class XMLConfigurator extends Object implements IConfigurator {
     }
     
 }
-

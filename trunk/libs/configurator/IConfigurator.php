@@ -39,13 +39,6 @@ include_once('configurator/ConfiguratorException.php');
  * @package locknet7.config
  */
 interface IConfigurator {
-    /**
-     * It gets the section property
-     * @param string, section, the section
-     * @param string, property, the property
-     * @return string, the section property
-     */
-    function getSectionProperty($section, $property);
     
     /**
      * It gets the logger outputters.
@@ -68,12 +61,6 @@ interface IConfigurator {
     function getProperty($name);
     
     /**
-     * It gets the default application route.
-     * @return Object, so we can access properties as members.
-     */
-    function getDefaultRoute();
-    
-    /**
      * Based on id we return the dsn array
      * <code>
      *      // for Creole this dsn format will do the job:
@@ -85,4 +72,3 @@ interface IConfigurator {
      */
     function getDatabaseDsn($id = FALSE);
 }
-
