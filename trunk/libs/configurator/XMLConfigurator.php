@@ -47,10 +47,9 @@ class XMLConfigurator extends Object implements IConfigurator {
 
     /**
      * Constructor.
-     * @param string, xml, configuration file/string
+     * @param string/file xml
      */
-    public function __construct() {
-        $xml= TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.xml';
+    public function __construct($xml) {
         if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
         else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
         if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
@@ -74,7 +73,7 @@ class XMLConfigurator extends Object implements IConfigurator {
      *               password ="x-creeme" />
      *      </database>
      * </code>
-     * @see Configurator::getDatabaseDsn() 
+     * @see IConfigurator::getDatabaseDsn() 
      */
     public function getDatabaseDsn($id = FALSE) {
         if (!$id) $id = $this->sxe->database['default'];
@@ -103,27 +102,19 @@ class XMLConfigurator extends Object implements IConfigurator {
      *          </outputters>
      *      </logger>
      * </code>
-     * @see Configurator::getLoggerOutputters
+     * @see IConfigurator::getLoggerOutputters
      * @return SimpleXMLIterator
      */
     public function getLoggerOutputters() {
         return $this->sxe->logger->outputters;
     }
     
-    /** @see Configurator::getLoggerFormatter */
+    /** @see IConfigurator::getLoggerFormatter */
     public function getLoggerFormatter() {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
     }
     
-    /**
-     * Dinamically sets the logger formatter
-     * @param string, formatter, the formatter to use for logger
-     */
-    public function setLoggerFormatter($formatter) {
-        $this->sxe->logger->formatter = $formatter;
-    }
-    
-    /** @see Configurator::getProperty */
+    /** @see IConfigurator::getProperty */
     public function getProperty($name) {
         foreach($this->sxe->property as  $properties ) {
             if($properties['name'] != $name)
@@ -149,6 +140,8 @@ class XMLConfigurator extends Object implements IConfigurator {
      * <code>
      *      $config->setProperty('application_path', 'C:\\Fast\\www\\medick\\app');
      * </code>
+     *
+     * Note: This method is used only in unittests.
      * @param string, name, the name of the property.
      * @param string, value, the value of the property.
      * @throws ConfiguratorException if the property that we want to set don't exists in the xml file/string
@@ -164,7 +157,17 @@ class XMLConfigurator extends Object implements IConfigurator {
         // save the new xml tree 
         $this->sxe = simplexml_import_dom($dom, 'SimpleXMLIterator');
     }
-    
+
+    /**
+     * Dinamically sets the logger formatter
+     *
+     * Note: this method is used only in unittests.
+     * @param string, formatter, the formatter to use for logger
+     */
+    public function setLoggerFormatter($formatter) {
+        $this->sxe->logger->formatter = $formatter;
+    }
+
     /**
      * Convert this document from SXE to DOM
      * @return DomDocument
