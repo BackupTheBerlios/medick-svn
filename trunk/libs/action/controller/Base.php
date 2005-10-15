@@ -74,15 +74,15 @@ class ActionControllerBase extends Object {
     
     /** @var string 
         Default location for template files*/
-	protected $template_root;
+    protected $template_root;
     
-	/** @var string 
+    /** @var string
         application path*/
-	protected $app_path;
+    protected $app_path;
     
     /** @var ActiveViewBase 
         Template Engine */
-	protected $template;
+    protected $template;
     
     /** @var bool 
         Flag to indicate that the current action was performed.*/
@@ -106,7 +106,7 @@ class ActionControllerBase extends Object {
         return $response;
     }
 
-	// {{{ renders.
+    // {{{ renders.
 
     /**
      * It renders the template name witch can be the name of the curent action.
@@ -126,10 +126,10 @@ class ActionControllerBase extends Object {
      * @return void
      */
     protected function render($template_name = NULL, $status = NULL) {
-		if (is_null($template_name)) $template_name = $this->params['action'];
-		$this->render_file($this->template_root . $template_name . '.phtml', $status);
-	}
-	
+        if (is_null($template_name)) $template_name = $this->params['action'];
+        $this->render_file($this->template_root . $template_name . '.phtml', $status);
+    }
+    
     /**
      * It renders the template file.
      * 
@@ -168,10 +168,10 @@ class ActionControllerBase extends Object {
                 $this->params['controller'] . DIRECTORY_SEPARATOR . $this->params['action'] . '.phtml';
             $this->render_text($this->template->render_file($_layout), $status);
         } else {
-    	   $this->render_text($this->template->render_file($template_file), $status);
+           $this->render_text($this->template->render_file($template_file), $status);
         }
-	}
-	
+    }
+    
     /**
      * Will render some text.
      * Is the _base_ method for render_file
@@ -189,12 +189,12 @@ class ActionControllerBase extends Object {
             return;
         }
         if (is_null($status)) $status = Response::SC_OK;
-		$this->response->setStatus($status);
+        $this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
-	}
-	
-	// }}}
+    }
+    
+    // }}}
 
     /**
      * Act as an internal constructor.
@@ -212,7 +212,8 @@ class ActionControllerBase extends Object {
         $this->app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
         $this->template_root = 
             $this->app_path . 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
-		$this->template = ActionViewBase::factory();
+        $this->template = ActionViewBase::factory();
+        $this->template->__base= $this->config->getProperty('document_root');
     }
 
     // XXX: not-done!
@@ -320,11 +321,11 @@ class ActionControllerBase extends Object {
         }
     }
 
-	/**
-	 * Injects model names into ActiveRecordBase by using the ModelInjector.
-	 * TODO: table inheritance ?
+    /**
+     * Injects model names into ActiveRecordBase by using the ModelInjector.
+     * TODO: table inheritance ?
      * TODO: can we hook a Registry here?
-	 */
+     */
     private function add_models() {
         if (isset($this->model)) {
             $this->logger->debug("We have Models...");
@@ -344,7 +345,7 @@ class ActionControllerBase extends Object {
      * and also when we perform the action
      * TODO: can we move this to the Object class?
      * @param string method_name, the method.
-     * 							  NOTE: We force the name to be on lower case.
+     *                            NOTE: We force the name to be on lower case.
      * @return RelfectionMethod or FALSE in case of failure. 
      */ 
     private function createMethod($method_name) {
