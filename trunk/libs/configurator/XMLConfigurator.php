@@ -51,8 +51,8 @@ class XMLConfigurator extends Object implements IConfigurator {
      */
     public function __construct($xml) {
         if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
-        else $this->sxe = simplexml_load_string($xml, 'SimpleXMLIterator');
-        if ($this->sxe===false) throw new ConfiguratorException('Cannot read ' . $xml . '\n<br /> Bad Format!');
+        else $this->sxe = @simplexml_load_string($xml, 'SimpleXMLIterator');
+        if ($this->sxe===false) throw new ConfiguratorException("Cannot read\n<br />" . $xml . "\n<br />Bad Format!");
     }
     
     /** 
@@ -120,9 +120,9 @@ class XMLConfigurator extends Object implements IConfigurator {
             if($properties['name'] != $name)
                 continue;
             $_query= (string)trim($properties['value']);
-            if( ($_query=='') OR ($_query=='false') OR ($_query=='off') OR ($_query == '0') )
+            if( ($_query=='') OR (strtolower($_query) == 'false') OR (strtolower($_query)=='off') OR ($_query == '0') )
                 return (bool)false;
-            elseif( ($_query=='true') OR ($_query=='on') OR ($_query == '1') ) 
+            elseif( (strtolower($_query)=='true') OR (strtolower($_query)=='on') OR ($_query == '1') )
                 return (bool)true;
             else 
                 return (string)$_query;
