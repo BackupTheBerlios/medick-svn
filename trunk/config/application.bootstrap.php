@@ -34,7 +34,7 @@
 
 /**
  * Sample __APPLICATION__NAME__.bootsrap.php file
- * Will bootstrap the application by setting it`s propreties.
+ * Will bootstrap the application by setting it`s properties.
  * Required files for start-up are included here
  * @package locknet7.start
  */
@@ -64,7 +64,7 @@ include_once('medick/Dispatcher.php');
 
 // hook a Configurator into Registry.
 include_once('configurator/XMLConfigurator.php');
-Registry::put(new XMLConfigurator(), '__configurator');
+Registry::put(new XMLConfigurator(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.xml'), '__configurator');
 
 // get some orientation.
 include_once('action/controller/Map.php');
