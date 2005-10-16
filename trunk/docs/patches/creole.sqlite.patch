@@ -1,17 +1,18 @@
 ? LICENSE
-? creole.patch
 Index: drivers/sqlite/SQLiteConnection.php
 ===================================================================
 RCS file: /cvs/creole/creole/classes/creole/drivers/sqlite/SQLiteConnection.php,v
 retrieving revision 1.12
 diff -u -r1.12 SQLiteConnection.php
 --- drivers/sqlite/SQLiteConnection.php	1 Sep 2004 14:00:29 -0000	1.12
-+++ drivers/sqlite/SQLiteConnection.php	14 Oct 2005 19:12:08 -0000
-@@ -165,9 +165,10 @@
++++ drivers/sqlite/SQLiteConnection.php	16 Oct 2005 16:55:00 -0000
+@@ -164,10 +164,11 @@
+      */
      public function executeQuery($sql, $fetchmode = null)
      {    
-         ini_set('sqlite.assoc_case', $this->sqliteAssocCase);
+-        ini_set('sqlite.assoc_case', $this->sqliteAssocCase);
 -        $result = @sqlite_query($this->dblink, $sql);
++        // ini_set('sqlite.assoc_case', $this->sqliteAssocCase);
 +        $this->lastQuery = $sql;
 +        $result = @sqlite_query($this->dblink, $this->lastQuery);
          if (!$result) {
@@ -46,7 +47,7 @@ RCS file: /cvs/creole/creole/classes/creole/drivers/sqlite/metadata/SQLiteTableI
 retrieving revision 1.7
 diff -u -r1.7 SQLiteTableInfo.php
 --- drivers/sqlite/metadata/SQLiteTableInfo.php	29 Nov 2004 13:40:12 -0000	1.7
-+++ drivers/sqlite/metadata/SQLiteTableInfo.php	14 Oct 2005 19:12:10 -0000
++++ drivers/sqlite/metadata/SQLiteTableInfo.php	16 Oct 2005 16:55:02 -0000
 @@ -72,7 +72,7 @@
              
              $this->columns[$name] = new ColumnInfo($this, $name, SQLiteTypes::getType($type), $type, $size, $scale, $is_nullable, $default_val);
