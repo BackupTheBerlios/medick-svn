@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -q
+#!/wwwroot/bin/php -q
 <?php
 
 // $Id$
@@ -57,4 +57,3 @@ $time_end = microtime(true);
 echo "Done in " . ($time_end - $time_start) . " seconds\n";
 
 unlink('test.db');
-
