@@ -42,6 +42,10 @@
 // error reporting level, turn this off in production!
 error_reporting(E_ALL|E_STRICT);
 
+if (version_compare(PHP_VERSION, '5.1.0') <= 0) {
+    date_default_timezone_set('Europe/Bucharest');
+}
+
 $pathinfo = pathinfo(__FILE__);
 $file     = explode('.',$pathinfo['basename']);
 
