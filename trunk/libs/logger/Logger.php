@@ -141,6 +141,7 @@ class Logger extends Object implements ILogger {
     
     /**
      * check to see if the list outputters contains the given outputter.
+     * @TODO: we have a base Object now, can we remove the call to getId?
      * @param IObserver $observer a observer
      * @return bool
      */
@@ -155,24 +156,20 @@ class Logger extends Object implements ILogger {
     
     /**
      * Loads the Outputters.
-     * TODO: why do we need 2 iterations?
-     * @param Iterator outputters collection
+     * @param array outputters
      */
-    public function load(Iterator $outputters) {
-        for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {
-            foreach($outputters->getChildren() as $outputter) {
-                try {
-                    $class_name= ucfirst((string)trim($outputter['name'])) . 'Outputter';
-                    $class_file= 'logger' . DIRECTORY_SEPARATOR . 'outputter' . DIRECTORY_SEPARATOR . $class_name . '.php';
-                    include_once($class_file);
-                    $class= new ReflectionClass($class_name);
-                    $this->attach( 
-                        $class->newInstance( (string)trim($outputter['level']), (string)trim($outputter['value']) ));
-                } catch (ReflectionException $rEx) {
-                    $this->warn($rEx->getMessage());
-                }
+    public function load(/*Array*/ $outputters) {
+        foreach ($outputters as $outputter) {
+            $class_name= ucfirst($outputter['name']) . 'Outputter';
+            $class_file= 'logger' . DIRECTORY_SEPARATOR . 'outputter' . DIRECTORY_SEPARATOR . $class_name . '.php';
+            @include_once($class_file);
+            try {
+                $class= new ReflectionClass($class_name);
+                $this->attach($class->newInstance($outputter['level'],$outputter['value']));
+            } catch (ReflectionException $rEx) {
+                $this->warn($rEx->getMessage());
             }
-        }    
+        }
     } 
     
     /**
@@ -233,4 +230,3 @@ class Logger extends Object implements ILogger {
         return $this->level;
     }
 }
-
