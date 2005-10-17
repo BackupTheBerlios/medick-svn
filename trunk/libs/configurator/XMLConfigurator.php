@@ -103,10 +103,17 @@ class XMLConfigurator extends Object implements IConfigurator {
      *      </logger>
      * </code>
      * @see IConfigurator::getLoggerOutputters
-     * @return SimpleXMLIterator
+     * @return array
      */
     public function getLoggerOutputters() {
-        return $this->sxe->logger->outputters;
+        $i=0; $ret= array();
+        $outputters = $this->sxe->logger->outputters;
+        for ($outputters->rewind(); $outputters->valid(); $outputters->next()) {
+            $ret[$i]['name'] = (string)trim($outputters->current()->outputter['name']);
+            $ret[$i]['level'] = (string)trim($outputters->current()->outputter['level']);
+            $ret[$i++]['value'] = (string)trim($outputters->current()->outputter['value']);
+        }
+        return $ret;
     }
     
     /** @see IConfigurator::getLoggerFormatter */
