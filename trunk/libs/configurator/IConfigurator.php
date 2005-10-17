@@ -42,7 +42,7 @@ interface IConfigurator {
     
     /**
      * It gets the logger outputters.
-     * @return Iterator
+     * @return array
      */
     function getLoggerOutputters();
     
