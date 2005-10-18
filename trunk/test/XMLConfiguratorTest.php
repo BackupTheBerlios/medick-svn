@@ -57,10 +57,10 @@ class XMLConfiguratorTest extends UnitTestCase {
                 </logger>
             </application>';
         $config= new XMLConfigurator($xml);
-        $this->assertIsA($config->getLoggerOutputters(), 'SimpleXMLIterator');
+        $this->assertEqual(2, sizeof($config->getLoggerOutputters()));
         $xml='<?xml version="1.0" encoding="UTF-8"?><application><outputter name="stdout"  level="0" /></application>';
         $config= new XMLConfigurator($xml);
-        $this->assertNull($config->getLoggerOutputters());
+        $this->assertEqual(0, sizeof($config->getLoggerOutputters()));
     }
 
     public function testLoggerFormatter() {
