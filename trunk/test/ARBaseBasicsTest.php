@@ -3,9 +3,39 @@
 // $Id$
     
 include_once('dummy/models/author.php');
+include_once('mock/MockConfigurator.php');
+include_once('logger/Logger.php');
 
 /** Tests insert, update, save (insert/update), delete. */
 class ARBaseBasicsTest extends UnitTestCase {
+
+    /**
+     * Constructor Once/TestCase
+     * Prequsites for this TestCase to run: Create a sqlite DB
+     */
+    public function __construct() {
+        if (is_file('test.db')) unlink('test.db');
+        $query='
+            CREATE TABLE authors (
+                id INTEGER PRIMARY KEY,
+                name VARCHAR(100),
+                email VARCHAR(150)
+            );
+        ';
+        sqlite_query(sqlite_open('test.db'), $query);
+    }
+
+    /** set up */
+    public function setUp() {
+        Registry::put(new MockConfigurator(), '__configurator');
+        Registry::put(new Logger(), '__logger');
+        ActiveRecordBase::close();
+    }
+    
+    /** tearDown */
+    public function tearDown() {
+        Registry::close();
+    }
 
     /** <tt>save && delete test</tt> */
     public function testSave() {
@@ -41,4 +71,3 @@ class ARBaseBasicsTest extends UnitTestCase {
         $this->assertEqual($item->delete(), 1);
     }
 }
-

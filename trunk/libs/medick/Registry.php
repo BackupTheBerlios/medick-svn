@@ -32,6 +32,8 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('medick/InvalidOffsetException.php');
+
 /**
  * @package locknet7.medick
  */
@@ -62,9 +64,32 @@ class Registry extends Object {
      * It gets an Object from the registry database
      * @param string key, the object identifier
      * @return Object
+     * @throws NullPointerException
      */
     public static function get($key) {
-        return self::$registry[$key];
+        if (isset(self::$registry[$key])) {
+            return self::$registry[$key];
+        }
+        throw new InvalidOffsetException('Cannot access the object identified by key: `' . $key . '` from Registry Database!');
+    }
+    
+    /**
+     * Removes an Object from the Registry Database
+     * @param string key, object identifier
+     * @return Object, the object removed.
+     * @throws NullPointerException
+     */
+    public static function remove($key) {
+        $obj= self::get($key);
+        unset(self::$registry[$key]);
+        return $obj;
+    }
+    
+    /**
+     * Closes and clean-up the registry database
+     */
+    public static function close() {
+        return self::$registry= array();
     }
     
     /**
@@ -79,4 +104,3 @@ class Registry extends Object {
     }
     // }}}
 }
-

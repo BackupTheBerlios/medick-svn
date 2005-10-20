@@ -44,25 +44,42 @@ include_once('creole/Creole.php');
  */
 class ActiveRecordBase extends Object {
 
-    /** DB Table Fields */
+    /** @var FieldsAggregate
+        DB Table Fields */
     protected $fields;
 
-    /** pk. name! */
+    /** @var string
+        primary key name! */
     private $pk;
 
     // {{{ static members
-    /** database connection*/
+    
+    /** @var Connection
+        database connection*/
     protected static $conn;
-    /** table name */
+    
+    /** @var string 
+        current table name */
     protected static $table_name;
+    
     // }}}
 
+    /**
+     * Establish A Database Connection
+     */
     public static function establish_connection () {
         if (self::$conn === NULL) {
             self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
     }
-
+    
+    /**
+     * Force a closing of the database connection
+     */
+    public static function close() {
+        self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
+    }
+    
     /**
      * Constructor
      *

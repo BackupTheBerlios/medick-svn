@@ -27,22 +27,6 @@ include_once('simpletest/web_tester.php');
 include_once('simpletest/unit_tester.php');
 include_once('simpletest/reporter.php');
 
-if (is_file('test.db')) unlink('test.db');
-
-$query=<<<__
-    CREATE TABLE authors (
-        id INTEGER PRIMARY KEY,
-        name VARCHAR(100),
-        email VARCHAR(150)
-    );
-__;
-sqlite_query(sqlite_open('test.db'), $query);
-
-include_once('mock/MockConfigurator.php');
-Registry::put(new MockConfigurator(), '__configurator');
-include_once('logger/Logger.php');
-Registry::put(new Logger(), '__logger');
-
 $test= new GroupTest('====== Medick Framework Unit Tests =====');
 
 $it = new DirectoryIterator(dirname(__FILE__));

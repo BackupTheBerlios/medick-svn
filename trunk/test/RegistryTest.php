@@ -4,6 +4,8 @@
     
 include_once('mock/MockObject.php');
 
+
+
 class RegistryTest extends UnitTestCase {
 
     private $registry = NULL;
@@ -21,6 +23,16 @@ class RegistryTest extends UnitTestCase {
     
     function testRegistry() {
         $this->assertEqual($this->obj->getClassName(), Registry::get('mock')->getClassName());
+    }
+    
+    function testDispose() {
+        Registry::remove('mock');
+        try {
+            Registry::get('mock');
+            $this->fail('InvalidOffsetException should be thrown!');
+        } catch (Exception $nEx) {
+            $this->assertIsA($nEx, 'InvalidOffsetException');
+        }
     }
 
 }

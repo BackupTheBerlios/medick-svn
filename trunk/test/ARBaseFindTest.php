@@ -3,15 +3,36 @@
 // $Id$
     
 include_once('dummy/models/author.php');
-
+include_once('mock/MockConfigurator.php');
+include_once('logger/Logger.php');
+  
 /** Tests find */
 class ARBaseFindTest extends UnitTestCase {
-
+  
     /** our authors container */
     private $authors= array();
-
-    /** set up this test case, we insert 3 fileds in DB table */
-    public function setUp() {
+     
+    /**
+     * Constructor Once/TestCase
+     * Prequsites for this TestCase to run: Create a sqlite DB
+     */
+    public function __construct() {
+        if (is_file('test.db')) unlink('test.db');
+        $query='
+            CREATE TABLE authors (
+                id INTEGER PRIMARY KEY,
+                name VARCHAR(100),
+                email VARCHAR(150)
+            );
+        ';
+        sqlite_query(sqlite_open('test.db'), $query);
+     }
+  
+     /** set up this test case, we insert 3 fileds in DB table */
+     public function setUp() {
+        Registry::put(new MockConfigurator(), '__configurator');
+        Registry::put(new Logger(), '__logger');
+        ActiveRecordBase::close();
         $author= new Author();
         $author->name= "Andrei Cristescu";
         $author->email= "andrei.cristescu@foo-factory.info";
@@ -27,11 +48,12 @@ class ARBaseFindTest extends UnitTestCase {
         $author->insert();
     }
 
-    /** remove all the fields from DB */
+    /** remove all the fields from DB, clean-up the Registry */
     public function tearDown() {
         foreach ($this->authors as $author) {
             $author->delete();
         }
+        Registry::close();
     }
 
     /** find all syntax. */
@@ -75,5 +97,4 @@ class ARBaseFindTest extends UnitTestCase {
         $authors= Author::find('all', array('offset'=>2));
         $this->assertEqual($authors->count(), 1);
     }
-
 }
