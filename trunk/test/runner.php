@@ -5,26 +5,6 @@
 
 // Script that runs all the *Test.php* files from the test folder.
 
-class DirectoryTreeIterator extends RecursiveIteratorIterator
-{
-    /** Construct from a path.
-     * @param $path directory to iterate
-     */
-    function __construct($path)
-    {
-        parent::__construct(
-            new RecursiveCachingIterator(
-                new RecursiveDirectoryIterator($path), CachingIterator::CALL_TOSTRING|CachingIterator::CATCH_GET_CHILD), 1);
-    }
-
-    /** Aggregates the inner iterator
-     */
-    function __call($func, $params)
-    {
-        return call_user_func_array(array($this->getSubIterator(), $func), $params);
-    }
-}
-
 $time_start = microtime(true);
 
 define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
@@ -48,6 +28,26 @@ include_once('simpletest/unit_tester.php');
 include_once('simpletest/reporter.php');
 
 $test= new GroupTest('====== Medick Framework Unit Tests =====');
+
+class DirectoryTreeIterator extends RecursiveIteratorIterator
+{
+    /** Construct from a path.
+     * @param $path directory to iterate
+     */
+    function __construct($path)
+    {
+        parent::__construct(
+            new RecursiveCachingIterator(
+                new RecursiveDirectoryIterator($path), CachingIterator::CALL_TOSTRING|CachingIterator::CATCH_GET_CHILD), 1);
+    }
+
+    /** Aggregates the inner iterator
+     */
+    function __call($func, $params)
+    {
+        return call_user_func_array(array($this->getSubIterator(), $func), $params);
+    }
+}
 
 foreach(new DirectoryTreeIterator(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR) as $entry)
 {
