@@ -7,7 +7,7 @@ include_once('mock/MockConfigurator.php');
 include_once('logger/Logger.php');
   
 /** Tests find */
-class ARBaseFindTest extends UnitTestCase {
+class FindTest extends UnitTestCase {
   
     /** our authors container */
     private $authors= array();
@@ -17,7 +17,7 @@ class ARBaseFindTest extends UnitTestCase {
      * Prequsites for this TestCase to run: Create a sqlite DB
      */
     public function __construct() {
-        if (is_file('test.db')) unlink('test.db');
+        if (is_file(TMP . 'test.db')) unlink(TMP . 'test.db');
         $query='
             CREATE TABLE authors (
                 id INTEGER PRIMARY KEY,
@@ -25,7 +25,7 @@ class ARBaseFindTest extends UnitTestCase {
                 email VARCHAR(150)
             );
         ';
-        sqlite_query(sqlite_open('test.db'), $query);
+        sqlite_query(sqlite_open(TMP . 'test.db'), $query);
      }
   
      /** set up this test case, we insert 3 fileds in DB table */

@@ -8,15 +8,15 @@ include_once('mock/MockConfigurator.php');
 include_once('logger/Logger.php');
 
 /** Test Has_One Association */
-class ARBaseAssocHas_OneTest extends UnitTestCase {
+class HasOneTest extends UnitTestCase {
 
     /**
      * Constructor Once/TestCase
      * Prequsites for this TestCase to run: Create a sqlite DB with 2 tables and a foreign key.
      */
     public function __construct() {
-        if (is_file('test.db')) unlink('test.db');
-        $tbd= sqlite_open('test.db');
+        if (is_file(TMP . 'test.db')) unlink(TMP . 'test.db');
+        $tbd= sqlite_open(TMP . 'test.db');
         $query='
             CREATE TABLE AUTHORS (
                 id INTEGER PRIMARY KEY,
