@@ -34,9 +34,9 @@ find . ! -regex '.*/\.svn.*' -exec sh -c "
 " \;
 cd - > /dev/null
 echo 'Done.'
-echo "Creating tar.gz file: ${TARNAME}-latest.tar.gz"
+echo "Creating tar.gz file: ${TARNAME}-${C_DATE}.tar.gz"
 tar czf ${TARNAME}.tar.gz -C "${TMPDIR}/" ${TARNAME}
-mv ${TARNAME}.tar.gz ${PW}/${TARNAME}-latest.tar.gz
+mv ${TARNAME}.tar.gz ${PW}/${TARNAME}-${C_DATE}.tar.gz
 cd $PW
 echo 'Done.'
 echo 'Cleaning-up...'
