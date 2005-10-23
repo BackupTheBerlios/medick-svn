@@ -37,6 +37,9 @@ include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
 include_once('active/record/ActiveRecordException.php');
 include_once('active/support/Inflector.php');
+
+include_once('active/record/Association.php');
+
 include_once('creole/Creole.php');
 
 /**
@@ -51,6 +54,10 @@ class ActiveRecordBase extends Object {
     /** @var string
         primary key name! */
     private $pk;
+
+    /** @var Logger
+        a Logger instance */
+    protected $logger;
 
     // {{{ static members
     
@@ -88,6 +95,7 @@ class ActiveRecordBase extends Object {
      * @param array, params, parameters as pair of `field name` => `value`
      */
     public final function __construct($params = array()) {
+        $this->logger= Registry::get('__logger');
         self::establish_connection();
         $this->fields = new FieldsAggregate();
         self::$table_name = Inflector::pluralize(strtolower(get_class($this)));
@@ -153,19 +161,44 @@ class ActiveRecordBase extends Object {
                 return $it->current()->isAffected ? $it->current()->getValue() : NULL;
             }
         }
-        if ($this->has_one AND in_array($field_name, $this->has_one)) {
+        // Associations:
+        // 1. has_one, the syntax: protected $has_one= array('__FIELD_NAME__');
+        if (isset($this->has_one) && $this->has_one && in_array($field_name, $this->has_one)) {
             $fk= $field_name.'_id';
             for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
                 if ( $it->current()->getName() == $fk ) {
                     $_table= Inflector::singularize(self::$table_name);
                     self::setTable($field_name);
-                    $ret= self::find($it->current()->getValue());
+                    $ret= self::__find(array($it->current()->getValue()));
                     self::setTable($_table);
                     return $ret;
                 }
             }
         }
-        throw new ActiveRecordException ('Cannot Get the value of filed: ' . $field_name . '. No such filed!');
+        // 2. has_and_belongs_to_many
+        if (
+            (isset($this->has_and_belongs_to_many))
+              &&
+              (
+                  (
+                      (is_array($this->has_and_belongs_to_many))
+                      &&
+                      (in_array($field_name, $this->has_and_belongs_to_many))
+                  )
+                  ||
+                  (
+                      $this->has_and_belongs_to_many == Inflector::pluralize($field_name)
+                  )
+              )
+            )
+        {
+            $assoc = new HasAndBelongsToManyAssociation();
+            $assoc->owner= Inflector::singularize(self::$table_name);
+            $assoc->pk   = $this->fields->getPrimaryKey()->getValue();
+            $assoc->class= Inflector::singularize($field_name);
+            return $assoc->execute();
+        }
+        throw new ActiveRecordException ('Cannot Get the value of filed: `' . $field_name . '`. No such filed!');
     }
 
     /** removes some duplicate code */
@@ -313,14 +346,12 @@ class ActiveRecordBase extends Object {
     // }}}
 
     // {{{ find monster
-    public static function find() {
-        $numargs = func_num_args();
-        if($numargs == 0) return self::find('all');
-        $params = func_get_args();
+    public static final function __find($params= array()) {
+        $numargs = sizeof($params);
+        if($numargs == 0) return self::__find(array('all'));
 
         // $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$table_name)));
         $_klazz = Inflector::singularize(ucfirst(self::$table_name));
-
         $query = new QuerryBuilder(self::$table_name);
 
         if ( $params[0] == 'all' && $numargs == 1 ) {

@@ -31,43 +31,52 @@
 // 
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
-    
-include_once('action/controller/Routing.php');
-include_once('action/controller/Request.php');
-include_once('action/controller/Response.php');
-include_once('action/controller/Base.php');
 
 /**
- * @package locknet7.medick
+ * Association base abstract class
+ * @package locknet7.active.record
  */
-class Dispatcher extends Object {
 
-    /** 
-     * Framework entry point 
-     * @return void.
-     */
-    public static function dispatch() {
+abstract class Association extends Object {
 
-        if (php_sapi_name() == 'cli') {
-            $request  = new CLIRequest();
-            $response = new CLIResponse();
-        } else {
-            $request  = new HTTPRequest();
-            $response = new HTTPResponse();
-        }
-        try {
-            ActionControllerRouting::recognize($request)->process($request, $response)->dump();
-        } catch (MedickException $mEx) {
-            Registry::get('__logger')->warn($mEx->getMessage());
-            echo '<div style="border:1px solid red"><h1 style="text-align:center">Cannot process your request due to a MedickException</h1>';
-            echo '<span style="color:red">' . $mEx->getMessage() . '</span>';
-            echo '<pre>' . $mEx->getTraceAsString() . '</pre><br /><h3>Exception Type: ' . $mEx->getType() . '</h3></div>';
-        } catch (Exception $e) {
-            Registry::get('__logger')->warn($e->getMessage());
-            echo '<div style="border:1px solid red"><h1 style="text-align:center">Internal Server Error.</h1>';
-            echo '<span style="color:red">' . $e->getMessage() . '</span>';
-            echo '<pre>' . $e->getTraceAsString() . '</pre></div>';
-        }
+    public $owner= NULL;
+
+    public $class= NULL;
+
+    public $pk   = NULL;
+
+    abstract public function execute();
+
+    protected function pre_execution() {
+        ActiveRecordBase::setTable(Inflector::pluralize($this->class));
+    }
+
+    protected function post_execution() {
+        ActiveRecordBase::setTable(Inflector::pluralize($this->owner));
     }
 }
 
+/**
+ * HasAndBelongsToManyAssociation
+ * @package locknet7.active.record.association
+ */
+class HasAndBelongsToManyAssociation extends Association {
+    public function execute() {
+        $this->pre_execution();
+        $join_table= Inflector::pluralize($this->class) . '_' . Inflector::pluralize($this->owner);
+        $ret= ActiveRecordBase::__find(
+                            array(
+                                array(
+                                    'include'  => Inflector::pluralize($this->class) . '.*',
+                                    'left join'=>
+                                              $join_table . ' ON ' .
+                                              Inflector::pluralize($this->class) .
+                                              '.id=' . $join_table . '.' . $this->class . '_id',
+                                     'condition'=> $join_table . '.' . $this->owner . '_id=' . $this->pk
+                                    )
+                                )
+                            );
+        $this->post_execution();
+        return $ret;
+    }
+}

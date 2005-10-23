@@ -33,26 +33,49 @@
 // }}}
 
 /**
- * It builds SQL querys
+ * It builds Select SQL querys
  * @package locknet7.active.record
  */
 class QuerryBuilder extends Object {
-    
-    private $select  = array();
-    private $from;
-    private $where   = array();
+
+    /** @var array
+        select, used in include modifier */
+    private $select = array();
+
+    /** @var array
+        from clause, this includes the table name and joins */
+    private $fromClause = array();
+
+    /** @var array
+        where clause */
+    private $whereClause = array();
+
+    /** @var string
+        adds an order by */
     private $orderBy;
 
-    private $table;
-
+    /** @var int limit */
     private $limit  = FALSE;
+
+    /** @var int offset */
     private $offset = FALSE;
 
-    
+    /**
+     * Creates a new QueryBuilder
+     * @param string table
+     */
     public function __construct($table) {
-        $this->table = $table;
+        $this->fromClause[]= $table;
     }
 
+    /**
+     * It adds a modifier to this select
+     *
+     * @param string type of this modifier
+     * @param string value of this modifier
+     * @throws ActiveRecordException when the type is unknown
+     * @return void
+     */
     public function add($type, $value) {
         switch ($type) {
             case 'include':
@@ -60,6 +83,9 @@ class QuerryBuilder extends Object {
                 break;
             case 'condition':
                 $this->addWhere($value);
+                break;
+            case 'left join':
+                $this->addJoin('LEFT', $value);
                 break;
             case 'limit':
                 $this->limit = (int)$value;
@@ -71,47 +97,83 @@ class QuerryBuilder extends Object {
                 $this->orderBy = $value;
                 break;
             default:
-                throw new ActiveRecordException ('Call to unknow modifier: ' . $type);
+                throw new ActiveRecordException ('Call to unknow modifier: `' . $type . '`');
                 break;
         }
     }
 
+    /**
+     * Adds modifiers as array
+     * @param array the array of parameters to pass
+     */
     public function addArray(/*array*/ $params) {
         foreach ($params AS $type=>$value) {
             $this->add($type, $value);
         }
     }
-    
+
+    /**
+     * It gets the limit
+     * @return int the limit or FALSE if the limit was not changed
+     */
     public function getLimit() {
         return $this->limit;
     }
 
+    /**
+     * It gets the offset
+     * @return int the offset or FALSE if the offset was not changed
+     */
     public function getOffset() {
         return $this->offset;
     }
-    
+
+    /**
+     * It buils the select query based on the modifiers passed.
+     * @return string the sql querys
+     */
     public function buildQuery() {
-        return  "SELECT "
+        $query =  "SELECT "
                  . ($this->select ? implode(" ", $this->select) . " " : " * ")
                  // .implode(", ", $selectClause)
                  // . " FROM " . implode(", ", $fromClause)
-                 . " FROM " . $this->table
-                 . ($this->where ? " WHERE " . implode(" AND ", $this->where) : "")
+                 // . " FROM " . $this->table
+                 . " FROM " . implode(" ", $this->fromClause)
+                 . ($this->whereClause ? " WHERE " . implode(" AND ", $this->whereClause) : "")
                  // .($groupByClause ? " GROUP BY ".implode(",", $groupByClause) : "")
                  // .($havingString ? " HAVING ".$havingString : "")
                  // . ($this->orderBy ? " ORDER BY " . implode(",", $this->orderBy) : "");
                  . ($this->orderBy ? " ORDER BY " . $this->orderBy : "");
+        Registry::get('__logger')->debug('Trying to run sql query:');
+        Registry::get('__logger')->debug($query);
+        return $query;
                  
 
     }
-    
-    public function addSelect($select) {
+
+    // {{{ internal helpers.
+    /**
+     * Adds a select clause
+     * @param string select clause to add
+     */
+    private function addSelect($select) {
         $this->select[] = $select;
     }
 
-    public function addWhere($where) {
-        $this->where[] = $where;
+    /**
+     * Adds a where clause
+     * @param string where clause to add
+     */
+    private function addWhere($where) {
+        $this->whereClause[] = $where;
     }
 
+    /**
+     * Adds a join clause
+     * @param string join clause to add
+     */
+    private function addJoin($args, $value) {
+        $this->fromClause[] = $args . " JOIN " . $value;
+    }
+    // }}}
 }
-

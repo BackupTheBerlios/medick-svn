@@ -37,5 +37,8 @@
  * Our base Exception Class
  * @package locknet7.medick
  */
-class MedickException extends Exception {       }
+class MedickException extends Exception {
 
+    public function getType() { return __CLASS__; }
+
+}

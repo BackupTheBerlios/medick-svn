@@ -142,4 +142,3 @@ class FieldsAggregate extends Object implements IteratorAggregate {
         return $affected_fields;
     }
 }
-
