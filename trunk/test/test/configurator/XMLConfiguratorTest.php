@@ -7,7 +7,7 @@ include_once('configurator/XMLConfigurator.php');
 class XMLConfiguratorTest extends UnitTestCase {
 
     public function testCreation() {
-        $this->assertNotNull(new XMLConfigurator('dummy/dummy.xml'));
+        $this->assertNotNull(new XMLConfigurator('application/application.xml'));
         $this->assertNotNull(new XMLConfigurator('<?xml version="1.0" encoding="UTF-8"?><application></application>'));
         try {
             new XMLConfigurator('non_existant_file.xml');

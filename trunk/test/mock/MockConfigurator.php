@@ -17,7 +17,7 @@ class MockConfigurator extends Object implements IConfigurator {
     public function getProperty($name) {
         switch ($name) {
             case 'application_path':
-                return 'dummy' . DIRECTORY_SEPARATOR;
+                return 'application' . DIRECTORY_SEPARATOR;
             default:
                 throw new ConfiguratorException(__CLASS__ . ' Property `' . $name . '` not implemented!');
          }
@@ -26,6 +26,6 @@ class MockConfigurator extends Object implements IConfigurator {
      public function getDatabaseDsn($id=FALSE) {
          return array(
                'phptype'  => 'sqlite',
-               'database' => 'test.db');
+               'database' => TMP . 'test.db');
     }
 }

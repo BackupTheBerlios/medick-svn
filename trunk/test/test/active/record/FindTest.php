@@ -2,7 +2,7 @@
 
 // $Id$
     
-include_once('dummy/models/author.php');
+include_once('application/models/author.php');
 include_once('mock/MockConfigurator.php');
 include_once('logger/Logger.php');
   
@@ -17,7 +17,7 @@ class FindTest extends UnitTestCase {
      * Prequsites for this TestCase to run: Create a sqlite DB
      */
     public function __construct() {
-        if (is_file(TMP . 'test.db')) unlink(TMP . 'test.db');
+        @unlink(TMP . 'test.db');
         $query='
             CREATE TABLE authors (
                 id INTEGER PRIMARY KEY,

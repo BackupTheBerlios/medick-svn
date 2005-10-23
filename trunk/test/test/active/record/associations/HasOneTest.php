@@ -2,8 +2,8 @@
 
 // $Id$
     
-include_once('dummy/models/author.php');
-include_once('dummy/models/book.php');
+include_once('application/models/author.php');
+include_once('application/models/book.php');
 include_once('mock/MockConfigurator.php');
 include_once('logger/Logger.php');
 
@@ -15,7 +15,7 @@ class HasOneTest extends UnitTestCase {
      * Prequsites for this TestCase to run: Create a sqlite DB with 2 tables and a foreign key.
      */
     public function __construct() {
-        if (is_file(TMP . 'test.db')) unlink(TMP . 'test.db');
+        @unlink(TMP . 'test.db');
         $tbd= sqlite_open(TMP . 'test.db');
         $query='
             CREATE TABLE AUTHORS (
