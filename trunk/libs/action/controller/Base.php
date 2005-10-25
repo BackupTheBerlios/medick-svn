@@ -32,14 +32,11 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/**
- * @package locknet7.action.controller
- */
-    
 include_once('action/controller/Injector.php');
 include_once('action/view/Base.php');
  
 /**
+ * @package locknet7.action.controller
  * Base Class For Our Application Controllers
  */
 class ActionControllerBase extends Object {
@@ -91,6 +88,24 @@ class ActionControllerBase extends Object {
     /** @var Configurator 
         configurator instance */
     private $config;
+    
+    /**
+     * Process this Request
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param Exception $exception
+     * @return Response
+     */
+    public static function process_with_exception(Request $request, Response $response, Exception $exception) {
+        $template = ActionViewBase::factory();
+        $template->error= $exception;
+        $text= $template->render_file(TOP_LOCATION . '/libs/action/controller/templates/error.phtml');
+        $status = Response::SC_INTERNAL_SERVER_ERROR;
+        $response->setStatus($status);
+        $response->setContent($text);
+        return $response;
+    }
     
     /**
      * Will process the request returning the resulting response

@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!-- $Id$ -->
+    <head>
+        <title>Server Error!</title>
+        
+        <script language="javascript" type="text/javascript">
+        
+        function showSource() {
+            document.getElementById("source").style.display = "block";
+            return FALSE;
+        }
+        
+        function hideSource() {
+            document.getElementById("source").style.display = "none";
+            return FALSE;
+        }        
+        
+        </script>
+        
+        <style type="text/css" media="all">
+        
+            body {
+              font-size: .9em;
+              font-family: "Lucida Grande", Helvetica, Tahoma, sans-serif;
+            }        
+        
+            a { text-decoration: none; }
+            
+            h1 {
+                text-align:center;
+            }
+            
+            .container {
+                border:1px solid red;
+            }
+            
+            .source {
+                background-color: #FFFFCC; 
+                color: #666666;
+            }
+            
+        </style>
+        
+    </head>
+    
+    <body>
+       <div class="container">
+       <h1>Cannot process your request!</h1>
+           <h2><strong>Message: </strong><?=$error->getMessage();?></h2>
+           <strong>in</strong> (<?=$error->getLine();?>)
+           <a href="javascript:void(0);" onclick="return showSource();"><?=$error->getFile();?></a>
+           
+           <hr noshade="noshade" />
+           Backtrace:<br />
+           <pre><?=$error->getTraceAsString();?></pre>
+           <hr noshade="noshade" />
+           
+           <span class="showOrHideDetailsButton">(
+               <a href="javascript:void(0);" onclick="return showSource();">show source</a> |
+               <a href="javascript:void(0);" onclick="return hideSource();">hide source</a> )
+           </span>
+           
+           <hr noshade="noshade" />
+           
+           <? 
+            $data = highlight_string(file_get_contents($error->getFile()), TRUE);
+            $data = explode('<br />', $data);
+            $line = $error->getLine();
+            $end  = $line+10;
+            $start = $line-10;
+
+            ?>
+            <table cellspacing="0" cellpadding="0" id="source" style="display:none;">
+            <tr><td style="vertical-align: top;">
+                <code class="source">
+            
+            <? 
+              for ($x = $start; $x <= $end; $x++) {
+                if ($line==$x) {
+                    echo '<span style="background-color: red; color: white;">';
+                } else { 
+                    echo ' ';
+                }
+                echo str_repeat('&nbsp;', (strlen($end) - strlen($x)) + 1);
+                echo $x;
+                echo '&nbsp;';
+                if ($line == $x) {
+                    echo '</span>';
+                } else { 
+                    echo '';
+                }
+                echo '<br />';
+            }
+            ?>
+            </code>
+            </td><td style="vertical-align: top;"><code>
+            
+            <? while ($start <= $end) { ?>
+            &nbsp;<?=$data[$start - 1];?><br />
+            <? ++$start; ?>
+            <? } ?>
+            
+            </code></td>
+            </tr></table>        
+
+        </div>
+    </body>
+
+</html>

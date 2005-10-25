@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//   this list of conditions and the following disclaimer.
+//   * Redistributions of source code must retain the above copyright notice, 
+//   this list of conditions and the following disclaimer. 
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation
-//   and/or other materials provided with the distribution.
-//   * Neither the name of locknet.ro nor the names of its contributors may
-//   be used to endorse or promote products derived from this software without
+//   this list of conditions and the following disclaimer in the documentation 
+//   and/or other materials provided with the distribution. 
+//   * Neither the name of locknet.ro nor the names of its contributors may 
+//   be used to endorse or promote products derived from this software without 
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,26 +26,44 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
+// 
 // $Id$
-//
+// 
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-
 /**
  * @package locknet7.medick
- * Our base Exception Class
+ * The Medick Error Handler.
  */
-class MedickException extends Exception {
+class ErrorHandler extends Object {
 
     /**
-     * Create a new MedickException
-     * @param string the message.
-     * @param int code.
+     * Setup this ErrorHandler
      */
-    public function __construct($message, $code = '0') {
-        parent::__construct($message, $code);
+    public function __construct() {
+        ini_set('docref_root', null);
+        ini_set('docref_ext', null);
     }
-
+    
+    /**
+     * @param int $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param int $errline
+     * @return void
+     * @throw Error
+     */
+    function raiseError($errno, $errstr, $errfile, $errline) {
+        if (0 == error_reporting()) return;
+            $trace = debug_backtrace();
+            array_shift($trace);
+            throw new Error(
+              $errstr,
+              $errno,
+              $errfile,
+              $errline,
+              $trace
+            );
+    }
 }

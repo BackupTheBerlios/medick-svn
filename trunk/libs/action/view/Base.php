@@ -84,7 +84,7 @@ class Sonart extends ActionViewBase {
      * @throws Exception if the file is wrong.
      */
 	public function render($file) {
-		if (!is_file($file)) throw new Exception ('Cannot Find Template: ' . $file);
+		if (!is_file($file)) throw new MedickException ('Cannot Find Template: ' . $file);
 		if (!empty($this->vars)) {
             if(!get_magic_quotes_gpc()) $this->vars = self::stripslashes_deep($this->vars);
             extract($this->vars,EXTR_SKIP);

@@ -47,7 +47,6 @@ class Dispatcher extends Object {
      * @return void.
      */
     public static function dispatch() {
-
         if (php_sapi_name() == 'cli') {
             $request  = new CLIRequest();
             $response = new CLIResponse();
@@ -57,16 +56,9 @@ class Dispatcher extends Object {
         }
         try {
             ActionControllerRouting::recognize($request)->process($request, $response)->dump();
-        } catch (MedickException $mEx) {
-            Registry::get('__logger')->warn($mEx->getMessage());
-            echo '<div style="border:1px solid red"><h1 style="text-align:center">Cannot process your request due to a MedickException</h1>';
-            echo '<span style="color:red">' . $mEx->getMessage() . '</span>';
-            echo '<pre>' . $mEx->getTraceAsString() . '</pre><br /><h3>Exception Type: ' . $mEx->getType() . '</h3></div>';
-        } catch (Exception $e) {
-            Registry::get('__logger')->warn($e->getMessage());
-            echo '<div style="border:1px solid red"><h1 style="text-align:center">Internal Server Error.</h1>';
-            echo '<span style="color:red">' . $e->getMessage() . '</span>';
-            echo '<pre>' . $e->getTraceAsString() . '</pre></div>';
+        } catch (Exception $ex) {
+            ActionControllerBase::process_with_exception($request, $response, $ex)->dump();
+            Registry::get('__logger')->warn($ex->getMessage());
         }
     }
 }

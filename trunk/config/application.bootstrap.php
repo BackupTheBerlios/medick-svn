@@ -63,8 +63,13 @@ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR
 // load core classes.
 include_once('medick/Object.php');
 include_once('medick/Exception.php');
+include_once('medick/Error.php');
+include_once('medick/ErrorHandler.php');
 include_once('medick/Registry.php');
 include_once('medick/Dispatcher.php');
+
+// set-up the error handler:
+set_error_handler(array(new ErrorHandler(), 'raiseError'));
 
 // hook a Configurator into Registry.
 include_once('configurator/XMLConfigurator.php');
