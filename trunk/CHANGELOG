@@ -4,6 +4,9 @@ $Id$
 
 0.0.3(*)
     - Unit test ActiveRecordBase (*)
+    - Minor code clean-up in Logger and XMLConfigurator => better testing.
+    - ActiveRecordBase implemented has_and_belongs_to_many association (read-only)
+    - Custom ErrorHandler
 
 0.0.2 (14.Oct.2005)
     - initial import of Session
