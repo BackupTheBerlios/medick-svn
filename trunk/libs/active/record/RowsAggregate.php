@@ -33,6 +33,7 @@
 // }}}
 
 /**
+ * Container for FiedsAggregate Objects
  * @package locknet7.active.record
  */
 class RowsAggregate extends Object implements IteratorAggregate {
@@ -75,19 +76,18 @@ class RowsAggregate extends Object implements IteratorAggregate {
     }
     
     /**
-     * Returns an array representation of this object
-     * @return array
-     */
-    public function toArray() {
-        return iterator_to_array($this->getIterator());
-    }
-    
-    /**
+     * It gets the offset by his index.
      * @param index
      * @return
      */
     public function offsetGet($index) {
         return $this->container->offsetGet($index);
     }
-}
 
+    /**
+     * Magick php5 __call
+     */
+    public function __call($method, $arguments) {
+        trigger_error(sprintf('Call to undefined method: %s->%s(%s).', get_class($this), $method,$arguments), E_USER_ERROR);
+    }
+}

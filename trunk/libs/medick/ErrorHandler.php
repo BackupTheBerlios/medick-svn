@@ -51,19 +51,12 @@ class ErrorHandler extends Object {
      * @param string $errstr
      * @param string $errfile
      * @param int $errline
-     * @return void
      * @throw Error
      */
     function raiseError($errno, $errstr, $errfile, $errline) {
         if (0 == error_reporting()) return;
-            $trace = debug_backtrace();
-            array_shift($trace);
-            throw new Error(
-              $errstr,
-              $errno,
-              $errfile,
-              $errline,
-              $trace
-            );
+        $trace = debug_backtrace();
+        array_shift($trace);
+        throw new Error( $errstr, $errno, $errfile, $errline, $trace );
     }
 }

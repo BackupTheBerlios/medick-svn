@@ -22,6 +22,9 @@
         <style type="text/css" media="all">
         
             body {
+              margin: 3px;
+              padding: 3px;
+              border:1px solid red;
               font-size: .9em;
               font-family: "Lucida Grande", Helvetica, Tahoma, sans-serif;
             }        
@@ -33,7 +36,8 @@
             }
             
             .container {
-                border:1px solid red;
+              margin: 3px;
+              padding: 3px; 
             }
             
             .source {
@@ -48,6 +52,7 @@
     <body>
        <div class="container">
        <h1>Cannot process your request!</h1>
+           <h2><?=get_class($error);?></h2>
            <h2><strong>Message: </strong><?=$error->getMessage();?></h2>
            <strong>in</strong> (<?=$error->getLine();?>)
            <a href="javascript:void(0);" onclick="return showSource();"><?=$error->getFile();?></a>
@@ -67,8 +72,10 @@
            <? 
             $data = highlight_string(file_get_contents($error->getFile()), TRUE);
             $data = explode('<br />', $data);
+            $lines= count($data);
             $line = $error->getLine();
             $end  = $line+10;
+            if ($end > $lines) $end = $lines;
             $start = $line-10;
 
             ?>
