@@ -37,6 +37,20 @@ class DBOperationsTest extends UnitTestCase {
         Registry::close();
     }
 
+    /** <tt>find a unexistent record</tt> */
+    public function testSaveSelect() {
+        $item= new Author();
+        $item->name = 'Mihai Eminescu';
+        $item->save();
+        try {
+            $items= Author::find(100);
+            $this->fail('Should throw an exception!');
+        } catch (Exception $ex) {
+            $this->assertIsA($ex, 'RecordNotFoundException');
+        }
+        $item->delete();
+    }
+
     /** <tt>save && delete test</tt> */
     public function testSave() {
         $item= new Author();
@@ -61,6 +75,7 @@ class DBOperationsTest extends UnitTestCase {
         $this->assertEqual($item->insert(), $item->id);
         $item->delete();
     }
+
     /** <tt>update test</tt> */
     public function testUpdate() {
         $item = new Author();

@@ -33,6 +33,8 @@
 // }}}
 
 include_once('active/record/Base.php');
+include_once('medick/io/FileNotFoundException.php');
+include_once('action/controller/InjectorException.php');
 
 /** 
  * Model Injector.
@@ -46,33 +48,30 @@ class Injector extends Object {
      * Tasks:
      * 1) include the model file
      * 2) investigate the Model class
-     * 3) set ActiveRecordBase::$__klass, aka the table name.
-     * @TODO: can we hook a Registry here?
+     * @throws InjectorException
      */
     public static function inject($model) {
-        $logger = Registry::get('__logger');
-        $model_location = Registry::get('__configurator')->getProperty('application_path') . 
+        $model_location = Registry::get('__configurator')->getProperty('application_path') .
             DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $model . '.php';
+         
+        $logger = Registry::get('__logger');
         $logger->debug('Model Location:: ' . $model_location);
-        // FIXME: a custom error.
-        if (!is_file($model_location)) throw new MedickException ('No such file or directory!');
-        
-        include_once($model_location);
-
-        $model_name = ucfirst($model);
-        
-        $logger->debug('Model Name:: ' .$model_name);
-        
-        $model_object = new ReflectionClass($model_name);
-
-        if ($model_object->getParentClass()->name != 'ActiveRecordBase') {
-            throw new MedickException ('Wrong Definition of your Model, ' . $model_name . ' must extend ActiveRecordBase object!');
+        $logger->debug('Model Name:: ' . ucfirst($model));
+        if(!@file_exists($model_location) ) {
+            throw new FileNotFoundException('Cannot load your model: `' . $model .'`, no such file in: `' . $model_location . '`');
+        } else {
+            include_once($model_location);
         }
-        $logger->debug('Table:: ' .$model);
-        ActiveRecordBase::setTable($model);
+          
+        $model_object = new ReflectionClass(ucfirst($model));
+        if ($model_object->getParentClass()->name != 'ActiveRecordBase') {
+            throw new InjectorException ('Wrong Definition of your Model, `' . $model_name . '` must extend ActiveRecordBase object!');
+        }
     }
-
-    /** prepare static members for our model */
+  
+    /** prepare static members for our model
+     * @[Deprecated]
+     */
     public static function prepareARBase() {
         return ActiveRecordBase::establish_connection();
     }

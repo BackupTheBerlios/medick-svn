@@ -22,39 +22,19 @@ include_once('medick/Object.php');
 include_once('medick/Exception.php');
 include_once('medick/Registry.php');
 include_once('medick/Collection.php');
+include_once('medick/io/Folder.php');
+
 
 // include_once('simpletest/web_tester.php');
 include_once('simpletest/unit_tester.php');
 include_once('simpletest/reporter.php');
 
+
 $test= new GroupTest('====== Medick Framework Unit Tests =====');
 
-class DirectoryTreeIterator extends RecursiveIteratorIterator
-{
-    /** Construct from a path.
-     * @param $path directory to iterate
-     */
-    function __construct($path)
-    {
-        parent::__construct(
-            new RecursiveCachingIterator(
-                new RecursiveDirectoryIterator($path), CachingIterator::CALL_TOSTRING|CachingIterator::CATCH_GET_CHILD), 1);
-    }
-
-    /** Aggregates the inner iterator
-     */
-    function __call($func, $params)
-    {
-        return call_user_func_array(array($this->getSubIterator(), $func), $params);
-    }
-}
-
-foreach(new DirectoryTreeIterator(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR) as $entry)
-{
-    if ( (strpos($entry->getFilename(), 'Test.php')  !== FALSE) &&
-         (strpos($entry->getFilename(), 'Test.php.') === FALSE) ) {
-        $test->addTestFile($entry->getPathname());
-    }
+$test_files = Folder::recursiveFindRelative('.', 'test', 'Test.php');
+foreach($test_files as $file) {
+    $test->addTestFile($file);
 }
 
 $test->run(new TextReporter());
@@ -63,4 +43,3 @@ $time_end = microtime(true);
 echo "Done in " . ($time_end - $time_start) . " seconds\n";
 
 @unlink(TMP . 'test.db');
-

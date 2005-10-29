@@ -32,14 +32,16 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+// ActiveRecord dependencies.
 include_once('active/record/FieldsAggregate.php');
 include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
-include_once('active/record/ActiveRecordException.php');
 include_once('active/support/Inflector.php');
-
 include_once('active/record/Association.php');
-
+// Errors and Exceptions.
+include_once('active/record/ActiveRecordException.php');
+include_once('active/record/RecordNotFoundException.php');
+// 3-rd party.
 include_once('creole/Creole.php');
 
 /**
@@ -346,12 +348,17 @@ class ActiveRecordBase extends Object {
     // }}}
 
     // {{{ find monster
+    /**
+     *
+     * @throws ActiveRecordException if a requested case is not yet implemented (or invalid)
+     * @throws RecordNotFoundException no record responded to this method
+     */
     public static final function __find($params= array()) {
         $numargs = sizeof($params);
         if($numargs == 0) return self::__find(array('all'));
+        self::establish_connection();
 
-        // $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$table_name)));
-        $_klazz = Inflector::singularize(ucfirst(self::$table_name));
+        $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$table_name)));
         $query = new QuerryBuilder(self::$table_name);
 
         if ( $params[0] == 'all' && $numargs == 1 ) {
@@ -361,7 +368,6 @@ class ActiveRecordBase extends Object {
         } elseif ( is_numeric($params[0])) {
             // we expect only one row!
             // we need the pk name.
-            self::establish_connection();
             $pk_name = self::$conn->getDatabaseInfo()->getTable(self::$table_name)->getPrimaryKey()->getName();
             if ( $numargs == 1 ) {
                 $query->add('condition', $pk_name . '=?');
@@ -374,7 +380,10 @@ class ActiveRecordBase extends Object {
             $rs   = $stmt->executeQuery();  
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
-                return new $_klazz($rs->getRow());
+                return $class->newInstance($rs->getRow());
+            } elseif ($rs->getRecordCount() == 0) {
+                throw new RecordNotFoundException(
+                    'Couldn\'t find a `' . Inflector::singularize(ucfirst(self::$table_name)) . '` with ID=' . $params[0]);
             }
         } elseif(is_array($params[0])) {
             $query->addArray($params[0]);
@@ -387,17 +396,25 @@ class ActiveRecordBase extends Object {
         if ($limit = $query->getLimit())   $stmt->setLimit($limit);
         if ($offset = $query->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
+        if ($rs->getRecordCount() == 0) {
+            throw new RecordNotFoundException('Couldn\'t find a ' . Inflector::singularize(ucfirst(self::$table_name)));
+        }
         // build a list with objects of this type
         $results = new RowsAggregate();
         while ($rs->next()) {
-            // $results->add($class->newInstance($rs->getRow()));
-            $results->add(new $_klazz($rs->getRow()));
+            $results->add($class->newInstance($rs->getRow()));
         }
         Registry::get('__logger')->debug('Performing sql query: ' . self::$conn->lastQuery);
         return $results;
     }
     // }}}
 
+    /**
+     * Sets the current table name.
+     *
+     * The name is pluralized and to lower case
+     * @param string table name
+     */
     public static function setTable($table) {
         self::$table_name = Inflector::pluralize(strtolower($table));
     }

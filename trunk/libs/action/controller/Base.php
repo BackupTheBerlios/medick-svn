@@ -343,13 +343,12 @@ class ActionControllerBase extends Object {
      * TODO: can we hook a Registry here?
      */
     private function add_models() {
-        if (isset($this->model)) {
-            $this->logger->debug("We have Models...");
-            foreach ($this->model AS $model) {
+        if (isset($this->model) && is_array($this->model)) {
+            $this->logger->debug('We have Models...');
+            foreach ($this->model as $model) {
                 $this->logger->debug('Injecting Model:: ' . $model);
                 Injector::inject($model);
             }
-            Injector::prepareARBase();
         }
     }
     
