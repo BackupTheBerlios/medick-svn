@@ -1,12 +1,16 @@
 $Id$
-* work in progress.
-^ small wish-list
+(*) SVM version
 
-0.0.3(*)
-    - Unit test ActiveRecordBase (*)
+0.0.3 (*)
+    - more UnitTests and a better organization of tests.
     - Minor code clean-up in Logger and XMLConfigurator => better testing.
-    - ActiveRecordBase implemented has_and_belongs_to_many association (read-only)
-    - Custom ErrorHandler
+    - Initial import of an INI style file configurator (INIConfigurator)
+    - ActiveRecordBase:
+        implemented has_and_belongs_to_many association (read-only)
+        fix broken behavior when trying to return an empty result set in __find() method
+    - ActionController: added process_with_exception method.
+    - Custom ErrorHandler, added more specialized Errors and Exceptions, for better debugging.
+    - bundled creole, creole is a DB Abstraction layer for PHP5 released under LGPL licence, more details on http://creole.phpdb.org
 
 0.0.2 (14.Oct.2005)
     - initial import of Session
