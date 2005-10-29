@@ -64,8 +64,20 @@ class Injector extends Object {
         }
           
         $model_object = new ReflectionClass(ucfirst($model));
-        if ($model_object->getParentClass()->name != 'ActiveRecordBase') {
-            throw new InjectorException ('Wrong Definition of your Model, `' . $model_name . '` must extend ActiveRecordBase object!');
+
+        if (@$model_object->getParentClass()->name != 'ActiveRecordBase') {
+            throw new InjectorException ('Wrong Definition of your Model, `' . ucfirst($model) . '` must extend ActiveRecordBase object!');
+        }
+        // if (!$model_object->hasMethod('find')) { XXX. php 5.1 only.
+        try {
+            $method= $model_object->getMethod('find');
+            if (!$method->isStatic() && !$method->isPublic()) {
+                throw new InjectorException('Class method: ' . ucfirst($model) . '::find() should be declared static and public!');
+            }
+        } catch (ReflectionException $rex) {
+            throw new InjectorException (
+                'Cannot Inject your Model, `' . ucfirst($model) . '`!
+                The dummy `find` method is not defined! [ User Info: ' . $rex->getMessage() . ']');
         }
     }
   
