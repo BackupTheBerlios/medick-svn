@@ -1,4 +1,4 @@
-#!/wwwroot/bin/php -q
+#!/usr/bin/env php
 <?php
 
 // $Id$
