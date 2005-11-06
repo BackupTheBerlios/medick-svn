@@ -33,11 +33,16 @@
 // }}}
 
 /**
+ * Holds the current Medick version
  * @package locknet7.medick
  */
 
 class Version extends Object {
 
+    /**
+     * It gets the medick version.
+     * @return string the medick version
+     */
     public static function getVersion() {
         return "0.0.3-svn";
     }

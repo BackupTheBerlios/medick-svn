@@ -32,8 +32,6 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('medick/InvalidOffsetException.php');
-
 /**
  * @package locknet7.medick
  */
@@ -104,3 +102,4 @@ class Registry extends Object {
     }
     // }}}
 }
+
