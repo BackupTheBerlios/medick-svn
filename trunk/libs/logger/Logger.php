@@ -33,7 +33,6 @@
 // }}}
 
 include_once('logger/ILogger.php');
-include_once('logger/LoggingException.php');
 include_once('logger/LoggingEvent.php');
 include_once('logger/outputter/IOutputter.php');
 include_once('logger/outputter/Outputter.php');
