@@ -47,5 +47,22 @@ class MedickException extends Exception {
     public function __construct($message, $code = '0') {
         parent::__construct($message, $code);
     }
-
 }
+
+/**
+ * Error.
+ * @package locknet7.medick
+ */
+class Error extends MedickException {
+    public function __construct($message, $code, $file, $line, $trace) {
+        parent::__construct($message, $code);
+        $this->file  = $file;
+        $this->line  = $line;
+        $this->trace = $trace;
+    }
+}
+
+/**
+ * @package locknet7.medick
+ */
+class InvalidOffsetException extends MedickException { }
