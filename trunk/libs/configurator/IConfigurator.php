@@ -32,8 +32,6 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('configurator/ConfiguratorException.php');
-
 /**
  * Configurator Interface.
  * @package locknet7.config
