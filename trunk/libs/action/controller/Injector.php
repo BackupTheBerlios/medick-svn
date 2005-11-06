@@ -33,12 +33,11 @@
 // }}}
 
 include_once('active/record/Base.php');
-include_once('medick/io/FileNotFoundException.php');
-include_once('action/controller/InjectorException.php');
 
 /** 
  * Model Injector.
  * Injects the model name into Active Record Base Class.
+ * @TODO: this should be used for other types of injections. (controller, layout files, etc.)
  * @package locknet7.action.controller
  */
 
@@ -79,13 +78,6 @@ class Injector extends Object {
                 'Cannot Inject your Model, `' . ucfirst($model) . '`!
                 The dummy `find` method is not defined! [ User Info: ' . $rex->getMessage() . ']');
         }
-    }
-  
-    /** prepare static members for our model
-     * @[Deprecated]
-     */
-    public static function prepareARBase() {
-        return ActiveRecordBase::establish_connection();
     }
 }
 

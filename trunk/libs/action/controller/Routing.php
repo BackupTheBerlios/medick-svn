@@ -32,8 +32,6 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('action/controller/route/RouteException.php');
-
 /**
  * @package locknet7.action.controller.route
  */
