@@ -32,10 +32,10 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-
+// {{{ MedickException
 /**
- * @package locknet7.medick
  * Our base Exception Class
+ * @package locknet7.medick
  */
 class MedickException extends Exception {
 
@@ -48,9 +48,10 @@ class MedickException extends Exception {
         parent::__construct($message, $code);
     }
 }
-
+// }}}
+// {{{ Error
 /**
- * Error.
+ * Error, a routine error.
  * @package locknet7.medick
  */
 class Error extends MedickException {
@@ -61,8 +62,75 @@ class Error extends MedickException {
         $this->trace = $trace;
     }
 }
-
+// }}}
+// {{{ InvalidOffsetException
 /**
+ * Exception thrown when trying to acces an array by an invalid identifier(offset)
  * @package locknet7.medick
  */
 class InvalidOffsetException extends MedickException { }
+// }}}
+// {{{ IOException
+/**
+ * General Input/Output Exception
+ * @package locknet7.medick.io
+ */
+class IOException extends MedickException { }
+// }}}
+// {{{ FileNotFoundException
+/**
+ * Indicates that a file could not be found.
+ * @package locknet7.medick.io
+ */
+class FileNotFoundException extends IOException { }
+// }}}
+// {{{ InjectorException
+/**
+ * It signals a problem with the Injector.
+ * @package locknet7.action.controller
+ */
+class InjectorException extends MedickException { }
+// }}}
+// {{{ RouteException
+/**
+ * Exception that occurrs when a problem on the route is found.
+ * @package locknet7.action.controller.route
+ */
+class RouteException extends MedickException {    }
+// }}}
+// {{{ CLIException
+/**
+ * @package locknet7.action.controller.request
+ */
+class CLIException extends MedickException {      }
+// }}}
+// {{{ IllegalStateException
+class IllegalStateException extends MedickException {    }
+// }}}
+// {{{ ConfiguratorException
+/**
+ * Cofigurator Exception
+ * @package locknet7.config
+ */
+class ConfiguratorException extends MedickException {       }
+// }}}
+// {{{ LoggingException
+/**
+ * Logging Exception
+ * @package locknet7.logger
+ */
+class LoggingException extends MedickException {       }
+// }}}
+// {{{ ActiveRecordException
+/**
+ * @package locknet7.active.record
+ */
+class ActiveRecordException extends MedickException {     }
+// }}}
+// {{{ RecordNotFoundException
+/**
+ * @package locknet7.active.record
+ */
+class RecordNotFoundException extends ActiveRecordException { }
+// }}}
+
