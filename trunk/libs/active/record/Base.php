@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,9 +38,6 @@ include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
 include_once('active/support/Inflector.php');
 include_once('active/record/Association.php');
-// Errors and Exceptions.
-include_once('active/record/ActiveRecordException.php');
-include_once('active/record/RecordNotFoundException.php');
 // 3-rd party.
 include_once('creole/Creole.php');
 
@@ -62,15 +59,15 @@ class ActiveRecordBase extends Object {
     protected $logger;
 
     // {{{ static members
-    
+
     /** @var Connection
         database connection*/
     protected static $conn;
-    
-    /** @var string 
+
+    /** @var string
         current table name */
     protected static $table_name;
-    
+
     // }}}
 
     /**
@@ -81,14 +78,14 @@ class ActiveRecordBase extends Object {
             self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
     }
-    
+
     /**
      * Force a closing of the database connection
      */
     public static function close() {
         self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
     }
-    
+
     /**
      * Constructor
      *
@@ -324,7 +321,7 @@ class ActiveRecordBase extends Object {
     }
 
     private function getInsertSql() {
-        return 'INSERT INTO ' . self::$table_name 
+        return 'INSERT INTO ' . self::$table_name
                . ' (' . implode(',', $this->fields->getAffectedFieldsNames()) . ')'
                . ' VALUES (' . substr(str_repeat('?,', count($this->fields->getAffectedFields())), 0, -1) . ')';
     }
@@ -377,7 +374,7 @@ class ActiveRecordBase extends Object {
             }
             $stmt = self::$conn->prepareStatement($query->buildQuery());
             $stmt->setInt(1, $params[0]);
-            $rs   = $stmt->executeQuery();  
+            $rs   = $stmt->executeQuery();
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
                 return $class->newInstance($rs->getRow());
