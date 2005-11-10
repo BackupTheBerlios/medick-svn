@@ -121,7 +121,7 @@ class ActiveRecordBase extends Object {
         }
 
         if ( !empty($params) ) {
-            foreach ($params AS $field_name=>$field_value) {
+            foreach ($params as $field_name => $field_value) {
                 $this->$field_name = $field_value;
             }
         }
@@ -130,7 +130,7 @@ class ActiveRecordBase extends Object {
     // {{{ __magic functions
     /**
      * It sets the value of the field
-     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+     * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string, field_name, the field name
      * @param mixed, field_value, field value
      * @throw ActiveRecordException if the field is not found.
@@ -149,7 +149,7 @@ class ActiveRecordBase extends Object {
 
     /**
      * It gets the value of the field
-     * @see http://uk.php.net/manual/en/language.oop5.overloading.php
+     * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string, field_name, the field name
      * @throw ActiveRecordException
      * @return field value
@@ -205,7 +205,7 @@ class ActiveRecordBase extends Object {
         if ($method == 'destroy') return $this->delete();
         $know_methods = array('save', 'insert', 'update', 'delete');
         if (!in_array($method, $know_methods)) {
-            trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $method), E_USER_ERROR);
+            trigger_error(sprintf('Call to undefined method: %s::%s().', $this->getClassName(), $method), E_USER_ERROR);
         } elseif(!$this->fields->hasAffected()) {
             throw new ActiveRecordException('No field was set before ' . $method);
         } else {
@@ -216,7 +216,7 @@ class ActiveRecordBase extends Object {
     /** returns a string representation of this object */
     public function __toString() {
         $string = '';
-        foreach ($this->fields->getAffectedFields() AS $field) {
+        foreach ($this->fields->getAffectedFields() as $field) {
             $string .= "[ " . $field->type . " ] " . $field->getName() . " : " . $field->getValue() . "\n";
         }
         return $string;
@@ -333,7 +333,7 @@ class ActiveRecordBase extends Object {
      */
     private static function populateStmtValues($stmt, $fields) {
         $i = 1;
-        foreach($fields AS $field) {
+        foreach($fields as $field) {
             if($field->getValue() === NULL){
                 $stmt->setNull($i++);
             } else {
@@ -377,6 +377,7 @@ class ActiveRecordBase extends Object {
             $rs   = $stmt->executeQuery();
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
+                $stmt->close();
                 return $class->newInstance($rs->getRow());
             } elseif ($rs->getRecordCount() == 0) {
                 throw new RecordNotFoundException(
@@ -401,10 +402,19 @@ class ActiveRecordBase extends Object {
         while ($rs->next()) {
             $results->add($class->newInstance($rs->getRow()));
         }
-        Registry::get('__logger')->debug('Performing sql query: ' . self::$conn->lastQuery);
+        $rs->close();
+        $stmt->close();
+        Registry::get('__logger')->debug('Performed sql query: ' . self::$conn->lastQuery);
         return $results;
     }
     // }}}
+
+    private static function hasResults(ResultSet $rs, $conditions) {
+        if ($rs->getRecordCount() == 0) {
+            throw new RecordNotFoundException(
+                'Couldn\'t find a `' . Inflector::singularize(ucfirst(self::$table_name)) .'` matching ' . $conditions);
+        }
+    }
 
     /**
      * Sets the current table name.

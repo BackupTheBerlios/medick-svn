@@ -1,0 +1,22 @@
+<h2>All todos</h2>
+            
+<form action="<?=URL::create('todo','create');?>" method="post">
+    <div>
+        <label>New item:</label>
+        <?=Form::text('description', NULL, array('maxlength'=>255,'size'=>55)); ?>
+        <?=Form::submit('submit', 'Submit') ?>
+    </div>
+</form>
+
+<hr />
+<? if(sizeof($todos_not_done) != 0):?>
+    Not Done:<br />
+    <?=display_todos($todos_not_done);?>
+    <hr />
+<? endif ?>
+
+<? if (sizeof($todos_done) != 0): ?>
+    Done:<br />
+    <?=display_todos($todos_done);?>
+    <hr />
+<? endif ?>

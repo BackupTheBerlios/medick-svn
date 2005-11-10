@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,15 +26,15 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
 include_once('active/record/Base.php');
 
-/** 
+/**
  * Solves dependencys, by including application specific files
  * controllers, models, layout files.
  * Aditional using php reflection api, it validates the user classes
@@ -43,10 +43,10 @@ include_once('active/record/Base.php');
 
 class Injector extends Object {
 
-    /** @var string 
+    /** @var string
         holds various application paths based on what we have defined in the configuration file. */
     private $path= array();
-    
+
     /** @var Logger
         A logger instance */
     private $logger;
@@ -57,15 +57,12 @@ class Injector extends Object {
 
     /**
      * Creates a new instance of this Injector.
-     * @param bool append, if we should append app/ to the application path, default to TRUE
      */
-    public function __construct($append_app= TRUE) {
-        $this->config   = Registry::get('__configurator');
-        $this->logger   = Registry::get('__logger');
+    public function __construct() {
+        $this->config = Registry::get('__configurator');
+        $this->logger = Registry::get('__logger');
         $app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
-        if ( $append_app ) {
-            $app_path .= 'app' . DIRECTORY_SEPARATOR;
-        }
+        $app_path .= 'app' . DIRECTORY_SEPARATOR;
         $this->path['__base']      = $app_path;
         $this->path['models']      = $app_path . 'models'      . DIRECTORY_SEPARATOR;
         $this->path['controllers'] = $app_path . 'controllers' . DIRECTORY_SEPARATOR;
@@ -91,16 +88,16 @@ class Injector extends Object {
             throw new InjectorException('Unknow injection type: `' . $type . '`');
         }
     }
-    
+
     /**
      * It gets the path.
-     * @param string path type, defaults to __base
+     * @param string path type
      * @return array
      */
     public function getPath($type) {
         return isset($this->path[$type]) ? $this->path[$type] : $this->path;
     }
-    
+
     /**
      * Injects a user model
      *
@@ -114,9 +111,9 @@ class Injector extends Object {
         $location= $this->path['models'] . $name . '.php';
         $this->logger->debug('Model Location:: ' . $location);
         $this->logger->debug('Model Name:: ' . ucfirst($name));
-        
+
         $this->includeFile($location, ucfirst($name));
-        
+
         try {
             $model_object = new ReflectionClass(ucfirst($name));
 
@@ -124,9 +121,9 @@ class Injector extends Object {
                 throw new InjectorException (
                     'Wrong Definition of user Model, `' . ucfirst($name) . '`, it must extend ActiveRecordBase object!');
             }
-            
+
             // if (!$model_object->hasMethod('find')) { XXX. php 5.1 only.
-        
+
             $method= $model_object->getMethod('find');
             if (!$method->isStatic() && !$method->isPublic()) {
                 throw new InjectorException (
@@ -136,10 +133,10 @@ class Injector extends Object {
             throw new InjectorException (
                 'Cannot Inject user Model, `' . ucfirst($name) . '`!
                 The dummy `find` method is not defined! [ User Info: ' . $rEx->getMessage() . ']');
-        }        
-        
+        }
+
     }
-    
+
     /**
      * Injects the User Controller
      *
@@ -155,12 +152,12 @@ class Injector extends Object {
         } catch (FileNotFoundException $fnfEx) {
             $this->logger->warn($fnfEx->getMessage);
         }
-        
+
         $file= $this->path['controllers'] . strtolower($name) . '_controller.php';
         $clazz= ucfirst($name)    . 'Controller';
-        
+
         $this->includeFile($file, $clazz);
-        
+
         try {
             $controller_class = new ReflectionClass($clazz);
             if (
@@ -176,15 +173,15 @@ class Injector extends Object {
                 return $controller_class->newInstance();
             } else {
                 throw new InjectorException (
-                    'Wrong Definition of user controller class, 
-                    `' . $clazz . '` must extend ApplicationController or ActionControllerBase and 
+                    'Wrong Definition of user controller class,
+                    `' . $clazz . '` must extend ApplicationController or ActionControllerBase and
                     should be instantiable (must have a public constructor)!');
             }
         } catch (ReflectionException $rEx) {
             throw new InjectorException ('Cannot inject user controller class `' . $clazz . '` [ User Info ] :' . $rEx->getMessage());
         }
     }
-    
+
     /**
      * Injects a user helper.
      *
@@ -198,7 +195,7 @@ class Injector extends Object {
         $this->logger->debug('Trying to load user helper from: ' . $helper_file);
         return $this->includeFile($helper_file, $location . '_helper.php');
     }
-    
+
     /**
      * Helper to include a user file
      *
@@ -214,5 +211,4 @@ class Injector extends Object {
             include_once($location);
         }
     }
-    
 }

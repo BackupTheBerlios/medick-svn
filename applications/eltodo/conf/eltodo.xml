@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ! $Id: application.xml 187 2005-10-07 05:09:20Z aurelian $
+ -->
+
+<application>
+     
+  <!-- General properties -->
+  <property name="server_name"      value="http://localhost" />
+  <property name="document_root"    value="/eltodo" />
+  <property name="application_path" value="/wwwroot/medick/applications/eltodo" />
+  <property name="rewrite"          value="on" />
+     
+  <!-- Logger System -->
+  <logger>
+      <formatter>simple</formatter>
+      <outputters>
+        <outputter name="file"    level="0" value="/wwwroot/medick/applications/eltodo/log/eltodo.log" />
+        <!-- <outputter name="stdout"  level="0" /> -->
+      </outputters>
+  </logger>
+
+  <!-- Database(s) Settings -->
+  <database default="one">
+    <dsn id = "one"
+           phptype  = "mysql"
+           hostspec = "localhost"
+           database = "eltodo"
+           username = "root"
+           password = "virus" />
+  </database>
+
+</application>
+
