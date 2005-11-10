@@ -1181,3 +1181,87 @@
 10/11/2005 23:27:17 [ Base.php / 191 ] ActionControllerBase::render_file DEBUG >>> Trying to use layout: /wwwroot/medick/applications/eltodo/app/views/layouts/todo.phtml
 10/11/2005 23:27:17 [ Base.php / 197 ] ActionControllerBase::render_file DEBUG >>> ...done.
 10/11/2005 23:27:17 [ Base.php / 243 ] ActionControllerBase::render_text DEBUG >>> Action performed.
+10/11/2005 23:35:40 [ Logger.php / 90 ] Logger::__construct DEBUG >>> Logger ready
+10/11/2005 23:35:40 [ eltodo.bootstrap.php / 84 ] include_once DEBUG >>> Core Loaded...
+10/11/2005 23:35:40 [ eltodo.bootstrap.php / 85 ] include_once DEBUG >>> Running on Medick $v:0.0.3-svn
+10/11/2005 23:35:40 [ eltodo.bootstrap.php / 86 ] include_once DEBUG >>> Bootstrapped: eltodo.bootstrap.php
+10/11/2005 23:35:40 [ eltodo.bootstrap.php / 87 ] include_once DEBUG >>> XML Config File: eltodo.xml
+10/11/2005 23:35:40 [ eltodo.bootstrap.php / 88 ] include_once DEBUG >>> Routes File: eltodo.routes.php
+10/11/2005 23:35:40 [ Routing.php / 50 ] ActionControllerRouting::recognize DEBUG >>> Route Recognized:todo/all
+10/11/2005 23:35:40 [ Routing.php / 93 ] ActionControllerRouting::recognize DEBUG >>> Running on Route: todo/all ctrller: todo act: all
+10/11/2005 23:35:40 [ Base.php / 383 ] ActionControllerBase::add_models DEBUG >>> We have Models...
+10/11/2005 23:35:40 [ Base.php / 385 ] ActionControllerBase::add_models DEBUG >>> Injecting Model:: todo
+10/11/2005 23:35:40 [ Injector.php / 112 ] Injector::injectModel DEBUG >>> Model Location:: /wwwroot/medick/applications/eltodo/app/models/todo.php
+10/11/2005 23:35:40 [ Injector.php / 113 ] Injector::injectModel DEBUG >>> Model Name:: Todo
+10/11/2005 23:35:40 [ Base.php / 335 ] ActionControllerBase::perform_action DEBUG >>> Incoming action:: all
+10/11/2005 23:35:40 [ QueryBuilder.php / 147 ] QuerryBuilder::buildQuery DEBUG >>> Trying to run sql query:
+10/11/2005 23:35:40 [ QueryBuilder.php / 148 ] QuerryBuilder::buildQuery DEBUG >>> SELECT  *  FROM todos WHERE done=1
+10/11/2005 23:35:40 [ Base.php / 407 ] ActiveRecordBase::__find DEBUG >>> Performed sql query: SELECT  *  FROM todos WHERE done=1
+10/11/2005 23:35:40 [ QueryBuilder.php / 147 ] QuerryBuilder::buildQuery DEBUG >>> Trying to run sql query:
+10/11/2005 23:35:40 [ QueryBuilder.php / 148 ] QuerryBuilder::buildQuery DEBUG >>> SELECT  *  FROM todos WHERE done=0
+10/11/2005 23:35:40 [ Base.php / 405 ] ActionControllerBase::createMethod INFO >>> Method TodoController::__common() does not exist
+10/11/2005 23:35:40 [ Injector.php / 195 ] Injector::injectHelper DEBUG >>> Trying to load user helper from: /wwwroot/medick/applications/eltodo/app/helpers/todo_helper.php
+10/11/2005 23:35:40 [ Base.php / 191 ] ActionControllerBase::render_file DEBUG >>> Trying to use layout: /wwwroot/medick/applications/eltodo/app/views/layouts/todo.phtml
+10/11/2005 23:35:40 [ Base.php / 197 ] ActionControllerBase::render_file DEBUG >>> ...done.
+10/11/2005 23:35:40 [ Base.php / 243 ] ActionControllerBase::render_text DEBUG >>> Action performed.
+10/11/2005 23:35:41 [ Logger.php / 90 ] Logger::__construct DEBUG >>> Logger ready
+10/11/2005 23:35:41 [ eltodo.bootstrap.php / 84 ] include_once DEBUG >>> Core Loaded...
+10/11/2005 23:35:41 [ eltodo.bootstrap.php / 85 ] include_once DEBUG >>> Running on Medick $v:0.0.3-svn
+10/11/2005 23:35:41 [ eltodo.bootstrap.php / 86 ] include_once DEBUG >>> Bootstrapped: eltodo.bootstrap.php
+10/11/2005 23:35:41 [ eltodo.bootstrap.php / 87 ] include_once DEBUG >>> XML Config File: eltodo.xml
+10/11/2005 23:35:41 [ eltodo.bootstrap.php / 88 ] include_once DEBUG >>> Routes File: eltodo.routes.php
+10/11/2005 23:35:41 [ Routing.php / 50 ] ActionControllerRouting::recognize DEBUG >>> Route Recognized:todo/edit
+10/11/2005 23:35:41 [ Routing.php / 55 ] ActionControllerRouting::recognize DEBUG >>> Validating Route Parameter:id
+10/11/2005 23:35:41 [ Routing.php / 93 ] ActionControllerRouting::recognize DEBUG >>> Running on Route: todo/edit ctrller: todo act: edit
+10/11/2005 23:35:41 [ Base.php / 383 ] ActionControllerBase::add_models DEBUG >>> We have Models...
+10/11/2005 23:35:41 [ Base.php / 385 ] ActionControllerBase::add_models DEBUG >>> Injecting Model:: todo
+10/11/2005 23:35:41 [ Injector.php / 112 ] Injector::injectModel DEBUG >>> Model Location:: /wwwroot/medick/applications/eltodo/app/models/todo.php
+10/11/2005 23:35:41 [ Injector.php / 113 ] Injector::injectModel DEBUG >>> Model Name:: Todo
+10/11/2005 23:35:41 [ Base.php / 335 ] ActionControllerBase::perform_action DEBUG >>> Incoming action:: edit
+10/11/2005 23:35:41 [ QueryBuilder.php / 147 ] QuerryBuilder::buildQuery DEBUG >>> Trying to run sql query:
+10/11/2005 23:35:41 [ QueryBuilder.php / 148 ] QuerryBuilder::buildQuery DEBUG >>> SELECT  *  FROM todos WHERE id=?
+10/11/2005 23:35:41 [ Base.php / 405 ] ActionControllerBase::createMethod INFO >>> Method TodoController::__common() does not exist
+10/11/2005 23:35:41 [ Injector.php / 195 ] Injector::injectHelper DEBUG >>> Trying to load user helper from: /wwwroot/medick/applications/eltodo/app/helpers/todo_helper.php
+10/11/2005 23:35:41 [ Base.php / 191 ] ActionControllerBase::render_file DEBUG >>> Trying to use layout: /wwwroot/medick/applications/eltodo/app/views/layouts/todo.phtml
+10/11/2005 23:35:41 [ Base.php / 197 ] ActionControllerBase::render_file DEBUG >>> ...done.
+10/11/2005 23:35:41 [ Base.php / 243 ] ActionControllerBase::render_text DEBUG >>> Action performed.
+10/11/2005 23:35:43 [ Logger.php / 90 ] Logger::__construct DEBUG >>> Logger ready
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 84 ] include_once DEBUG >>> Core Loaded...
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 85 ] include_once DEBUG >>> Running on Medick $v:0.0.3-svn
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 86 ] include_once DEBUG >>> Bootstrapped: eltodo.bootstrap.php
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 87 ] include_once DEBUG >>> XML Config File: eltodo.xml
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 88 ] include_once DEBUG >>> Routes File: eltodo.routes.php
+10/11/2005 23:35:43 [ Routing.php / 50 ] ActionControllerRouting::recognize DEBUG >>> Route Recognized:todo/update
+10/11/2005 23:35:43 [ Routing.php / 55 ] ActionControllerRouting::recognize DEBUG >>> Validating Route Parameter:id
+10/11/2005 23:35:43 [ Routing.php / 55 ] ActionControllerRouting::recognize DEBUG >>> Validating Route Parameter:description
+10/11/2005 23:35:43 [ Routing.php / 55 ] ActionControllerRouting::recognize DEBUG >>> Validating Route Parameter:done
+10/11/2005 23:35:43 [ Routing.php / 93 ] ActionControllerRouting::recognize DEBUG >>> Running on Route: todo/update ctrller: todo act: update
+10/11/2005 23:35:43 [ Base.php / 383 ] ActionControllerBase::add_models DEBUG >>> We have Models...
+10/11/2005 23:35:43 [ Base.php / 385 ] ActionControllerBase::add_models DEBUG >>> Injecting Model:: todo
+10/11/2005 23:35:43 [ Injector.php / 112 ] Injector::injectModel DEBUG >>> Model Location:: /wwwroot/medick/applications/eltodo/app/models/todo.php
+10/11/2005 23:35:43 [ Injector.php / 113 ] Injector::injectModel DEBUG >>> Model Name:: Todo
+10/11/2005 23:35:43 [ Base.php / 335 ] ActionControllerBase::perform_action DEBUG >>> Incoming action:: update
+10/11/2005 23:35:43 [ Base.php / 295 ] ActiveRecordBase::performQuery DEBUG >>> Performing sql query: UPDATE todos SET id = 7, description = 'asdada', done = 1 WHERE id = 7
+10/11/2005 23:35:43 [ Logger.php / 90 ] Logger::__construct DEBUG >>> Logger ready
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 84 ] include_once DEBUG >>> Core Loaded...
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 85 ] include_once DEBUG >>> Running on Medick $v:0.0.3-svn
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 86 ] include_once DEBUG >>> Bootstrapped: eltodo.bootstrap.php
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 87 ] include_once DEBUG >>> XML Config File: eltodo.xml
+10/11/2005 23:35:43 [ eltodo.bootstrap.php / 88 ] include_once DEBUG >>> Routes File: eltodo.routes.php
+10/11/2005 23:35:43 [ Routing.php / 50 ] ActionControllerRouting::recognize DEBUG >>> Route Recognized:todo/all
+10/11/2005 23:35:43 [ Routing.php / 93 ] ActionControllerRouting::recognize DEBUG >>> Running on Route: todo/all ctrller: todo act: all
+10/11/2005 23:35:43 [ Base.php / 383 ] ActionControllerBase::add_models DEBUG >>> We have Models...
+10/11/2005 23:35:43 [ Base.php / 385 ] ActionControllerBase::add_models DEBUG >>> Injecting Model:: todo
+10/11/2005 23:35:43 [ Injector.php / 112 ] Injector::injectModel DEBUG >>> Model Location:: /wwwroot/medick/applications/eltodo/app/models/todo.php
+10/11/2005 23:35:43 [ Injector.php / 113 ] Injector::injectModel DEBUG >>> Model Name:: Todo
+10/11/2005 23:35:43 [ Base.php / 335 ] ActionControllerBase::perform_action DEBUG >>> Incoming action:: all
+10/11/2005 23:35:43 [ QueryBuilder.php / 147 ] QuerryBuilder::buildQuery DEBUG >>> Trying to run sql query:
+10/11/2005 23:35:43 [ QueryBuilder.php / 148 ] QuerryBuilder::buildQuery DEBUG >>> SELECT  *  FROM todos WHERE done=1
+10/11/2005 23:35:43 [ Base.php / 407 ] ActiveRecordBase::__find DEBUG >>> Performed sql query: SELECT  *  FROM todos WHERE done=1
+10/11/2005 23:35:43 [ QueryBuilder.php / 147 ] QuerryBuilder::buildQuery DEBUG >>> Trying to run sql query:
+10/11/2005 23:35:43 [ QueryBuilder.php / 148 ] QuerryBuilder::buildQuery DEBUG >>> SELECT  *  FROM todos WHERE done=0
+10/11/2005 23:35:43 [ Base.php / 405 ] ActionControllerBase::createMethod INFO >>> Method TodoController::__common() does not exist
+10/11/2005 23:35:43 [ Injector.php / 195 ] Injector::injectHelper DEBUG >>> Trying to load user helper from: /wwwroot/medick/applications/eltodo/app/helpers/todo_helper.php
+10/11/2005 23:35:43 [ Base.php / 191 ] ActionControllerBase::render_file DEBUG >>> Trying to use layout: /wwwroot/medick/applications/eltodo/app/views/layouts/todo.phtml
+10/11/2005 23:35:43 [ Base.php / 197 ] ActionControllerBase::render_file DEBUG >>> ...done.
+10/11/2005 23:35:43 [ Base.php / 243 ] ActionControllerBase::render_text DEBUG >>> Action performed.
