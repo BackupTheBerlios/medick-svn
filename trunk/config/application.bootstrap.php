@@ -63,10 +63,10 @@ set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR
 // load core classes.
 include_once('medick/Object.php');
 include_once('medick/Exception.php');
-include_once('medick/Error.php');
 include_once('medick/ErrorHandler.php');
 include_once('medick/Registry.php');
 include_once('medick/Dispatcher.php');
+include_once('medick/Version.php');
 
 // set-up the error handler:
 set_error_handler(array(new ErrorHandler(), 'raiseError'));
@@ -79,9 +79,14 @@ Registry::put(new XMLConfigurator(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR 
 include_once('action/controller/Map.php');
 $map= Registry::put(new Map(), '__map');
 
+// core loaded.
 include_once('logger/Logger.php');
 $logger= new Logger();
-$logger->debug('Incoming request for medick-' . trim(@file_get_contents(TOP_LOCATION . 'VERSION')));
+$logger->debug('Core Loaded...');
+$logger->debug('Running on Medick $v:' . Version::getVersion());
+$logger->debug('Bootstrapped: ' . APP_NAME . '.bootstrap.php');
+$logger->debug('XML Config File: ' . APP_NAME . '.xml');
+$logger->debug('Routes File: ' . APP_NAME . '.routes.php');
 Registry::put($logger, '__logger');
 
 // load application map.

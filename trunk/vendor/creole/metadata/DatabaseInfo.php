@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  $Id: DatabaseInfo.php,v 1.14 2005/10/26 10:30:47 gamr Exp $
+ *  $Id: DatabaseInfo.php,v 1.15 2005/11/08 04:24:50 hlellelid Exp $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -24,7 +24,7 @@
  * "Info" metadata class for a database.
  *
  * @author    Hans Lellelid <hans@xmpl.org>
- * @version   $Revision: 1.14 $
+ * @version   $Revision: 1.15 $
  * @package   creole.metadata
  */
 abstract class DatabaseInfo {
@@ -86,7 +86,7 @@ abstract class DatabaseInfo {
      */
     function __sleep()
     {
-        return array('tables','conn');
+        return array('tables','sequences','conn');
     }
 
     /**
@@ -167,12 +167,6 @@ abstract class DatabaseInfo {
      * @throws SQLException
      */
     abstract protected function initTables();
-
-    // FIXME
-    // Figure out sequences.  What are they exactly?  Simply columns?
-    // Should this logic really be at the db level (yes & no, i think).  Maybe
-    // also a Column::isSequence() method ?  PosgreSQL supports sequences obviously,
-    // but currently this part of dbinfo classes is not being used.
 
     /**
      * @return void

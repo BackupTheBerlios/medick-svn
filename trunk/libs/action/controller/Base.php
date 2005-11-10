@@ -32,7 +32,6 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('action/controller/Injector.php');
 include_once('action/view/Base.php');
  
 /**
@@ -77,17 +76,33 @@ class ActionControllerBase extends Object {
         application path*/
     protected $app_path;
     
+    /** @var string
+        the layout to use */
+    protected $use_layout= TRUE;
+    
     /** @var ActiveViewBase 
         Template Engine */
     protected $template;
     
+    /** @var array
+        before_filters array */
+    protected $before_filter= array();
+    
+    /** @var array
+        list of models */
+    protected $models= array();
+    
     /** @var bool 
         Flag to indicate that the current action was performed.*/
-    private $action_performed = FALSE;
+    private $action_performed= FALSE;
     
     /** @var Configurator 
         configurator instance */
     private $config;
+    
+    /** @var Injector
+        the injector. */
+    private $injector;
     
     /**
      * Process this Request
@@ -154,19 +169,38 @@ class ActionControllerBase extends Object {
      * 
      * @param string, template_file location of the template file, default NULL
      * @param Response::SC_*, status, [optional] status code, default is 200 OK
-     * @throws Exception if the template file don`t exist on the specified location.
+     * @throws FileNotFoundException if the template file don`t exist on the specified location.
      * @return void
      */
     protected function render_file($template_file, $status = NULL) {
+        
         if (!is_file($template_file)) {
-            throw new Exception ('Cannot render unexistent template file:' . $template_file);
-        }
-        $helper_location = 
-            $this->app_path . 'helpers' . DIRECTORY_SEPARATOR . $this->params['controller'] . '_helper.php';
-        if (is_file($helper_location)) {
-            include_once($helper_location);
+            throw new FileNotFoundException ('Cannot render unexistent template file:' . $template_file);
         }
         
+        try {
+            $this->injector->inject('helper', $this->params['controller']);
+        } catch (FileNotFoundException $fnfEx) {
+            $this->logger->info(
+                'skipping helper: ' . $this->injector->getPath('helpers') . '_' . $this->params['controller'] . ' ' . $fnfEx->getMessage());
+        }
+        
+        if ($this->use_layout) {
+            $layout= $this->use_layout === TRUE ? $this->params['controller'] : $this->use_layout;
+            $layout_file= $this->injector->getPath('layouts') . $layout . '.phtml';
+            $this->logger->debug('Trying to use layout: ' . $layout_file);
+            if (!is_file($layout_file)) {
+                $this->logger->debug('...failed.');
+                return $this->render_without_layout($template_file, $status);
+            } else {
+                $this->template->content_for_layout= $this->template->render_file($template_file);
+                $this->logger->debug('...done.');
+                return $this->render_text($this->template->render_file($layout_file), $status);
+            }
+        } else {
+            return $this->render_without_layout($template_file, $status);
+        }
+        /*
         // {{{ hook RouteParams here.
         $hij= array();
         $route= Registry::get('__map')->getCurrentRoute();
@@ -176,15 +210,12 @@ class ActionControllerBase extends Object {
         }
         $this->template->__param = $hij;
         // }}}
-        
-        if (is_file($_layout=$this->app_path . 'views' . DIRECTORY_SEPARATOR .  '__layout.phtml')) {
-            $this->logger->debug('Found magick __layout description file...');
-            $this->template->__page= 
-                $this->params['controller'] . DIRECTORY_SEPARATOR . $this->params['action'] . '.phtml';
-            $this->render_text($this->template->render_file($_layout), $status);
-        } else {
-           $this->render_text($this->template->render_file($template_file), $status);
-        }
+        */
+    }
+    
+    protected function render_without_layout($template_file, $status) {
+        $this->logger->debug('Rendering without layout...');
+        return $this->render_text($this->template->render_file($template_file), $status);
     }
     
     /**
@@ -203,7 +234,9 @@ class ActionControllerBase extends Object {
             $this->logger->info('Action already performed...');
             return;
         }
-        if (is_null($status)) $status = Response::SC_OK;
+        if (is_null($status)) {
+            $status = Response::SC_OK;
+        }
         $this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
@@ -221,13 +254,16 @@ class ActionControllerBase extends Object {
     private function instantiate(Request $request, Response $response) {
         $this->request  = $request;
         $this->response = $response;
-        $this->logger   = Registry::get('__logger');
         $this->session  = $request->getSession();
         $this->params   = $request->getParams();
+        
+        $this->logger   = Registry::get('__logger');
+        $this->injector = Registry::get('__injector');
         $this->config   = Registry::get('__configurator');
-        $this->app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
-        $this->template_root = 
-            $this->app_path . 'views' . DIRECTORY_SEPARATOR . $this->params['controller'] . DIRECTORY_SEPARATOR;
+        
+        $this->app_path      = $this->injector->getPath('__base');
+        $this->template_root = $this->injector->getPath('views') . $this->params['controller'] . DIRECTORY_SEPARATOR;
+        
         $this->template = ActionViewBase::factory();
         $this->template->__base= $this->config->getProperty('document_root');
     }
@@ -244,7 +280,7 @@ class ActionControllerBase extends Object {
     // {{{ redirects
     
     // XXX: not done.
-    protected function redirect_to($action, $params = array(), $controller = NULL) {
+    protected function redirect_to($action, $controller= NULL, $params = array()) {
         // get the curent controller, if NULL is passed.
         if (is_null($controller)) $controller= $this->params['controller'];
         
@@ -282,13 +318,13 @@ class ActionControllerBase extends Object {
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct');
         
-        if( (is_null($action_name)) OR (in_array($action_name, $forbidden_actions)) ) {
+        if( (is_null($action_name)) || (in_array($action_name, $forbidden_actions)) ) {
             $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
             $action = $this->createMethod($action_name);
-            if (!$action OR $action->isStatic()) throw new Exception('Cannot perform default action: ' . $action_name);
+            if (!$action || $action->isStatic()) throw new Exception('Cannot perform default action: ' . $action_name);
         } else {
             $action = $this->createMethod($action_name);
-            if (!$action OR $action->isStatic()) {
+            if (!$action || $action->isStatic()) {
                 $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
                 $this->perform_action($action_name);
                 $this->action_performed = TRUE;
@@ -327,28 +363,27 @@ class ActionControllerBase extends Object {
      * @access private
      */
     private function add_before_filters() {
-        if (isset($this->before_filter)) {
-            foreach($this->before_filter AS $filter_name) {
-                $filter = $this->createMethod($filter_name);
-                if (!$filter->isProtected()) throw new MedickException('Your filter is declared as public!');
-                $this->$filter_name();
-                // $filter->invoke($this); will work only for public methods.
-            }
+        if (!is_array($this->before_filter)) {
+            throw new Exception ($this->getClassName() . '\$before_filter should be an array of strings, each string representing a method name');    
+        }
+        foreach($this->before_filter as $filter_name) {
+            $filter = $this->createMethod($filter_name);
+            if (!$filter->isProtected()) throw new MedickException('Your filter is declared as public!');
+            $this->$filter_name();
         }
     }
 
     /**
      * Injects model names into ActiveRecordBase by using the ModelInjector.
-     * TODO: table inheritance ?
-     * TODO: can we hook a Registry here?
      */
     private function add_models() {
-        if (isset($this->model) && is_array($this->model)) {
-            $this->logger->debug('We have Models...');
-            foreach ($this->model as $model) {
-                $this->logger->debug('Injecting Model:: ' . $model);
-                Injector::inject($model);
-            }
+        if (!is_array($this->models)) {
+            throw new Exception($this->getClassName . '->\$models should be an array of strings.');
+        }
+        $this->logger->debug('We have Models...');
+        foreach ($this->models as $model) {
+            $this->logger->debug('Injecting Model:: ' . $model);
+            $this->injector->inject('model', $model);
         }
     }
     
@@ -367,9 +402,8 @@ class ActionControllerBase extends Object {
         try {
             return new ReflectionMethod($this, strtolower($method_name));
         } catch (ReflectionException $rEx) {
-            $this->logger->debug($rEx->getMessage());
+            $this->logger->info($rEx->getMessage());
             return FALSE;
         }
     }
 }
-

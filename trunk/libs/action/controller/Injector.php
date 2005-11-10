@@ -35,49 +35,184 @@
 include_once('active/record/Base.php');
 
 /** 
- * Model Injector.
- * Injects the model name into Active Record Base Class.
- * @TODO: this should be used for other types of injections. (controller, layout files, etc.)
+ * Solves dependencys, by including application specific files
+ * controllers, models, layout files.
+ * Aditional using php reflection api, it validates the user classes
  * @package locknet7.action.controller
  */
 
 class Injector extends Object {
 
+    /** @var string 
+        holds various application paths based on what we have defined in the configuration file. */
+    private $path= array();
+    
+    /** @var Logger
+        A logger instance */
+    private $logger;
+
+    /** @var IConfigurator
+        A Configurator instance */
+    private $config;
+
     /**
-     * Tasks:
-     * 1) include the model file
-     * 2) investigate the Model class
+     * Creates a new instance of this Injector.
+     * @param bool append, if we should append app/ to the application path, default to TRUE
+     */
+    public function __construct($append_app= TRUE) {
+        $this->config   = Registry::get('__configurator');
+        $this->logger   = Registry::get('__logger');
+        $app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
+        if ( $append_app ) {
+            $app_path .= 'app' . DIRECTORY_SEPARATOR;
+        }
+        $this->path['__base']      = $app_path;
+        $this->path['models']      = $app_path . 'models'      . DIRECTORY_SEPARATOR;
+        $this->path['controllers'] = $app_path . 'controllers' . DIRECTORY_SEPARATOR;
+        $this->path['views']       = $app_path . 'views'       . DIRECTORY_SEPARATOR;
+        $this->path['layouts']     = $this->path['views']      . 'layouts' . DIRECTORY_SEPARATOR;
+        $this->path['helpers']     = $app_path . 'helpers'     . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * Wrapper method for inject* methods.
+     * @param string type, the type of the injector.
+     * @param mixed param, additional parameters to pass to the injector.
      * @throws InjectorException
      */
-    public static function inject($model) {
-        $model_location = Registry::get('__configurator')->getProperty('application_path') .
-            DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $model . '.php';
-         
-        $logger = Registry::get('__logger');
-        $logger->debug('Model Location:: ' . $model_location);
-        $logger->debug('Model Name:: ' . ucfirst($model));
-        if(!@file_exists($model_location) ) {
-            throw new FileNotFoundException('Cannot load your model: `' . $model .'`, no such file in: `' . $model_location . '`');
+    public function inject($type, $param) {
+        $types= array('model', 'controller', 'helper', 'layout');
+        $method= 'inject' . ucfirst($type);
+        if (!method_exists($this, $method)) {
+            throw new InjectorException('Call to undefined method: `' . $this->getClassName() . '->' . $method . '(string ' . $param . ')`');
+        } elseif (in_array($type, $types)) {
+            return $this->$method($param);
         } else {
-            include_once($model_location);
-        }
-          
-        $model_object = new ReflectionClass(ucfirst($model));
-
-        if (@$model_object->getParentClass()->name != 'ActiveRecordBase') {
-            throw new InjectorException ('Wrong Definition of your Model, `' . ucfirst($model) . '` must extend ActiveRecordBase object!');
-        }
-        // if (!$model_object->hasMethod('find')) { XXX. php 5.1 only.
-        try {
-            $method= $model_object->getMethod('find');
-            if (!$method->isStatic() && !$method->isPublic()) {
-                throw new InjectorException('Class method: ' . ucfirst($model) . '::find() should be declared static and public!');
-            }
-        } catch (ReflectionException $rex) {
-            throw new InjectorException (
-                'Cannot Inject your Model, `' . ucfirst($model) . '`!
-                The dummy `find` method is not defined! [ User Info: ' . $rex->getMessage() . ']');
+            throw new InjectorException('Unknow injection type: `' . $type . '`');
         }
     }
-}
+    
+    /**
+     * It gets the path.
+     * @param string path type, defaults to __base
+     * @return array
+     */
+    public function getPath($type) {
+        return isset($this->path[$type]) ? $this->path[$type] : $this->path;
+    }
+    
+    /**
+     * Injects a user model
+     *
+     * @param string name, the model name
+     * @throws FileNotFoundException if the model file is not found.
+     * @throws InjectorException if the model class definition is wrong
+     * @return void
+     * @access protected
+     */
+    protected function injectModel($name) {
+        $location= $this->path['models'] . $name . '.php';
+        $this->logger->debug('Model Location:: ' . $location);
+        $this->logger->debug('Model Name:: ' . ucfirst($name));
+        
+        $this->includeFile($location, ucfirst($name));
+        
+        try {
+            $model_object = new ReflectionClass(ucfirst($name));
 
+            if (@$model_object->getParentClass()->name != 'ActiveRecordBase') {
+                throw new InjectorException (
+                    'Wrong Definition of user Model, `' . ucfirst($name) . '`, it must extend ActiveRecordBase object!');
+            }
+            
+            // if (!$model_object->hasMethod('find')) { XXX. php 5.1 only.
+        
+            $method= $model_object->getMethod('find');
+            if (!$method->isStatic() && !$method->isPublic()) {
+                throw new InjectorException (
+                    'Class method: ' . ucfirst($name) . '::find([mixed arguments]) should be declared as static and public!');
+            }
+        } catch (ReflectionException $rEx) {
+            throw new InjectorException (
+                'Cannot Inject user Model, `' . ucfirst($name) . '`!
+                The dummy `find` method is not defined! [ User Info: ' . $rEx->getMessage() . ']');
+        }        
+        
+    }
+    
+    /**
+     * Injects the User Controller
+     *
+     * @param string name, the name of this conroller
+     * @return ActionControllerBase
+     * @throws FileNotFoundException if the controller class file cannot be loaded.
+     * @throws InjectorException if the controller definition is malformated.
+     * @access protected
+     */
+    protected function injectController($name) {
+        try {
+            $this->includeFile($this->path['controllers'] . 'application.php', 'ApplicationController');
+        } catch (FileNotFoundException $fnfEx) {
+            $this->logger->warn($fnfEx->getMessage);
+        }
+        
+        $file= $this->path['controllers'] . strtolower($name) . '_controller.php';
+        $clazz= ucfirst($name)    . 'Controller';
+        
+        $this->includeFile($file, $clazz);
+        
+        try {
+            $controller_class = new ReflectionClass($clazz);
+            if (
+                ($controller_class->isInstantiable())
+                &&
+                (
+                    (@$controller_class->getParentClass()->name == 'ApplicationController')
+                    ||
+                    (@$controller_class->getParentClass()->name == 'ActionControllerBase')
+                )
+            )
+            {
+                return $controller_class->newInstance();
+            } else {
+                throw new InjectorException (
+                    'Wrong Definition of user controller class, 
+                    `' . $clazz . '` must extend ApplicationController or ActionControllerBase and 
+                    should be instantiable (must have a public constructor)!');
+            }
+        } catch (ReflectionException $rEx) {
+            throw new InjectorException ('Cannot inject user controller class `' . $clazz . '` [ User Info ] :' . $rEx->getMessage());
+        }
+    }
+    
+    /**
+     * Injects a user helper.
+     *
+     * @param string location, base location of this helper.
+     * @throws FileNotFoundException if the helper cannot be loaded.
+     * @return void
+     * @access private
+     */
+    protected function injectHelper($location) {
+        $helper_file= $this->path['helpers'] . $location . '_helper.php';
+        $this->logger->debug('Trying to load user helper from: ' . $helper_file);
+        return $this->includeFile($helper_file, $location . '_helper.php');
+    }
+    
+    /**
+     * Helper to include a user file
+     *
+     * @param string location, the location of the file to be included.
+     * @param string name, the name withc will be used in the exception thrown.
+     * @throws FileNotFoundException if the file cannot be loaded.
+     * @access private
+     */
+    private function includeFile($location, $failure_message) {
+        if(!@file_exists($location) ) {
+            throw new FileNotFoundException('Cannot load : `' . $failure_message .'`. Searched in: `' . $location . '`');
+        } else {
+            include_once($location);
+        }
+    }
+    
+}

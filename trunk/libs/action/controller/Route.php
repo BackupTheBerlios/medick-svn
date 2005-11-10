@@ -85,7 +85,7 @@ class Route extends Object {
      * Set the failure Route name
      * @param string name, the name of the failure route.
      */
-    public function setFailure($name) {
+    public function setFailure(Route $name) {
         $this->failure = $name;
     }
 
@@ -162,7 +162,7 @@ class Route extends Object {
      */
     public function getControllerPath() {
         return
-            Registry::get('__configurator')->getProperty('application_path') .
+            Registry::get('__configurator')->getProperty('application_path') . DIRECTORY_SEPARATOR . 'app' .
             DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
     }
 

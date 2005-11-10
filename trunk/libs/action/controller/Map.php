@@ -46,13 +46,23 @@ class Map extends Object {
      */
     private $routes = array();
 
-
+    /**
+     * @var Route the current running route
+     */ 
     private $curent_route;
     
+    /**
+     * Sets the current Route
+     * @param Route route
+     */ 
     public function setCurrentRoute(Route $route) {
         $this->curent_route= $route;
     }
     
+    /**
+     * Gets the current route
+     * @return Route
+     */ 
     public function getCurrentRoute() {
         return $this->curent_route;
     }
@@ -72,12 +82,12 @@ class Map extends Object {
      * @throw RouteException
      */
     public function getRouteByName($name) {
-        foreach ($this->routes AS $route) {
+        foreach ($this->routes as $route) {
             if ($route->getName()==$name) {
                 return $route;
             }
         }
-        throw new RouteException('Cannot find a route with this name: ' . $name . ' !');
+        throw new RouteException('Cannot find a route with this name: `' . $name . '` !');
     }
 
     /**

@@ -36,23 +36,38 @@
  * A logged event object
  * @package locknet7.logger
  */
-
 class LoggingEvent extends Object {
-    /** @var array */
+
+    /** @var array
+        application backtrace */
     public $backtrace = array();
-    /** @var mixed */
+    
+    /** @var mixed 
+        logging message */
     public $message;
-    /** @var int */
+    
+    /** @var int 
+        message level */
     public $level;
-    /** @var string */
+    
+    /** @var string 
+        in what file the message took place.*/
     public $file;
-    /** @var int */
+    
+    /** @var int 
+        at what line we logged the event.*/
     public $line;
-    /** @var string */
+    
+    /** @var string 
+        function*/
     public $function;
-    /** @var string */
+    
+    /** @var string 
+        class */
     public $class;
-    /** @var string */
+    
+    /** @var string 
+        date */
     public $date;
     
     /**
@@ -65,10 +80,9 @@ class LoggingEvent extends Object {
         $this->message   = $message;
         $this->level     = strtoupper($level);
         $this->date      = time();
-        $this->file      = end(@explode(DIRECTORY_SEPARATOR,@$this->backtrace[1]['file']));
+        $this->file      = end(@explode(DIRECTORY_SEPARATOR,@$this->backtrace[2]['file']));
         $this->line      = @$this->backtrace[2]['line'];
         $this->class     = @$this->backtrace[3]['class'];
         $this->function  = @$this->backtrace[3]['function'];
     }
 }
-

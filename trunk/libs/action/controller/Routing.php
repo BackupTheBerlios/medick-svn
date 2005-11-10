@@ -32,6 +32,8 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('action/controller/Injector.php');
+
 /**
  * @package locknet7.action.controller.route
  */
@@ -49,21 +51,21 @@ class ActionControllerRouting extends Object {
             $is_failure= FALSE;
             $params= $route->getParams();
             // {{{ loop throught the Route Parameters
-            foreach ($params AS $param) {
+            foreach ($params as $param) {
                 $logger->debug('Validating Route Parameter:' . $param->getName());
                 // {{{ if this Request has the current parameter, try to validate him.
-                if (!$request->hasParam($param->getName()) OR ($request->getParam($param->getName()) =='')) {
+                if (!$request->hasParam($param->getName()) || ($request->getParam($param->getName()) == '')) {
                     // XXX. load failure due to missing parameters.
-                    $logger->debug('Validation failed.');
+                    $logger->info('Validation failed on RouteParameter: `' . $param->getName() . '`
+                        [User Info: parametter missing or empty].');
                     $is_failure= TRUE;
-                    
                     // XXX. failure message.
                     // break;
                 } // }}}
-                // {{{ if this paramester has attached validators,
+                // {{{ if this parameter has attached validators,
                 if ($param->hasValidators()) {
                     // loop throught the validators and validate this parameter value.
-                    foreach($param->getValidators() AS $validator) {
+                    foreach($param->getValidators() as $validator) {
                         $validator->setValue($request->getParam($param->getName()));
                         if (!$validator->validate()) {
                           // XXX. validation failed, handle automatically and break(?)
@@ -74,7 +76,7 @@ class ActionControllerRouting extends Object {
                 $param->setValue($request->getParam($param->getName()));
             } // end foreach. }}}
             if ($is_failure) {
-                $route= $map->getRouteByName($route->getFailure());
+                $route= $map->getRouteByName($route->getFailure()->getName());
                 $route->addFromArray($params);
             }
         } else {
@@ -87,39 +89,10 @@ class ActionControllerRouting extends Object {
         $request->setParam('action', $route->getAction());
         $logger->debug(
             'Running on Route: ' . $route->getName() .
-            ' with controller: ' . $route->getController() .
-            ' and action: ' . $route->getAction());
+            ' ctrller: ' . $route->getController() .
+            ' act: ' . $route->getAction());
         $map->setCurrentRoute($route);
-        return self::createController($route);
-    }
-
-    /**
-     * Creates an instance of the requested Controller
-     * 
-     * @param Route route to create the controller for.
-     * @return ActionController
-     * @throws RouteException
-     */
-    private static function createController(Route $route) {
-        // this will fail in ReflectionClass.
-        @include_once($route->getControllerPath() . 'application.php');
-        @include_once($route->getControllerPath() . $route->getControllerFile());
-        // XXX. try/catch here.
-        $controller_class = new ReflectionClass($route->getControllerName());
-
-        if (
-            ($controller_class->isInstantiable())
-            AND
-            (
-                ($controller_class->getParentClass()->name=='ApplicationController')
-                OR
-                ($controller_class->getParentClass()->name=='ActionControllerBase')
-            )
-            )
-        {
-            return $controller_class->newInstance();
-        }
-        throw new RouteException ('Cannot create a Controller instance...');
+        $injector= Registry::put(new Injector(), '__injector');
+        return $injector->inject('controller', $route->getController());
     }
 }
-

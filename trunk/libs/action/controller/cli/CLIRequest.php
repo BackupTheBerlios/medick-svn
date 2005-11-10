@@ -32,8 +32,6 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('action/controller/cli/CLIException.php');
-
 /** 
  * @package locknet7.action.controller.request
  */
