@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,9 +26,9 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
@@ -38,13 +38,16 @@
  */
 class RouteParam extends Object {
 
-    /** @var string param name */
+    /** @var string
+        Route Parameter name */
     private $name;
-    /** @var string param value */
+
+    /** @var string
+        Route Parameter value */
     private $value;
-    /** XXX. NotUsed */
-    private $type;
-    /** @var IValidators[] param validators */
+
+    /** @var IValidators[]
+        Route Parameter validators */
     private $validators;
 
     /**
@@ -56,22 +59,6 @@ class RouteParam extends Object {
         $this->validators = array();
     }
 
-    /** XXX. NotUsed.
-     * Sets this parameter Type
-     * @param string type
-     */
-    public function setType($type) {
-        $this->type= $type;
-    }
-
-    /** XXX. NotUsed
-     * It gets this param type
-     * @return string type
-     */
-    public function getType() {
-        return $this->type;
-    }
-
     /**
      * Adds a validator for this parameter
      * @param IValidator validators
@@ -80,7 +67,7 @@ class RouteParam extends Object {
         if ($this->contains($validator)) return;
         $this->validators[]= $validator;
     }
-    
+
     /**
      * It gets the list of Validators
      * @return IValidators[]
@@ -88,23 +75,23 @@ class RouteParam extends Object {
     public function getValidators() {
         return $this->validator;
     }
-    
+
     /**
-     * Check if this parameter hav attached Validators
+     * Check if this parameter have Validators attached
      * @return bool, TRUE if the parameter has at least one IValidator attached, FALSE otherwise
      */
     public function hasValidators() {
       return sizeof($this->validators) > 0;
     }
-    
-    /** XXX. NotDone.
+
+    /**
      * Check if the parameter contains the given Validator
      * @param IValidator validator to check if is already in the stack of IValidators elements
      * @return IValidator if this parameter has the IValidator attached or FALSE if the stack of IValidator dont contains this IValidator
      */
-    public function contains (IValidator $validator) {
-        foreach ($this->validators AS $_validator) {
-
+    protected function contains (IValidator $validator) {
+        foreach ($this->validators as $_validator) {
+            if ($_validator->getClassName() == $validator->getClassName()) return TRUE;
         }
         return FALSE;
     }
@@ -114,7 +101,7 @@ class RouteParam extends Object {
      * @param string value
      */
     public function setValue($value) {
-        $this->value= $value;
+        $this->value = $value;
     }
 
     /**
@@ -133,4 +120,3 @@ class RouteParam extends Object {
         return $this->name;
     }
 }
-

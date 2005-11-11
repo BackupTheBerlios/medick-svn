@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,32 +26,33 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
 include_once('active/record/Field.php');
 
 /**
+ * It represents a Row from the Database, generic named here FieldsAggregate
  * @package locknet7.active.record
  */
 
-class FieldsAggregate extends Object implements IteratorAggregate {
-    
+class FieldsAggregate extends Object {
+
     /** @var ArrayObject
         fields container */
     private $fields;
-    
+
     /** @var Field
         pk field*/
     private $pk_filed = NULL;
-    
-    /** @var bool 
+
+    /** @var bool
         affected flag. */
     private $affected = FALSE;
-    
+
     /**
      * FieldsAggregate Constructor
      */
@@ -59,16 +60,16 @@ class FieldsAggregate extends Object implements IteratorAggregate {
         $this->fields = new ArrayObject();
     }
 
-    /** 
-     * Add a new Field on the fields container 
+    /**
+     * Add a new Field on the fields container
      */
     public function add(Field $field) {
         if (!$this->contains($field)) $this->fields[] = $field;
         if ($field->isPk) $this->pk_field = $field;
         return $field;
     }
-    
-    /** 
+
+    /**
      * Check if the container contains the given Field
      * @return bool, TRUE if it contains this Field, FALSE otherwise
      */
@@ -81,7 +82,7 @@ class FieldsAggregate extends Object implements IteratorAggregate {
         return FALSE;
     }
 
-    /** 
+    /**
      * It gets the iterator
      * @return Iterator
      */
@@ -89,15 +90,15 @@ class FieldsAggregate extends Object implements IteratorAggregate {
         return $this->fields->getIterator();
     }
 
-    /** 
-     * Set the affected modifier 
+    /**
+     * Set the affected modifier
      * @param bool affected
      */
     public function setAffected($affected) {
         $this->affected = (bool)$affected;
     }
 
-    /** 
+    /**
      * It checks if it has affected fields by this run
      * @return bool TRUE if it has, FALSE otherwise
      */
@@ -112,9 +113,9 @@ class FieldsAggregate extends Object implements IteratorAggregate {
     public function getPrimaryKey() {
         return $this->pk_field;
     }
-    
-    /** 
-     * It gets an array with the names of the affected fields 
+
+    /**
+     * It gets an array with the names of the affected fields
      * @return array
      */
     public function getAffectedFieldsNames() {
@@ -127,7 +128,7 @@ class FieldsAggregate extends Object implements IteratorAggregate {
         return $names;
     }
 
-    /** 
+    /**
      * Get an array of objects Field[] that are affected(changed) by this run
      * @return Field[]
      */
