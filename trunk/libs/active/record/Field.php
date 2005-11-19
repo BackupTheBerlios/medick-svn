@@ -26,9 +26,9 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
@@ -37,35 +37,42 @@
  * @package locknet7.active.record
  */
 class Field extends Object {
-    
-    /** @var string 
-        name of the field */
+
+    /** @var string
+        name of the field as it is in DB */
     private $name;
-    
-    /** @var 
+
+    /**
+     * Formatted field name, _ is replaced by spaces
+     * @var string
+     * @since Rev. 272
+     */
+    public $formattedName;
+
+    /** @var
         mixed value of the field */
     private $value;
-    
-    /** @var string 
-        field sql type*/
+
+    /** @var string
+        field sql type */
     public $type;
-    
-    /** @var bool 
+
+    /** @var bool
         is primary key flag */
     public $isPk = FALSE;
-    
-    /** @var bool 
+
+    /** @var bool
         is foreign key flag */
     public $isFk = FALSE;
-    
-    /** @var bool 
+
+    /** @var bool
         if this field was affected by the current run */
     public $isAffected = FALSE;
-    
-    /** @var string 
+
+    /** @var string
         the foreign key table */
     public $fkTable;
-    
+
     /**
      * Creates a new Field Object
      * @param string the name of this Field
@@ -73,7 +80,7 @@ class Field extends Object {
     public function __construct($name) {
         $this->name = $name;
     }
-    
+
     /**
      * It gets the name of this field
      * @return string name
@@ -97,6 +104,4 @@ class Field extends Object {
     public function setValue($value) {
         $this->value = $value;
     }
-
 }
-

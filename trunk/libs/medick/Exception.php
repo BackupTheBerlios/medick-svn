@@ -40,13 +40,35 @@
 class MedickException extends Exception {
 
     /**
-     * Create a new MedickException
-     * @param string the message.
-     * @param int code.
+     * Additional Informations provided by this Exception
+     * @var string
+     * @since Rev. 272
      */
-    public function __construct($message, $code = '0') {
+    protected $userInfo= FALSE;
+
+    /**
+     * Create a new MedickException
+     *
+     * @param string message the message.
+     * @param string userInfo additional user informations, defaults to empty string
+     * @param int code error code, defaults to 0
+     */
+    public function __construct($message, $userInfo='', $code = '0') {
+        if ($userInfo != '') {
+            $this->userInfo = $userInfo;
+        }
         parent::__construct($message, $code);
     }
+
+    /**
+     * Returns the additional / debug information for this error.
+     *
+     * @return string.
+     */
+    public function getUserInfo() {
+        return $this->userInfo;
+    }
+
 }
 // }}}
 // {{{ Error
@@ -56,7 +78,8 @@ class MedickException extends Exception {
  */
 class Error extends MedickException {
     public function __construct($message, $code, $file, $line, $trace) {
-        parent::__construct($message, $code);
+        parent::__construct($message);
+        $this->code  = $code;
         $this->file  = $file;
         $this->line  = $line;
         $this->trace = $trace;
@@ -105,11 +128,15 @@ class RouteException extends MedickException {    }
 class CLIException extends MedickException {      }
 // }}}
 // {{{ IllegalStateException
+/**
+ * Indicates an Illegal State of an Object (eg: when trying to use a Session before calling the start method)
+ * @package locknet7.medick
+ */ 
 class IllegalStateException extends MedickException {    }
 // }}}
 // {{{ ConfiguratorException
 /**
- * Cofigurator Exception
+ * It indicates a Cofigurator Exception
  * @package locknet7.config
  */
 class ConfiguratorException extends MedickException {       }
@@ -132,5 +159,12 @@ class ActiveRecordException extends MedickException {     }
  * @package locknet7.active.record
  */
 class RecordNotFoundException extends ActiveRecordException { }
+// }}}
+// {{{ AssociationNotFoundException
+/**
+ * @package locknet7.active.record.association
+ * @since Rev. 272
+ */
+class AssociationNotFoundException extends MedickException{ }
 // }}}
 

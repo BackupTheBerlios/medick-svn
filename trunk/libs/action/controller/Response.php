@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,17 +26,13 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-if (php_sapi_name() == 'cli') {
-    include_once('action/controller/cli/CLIResponse.php');   
-} else {
-    include_once('action/controller/http/HTTPResponse.php');
-}
+include_once('action/controller/http/HTTPResponse.php');
 
 /**
  * @package locknet7.action.controller.response
@@ -69,33 +65,33 @@ abstract class Response extends Object {
     /** Status code (503) indicating that the HTTP server
         is temporarily overloaded, and unable to handle the request. */
     const SC_SERVICE_UNAVAILABLE = 503;
-    
+
     protected $content;
-    
+
     /**
-     * Set the content 
+     * Set the content
      * @param mixed content, the content
      */
     public function setContent($content) {
         $this->content = $content;
     }
-    
+
     /** Appends some content */
     public function append($content) {
         $this->content .= $content;
-    } 
-    
+    }
+
     /** It gets the content */
     public function getContent() {
         return $this->content;
     }
-    
+
     /** echo`s the content */
     public function dump() {
         echo $this->content;
     }
-    
-    /** 
+
+    /**
      * Sets the status of this response
      * @param Response::SC_*, status, the status of this response
      */

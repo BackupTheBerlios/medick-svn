@@ -56,9 +56,7 @@ define('APP_NAME', $file[0]);
 define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 
 // include_path, rewrite the existing one
-set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
-                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
-                );
+set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR );
 
 // load core classes.
 include_once('medick/Object.php');

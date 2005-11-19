@@ -3,25 +3,29 @@ $Id$
 
 0.0.3 (*)
     - Code Clean-Up:
-        logger.Logger:
+        - logger/Logger:
                 * removed logger.outputters.Outputter::getId() abstract method;
                 * speed improvments if no outputters are added;
                 * fix: file name in logger.LoggingEvent was wrong;
                 * more code clean-up.
-        configurator.XMLConfigurator.
-        active.controller.Injector: this will be the only class that will know how to load (include)
-                                    and check user Classes and Files: controllers, helpers, layouts, models and views.
+        - configurator.XMLConfigurator.
+        - active.controller.Injector: This will be the only class that will know how to load (include)
+                                       and check user Classes and Files: controllers, helpers, layouts, models and views.
+                                      Also, it adds in to the include_path, user folders libs and vendor.
+        - more API docs.            
+        - removed action.controller.cli.* classes
+        - removed vendor folder, medick 3-rd party imports should be placed inside libs folder.
     - ActiveRecordBase:
-        implemented has_and_belongs_to_many association (read-only)
+        added before/after filters on update/insert/delete methods
+        created associations classes and implemented has_and_belongs_to_many, belongs_to, has_many, has_one associations.
         fix: broken (strange) behavior when trying to return an empty result set in __find() method
     - ActionController:
         added process_with_exception method.
-        layout ala Rails
-    - Error and Exceptions:
-        added Custom ErrorHandler,
-        added more specialized Errors and Exceptions, for better debugging,
+        layout fix, by introducing $use_layout
+    - Errors and Exceptions:
+        added custom ErrorHandler,
+        added more specialized Errors and Exceptions, for better debugging.
         moved all exceptions class to one file: medick.Exception.
-    - more UnitTests and a better organization of tests (some tests are broken in svn tree!)
     - Initial import of an INI style file configurator (INIConfigurator), not used yet.
     - bundled creole, creole is a DB Abstraction layer for PHP5 released under LGPL licence,
                     more details on http://creole.phpdb.org

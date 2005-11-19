@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,84 +26,84 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
 include_once('action/view/Base.php');
- 
+
 /**
  * @package locknet7.action.controller
  * Base Class For Our Application Controllers
  */
 class ActionControllerBase extends Object {
-    
-    /** @var Logger 
+
+    /** @var Logger
         logger instance */
     protected $logger;
-    
-    /** @var Request 
+
+    /** @var Request
         current request */
     protected $request;
-    
-    /** @var array 
+
+    /** @var array
         Request parameters */
     protected $params;
-    
-    /** @var Response 
+
+    /** @var Response
         Response that we are building */
     protected $response;
-    
-    /** @var array 
+
+    /** @var array
         request heders */
     protected $headers;
-    
-    /** @var Session 
+
+    /** @var Session
         current request session */
     protected $session;
-    
-    /** @var array 
+
+    /** @var array
         values for template class */
     protected $assigns;
-    
-    /** @var string 
+
+    /** @var string
         Default location for template files*/
     protected $template_root;
-    
+
     /** @var string
         application path*/
     protected $app_path;
-    
+
     /** @var string
         the layout to use */
     protected $use_layout= TRUE;
-    
-    /** @var ActiveViewBase 
+
+    /** @var ActiveViewBase
         Template Engine */
     protected $template;
-    
+
     /** @var array
         before_filters array */
     protected $before_filter= array();
-    
+
     /** @var array
         list of models */
     protected $models= array();
-    
-    /** @var bool 
+
+    /** @var bool
         Flag to indicate that the current action was performed.*/
     private $action_performed= FALSE;
-    
-    /** @var Configurator 
+
+    /** @var Configurator
         configurator instance */
     private $config;
-    
+
     /** @var Injector
         the injector. */
     private $injector;
-    
+
     /**
      * Process this Request
      *
@@ -113,6 +113,7 @@ class ActionControllerBase extends Object {
      * @return Response
      */
     public static function process_with_exception(Request $request, Response $response, Exception $exception) {
+        ob_end_clean();
         $template = ActionViewBase::factory();
         $template->error= $exception;
         $text= $template->render_file(TOP_LOCATION . '/libs/action/controller/templates/error.phtml');
@@ -121,7 +122,7 @@ class ActionControllerBase extends Object {
         $response->setContent($text);
         return $response;
     }
-    
+
     /**
      * Will process the request returning the resulting response
      * @param Request request, the request
@@ -159,32 +160,32 @@ class ActionControllerBase extends Object {
         if (is_null($template_name)) $template_name = $this->params['action'];
         $this->render_file($this->template_root . $template_name . '.phtml', $status);
     }
-    
+
     /**
      * It renders the template file.
-     * 
+     *
      * This method is usefull when you don`t want to use the default template_root
      * Special helper file is included.
      * Magic __layout.phtml is loaded if exists.
-     * 
+     *
      * @param string, template_file location of the template file, default NULL
      * @param Response::SC_*, status, [optional] status code, default is 200 OK
      * @throws FileNotFoundException if the template file don`t exist on the specified location.
      * @return void
      */
     protected function render_file($template_file, $status = NULL) {
-        
+
         if (!is_file($template_file)) {
             throw new FileNotFoundException ('Cannot render unexistent template file:' . $template_file);
         }
-        
+
         try {
             $this->injector->inject('helper', $this->params['controller']);
         } catch (FileNotFoundException $fnfEx) {
             $this->logger->info(
                 'skipping helper: ' . $this->injector->getPath('helpers') . '_' . $this->params['controller'] . ' ' . $fnfEx->getMessage());
         }
-        
+
         if ($this->use_layout) {
             $layout= $this->use_layout === TRUE ? $this->params['controller'] : $this->use_layout;
             $layout_file= $this->injector->getPath('layouts') . $layout . '.phtml';
@@ -212,18 +213,18 @@ class ActionControllerBase extends Object {
         // }}}
         */
     }
-    
+
     protected function render_without_layout($template_file, $status) {
         $this->logger->debug('Rendering without layout...');
         return $this->render_text($this->template->render_file($template_file), $status);
     }
-    
+
     /**
      * Will render some text.
      * Is the _base_ method for render_file
      * This method is useful when you want to output some text without using the template engine
-     * In case the action was already performed we will silently exit, 
-     * otherwise, we set the response status and body and 
+     * In case the action was already performed we will silently exit,
+     * otherwise, we set the response status and body and
      * switch the <code>action_performed</code> flag to <code>TRUE</code>
      * @param string text, [optional]the text you want to send, default is an empty string
      * @param Response::SC_*, status, [optional] status code, default is 200 OK
@@ -242,7 +243,7 @@ class ActionControllerBase extends Object {
         $this->action_performed = TRUE;
         $this->logger->debug('Action performed.');
     }
-    
+
     // }}}
 
     /**
@@ -256,14 +257,14 @@ class ActionControllerBase extends Object {
         $this->response = $response;
         $this->session  = $request->getSession();
         $this->params   = $request->getParams();
-        
+
         $this->logger   = Registry::get('__logger');
         $this->injector = Registry::get('__injector');
         $this->config   = Registry::get('__configurator');
-        
+
         $this->app_path      = $this->injector->getPath('__base');
         $this->template_root = $this->injector->getPath('views') . $this->params['controller'] . DIRECTORY_SEPARATOR;
-        
+
         $this->template = ActionViewBase::factory();
         $this->template->__base= $this->config->getProperty('document_root');
     }
@@ -278,12 +279,12 @@ class ActionControllerBase extends Object {
     }
 
     // {{{ redirects
-    
+
     // XXX: not done.
     protected function redirect_to($action, $controller= NULL, $params = array()) {
         // get the curent controller, if NULL is passed.
         if (is_null($controller)) $controller= $this->params['controller'];
-        
+
         if ($this->config->getProperty('rewrite')) {
             $this->response->redirect(
                 $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . '/' .
@@ -291,33 +292,33 @@ class ActionControllerBase extends Object {
         } else {
             // rewrite-off
             $this->response->redirect(
-                $this->config->getProperty('server_name') . 
-                $this->config->getProperty('document_root') . 
+                $this->config->getProperty('server_name') .
+                $this->config->getProperty('document_root') .
                 '/index.php?controller=' . $controller . '&action=' . $action
             );
         }
         $this->action_performed = TRUE;
     }
-    
+
     // XXX: not done.
     // redirects to a know path (eg. /images/pic.jpg)
     protected function redirect_to_path($path) {   }
-    
+
     // XXX: not done.
     protected function redirect($url, $message = '', $timeout = 0, $template = NULL) {     }
 
     // }}}
-    
+
     /**
      * Performs the action
-     * 
+     *
      * Also, the magic __common method is invoked.
      * @param string, action_name, the action to perform
      * TODO: still to refactor.
      */
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct');
-        
+
         if( (is_null($action_name)) || (in_array($action_name, $forbidden_actions)) ) {
             $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
             $action = $this->createMethod($action_name);
@@ -340,7 +341,7 @@ class ActionControllerBase extends Object {
         }
         $this->render();
     }
-    
+
     /**
      * It executes before filters
      *
@@ -364,7 +365,7 @@ class ActionControllerBase extends Object {
      */
     private function add_before_filters() {
         if (!is_array($this->before_filter)) {
-            throw new Exception ($this->getClassName() . '\$before_filter should be an array of strings, each string representing a method name');    
+            throw new Exception ($this->getClassName() . '\$before_filter should be an array of strings, each string representing a method name');
         }
         foreach($this->before_filter as $filter_name) {
             $filter = $this->createMethod($filter_name);
@@ -386,18 +387,18 @@ class ActionControllerBase extends Object {
             $this->injector->inject('model', $model);
         }
     }
-    
-    /** 
-     * By using the php Reflection API we create 
+
+    /**
+     * By using the php Reflection API we create
      * in a safty way the method with the name $method_name on this object
-     * 
+     *
      * This method is used to perform the actions given by before/pre filters
      * and also when we perform the action
      * TODO: can we move this to the Object class?
      * @param string method_name, the method.
      *                            NOTE: We force the name to be on lower case.
-     * @return RelfectionMethod or FALSE in case of failure. 
-     */ 
+     * @return RelfectionMethod or FALSE in case of failure.
+     */
     private function createMethod($method_name) {
         try {
             return new ReflectionMethod($this, strtolower($method_name));

@@ -58,6 +58,13 @@ class ActiveRecordBase extends Object {
         a Logger instance */
     protected $logger;
 
+    // {{{ Associations
+    protected $has_one= array();
+    protected $has_many= array();
+    protected $belongs_to= array();
+    protected $has_and_belongs_to_many= array();
+    // }}}
+
     // {{{ static members
 
     /** @var Connection
@@ -105,7 +112,7 @@ class ActiveRecordBase extends Object {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
             $field->type = CreoleTypes::getCreoleName( $col->getType() ) ;
-            // $field->formattedName =  str_replace( '_', ' ', $col->getName() );
+            $field->formattedName =  str_replace( '_', ' ', $col->getName() );
             // set is_nullable
             // $field->isNullable = (bool)$col->isNullable;
             if ($this->pk == $col->getName() ) $field->isPk = TRUE;
@@ -144,7 +151,8 @@ class ActiveRecordBase extends Object {
                 return;
             }
         }
-        throw new ActiveRecordException ('Cannot Set the value of field: ' . $field_name . '. No such field!');
+        throw new ActiveRecordException (
+            'Cannot Set the value of field: `' . $field_name . '`. No such field!');
     }
 
     /**
@@ -160,52 +168,45 @@ class ActiveRecordBase extends Object {
                 return $it->current()->isAffected ? $it->current()->getValue() : NULL;
             }
         }
-        // Associations:
-        // 1. has_one, the syntax: protected $has_one= array('__FIELD_NAME__');
-        if (isset($this->has_one) && $this->has_one && in_array($field_name, $this->has_one)) {
-            $fk= $field_name.'_id';
-            for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
-                if ( $it->current()->getName() == $fk ) {
-                    $_table= Inflector::singularize(self::$table_name);
-                    self::setTable($field_name);
-                    $ret= self::__find(array($it->current()->getValue()));
-                    self::setTable($_table);
-                    return $ret;
-                }
-            }
+
+        try {
+            return Association::resolve(
+                                array(
+                                    'has_one'=>$this->has_one,
+                                    'belongs_to'=>$this->belongs_to,
+                                    'has_many'=>$this->has_many,
+                                    'has_and_belongs_to_many'=>$this->has_and_belongs_to_many
+                                    ),
+                                self::$table_name,
+                                $field_name,
+                                $this->fields
+                                )->execute();
+        } catch (AssociationNotFoundException $anfEx) {
+            throw new ActiveRecordException (
+                'Cannot Get the value of filed: `' . $field_name . '`. No such filed!',
+                $anfEx->getMessage());
         }
-        // 2. has_and_belongs_to_many
-        if (
-            (isset($this->has_and_belongs_to_many))
-              &&
-              (
-                  (
-                      (is_array($this->has_and_belongs_to_many))
-                      &&
-                      (in_array($field_name, $this->has_and_belongs_to_many))
-                  )
-                  ||
-                  (
-                      $this->has_and_belongs_to_many == Inflector::pluralize($field_name)
-                  )
-              )
-            )
-        {
-            $assoc = new HasAndBelongsToManyAssociation();
-            $assoc->owner= Inflector::singularize(self::$table_name);
-            $assoc->pk   = $this->fields->getPrimaryKey()->getValue();
-            $assoc->class= Inflector::singularize($field_name);
-            return $assoc->execute();
-        }
-        throw new ActiveRecordException ('Cannot Get the value of filed: `' . $field_name . '`. No such filed!');
     }
 
-    /** removes some duplicate code */
+    /**
+     * This method is run before any call to ActiveRecordBase public methods!
+     * Removes some duplicate code from the list with <tt>know_methods</tt>.
+     * ALso, it defines some methods aliases (eg: delete===distroy)
+     *
+     * Basically it checks before save, insert, update or delete calls that
+     * the current run has affected fields and throws an ActiveRecordException if not.
+     * @see http://php.net/manual/en/language.oop5.overloading.php
+     * @param string method name
+     * @param array arguments
+     * @throws ActiveRecordException
+     */
     public function __call($method, $arguments) {
         if ($method == 'destroy') return $this->delete();
         $know_methods = array('save', 'insert', 'update', 'delete');
         if (!in_array($method, $know_methods)) {
-            trigger_error(sprintf('Call to undefined method: %s::%s().', $this->getClassName(), $method), E_USER_ERROR);
+            trigger_error(
+                sprintf(
+                    'Call to undefined method: %s::%s().', $this->getClassName(), $method), E_USER_ERROR);
         } elseif(!$this->fields->hasAffected()) {
             throw new ActiveRecordException('No field was set before ' . $method);
         } else {
@@ -223,10 +224,74 @@ class ActiveRecordBase extends Object {
     }
     // }}}
 
+    // {{{ filters:
+    /**
+     * Before Insert Filter.
+     *
+     * This filter is executed before running an sql insert.
+     * You should overwrite this method in your models.
+     * @return void
+     * @since Rev.272
+     */
+    protected function before_insert() {    }
+
+    /**
+     * Before Update Filter.
+     *
+     * This filter is executed before running an sql update.
+     * You should overwrite this method in your models.
+     * @return void
+     * @since Rev.272
+     */
+    protected function before_update() {    }
+
+    /**
+     * Before Delete Filter.
+     *
+     * This filter is executed before running an sql delete.
+     * You should overwrite this method in your models.
+     * @return void
+     * @since Rev.272
+     */
+    protected function before_delete() {    }
+
+    /**
+     * After Insert Filter.
+     *
+     * This filter is executed after running the sql insert.
+     * You should overwrite this method in your models.
+     * @return void
+     * @since Rev.272
+     */
+    protected function after_insert()  {    }
+
+    /**
+     * After Update Filter.
+     *
+     * This filter is executed after running the sql update.
+     * You should overwrite this method in your models.
+     * @return void
+     * @since Rev.272
+     */
+    protected function after_update()  {    }
+
+    /**
+     * After Delete Filter.
+     *
+     * This filter is executed after running the sql delete.
+     * You should overwrite this method in your models.
+     * @return void
+     * @since Rev.272
+     */
+    protected function after_delete()  {    }
+
+    // }}}
+
     // {{{ save
     /**
      * Save,
-     *    will do a SQL Insert and return the last_inserted_id or an Update returning the number of affected rows.
+     *    will do a SQL Insert and return the last_inserted_id or
+     * an Update returning the number of affected rows.
      * If the primary key is affected (changed) on this run we will do an update, otherwise an insert.
      * <code>
      *      $author = new Author();
@@ -240,42 +305,96 @@ class ActiveRecordBase extends Object {
      */
     public function save() {
         if ($this->fields->getPrimaryKey()->isAffected) {
-            $sql = $this->getUpdateSql();
+            return $this->update();
         } else {
-            $sql = $this->getInsertSql();
+            return $this->insert();
         }
-        $af_rows = $this->performQuery($sql);
-        $id = $this->getNextId();
-        return $id ? $id : $af_rows;
     }
     // }}}
 
     // {{{ insert
+    /**
+     * Executes an SQL insert
+     *
+     * <code>
+     *     $author = new Author();
+     *     $author->name= 'Mihai';
+     *     $author->insert();
+     *     // is translated into:
+     *     // INSERT INTO authors (name) VALUES ('Mihai');
+     * </code>
+     *
+     * @return int next primary key id or, 1 (affected rows).
+     * @throws SQLException
+     */
     public function insert() {
+        $this->before_insert();
         $af_rows = $this->performQuery($this->getInsertSql());
         $id = $this->getNextId();
+        $this->after_insert();
         return $id ? $id : $af_rows;
     }
     // }}}
 
     // {{{ update
+    /**
+     * Executes a SQL update
+     *
+     * <code>
+     *     $author = new Author(array('id'=>5));
+     *     // or: $author= new Author(); $author->id = 5;
+     *     $author->name= 'Mihai';
+     *     $author->update();
+     *     // is translated into:
+     *     // UPDATE authors set name='Mihai' WHERE id=5;
+     * </code>
+     *
+     * @return int affected rows.
+     * @throws SQLException
+     */
     public function update() {
-        return $this->performQuery($this->getUpdateSql());
+        $this->before_update();
+        $af= $this->performQuery($this->getUpdateSql());
+        $this->after_update();
+        return $af;
     }
     // }}}
 
     // {{{ delete
+    /**
+     * Performs an SQL delete.
+     *
+     * <code>
+     *     $affected_rows= new Author(array('id'=>5, 'name'=>'Mihai'))->delete();
+     *     // translated into:
+     *     // DELETE FROM authors WHERE id=5 and name='Mihai';
+     *     $affected_rows = new Author(array('name'=>'Mihai'))->delete();
+     *     // is translated to:
+     *     // DELETE FROM authors WHERE name='Mihai'
+     * </code>
+     *
+     * @return int affected rows.
+     * @throws SQLException
+     */
     public function delete() {
+        $this->before_delete();
         $whereClause = array();
         foreach ($this->fields->getAffectedFields() as $col) {
             $whereClause[] = $col->getName() . ' = ? ';
         }
         $sql = 'DELETE FROM ' . self::$table_name . ' WHERE ' . implode(' AND ', $whereClause);
-        return $this->performQuery($sql);
+        $af= $this->performQuery($sql);
+        $this->after_delete();
+        return $af;
     }
     // }}}
 
     // {{{ private methods (internal helpers)
+    /**
+     * It gets the next primary key id
+     *
+     * @return string the next id, or false when the table dont have a primary key
+     */
     private function getNextId() {
         if ($this->fields->getPrimaryKey() !== NULL) {
             $_pk = $this->pk;
@@ -287,6 +406,13 @@ class ActiveRecordBase extends Object {
         }
     }
 
+    /**
+     * Helper internal method witch performs an sql query
+     *
+     * @param string sql the sql query to execute
+     * @return int affected rows
+     * @throws SQLException
+     */
     private function performQuery($sql) {
         $stmt = self::$conn->prepareStatement($sql);
         self::populateStmtValues($stmt, $this->fields->getAffectedFields());
@@ -297,16 +423,14 @@ class ActiveRecordBase extends Object {
         return $af_rows;
     }
 
-    /** resets affected flag, this method is not used yet! */
-    private function _reset() {
-        foreach ($this->fields->getAffectedFields() AS $field) {
-            $field->isAffected = FALSE;
-        }
-    }
-
-    /** FIXME:
+    /**
+     * It gets the sql snippet that will be  used to execute an update
+     *
+     * FIXME:
      * <tt>UPDATE __TABLE__ SET foo='12' WHERE bar='ee';</tt>
      * is not working.
+     *
+     * @return string
      */
     private function getUpdateSql() {
         $sqlSnippet = '';
@@ -320,6 +444,10 @@ class ActiveRecordBase extends Object {
         return substr($sql, 0, -2) . $sqlSnippet;
     }
 
+    /**
+     * It gets the sql snippet to use for an insert
+     * @return string
+     */
     private function getInsertSql() {
         return 'INSERT INTO ' . self::$table_name
                . ' (' . implode(',', $this->fields->getAffectedFieldsNames()) . ')'
@@ -355,7 +483,16 @@ class ActiveRecordBase extends Object {
         if($numargs == 0) return self::__find(array('all'));
         self::establish_connection();
 
-        $class = new ReflectionClass(Inflector::singularize(ucfirst(self::$table_name)));
+        $clazz= Inflector::singularize(ucfirst(self::$table_name));
+
+        try {
+            $class = new ReflectionClass($clazz);
+        } catch (ReflectionException $rEx) {
+            Registry::get('__logger')->debug($clazz . 'probably not included. Trying to inject. [ User Info: ' . $rEx->getMessage() . ']');
+            Registry::get('__injector')->inject('model', strtolower($clazz));
+            // retry:
+            $class = new ReflectionClass($clazz);
+        }
         $query = new QuerryBuilder(self::$table_name);
 
         if ( $params[0] == 'all' && $numargs == 1 ) {
@@ -395,7 +532,9 @@ class ActiveRecordBase extends Object {
         if ($offset = $query->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
         if ($rs->getRecordCount() == 0) {
-            throw new RecordNotFoundException('Couldn\'t find a ' . Inflector::singularize(ucfirst(self::$table_name)));
+            throw new RecordNotFoundException(
+                'Couldn\'t find a ' . Inflector::singularize(ucfirst(self::$table_name),
+                'The Result Set was empty!'));
         }
         // build a list with objects of this type
         $results = new RowsAggregate();
@@ -408,13 +547,6 @@ class ActiveRecordBase extends Object {
         return $results;
     }
     // }}}
-
-    private static function hasResults(ResultSet $rs, $conditions) {
-        if ($rs->getRecordCount() == 0) {
-            throw new RecordNotFoundException(
-                'Couldn\'t find a `' . Inflector::singularize(ucfirst(self::$table_name)) .'` matching ' . $conditions);
-        }
-    }
 
     /**
      * Sets the current table name.

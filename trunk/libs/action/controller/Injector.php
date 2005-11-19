@@ -69,6 +69,7 @@ class Injector extends Object {
         $this->path['views']       = $app_path . 'views'       . DIRECTORY_SEPARATOR;
         $this->path['layouts']     = $this->path['views']      . 'layouts' . DIRECTORY_SEPARATOR;
         $this->path['helpers']     = $app_path . 'helpers'     . DIRECTORY_SEPARATOR;
+        $this->inject('include_path');
     }
 
     /**
@@ -77,13 +78,14 @@ class Injector extends Object {
      * @param mixed param, additional parameters to pass to the injector.
      * @throws InjectorException
      */
-    public function inject($type, $param) {
-        $types= array('model', 'controller', 'helper', 'layout');
+    public function inject($type, $param='') {
+        $types= array('model', 'controller', 'helper', 'layout', 'include_path');
         $method= 'inject' . ucfirst($type);
         if (!method_exists($this, $method)) {
             throw new InjectorException('Call to undefined method: `' . $this->getClassName() . '->' . $method . '(string ' . $param . ')`');
         } elseif (in_array($type, $types)) {
-            return $this->$method($param);
+            if ($param=='') return $this->$method();
+            else return $this->$method($param);
         } else {
             throw new InjectorException('Unknow injection type: `' . $type . '`');
         }
@@ -92,10 +94,24 @@ class Injector extends Object {
     /**
      * It gets the path.
      * @param string path type
-     * @return array
+     * @return string
      */
     public function getPath($type) {
         return isset($this->path[$type]) ? $this->path[$type] : $this->path;
+    }
+
+
+    /**
+     * Adds user folders, `vendor' and `libs` to the include_path
+     */
+    public function injectInclude_path() {
+        $top= $this->path['__base'] . '..' . DIRECTORY_SEPARATOR;
+        if (is_dir($top . 'vendor')) {
+            set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'vendor');
+        }
+        if (is_dir($top . 'libs')) {
+            set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'lib');
+        }
     }
 
     /**

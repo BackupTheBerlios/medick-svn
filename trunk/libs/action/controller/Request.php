@@ -7,13 +7,13 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of locknet.ro nor the names of its contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,30 +26,26 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-if (php_sapi_name() == 'cli') {
-    include_once('action/controller/cli/CLIRequest.php');   
-} else {
-    include_once('action/controller/http/HTTPRequest.php');
-}
+include_once('action/controller/http/HTTPRequest.php');
 
-/** 
+/**
  * @package locknet7.action.controller.request
  */
 abstract class Request extends Object {
-    
+
     /** @var array
         current request parameters */
     protected $params = array();
-    
+
     /** @var Route current request Route */ // XXX. is this used anymore?
     protected $route;
-    
+
     /**
      * It gets the param
      * @param mixed, param, the paremeter name
@@ -57,8 +53,8 @@ abstract class Request extends Object {
      */
     public function getParam($param) {
         return isset($this->params[$param]) ? $this->params[$param] : NULL;
-    }    
-    
+    }
+
     /**
      * Check if the current Request has the parameter with the specified name
      * @param string param_name the parameter name
@@ -67,15 +63,15 @@ abstract class Request extends Object {
     public function hasParam($param_name) {
         return isset($this->params[$param_name]);
     }
-    
-    /** 
-     * It gets all the parameters of this Request 
+
+    /**
+     * It gets all the parameters of this Request
      * @return array this request parameters.
      */
     public function getParams() {
-        return $this->params;   
+        return $this->params;
     }
-    
+
     /**
      * It sets a param.
      * @param string, name, the name of the param to set
@@ -84,8 +80,8 @@ abstract class Request extends Object {
      */
     public function setParam($name, $value) {
         $this->params[$name] = $value;
-    }    
-    
+    }
+
     /** XXX. is this used anymore?
      * It sets the Request Route
      * @param Route route, the route to set on this Request
@@ -93,8 +89,8 @@ abstract class Request extends Object {
      */
     public function setRoute(IRoute $route) {
         $this->route = $route;
-    }    
-    
+    }
+
     /** It gets the Route */
     public function getRoute() {
         return $this->route;

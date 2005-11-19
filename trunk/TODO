@@ -14,27 +14,26 @@ LEGEND:
 0.0.3 WishList:
 ~~~~~~~~~~~~~~~
 A. * Fix Model by forcing the user to write a dummy static find method.
-
-B. !! Using magick __layout or __common shold be optional.
-    Think about AJAX who needs to render some plain text or some complex XML document.
+B. * Fix usage of "layout".
 
 C. Implement Session management
 D. Fix && Clean-up Routing System
-E. * Clean-up test/* folder
+E. Clean-up test/* folder
 
 F. !!! medick Web Site, use pmwiki?
 
 General TODO list:
 ~~~~~~~~~~~~~~~~~~
 1. (0.0.4) Routing Mechanism.
-    ! Must choose between some kind of RoR implementation or ivent a new and magick Routing system
-    ! On setFailure use a Route as a parameter?
-    ! Connect two Routes (a Failure Route and a Route) this way, the Route will know what to expect from Failure.
+    ! Must choose between some kind of RoR implementation or invent a new and magick Routing system
+    ! use PATH_INFO
+    * On setFailure use a Route as a parameter?
+    * Connect two Routes (a Failure Route and a Route) this way, the Route will know what to expect from Failure.
     
 2. (0.0.4) Validators + Error messages.
     This task is related with task 1
     
-3. (0.0.4) Auth.
+3. (0.0.5) A RDBAC System should be implemented by default.
     This task is related with task 1.
     
 4. (0.0.7) Caching system.
@@ -49,7 +48,7 @@ General TODO list:
 
 7. (0.0.4) Flash thing. depends on Session implementation.
 
-8. (0.0.5) Add a configurator alternative so we can remove (or provide an alternative) the simplexml dependency (XMLConfigurator)
+8. (0.0.5) Add a configurator alternative so we can remove (or provide an alternative to) the simplexml dependency (XMLConfigurator)
 
     This way, we will also have to try to avoid the spl crap.
     The work on INIConfigurator is on progress.
