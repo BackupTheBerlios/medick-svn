@@ -1,0 +1,16 @@
+<h2>All Projects</h2>
+<!-- $Id$ -->
+<form action="<?=URL::create('project','create');?>" method="post">
+    <div>
+        <label>New Project:</label>
+        <?=Form::text('name', NULL, array('maxlength'=>255,'size'=>55)); ?>
+        <?=Form::submit('submit', 'Submit') ?>
+    </div>
+</form>
+
+<hr />
+
+<? foreach($projects as $project): ?>
+    <?=$project->name;?> <br />
+<? endforeach;?>
+
