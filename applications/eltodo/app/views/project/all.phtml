@@ -14,3 +14,7 @@
     <?=$project->name;?> <br />
 <? endforeach;?>
 
+<? if(!count($projects)):?>
+    No project found.
+<? endif;?>
+

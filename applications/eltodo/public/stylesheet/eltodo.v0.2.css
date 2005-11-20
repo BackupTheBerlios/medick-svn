@@ -1,0 +1,57 @@
+/* $Id$ */
+
+/* *******************
+ * Page Layout
+ * *******************/
+
+#container {
+    margin:0 auto;
+    max-width:70em;
+    background:#fff ;
+    border:1px solid #ccc;
+    border-width:0 1px 1px;
+    position:relative;
+    }
+
+#content {
+    float:left;
+    width:67%;
+    margin:1em 0 0 4%;
+    overflow:hidden;
+    padding-bottom:1em;
+    border-right:1px solid #ccc;
+    }
+
+#sidebar {
+    font-size:0.94em;
+    line-height:1.3em;
+    float:right;
+    /*width:-67%;*/
+    margin:0 2% 0 0;
+    }
+
+#header {
+    background:#003163;
+    color: #fff;
+    height:120px;
+    }
+
+#footer {
+    clear:both;
+    background:#fff;
+    padding:1em;
+    text-align:right;
+    font-size:0.94em;
+    border-top:1px solid #ccc;
+    }
+
+/* *******************
+ * Page Global Style
+ * *******************/
+body {
+    margin: 0;
+    padding: 0;
+    font-family:verdana, arial, helvetica, sans-serif;
+    color:#333;
+    background-image: url(http://localhost/eltodo/images/bg.gif);
+}

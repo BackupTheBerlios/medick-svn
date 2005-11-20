@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// $Id: application.bootstrap.php 164 2005-10-01 16:36:01Z aurelian $
+// $Id$
 // 
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
@@ -42,10 +42,14 @@
 // error reporting level, turn this off in production!
 error_reporting(E_ALL|E_STRICT);
 
-if (version_compare(PHP_VERSION, '5.1.0') <= 0) {
+if (PHP_VERSION >= '5.1.0') {
     date_default_timezone_set('Europe/Bucharest');
 }
-
+/*
+if (version_compare(PHP_VERSION, '5.1.0') >= 0) {
+    date_default_timezone_set('Europe/Bucharest');
+}
+*/
 // $pathinfo = pathinfo(__FILE__);
 // $file     = explode('.',$pathinfo['basename']);
 
@@ -56,9 +60,7 @@ define('APP_NAME', 'eltodo');
 define('TOP_LOCATION', '/wwwroot/medick/trunk/');
 
 // include_path, rewrite the existing one
-set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR . 
-                  TOP_LOCATION . 'vendor' . DIRECTORY_SEPARATOR
-                );
+set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR );
 
 // load core classes.
 include_once('medick/Object.php');

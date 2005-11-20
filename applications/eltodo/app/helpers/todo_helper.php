@@ -13,6 +13,8 @@ function display_todos($items) {
            'onclick="document.location.href=\''.URL::create('todo', 'checkbox', array('id'=>$todo->id)).'\'"');?>
                                 
         <?=$todo->description;?>
+        
+        <?=$todo->project->name;?>
                     
         <a href="<?= URL::create('todo', 'edit', array('id'=>$todo->id));?>">Edit</a>
         <a 
