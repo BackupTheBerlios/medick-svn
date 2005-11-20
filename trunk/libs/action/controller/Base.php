@@ -113,7 +113,7 @@ class ActionControllerBase extends Object {
      * @return Response
      */
     public static function process_with_exception(Request $request, Response $response, Exception $exception) {
-        ob_end_clean();
+        //@ob_end_clean();
         $template = ActionViewBase::factory();
         $template->error= $exception;
         $text= $template->render_file(TOP_LOCATION . '/libs/action/controller/templates/error.phtml');
@@ -183,7 +183,9 @@ class ActionControllerBase extends Object {
             $this->injector->inject('helper', $this->params['controller']);
         } catch (FileNotFoundException $fnfEx) {
             $this->logger->info(
-                'skipping helper: ' . $this->injector->getPath('helpers') . '_' . $this->params['controller'] . ' ' . $fnfEx->getMessage());
+                'skipping helper: '
+                . $this->injector->getPath('helpers')
+                . '_' . $this->params['controller'] . ' ' . $fnfEx->getMessage());
         }
 
         if ($this->use_layout) {
@@ -201,6 +203,7 @@ class ActionControllerBase extends Object {
         } else {
             return $this->render_without_layout($template_file, $status);
         }
+
         /*
         // {{{ hook RouteParams here.
         $hij= array();
@@ -212,6 +215,7 @@ class ActionControllerBase extends Object {
         $this->template->__param = $hij;
         // }}}
         */
+
     }
 
     protected function render_without_layout($template_file, $status) {
@@ -317,8 +321,9 @@ class ActionControllerBase extends Object {
      * TODO: still to refactor.
      */
     private function perform_action($action_name) {
-        $forbidden_actions = array('process', '__construct', '__destruct');
+        $forbidden_actions = array('process', '__construct', '__destruct', '__common');
 
+        // XXX. getDefaultRoute is not defined for XMLConfig.
         if( (is_null($action_name)) || (in_array($action_name, $forbidden_actions)) ) {
             $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
             $action = $this->createMethod($action_name);
@@ -332,6 +337,7 @@ class ActionControllerBase extends Object {
                 return;
             }
         }
+
         $this->params['action'] = strtolower($action_name);
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
         $action->invoke($this);
