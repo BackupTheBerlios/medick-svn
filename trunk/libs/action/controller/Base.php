@@ -113,7 +113,7 @@ class ActionControllerBase extends Object {
      * @return Response
      */
     public static function process_with_exception(Request $request, Response $response, Exception $exception) {
-        //@ob_end_clean();
+        @ob_end_clean();
         $template = ActionViewBase::factory();
         $template->error= $exception;
         $text= $template->render_file(TOP_LOCATION . '/libs/action/controller/templates/error.phtml');
@@ -322,26 +322,31 @@ class ActionControllerBase extends Object {
      */
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct', '__common');
-
-        // XXX. getDefaultRoute is not defined for XMLConfig.
-        if( (is_null($action_name)) || (in_array($action_name, $forbidden_actions)) ) {
-            $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
-            $action = $this->createMethod($action_name);
-            if (!$action || $action->isStatic()) throw new Exception('Cannot perform default action: ' . $action_name);
-        } else {
-            $action = $this->createMethod($action_name);
+        
+        $action= $this->createMethod($action_name);
+        
+        if (
+            is_null($action_name) || 
+            in_array($action_name, $forbidden_actions) || 
+            !$action || 
+            $action->isStatic() )
+        {
+            $action_name = 'index';
+            $action= $this->createMethod($action_name);
             if (!$action || $action->isStatic()) {
-                $action_name = $this->config->getDefaultRoute()->action ? $this->config->getDefaultRoute()->action : 'index';
-                $this->perform_action($action_name);
-                $this->action_performed = TRUE;
-                return;
+                throw new RouteException(
+                    'Cannot invoke default action, \'index\' for this Route!',
+                    'Method named \'index\' is not defined in class: ' . $this->getClassName()
+                );
             }
         }
-
+        
         $this->params['action'] = strtolower($action_name);
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
+        // invoke the action.
         $action->invoke($this);
         if ($this->action_performed) return;
+        // try to load the magick __common method.
         if ($_common= $this->createMethod('__common')) {
             $_common->invoke($this);
         }
@@ -371,11 +376,19 @@ class ActionControllerBase extends Object {
      */
     private function add_before_filters() {
         if (!is_array($this->before_filter)) {
-            throw new Exception ($this->getClassName() . '\$before_filter should be an array of strings, each string representing a method name');
+            throw new MedickException(
+                $this->getClassName() . '->\$before_filter should be an array of strings, each string representing a method name');
         }
         foreach($this->before_filter as $filter_name) {
-            $filter = $this->createMethod($filter_name);
-            if (!$filter->isProtected()) throw new MedickException('Your filter is declared as public!');
+            if (!$filter= $this->createMethod($filter_name)) {
+                $this->logger->info('Could not create filter: `'.$filter_name.'`, skipping...');
+                continue;
+            }
+            // a filter should be declared as private.
+            if (!$filter->isProtected()) {
+                throw new MedickException(
+                    'Your filter,`'. $filter_name . '` is declared as a public method of class `' . $this->getClassName() .'` !');
+            }    
             $this->$filter_name();
         }
     }
@@ -385,7 +398,8 @@ class ActionControllerBase extends Object {
      */
     private function add_models() {
         if (!is_array($this->models)) {
-            throw new Exception($this->getClassName . '->\$models should be an array of strings.');
+            throw new MedickException(
+                $this->getClassName . '->\$models should be an array of strings.');
         }
         $this->logger->debug('We have Models...');
         foreach ($this->models as $model) {
@@ -414,3 +428,4 @@ class ActionControllerBase extends Object {
         }
     }
 }
+
