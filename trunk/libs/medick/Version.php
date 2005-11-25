@@ -39,13 +39,16 @@
 
 class Version extends Object {
 
+    const TINY =3;
+    const MINOR=0;
+    const MAJOR=0;
+    
     /**
      * It gets the medick version.
      * @return string the medick version
      */
     public static function getVersion() {
-        return "0.0.3-svn";
+        return Version::MAJOR . '.' . VERSION::MINOR . '.' . VERSION::TINY . '-svn';
     }
 
 }
-
