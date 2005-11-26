@@ -112,11 +112,17 @@ class ActionControllerBase extends Object {
      * @param Exception $exception
      * @return Response
      */
-    public static function process_with_exception(Request $request, Response $response, Exception $exception) {
-        @ob_end_clean();
+    public static function process_with_exception(
+                                                    Request $request, 
+                                                    Response $response, 
+                                                    Exception $exception)
+    {
+        if(ob_get_length()) {
+            ob_end_clean();
+        }
         $template = ActionViewBase::factory();
         $template->error= $exception;
-        $text= $template->render_file(TOP_LOCATION . '/libs/action/controller/templates/error.phtml');
+        $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
         $status = Response::SC_INTERNAL_SERVER_ERROR;
         $response->setStatus($status);
         $response->setContent($text);

@@ -36,21 +36,46 @@
  * @package locknet7.action.controller.request
  */
 class HTTPRequest extends Request {
-
-    /** HTTP method */
-    protected $method;
     
-    /** HTTP Session */
+    /** @var Session */
     protected $session;
+
+    /** @var array
+        path_info_parts */
+    protected $path_info= array();
 
     /**
      * Constructor.
      * It builds the HTTPRequest object
      */
     public function __construct() {
-        $this->method = strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ? 'POST' : 'GET';
-        $this->params  = $_REQUEST; // to test!
-        unset($_REQUEST); // hack or feature? :)
+        foreach ($_REQUEST as $key=>$value) {
+            $this->params[$key] = $value;
+        }
+        
+        unset($_REQUEST); unset($_GET); unset($_POST);
+        
+        if (array_key_exists('PATH_INFO', $_SERVER)) {
+            $parts= explode('/', trim($_SERVER['PATH_INFO'], '/'));
+            foreach ($parts as $key=>$part) {
+                if ($key == 0) {
+                    $this->params['controller'] = current(explode('.', $part));
+                } elseif ($key == 1) {
+                    $this->params['action']     = current(explode('.', $part));
+                } else {
+                    $this->path_info[]          = current(explode('.', $part));
+                }
+            }
+        }
+    }
+
+    /**
+     * It gets a part of the path info associated with this request
+     * @param int, key, the part index
+     * @return value of this part or NULL if this part is not defined
+     */
+    public function getPathInfo($key) {
+        return isset($this->path_info[$key]) ? $this->path_info[$key] : NULL;
     }
 
     /**
@@ -59,14 +84,6 @@ class HTTPRequest extends Request {
      */
     public function getSession() {
         return $this->session;
-    }
-
-    /**
-     * It get the method name used for this Request (GET or POST)
-     * @return string method name (GET/POST)
-     */
-    public function getMethod() {
-        return $this->method;
     }
     
     // {{{ todos.

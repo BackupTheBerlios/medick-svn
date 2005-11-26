@@ -41,58 +41,38 @@ class ActionControllerRouting extends Object {
 
     /**
      * Check if the application Map contains the current Route.
+     *
+     * If so, we add the route parameters into the current request.
+     *
+     * @param locknet7.action.controller.Request
+     * @return locknet7.action.controller.Base
      */
     public static function recognize(Request $request) {
         $map   = Registry::get('__map');
         $logger= Registry::get('__logger');
-        // do we know this Route?
-        if ($route= $map->contains(new Route($request->getParam('controller'), $request->getParam('action')))) {
-            $logger->debug('Route Recognized:' . $route->getName());
-            $is_failure= FALSE;
+        // do we know this route?
+        if ($route= $map->contains(
+                                new Route(
+                                    $request->getParam('controller'), 
+                                    $request->getParam('action')))
+                                  )
+        {
+            $logger->debug('Route Recognized: ' . $route->getName());
             $params= $route->getParams();
-            // {{{ loop throught the Route Parameters
-            foreach ($params as $param) {
-                $logger->debug('Validating Route Parameter:' . $param->getName());
-                // {{{ if this Request has the current parameter, try to validate him.
-                if (!$request->hasParam($param->getName()) || ($request->getParam($param->getName()) == '')) {
-                    // XXX. load failure due to missing parameters.
-                    $logger->info('Validation failed on RouteParameter: `' . $param->getName() . '`
-                        [User Info: parametter missing or empty].');
-                    $is_failure= TRUE;
-                    // XXX. failure message.
-                    // break;
-                } // }}}
-                // {{{ if this parameter has attached validators,
-                if ($param->hasValidators()) {
-                    // loop throught the validators and validate this parameter value.
-                    foreach($param->getValidators() as $validator) {
-                        $validator->setValue($request->getParam($param->getName()));
-                        if (!$validator->validate()) {
-                          // XXX. validation failed, handle automatically and break(?)
-                          throw new RouteException('Route validation failed!');
-                        }
-                    }
-                } // }}}
-                $param->setValue($request->getParam($param->getName()));
-            } // end foreach. }}}
-            if ($is_failure) {
-                $route= $map->getRouteByName($route->getFailure()->getName());
-                $route->addFromArray($params);
+            foreach ($params as $key=>$param) {
+                $request->setParam($param->getName(), $request->getPathInfo($key));
             }
         } else {
             $logger->debug('Unknown Route! Loading default...');
             $route= $map->getRouteByName('default');
+            $request->setParam('controller', $route->getController());
+            $request->setParam('action', $route->getAction());
         }
-
-        // overwrite incoming core parameters.
-        $request->setParam('controller', $route->getController());
-        $request->setParam('action', $route->getAction());
         $logger->debug(
             'Running on Route: ' . $route->getName() .
             ' ctrller: ' . $route->getController() .
             ' act: ' . $route->getAction());
         $map->setCurrentRoute($route);
-        $injector= Registry::put(new Injector(), '__injector');
-        return $injector->inject('controller', $route->getController());
+        return Registry::put(new Injector(), '__injector')->inject('controller', $route->getController());
     }
 }
