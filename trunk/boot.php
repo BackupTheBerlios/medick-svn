@@ -1,6 +1,6 @@
 <?php
 // {{{ License
-// ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
 //
@@ -29,66 +29,45 @@
 // 
 // $Id$
 // 
-// ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 // }}}
 
 /**
- * Sample __APPLICATION__NAME__.bootsrap.php file
- * Will bootstrap the application by setting it`s properties.
- * Required files for start-up are included here
- * @package locknet7.start
+ * It boots a medick application
+ * @package locknet7.boot
  */
 
-// error reporting level, turn this off in production!
+define( 'MEDICK_PATH', dirname(__FILE__)  . DIRECTORY_SEPARATOR );
+set_include_path( MEDICK_PATH . 'libs'   . DIRECTORY_SEPARATOR  );
 error_reporting(E_ALL|E_STRICT);
 
 if (version_compare(PHP_VERSION, '5.1.0') <= 0) {
     date_default_timezone_set('Europe/Bucharest');
 }
 
-$pathinfo = pathinfo(__FILE__);
-$file     = explode('.',$pathinfo['basename']);
-
-// application name
-define('APP_NAME', $file[0]);
-
-// main TOP_LOCATION.
-define('TOP_LOCATION', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
-
-// include_path, rewrite the existing one
-set_include_path( TOP_LOCATION . 'libs'   . DIRECTORY_SEPARATOR . PATH_SEPARATOR );
-
-// load core classes.
 include_once('medick/Object.php');
 include_once('medick/Exception.php');
 include_once('medick/ErrorHandler.php');
+set_error_handler(array(new ErrorHandler(), 'raiseError'));
 include_once('medick/Registry.php');
 include_once('medick/Dispatcher.php');
 include_once('medick/Version.php');
-
-// set-up the error handler:
-set_error_handler(array(new ErrorHandler(), 'raiseError'));
-
-// hook a Configurator into Registry.
 include_once('configurator/XMLConfigurator.php');
-Registry::put(new XMLConfigurator(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.xml'), '__configurator');
-
-// get some orientation.
+include_once('logger/Logger.php');
 include_once('action/controller/Map.php');
+
+$conf_files = $_SERVER['MEDICK_APPLICATION_PATH'] . DIRECTORY_SEPARATOR . 'conf' . 
+                        DIRECTORY_SEPARATOR . $_SERVER['MEDICK_APPLICATION_NAME'];
+                        
+Registry::put(new XMLConfigurator($conf_files . '.xml'), '__configurator');
+
 $map= Registry::put(new Map(), '__map');
 
-// core loaded.
-include_once('logger/Logger.php');
-$logger= new Logger();
+$logger= Registry::put(new Logger(), '__logger');
+
 $logger->debug('Core Loaded...');
 $logger->debug('Running on Medick $v:' . Version::getVersion());
-$logger->debug('Bootstrapped: ' . APP_NAME . '.bootstrap.php');
-$logger->debug('XML Config File: ' . APP_NAME . '.xml');
-$logger->debug('Routes File: ' . APP_NAME . '.routes.php');
-Registry::put($logger, '__logger');
+$logger->debug('XML Config File: ' . $conf_files . '.xml');
+$logger->debug('Routes File: ' . $conf_files . '.routes.php');
 
-// load application map.
-include_once(TOP_LOCATION . 'config' . DIRECTORY_SEPARATOR . APP_NAME . '.routes.php');
-
-$logger->debug('Routes Loaded. Application Ready.');
-?>
+include_once($conf_files . '.routes.php');

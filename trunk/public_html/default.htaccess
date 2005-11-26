@@ -1,18 +1,18 @@
 # default.htaccess file for Medick framework.
 # rename-it to .htaccess
 # $Id$
- 
-ErrorDocument 404 /todo.html
+
+# Configuration
+php_value auto_prepend_file /wwwroot/medick/trunk/boot.php
+# php_value error_reporting 2047
+
+SetEnv MEDICK_APPLICATION_PATH __MEDICK__APPLICATION__PATH__
+SetEnv MEDICK_APPLICATION_NAME __MEDICK__APPLICATION__NAME__
  
 RewriteEngine on
 
 RewriteCond    %{REQUEST_FILENAME}  -d
 RewriteRule    ^(.+[^/])$           $1/  [R]
- 
-# ## Works
-#RewriteRule ^todo/edit/(.*)$ /index.php?controller=todo&action=edit&id=$1 [NE,L]
-#RewriteRule ^todo/(.*)$ /index.php?controller=todo&action=$1 [NE,L]
-# ##
   
 RewriteRule ^([A-Za-z]+)/?([A-Za-z]+)/?\.html$ index.php?controller=$1&action=$2 [NS]
 RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)\.html?$ index.php?controller=$1&action=$2&id=$3 [NS]

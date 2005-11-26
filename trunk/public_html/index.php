@@ -32,12 +32,5 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/**
- * Index.php file.
- * The file __APPLICATION__NAME__.bootstrap.php should be included here.
- */
-
-include_once(___PATH__TO__YOUR__bootstrap.php__FILE__HERE__);
-
+/** Main Entry Point */
 Dispatcher::dispatch();
-
