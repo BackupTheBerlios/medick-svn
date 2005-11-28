@@ -38,13 +38,15 @@
  */
 
 define( 'MEDICK_PATH', dirname(__FILE__)  . DIRECTORY_SEPARATOR );
+// medick path.
 set_include_path( MEDICK_PATH . 'libs'   . DIRECTORY_SEPARATOR  );
+// this should depend on environment
 error_reporting(E_ALL|E_STRICT);
-
-if (version_compare(PHP_VERSION, '5.1.0') <= 0) {
+// php 5.1 strict sdandards.
+if (version_compare(PHP_VERSION, '5.1.0') > 0) {
     date_default_timezone_set('Europe/Bucharest');
 }
-
+// load core classes
 include_once('medick/Object.php');
 include_once('medick/Exception.php');
 include_once('medick/ErrorHandler.php');
@@ -66,7 +68,7 @@ $map= Registry::put(new Map(), '__map');
 $logger= Registry::put(new Logger(), '__logger');
 
 $logger->debug('Core Loaded...');
-$logger->debug('Running on Medick $v:' . Version::getVersion());
+$logger->debug('Running on Medick $v: ' . Version::getVersion());
 $logger->debug('XML Config File: ' . $conf_files . '.xml');
 $logger->debug('Routes File: ' . $conf_files . '.routes.php');
 
