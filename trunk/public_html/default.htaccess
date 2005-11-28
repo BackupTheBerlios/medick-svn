@@ -1,20 +1,18 @@
-# default.htaccess file for Medick framework.
-# rename-it to .htaccess
+# .htaccess file for eldepot sample medick application
 # $Id$
 
 # Configuration
-php_value auto_prepend_file /wwwroot/medick/trunk/boot.php
-# php_value error_reporting 2047
+php_value auto_prepend_file ___PATH___TO___MEDICK___INSTALATION___/boot.php
 
-SetEnv MEDICK_APPLICATION_PATH __MEDICK__APPLICATION__PATH__
-SetEnv MEDICK_APPLICATION_NAME __MEDICK__APPLICATION__NAME__
+SetEnv MEDICK_APPLICATION_PATH ___YOUR___APPLICATION___PATH___
+SetEnv MEDICK_APPLICATION_NAME ___YOUR___APPLICATION___NAME___
  
 RewriteEngine on
 
-RewriteCond    %{REQUEST_FILENAME}  -d
-RewriteRule    ^(.+[^/])$           $1/  [R]
-  
-RewriteRule ^([A-Za-z]+)/?([A-Za-z]+)/?\.html$ index.php?controller=$1&action=$2 [NS]
-RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)\.html?$ index.php?controller=$1&action=$2&id=$3 [NS]
-RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)/?$ index.php?controller=$1&action=$2&id=$3 [L]
- 
+########## Set 2
+RewriteCond %{REQUEST_FILENAME} !-s
+RewriteCond %{REQUEST_URI} !^index.php/$
+RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
+
+#RewriteRule !^(stylesheet|images|javascript)/ index.php [NC,L]
+
