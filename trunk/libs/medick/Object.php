@@ -76,5 +76,6 @@ class Object {
     public function __toString() {
         return ucfirst($this->getClassName());
     }
+    
 }
 

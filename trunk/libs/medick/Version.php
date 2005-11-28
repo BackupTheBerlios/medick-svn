@@ -39,9 +39,9 @@
 
 class Version extends Object {
 
-    const TINY =3;
-    const MINOR=0;
-    const MAJOR=0;
+    const TINY  = 4;
+    const MINOR = 0;
+    const MAJOR = 0;
     
     /**
      * It gets the medick version.
@@ -52,3 +52,4 @@ class Version extends Object {
     }
 
 }
+

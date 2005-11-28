@@ -1,9 +1,11 @@
 $Id$
 (*) SVN version
 
-0.0.3 (*)
+0.0.4 (*)
+
+0.0.3 (28.nov.2005)
     - Code Clean-Up:
-        - logger/Logger:
+        - logger.Logger:
                 * removed logger.outputters.Outputter::getId() abstract method;
                 * speed improvments if no outputters are added;
                 * fix: file name in logger.LoggingEvent was wrong;
@@ -17,16 +19,23 @@ $Id$
         - removed vendor folder, medick 3-rd party imports should be placed inside libs folder.
     - ActiveRecordBase:
         added before/after filters on update/insert/delete methods
-        created associations classes and implemented has_and_belongs_to_many, belongs_to, has_many, has_one associations.
+        created associations classes and implemented has_and_belongs_to_many, belongs_to, has_many, has_one associations (read-only)
         fix: broken (strange) behavior when trying to return an empty result set in __find() method
+        fix: proper serialization of ARBase Objects (thanks andrei)
     - ActionController:
         added process_with_exception method.
         layout fix, by introducing $use_layout
+    - session.Session:
+        initial working session class
+    - active.support.inflector
+        added camelize and underscore methods
     - Errors and Exceptions:
         added custom ErrorHandler,
         added more specialized Errors and Exceptions, for better debugging.
         moved all exceptions class to one file: medick.Exception.
-    - Initial import of an INI style file configurator (INIConfigurator), not used yet.
+    - using a boot.php file witch will be common to all the applications developed with medick.
+        this should be used with a .htaccess file and it was introduced in an attempt to ease the installation procedure.
+    - initial import of an INI style file configurator (INIConfigurator), not used yet.
     - bundled creole, creole is a DB Abstraction layer for PHP5 released under LGPL licence,
                     more details on http://creole.phpdb.org
 
