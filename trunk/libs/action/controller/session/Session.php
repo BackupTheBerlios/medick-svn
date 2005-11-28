@@ -37,38 +37,47 @@
  */
 class Session extends Object {
 
-    private $container;
-
     private $isStarted = FALSE;
 
     /**
      * Constructor.
      */
     public function __construct() {
-
+        if ($this->isStarted) {
+            throw new IllegalStateException('Session already Started!');
+        }
     }
 
     public function start() {
         if ($this->isStarted) {
-            throw new IllegalStateException();
+            throw new IllegalStateException('Session already Started!');
         }
-        return session_start();
-    }
-
-    public function __set($name, $value) {
-        $_SESSION[$name] = $value;
-    }
-
-    public function __get() {
-        return session_is_registered($name) ? $_SESSION[$name] : false;
+        $this->isStarted= TRUE;
+        // session_cache_limiter("nocache");
+        // session_write_close();
+        session_start();
+        session_regenerate_id(TRUE);
     }
 
     public function putValue($name, $value) {
-        $this->__set($name, $value);
+        if (!$this->isStarted) {
+            throw new IllegalStateException('Session is not Started!');
+        }
+        $_SESSION[$name]=$value;
     }
 
+    public function getValue($name) {
+        if (!$this->isStarted) {
+            throw new IllegalStateException('Session is not Started!');
+        }
+        return isset($_SESSION[$name]) ? $_SESSION[$name] : NULL;
+    }
+    
     public function hasValue($name) {
-        return session_is_registered($name);
+        if (!$this->isStarted) {
+            throw new IllegalStateException('Session is not Started!');
+        }
+        return isset($_SESSION[$name]);
     }
 
     public function removeValue($name) {

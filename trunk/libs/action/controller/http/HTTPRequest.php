@@ -32,6 +32,8 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('action/controller/session/Session.php');
+
 /** 
  * @package locknet7.action.controller.request
  */
@@ -67,6 +69,7 @@ class HTTPRequest extends Request {
                 }
             }
         }
+        $this->session= new Session();
     }
 
     /**

@@ -137,8 +137,8 @@ class ActionControllerBase extends Object {
      */
     public function process(Request $request, Response $response) {
         $this->instantiate($request, $response);
-        $this->add_before_filters();
         $this->add_models();
+        $this->add_before_filters();
         $this->perform_action($request->getParam('action'));
         return $response;
     }
@@ -257,6 +257,17 @@ class ActionControllerBase extends Object {
     // }}}
 
     /**
+     * It sets the value a template entry
+     * @see http://php.net/manual/en/language.oop5.overloading.php
+     * @param string, name,  name
+     * @param mixed, value, value
+     * @throw Error if using a reserved word
+     */
+    public function __set($name, $value) {
+        $this->template->$name= $value;
+    }
+
+    /**
      * Act as an internal constructor.
      * @param Request request, the request
      * @param Response response, the response
@@ -266,6 +277,7 @@ class ActionControllerBase extends Object {
         $this->request  = $request;
         $this->response = $response;
         $this->session  = $request->getSession();
+        $this->session->start();
         $this->params   = $request->getParams();
 
         $this->logger   = Registry::get('__logger');
@@ -390,7 +402,7 @@ class ActionControllerBase extends Object {
                 $this->logger->info('Could not create filter: `'.$filter_name.'`, skipping...');
                 continue;
             }
-            // a filter should be declared as private.
+            // a filter should be declared as protected.
             if (!$filter->isProtected()) {
                 throw new MedickException(
                     'Your filter,`'. $filter_name . '` is declared as a public method of class `' . $this->getClassName() .'` !');
@@ -404,13 +416,13 @@ class ActionControllerBase extends Object {
      */
     private function add_models() {
         if (!is_array($this->models)) {
-            throw new MedickException(
-                $this->getClassName . '->\$models should be an array of strings.');
+            $this->models= explode(',',$this->models);
         }
-        $this->logger->debug('We have Models...');
         foreach ($this->models as $model) {
-            $this->logger->debug('Injecting Model:: ' . $model);
-            $this->injector->inject('model', $model);
+            if ( trim($model) != '' ) {
+                $this->logger->debug('Injecting Model:: ' . $model);
+                $this->injector->inject('model', trim($model));
+            }
         }
     }
 
