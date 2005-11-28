@@ -112,5 +112,16 @@ class Inflector extends Object {
         }
         return $word;
     }
+
+    // {{{ based on cake.    
+    public static function camelize($word) {
+        return str_replace(" ", "", ucwords(str_replace("_", " ", $word)));
+    }
+    
+    public static function underscore($word) {
+        $word = preg_replace('/([A-Z]+)([A-Z])/','\1_\2', $word);
+        return strtolower(preg_replace('/([a-z])([A-Z])/','\1_\2', $word));
+    }
+    // }}}
 }
 

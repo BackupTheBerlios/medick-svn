@@ -54,10 +54,6 @@ class ActiveRecordBase extends Object {
         primary key name! */
     private $pk;
 
-    /** @var Logger
-        a Logger instance */
-    protected $logger;
-
     // {{{ Associations
     protected $has_one= array();
     protected $has_many= array();
@@ -101,12 +97,14 @@ class ActiveRecordBase extends Object {
      * @param array, params, parameters as pair of `field name` => `value`
      */
     public final function __construct($params = array()) {
-        $this->logger= Registry::get('__logger');
         self::establish_connection();
+        
         $this->fields = new FieldsAggregate();
-        self::$table_name = Inflector::pluralize(strtolower(get_class($this)));
+        
+        self::$table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->getClassName())));
+        
         $table_info = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
-        $this->pk = $table_info->getPrimaryKey()->getName();
+        $this->pk   = $table_info->getPrimaryKey()->getName();
 
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
@@ -143,6 +141,7 @@ class ActiveRecordBase extends Object {
      * @throw ActiveRecordException if the field is not found.
      */
     public function __set($field_name, $field_value) {
+        Registry::get('__logger')->debug('Setting the value of field: ' . $field_name .' to :' . $field_value);
         for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
             if ($it->current()->getName() == $field_name) {
                 $it->current()->setValue($field_value);
@@ -172,10 +171,10 @@ class ActiveRecordBase extends Object {
         try {
             return Association::resolve(
                                 array(
-                                    'has_one'=>$this->has_one,
-                                    'belongs_to'=>$this->belongs_to,
-                                    'has_many'=>$this->has_many,
-                                    'has_and_belongs_to_many'=>$this->has_and_belongs_to_many
+                                    'has_one'    => $this->has_one,
+                                    'belongs_to' => $this->belongs_to,
+                                    'has_many'   => $this->has_many,
+                                    'has_and_belongs_to_many' => $this->has_and_belongs_to_many
                                     ),
                                 self::$table_name,
                                 $field_name,
@@ -222,6 +221,22 @@ class ActiveRecordBase extends Object {
         }
         return $string;
     }
+    
+    /** Prepare this Object for serialization */
+    public function __sleep() {
+        self::close();
+        return array('fields', 'pk', 'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
+    }
+    
+    /** restore the Object state after unserialize */
+    public function __wakeup() {
+        self::establish_connection();
+        for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
+            $field_name= $it->current()->getName();
+            $this->$field_name = $it->current()->getValue();
+        }
+    }
+    
     // }}}
 
     // {{{ filters:
@@ -481,6 +496,7 @@ class ActiveRecordBase extends Object {
     public static final function __find($params= array()) {
         $numargs = sizeof($params);
         if($numargs == 0) return self::__find(array('all'));
+        
         self::establish_connection();
 
         $clazz= Inflector::singularize(ucfirst(self::$table_name));
@@ -488,7 +504,8 @@ class ActiveRecordBase extends Object {
         try {
             $class = new ReflectionClass($clazz);
         } catch (ReflectionException $rEx) {
-            Registry::get('__logger')->debug($clazz . 'probably not included. Trying to inject. [ User Info: ' . $rEx->getMessage() . ']');
+            Registry::get('__logger')->debug('`'.$clazz . '` probably not included. Trying to inject.
+                                            [ User Info: ' . $rEx->getMessage() . ']');
             Registry::get('__injector')->inject('model', strtolower($clazz));
             // retry:
             $class = new ReflectionClass($clazz);

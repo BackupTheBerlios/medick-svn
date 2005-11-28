@@ -61,8 +61,7 @@ class Injector extends Object {
     public function __construct() {
         $this->config = Registry::get('__configurator');
         $this->logger = Registry::get('__logger');
-        $app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR;
-        $app_path .= 'app' . DIRECTORY_SEPARATOR;
+        $app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
         $this->path['__base']      = $app_path;
         $this->path['models']      = $app_path . 'models'      . DIRECTORY_SEPARATOR;
         $this->path['controllers'] = $app_path . 'controllers' . DIRECTORY_SEPARATOR;
@@ -82,7 +81,8 @@ class Injector extends Object {
         $types= array('model', 'controller', 'helper', 'layout', 'include_path');
         $method= 'inject' . ucfirst($type);
         if (!method_exists($this, $method)) {
-            throw new InjectorException('Call to undefined method: `' . $this->getClassName() . '->' . $method . '(string ' . $param . ')`');
+            throw new InjectorException(
+                'Call to undefined method: `' . $this->getClassName() . '->' . $method . '(string ' . $param . ')`');
         } elseif (in_array($type, $types)) {
             if ($param=='') return $this->$method();
             else return $this->$method($param);
@@ -110,7 +110,7 @@ class Injector extends Object {
             set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'vendor');
         }
         if (is_dir($top . 'libs')) {
-            set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'lib');
+            set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'libs');
         }
     }
 
@@ -126,16 +126,15 @@ class Injector extends Object {
     protected function injectModel($name) {
         $location= $this->path['models'] . $name . '.php';
         $this->logger->debug('Model Location:: ' . $location);
-        $this->logger->debug('Model Name:: ' . ucfirst($name));
-
         $this->includeFile($location, ucfirst($name));
-
+        $model_class_name= Inflector::camelize($name);
+        $this->logger->debug('Model Class Name:: ' . $model_class_name);
         try {
-            $model_object = new ReflectionClass(ucfirst($name));
+            $model_object = new ReflectionClass($model_class_name);
 
             if (@$model_object->getParentClass()->name != 'ActiveRecordBase') {
                 throw new InjectorException (
-                    'Wrong Definition of user Model, `' . ucfirst($name) . '`, it must extend ActiveRecordBase object!');
+                    'Wrong Definition of user Model, `' . $model_class_name . '`, it must extend ActiveRecordBase object!');
             }
 
             // if (!$model_object->hasMethod('find')) { XXX. php 5.1 only.
@@ -143,12 +142,11 @@ class Injector extends Object {
             $method= $model_object->getMethod('find');
             if (!$method->isStatic() && !$method->isPublic()) {
                 throw new InjectorException (
-                    'Class method: ' . ucfirst($name) . '::find([mixed arguments]) should be declared as static and public!');
+                    'Class method: ' . $model_class_name . '::find([mixed arguments]) should be declared as static and public!');
             }
         } catch (ReflectionException $rEx) {
             throw new InjectorException (
-                'Cannot Inject user Model, `' . ucfirst($name) . '`!
-                The dummy `find` method is not defined! [ User Info: ' . $rEx->getMessage() . ']');
+                'Cannot Inject user Model, `' . $model_class_name . '`!', $rEx->getMessage());
         }
 
     }
@@ -194,7 +192,7 @@ class Injector extends Object {
                     should be instantiable (must have a public constructor)!');
             }
         } catch (ReflectionException $rEx) {
-            throw new InjectorException ('Cannot inject user controller class `' . $clazz . '` [ User Info ] :' . $rEx->getMessage());
+            throw new InjectorException ('Cannot inject user controller class `' . $clazz . '`',$rEx->getMessage());
         }
     }
 

@@ -42,7 +42,7 @@ class HTMLElement extends Object {
 }
 
 class URL extends Object {
-    public static function create($controller, $action, $params=array(), $separator='&amp;') {
+    public static function create($controller, $action='index', $params=array(), $separator='&amp;') {
         $config = Registry::get('__configurator');
         $base   = $config->getProperty('document_root');
         if (!$config->getProperty('rewrite')) {
