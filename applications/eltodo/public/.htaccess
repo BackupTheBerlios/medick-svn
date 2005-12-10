@@ -1,20 +1,24 @@
-# default.htaccess file for Medick framework.
-# rename-it to .htaccess
-# $Id: default.htaccess 181 2005-10-03 20:34:29Z aurelian $
- 
+# eltodo project .htaccess file
+# $Id: .htaccess 181 2005-10-03 20:34:29Z aurelian $
+
+# Configuration
+php_value auto_prepend_file /wwwroot/medick/trunk/boot.php
+
+SetEnv MEDICK_APPLICATION_PATH /wwwroot/medick/applications/eltodo
+SetEnv MEDICK_APPLICATION_NAME eltodo
+
 #ErrorDocument 404 /todo.html
  
 RewriteEngine on
 
-RewriteCond    %{REQUEST_FILENAME}  -d
-RewriteRule    ^(.+[^/])$           $1/  [R]
- 
-# ## Works
-#RewriteRule ^todo/edit/(.*)$ /index.php?controller=todo&action=edit&id=$1 [NE,L]
-#RewriteRule ^todo/(.*)$ /index.php?controller=todo&action=$1 [NE,L]
-# ##
-  
-RewriteRule ^([A-Za-z]+)/?([A-Za-z]+)/?\.html$ index.php?controller=$1&action=$2 [NS]
-RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)\.html?$ index.php?controller=$1&action=$2&id=$3 [NS]
-RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/([0-9]+)/?$ index.php?controller=$1&action=$2&id=$3 [L]
- 
+# all files with .something are skipped
+RewriteCond %{REQUEST_URI} \..+$
+RewriteCond %{REQUEST_URI} !\.html$
+RewriteRule .* - [L]
+# the others are redirected to the front web controller
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# RewriteCond %{REQUEST_FILENAME} !-s
+# RewriteCond %{REQUEST_URI} !^index.php/$
+# RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
+
