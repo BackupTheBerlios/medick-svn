@@ -37,7 +37,5 @@
  * The file __APPLICATION__NAME__.bootstrap.php should be included here.
  */
 
-include_once('/wwwroot/medick/applications/eltodo/conf/eltodo.bootstrap.php');
-
 Dispatcher::dispatch();
 
