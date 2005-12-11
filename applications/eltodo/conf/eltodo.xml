@@ -8,15 +8,16 @@
   <!-- General properties -->
   <property name="server_name"      value="http://localhost" />
   <property name="document_root"    value="/eltodo" />
-  <property name="application_path" value="/wwwroot/medick/applications/eltodo" />
   <property name="rewrite"          value="on" />
      
   <!-- Logger System -->
   <logger>
       <formatter>simple</formatter>
       <outputters>
-        <outputter name="file"    level="0" value="/wwwroot/medick/applications/eltodo/log/eltodo.log" />
-        <!-- <outputter name="stdout"  level="0" /> -->
+        <outputter name="file" level="0">
+            <property name="path" value="/wwwroot/medick/applications/eltodo/log/eltodo.log" />
+        </outputter>
+        <outputter name="stdout"  level="0" />
       </outputters>
   </logger>
 
