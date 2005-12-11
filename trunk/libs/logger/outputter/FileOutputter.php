@@ -48,6 +48,9 @@ class FileOutputter extends Outputter {
      * @param string the file to write on
      */
     public function __construct($level, $file) {
+        if (!is_file($file)) {
+            touch($file);
+        }
         $this->handler = fopen($file, 'a');
         $this->level = $level;
     }
