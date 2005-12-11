@@ -34,6 +34,8 @@
 
 include_once('action/view/Base.php');
 
+// namespace ActionController {
+
 /**
  * @package locknet7.action.controller
  * Base Class For Our Application Controllers
@@ -257,17 +259,6 @@ class ActionControllerBase extends Object {
     // }}}
 
     /**
-     * It sets the value a template entry
-     * @see http://php.net/manual/en/language.oop5.overloading.php
-     * @param string, name,  name
-     * @param mixed, value, value
-     * @throw Error if using a reserved word
-     */
-    public function __set($name, $value) {
-        $this->template->$name= $value;
-    }
-
-    /**
      * Act as an internal constructor.
      * @param Request request, the request
      * @param Response response, the response
@@ -287,7 +278,8 @@ class ActionControllerBase extends Object {
         $this->app_path      = $this->injector->getPath('__base');
         $this->template_root = $this->injector->getPath('views') . $this->params['controller'] . DIRECTORY_SEPARATOR;
 
-        $this->template = ActionViewBase::factory();
+        $this->template = new ActionViewBase();
+        // $this->template = new ActionView:::Base();
         $this->template->__base= $this->config->getProperty('document_root');
     }
 
@@ -384,7 +376,8 @@ class ActionControllerBase extends Object {
      *              return News::find_all();
      *          }
      *          // Notes: 1) use protected for internal filters
-     *          // 2) a filter must return void, in case of a failure, use the redirect method.
+     *          // 2) a filter must return void, in case of a failure, 
+     *          // use the redirect method.
      *          protected function authenticate() {
      *              // authentication code here
      *          }
@@ -395,17 +388,20 @@ class ActionControllerBase extends Object {
     private function add_before_filters() {
         if (!is_array($this->before_filter)) {
             throw new MedickException(
-                $this->getClassName() . '->\$before_filter should be an array of strings, each string representing a method name');
+                $this->getClassName() . '->\$before_filter should be an array 
+                    of strings, each string representing a method name');
         }
         foreach($this->before_filter as $filter_name) {
             if (!$filter= $this->createMethod($filter_name)) {
-                $this->logger->info('Could not create filter: `'.$filter_name.'`, skipping...');
+                $this->logger->info(
+                    'Could not create filter: `'.$filter_name.'`, skipping...');
                 continue;
             }
             // a filter should be declared as protected.
             if (!$filter->isProtected()) {
                 throw new MedickException(
-                    'Your filter,`'. $filter_name . '` is declared as a public method of class `' . $this->getClassName() .'` !');
+                    'Your filter,`'. $filter_name . '` is declared as a 
+                        public method of class `' . $this->getClassName() .'` !');
             }    
             $this->$filter_name();
         }
@@ -447,3 +443,4 @@ class ActionControllerBase extends Object {
     }
 }
 
+// }

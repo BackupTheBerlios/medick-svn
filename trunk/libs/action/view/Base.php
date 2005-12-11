@@ -38,41 +38,18 @@
 
 include_once('action/view/HTML.php');
 
-/**
- * Abstract Template Engine.
- * This way, we can extend this rendering engine to output xslt templates and so on.
- * 
- * This object, is a factory that builds concrete Template Engine
- */
-abstract class ActionViewBase extends Object {
-
-    /** Safe way of keeping the assigned vars */
-	protected $vars = array();
-    
-    /**
-     * Renders the file
-     * Is a wrapper for <code>Sonart::render($file)</code>
-     * @param string, template_file, the template file to render.
-     */
-	abstract function render_file($template_file);
-
-	abstract function assign($name, $value);
-
-	public static function factory() {
-		return new Sonart();	
-	}
-	
-}
+// namespace ActionView {
 
 /**
- * Sonart is the default Template Engine for Medick Framwork.
+ * ActionViewBase is the default `Template Engine' for Medick Framwork.
  * 
  * For a smoother transaction from <tt>Smarty</tt>, some variabiles/methods 
  * may share the same name and behavior
  */
-class Sonart extends ActionViewBase {
+class ActionViewBase extends Object {
 	
-    /** @see ActionViewBase::render_file($template_file) */
+    private $vars= array();
+
 	public function render_file($template_file) {
 		return $this->render($template_file);
 	}
@@ -94,11 +71,6 @@ class Sonart extends ActionViewBase {
         $c = ob_get_contents();
         ob_end_clean();
         return $c;
-	}
-	
-	/** xxx */
-	public function getVars() {
-		return $this->vars;
 	}
 
 	/**
@@ -152,3 +124,5 @@ class Sonart extends ActionViewBase {
         return $value;
     }	
 }
+
+// }
