@@ -61,7 +61,7 @@ class Injector extends Object {
     public function __construct() {
         $this->config = Registry::get('__configurator');
         $this->logger = Registry::get('__logger');
-        $app_path = $this->config->getProperty('application_path') . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
+        $app_path = $_SERVER['MEDICK_APPLICATION_PATH'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
         $this->path['__base']      = $app_path;
         $this->path['models']      = $app_path . 'models'      . DIRECTORY_SEPARATOR;
         $this->path['controllers'] = $app_path . 'controllers' . DIRECTORY_SEPARATOR;

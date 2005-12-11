@@ -42,17 +42,48 @@ abstract class Outputter extends Object implements IOutputter {
     /** individual outputter level*/
     protected $level;
 
+    private $properties= array();
+
+    public function __construct($level) {
+        $this->level= $level;
+    }
+
+    public function hasProperty($property) {
+        if (isset($this->properties[$property]) && $this->properties[$property] != '') {
+            return TRUE;
+        } else {
+            throw new InvalidOffsetException('Outputter::properties dosent have `' . $property . '` as property');
+        }
+    }
+
+    public function getProperty($property) {
+        return $this->hasProperty($property) ? $this->properties[$property] : NULL;
+    }
+
+    public function setProperty($property, $value) {
+        $this->properties[$property]= $value;
+    }
+
+    public function setProperties(/* Array */ $properties) {
+        if (!is_array($properties)) {
+            throw new 
+                IllegalArgumentException('\$properties should be an array in ' . __FILE__ . ' at line: ' . (int)(__LINE__-3));
+        }
+        $this->properties= $properties;
+    }
+
     /**
      * Receive the Logger update
      * and writes the log event using to the formatter
      */
     public function update(ILogger $logger) {
-        if ($this->level <= $logger->getMessageLevel()){
+        if ($this->level <= $logger->getMessageLevel()) {
             $this->write($logger->getFormatter()->format($logger->getEvent()));
         }
     }
 
     // {{{ abstract methods
+    public abstract function initialize();
     /** it writes the message */
     protected abstract function write($message);
     // }}}

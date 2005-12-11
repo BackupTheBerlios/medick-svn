@@ -50,7 +50,7 @@ class StdoutOutputter extends Outputter {
      * It builds a new StdOutputter
      * @param int, level, logger level.
      */
-    public function __construct($level) {
+    public function initialize() {
         if (php_sapi_name() == 'cli') {
             $this->isCLI = TRUE;
             $this->eol = "\n";
@@ -59,7 +59,6 @@ class StdoutOutputter extends Outputter {
             $this->output .= '<table border="1" style="font-family: verdana;font-size: 0.7em;" width="100%"><tr><td>';
             $this->eol =  '</td></tr><tr><td>';
         }
-        $this->level = $level;
     }
 
     /** It flushes (echoes) the output buffer on exit */

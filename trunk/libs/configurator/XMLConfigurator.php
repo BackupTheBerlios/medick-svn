@@ -108,12 +108,16 @@ class XMLConfigurator extends Object implements IConfigurator {
     public function getLoggerOutputters() {
         $i=0; $ret= array();
         if (is_null($this->sxe->logger->outputters)) return $ret;
-        foreach(new RecursiveIteratorIterator($this->sxe->logger->outputters) as $outputter) {
+        foreach ($this->sxe->logger->outputters->outputter as $outputter) {
             $ret[$i]['name']    = (string)trim($outputter['name']);
             $ret[$i]['level']   = (string)trim($outputter['level']);
-            $ret[$i++]['value'] = (string)trim($outputter['value']);
+            foreach ($outputter->property as $property) {
+                $ret[$i]['properties'][(string)trim($property['name'])]= (string)trim($property['value']);
+            }
+            $i++;
         }
         return $ret;
+        
     }
     
     /** @see IConfigurator::getLoggerFormatter */

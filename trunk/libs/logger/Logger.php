@@ -75,7 +75,6 @@ class Logger extends Object implements ILogger {
     public function __construct() {
         $configurator = Registry::get('__configurator');
         $outputters   = $configurator->getLoggerOutputters();
-
         if (sizeof($outputters) != 0) {
             $this->load($outputters);
         }
@@ -165,7 +164,12 @@ class Logger extends Object implements ILogger {
             @include_once($class_file);
             try {
                 $class= new ReflectionClass($class_name);
-                $this->attach($class->newInstance($outputter['level'],$outputter['value']));
+                $instance= $class->newInstance($outputter['level']);
+                if (isset($outputter['properties'])) {
+                    $instance->setProperties($outputter['properties']);
+                }
+                $instance->initialize();
+                $this->attach($instance);
             } catch (ReflectionException $rEx) {
                 $this->warn($rEx->getMessage());
             }

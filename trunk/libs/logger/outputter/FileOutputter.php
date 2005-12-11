@@ -43,16 +43,16 @@ class FileOutputter extends Outputter {
     private $handler;
 
     /**
-     * It builds this outputter
+     * Initialize this outputter
      * @param int, level, this outputter individual level
      * @param string the file to write on
      */
-    public function __construct($level, $file) {
+    public function initialize() {
+        $file= $this->getProperty('path');
         if (!is_file($file)) {
             touch($file);
         }
         $this->handler = fopen($file, 'a');
-        $this->level = $level;
     }
 
     /**

@@ -93,6 +93,17 @@ class Error extends MedickException {
  */
 class InvalidOffsetException extends MedickException { }
 // }}}
+
+// {{{ InvalidArgumentException
+if (!class_exists('InvalidArgumentException')) {
+    /**
+     * Exception that denotes invalid arguments were passed
+     * @package locknet7.medick
+     */
+    class InvalidArgumentException extends MedickException {    }
+}
+// }}}
+
 // {{{ IOException
 /**
  * General Input/Output Exception

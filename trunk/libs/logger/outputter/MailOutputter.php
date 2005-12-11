@@ -45,10 +45,9 @@ class MailOutputter extends Outputter {
     /** email subject */
     private $subject;
 
-    public function __construct($level, $email, $subject='Fatality...') {
-        $this->level   = $level;
-        $this->email   = $email;
-        $this->subject = $subject;
+    public function initialize() {
+        $this->email   = $this->getProperty('address');
+        $this->subject = $this->getProperty('subject');
     }
 
     protected function write($message) {
