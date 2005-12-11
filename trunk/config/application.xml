@@ -10,7 +10,6 @@
     <!--  ====================== -->
     <property name="server_name"      value="http://morgan:8091" />
     <property name="document_root"    value="/" />
-    <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
     <property name="rewrite"          value="on" />
      
     <!--  ====================== -->
@@ -19,7 +18,14 @@
     <logger>
         <formatter>simple</formatter>
         <outputters>
-            <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
+            <outputter name="file" level="0">
+                <property name="path" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
+            </outputter>
+            <outputter name="stdout" level="0" />
+            <outputter name="" level="3">
+                <property name="subject" value="Fatality on {$server}" />
+                <property name="address" value="user@example.com" />
+            </outputter>
         </outputters>
     </logger>
 
@@ -32,7 +38,7 @@
              hostspec = "localhost"
              database = "elproto"
              username = "root"
-             password = "sacosica" />
+             password = "pazzword" />
     </database>
 
 </application>
