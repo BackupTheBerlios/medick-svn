@@ -17,7 +17,7 @@
            <h2><?=get_class($error);?></h2>
 
            <strong>Message: <?=$error->getMessage();?></strong><br />
-           <? if (method_exists($error,'getUserInfo')): ?>
+           <? if (method_exists($error,'getUserInfo') && $error->getUserInfo() != ''): ?>
                 User Info: <?=$error->getUserInfo();?><br />
            <? endif; ?>
            <? if (method_exists($error,'getNativeError')): ?>
@@ -25,10 +25,10 @@
            <? endif; ?>
 
            <strong>in</strong> <?=$error->getFile();?> at line: <?=$error->getLine();?>
-           <hr noshade="noshade" />
+           <hr />
            Backtrace:<br />
            <pre><?=$error->getTraceAsString();?></pre>
-           <hr noshade="noshade" />
+           <hr />
         </div>
     </body>
 </html>
