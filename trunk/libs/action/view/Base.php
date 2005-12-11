@@ -115,7 +115,7 @@ class ActionViewBase extends Object {
      */
     private static function stripslashes_deep($value) {
         if (is_array($value)) {
-            array_map(array('Sonart','stripslashes_deep'), $value);
+            array_map(array('ActionViewBase','stripslashes_deep'), $value);
         } elseif (is_object($value)) {
             
         } else {

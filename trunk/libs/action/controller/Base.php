@@ -122,7 +122,8 @@ class ActionControllerBase extends Object {
         if(ob_get_length()) {
             ob_end_clean();
         }
-        $template = ActionViewBase::factory();
+        $template = new ActionViewBase();
+        // $template = new ActionView:::Base();
         $template->error= $exception;
         $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
         $status = Response::SC_INTERNAL_SERVER_ERROR;
