@@ -42,7 +42,7 @@ class SQLiteDatabaseInfo extends DatabaseInfo {
         $result = sqlite_query($this->dblink, $sql);
             
         if (!$result) {
-            throw new SQLException("Could not list tables", sqlite_error_string(sqlite_last_error($this->dblink)));
+            throw new SQLException("Could not list tables", sqlite_last_error($this->dblink));
         }
         
         while ($row = sqlite_fetch_array($result)) {
