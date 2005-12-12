@@ -12,13 +12,13 @@ SetEnv MEDICK_APPLICATION_NAME eltodo
 RewriteEngine on
 
 # all files with .something are skipped
-RewriteCond %{REQUEST_URI} \..+$
-RewriteCond %{REQUEST_URI} !\.html$
-RewriteRule .* - [L]
+# RewriteCond %{REQUEST_URI} \..+$
+# RewriteCond %{REQUEST_URI} !\.html$
+# RewriteRule .* - [L]
 # the others are redirected to the front web controller
-RewriteRule ^(.*)$ index.php [QSA,L]
+# RewriteRule ^(.*)$ index.php [QSA,L]
 
-# RewriteCond %{REQUEST_FILENAME} !-s
-# RewriteCond %{REQUEST_URI} !^index.php/$
-# RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
+RewriteCond %{REQUEST_FILENAME} !-s
+RewriteCond %{REQUEST_URI} !^index.php/$
+RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
 
