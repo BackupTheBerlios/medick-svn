@@ -84,3 +84,4 @@ class HTTPResponse extends Response {
         $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
     }
 }
+

@@ -41,7 +41,7 @@ abstract class Request extends Object {
 
     /** @var array
         current request parameters */
-    protected $params = array();
+    private $params = array();
 
     /** @var Route current request Route */ // XXX. is this used anymore?
     protected $route;

@@ -289,8 +289,8 @@ class ActionControllerBase extends Object {
         if(!is_file($location)) {
             throw new MedickException("File not found...");
         }
-        // $options['length'] = File->size($location);
-        // $options['filename'] = File->basename($location);
+        // $options['length'] =   File::size($location);
+        // $options['filename'] = File::basename($location);
     }
 
     // {{{ redirects

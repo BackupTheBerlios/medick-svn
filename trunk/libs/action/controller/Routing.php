@@ -63,7 +63,10 @@ class ActionControllerRouting extends Object {
                 $request->setParam($param->getName(), $request->getPathInfo($key));
             }
         } else {
-            $logger->debug('Unknown Route! Loading default...');
+            $logger->debug('Unknown Route! {' . 
+                            $request->getParam('controller') . 
+                            '/'. $request->getParam('action') . 
+                            '} Loading default...');
             $route= $map->getRouteByName('default');
             $request->setParam('controller', $route->getController());
             $request->setParam('action', $route->getAction());

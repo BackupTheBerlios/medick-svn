@@ -40,11 +40,11 @@ include_once('action/controller/session/Session.php');
 class HTTPRequest extends Request {
     
     /** @var Session */
-    protected $session;
+    private $session;
 
     /** @var array
         path_info_parts */
-    protected $path_info= array();
+    private $path_info= array();
 
     /**
      * Constructor.
@@ -52,7 +52,7 @@ class HTTPRequest extends Request {
      */
     public function __construct() {
         foreach ($_REQUEST as $key=>$value) {
-            $this->params[$key] = $value;
+            $this->setParam($key, $value);
         }
         
         unset($_REQUEST); unset($_GET); unset($_POST);
@@ -61,15 +61,15 @@ class HTTPRequest extends Request {
             $parts= explode('/', trim($_SERVER['PATH_INFO'], '/'));
             foreach ($parts as $key=>$part) {
                 if ($key == 0) {
-                    $this->params['controller'] = current(explode('.', $part));
+                    $this->setParam('controller', current($x=explode('.', $part)));
                 } elseif ($key == 1) {
-                    $this->params['action']     = current(explode('.', $part));
+                    $this->setParam('action', current($x=explode('.', $part)));
                 } else {
-                    $this->path_info[]          = current(explode('.', $part));
+                    $this->path_info[] = current($x=explode('.', $part));
                 }
             }
         }
-        $this->session= new Session();
+        $this->session = new Session();
     }
 
     /**
@@ -90,16 +90,10 @@ class HTTPRequest extends Request {
     }
     
     // {{{ todos.
-    
-    // XXX
     public function getIP() {  }
-    
-    // XXX
     public function getRequestURI() {  }
-    
-    // XXX: 
     public function getProtocol() {  }
-    
     // }}}
     
 }
+
