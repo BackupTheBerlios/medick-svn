@@ -43,9 +43,6 @@ abstract class Request extends Object {
         current request parameters */
     private $params = array();
 
-    /** @var Route current request Route */ // XXX. is this used anymore?
-    protected $route;
-
     /**
      * It gets the param
      * @param mixed, param, the paremeter name
@@ -80,20 +77,6 @@ abstract class Request extends Object {
      */
     public function setParam($name, $value) {
         $this->params[$name] = $value;
-    }
-
-    /** XXX. is this used anymore?
-     * It sets the Request Route
-     * @param Route route, the route to set on this Request
-     * @return void
-     */
-    public function setRoute(IRoute $route) {
-        $this->route = $route;
-    }
-
-    /** It gets the Route */
-    public function getRoute() {
-        return $this->route;
     }
 }
 

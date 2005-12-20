@@ -2,10 +2,10 @@
 # $Id$
 
 # Configuration
-php_value auto_prepend_file ___PATH___TO___MEDICK___INSTALATION___/boot.php
+php_value auto_prepend_file ${CORE}/boot.php
 
-SetEnv MEDICK_APPLICATION_PATH ___YOUR___APPLICATION___PATH___
-SetEnv MEDICK_APPLICATION_NAME ___YOUR___APPLICATION___NAME___
+SetEnv MEDICK_APPLICATION_PATH ${APP_PATH}
+SetEnv MEDICK_APPLICATION_NAME ${APP_NAME}
  
 RewriteEngine on
 

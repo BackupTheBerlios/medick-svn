@@ -19,11 +19,11 @@
         <formatter>simple</formatter>
         <outputters>
             <outputter name="file" level="0">
-                <property name="path" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
+              <property name="path" value="${LOG}" />
             </outputter>
             <outputter name="stdout" level="0" />
-            <outputter name="" level="3">
-                <property name="subject" value="Fatality on {$server}" />
+            <outputter name="mail" level="3">
+                <property name="subject" value="Fatality on ${server}" />
                 <property name="address" value="user@example.com" />
             </outputter>
         </outputters>

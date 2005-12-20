@@ -90,7 +90,7 @@ class Logger extends Object implements ILogger {
     }
 
     /** __magic __overloading__ */
-    public function __call($method, $message) {
+    public function __call($method, $message=FALSE) {
         if (!$message) return;
         if (sizeof($this->outputters) == 0) return;
         if (!in_array($method, $this->levels)) {

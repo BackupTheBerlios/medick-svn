@@ -102,13 +102,11 @@ class Injector extends Object {
 
 
     /**
-     * Adds user folders, `vendor' and `libs` to the include_path
+     * Adds user 3-rd party libs folder under include_path
+     * @return void
      */
     public function injectInclude_path() {
         $top= $this->path['__base'] . '..' . DIRECTORY_SEPARATOR;
-        if (is_dir($top . 'vendor')) {
-            set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'vendor');
-        }
         if (is_dir($top . 'libs')) {
             set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'libs');
         }
@@ -226,3 +224,4 @@ class Injector extends Object {
         }
     }
 }
+

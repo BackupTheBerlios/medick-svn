@@ -40,9 +40,7 @@
 class SimpleFormatter extends Formatter {
     /** @see Formatter::format */
     public function format(LoggingEvent $event) {
-        $_oo = $event->class ? $event->class . '::' . $event->function : $event->function;
-        return strftime("%d/%m/%Y %H:%M:%S", $event->date) . 
-               ' [ ' . $event->file . ' / ' . $event->line . ' ] ' . 
-               $_oo . ' '. $event->level . ' >>> ' . $this->extractMessage($event->message);
+        return "{$event->ip} -- " . strftime("%d/%m/%Y %H:%M:%S", $event->date) . 
+            " [ {$event->level} ] >>> {$this->extractMessage($event->message)}";
     }
 }

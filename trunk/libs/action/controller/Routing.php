@@ -60,6 +60,7 @@ class ActionControllerRouting extends Object {
             $logger->debug('Route Recognized: ' . $route->getName());
             $params= $route->getParams();
             foreach ($params as $key=>$param) {
+                if ($request->hasParam($param->getName())) continue;
                 $request->setParam($param->getName(), $request->getPathInfo($key));
             }
         } else {

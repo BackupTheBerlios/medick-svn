@@ -61,11 +61,14 @@ class HTTPRequest extends Request {
             $parts= explode('/', trim($_SERVER['PATH_INFO'], '/'));
             foreach ($parts as $key=>$part) {
                 if ($key == 0) {
-                    $this->setParam('controller', current($x=explode('.', $part)));
+                    list($controller)= explode('.', $part, 2);
+                    $this->setParam('controller', $controller);
                 } elseif ($key == 1) {
-                    $this->setParam('action', current($x=explode('.', $part)));
+                    list($action)= explode('.', $part, 2);
+                    $this->setParam('action', $action);
                 } else {
-                    $this->path_info[] = current($x=explode('.', $part));
+                    list($param)= explode('.', $part,2);
+                    $this->path_info[] = $param;
                 }
             }
         }

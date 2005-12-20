@@ -85,8 +85,8 @@ class Route extends Object {
      * Set the failure Route name
      * @param string name, the name of the failure route.
      */
-    public function setFailure(Route $name) {
-        $this->failure = $name;
+    public function setFailure(Route $route) {
+        $this->failure = $route;
     }
 
     /**
@@ -128,6 +128,7 @@ class Route extends Object {
      */
     public function setAction($action) {
         $this->action= $action;
+        $this->id= md5($this->controller . $this->action);
     }
 
     /**
@@ -144,35 +145,6 @@ class Route extends Object {
      */
     public function getController() {
         return $this->controller;
-    }
-
-    /**
-     * The controller name like 'TodoController'
-     * @return string controller name
-     */
-    public function getControllerName() {
-      return ucfirst($this->controller) . 'Controller';
-    }
-
-    /**
-     * It gets the controller path
-     * like /home/user/app/controllers/
-     * @deprecated, this method should be merged with getControllerFile.
-     * @return string the controller path
-     */
-    public function getControllerPath() {
-        return
-            Registry::get('__configurator')->getProperty('application_path') . DIRECTORY_SEPARATOR . 'app' .
-            DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR;
-    }
-
-    /**
-     * It gets the controller file like 'todo_controller.php'
-     * @deprecated, this method should be merged with getControllerPath()
-     * @return string the controller file
-     */
-    public function getControllerFile() {
-        return strtolower($this->controller) . '_controller.php';
     }
 
     /**
@@ -218,5 +190,9 @@ class Route extends Object {
      */
     public function getHeaders() {
         return $this->headers;
+    }
+    
+    public function toString() {
+        return sprintf('Route Controller/Action {Id}: %s/%s {%s}', $this->controller,$this->action, $this->id);
     }
 }

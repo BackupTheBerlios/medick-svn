@@ -37,10 +37,6 @@
  * @package locknet7.logger
  */
 class LoggingEvent extends Object {
-
-    /** @var array
-        application backtrace */
-    public $backtrace = array();
     
     /** @var mixed 
         logging message */
@@ -51,24 +47,12 @@ class LoggingEvent extends Object {
     public $level;
     
     /** @var string 
-        in what file the message took place.*/
-    public $file;
-    
-    /** @var int 
-        at what line we logged the event.*/
-    public $line;
-    
-    /** @var string 
-        function*/
-    public $function;
-    
-    /** @var string 
-        class */
-    public $class;
-    
-    /** @var string 
         date */
     public $date;
+    
+    /** @var string
+        ip-address */
+    public $ip;
     
     /**
      * Constructor, set`s the properties
@@ -76,13 +60,11 @@ class LoggingEvent extends Object {
      * @param string, this event level
      */ 
     public function __construct($message, $level) {
-        $this->backtrace = debug_backtrace();
         $this->message   = $message;
         $this->level     = strtoupper($level);
         $this->date      = time();
-        $this->file      = end(@explode(DIRECTORY_SEPARATOR,@$this->backtrace[2]['file']));
-        $this->line      = @$this->backtrace[2]['line'];
-        $this->class     = @$this->backtrace[3]['class'];
-        $this->function  = @$this->backtrace[3]['function'];
+        if (array_key_exists('REMOTE_ADDR',$_SERVER)) {
+            $this->ip= $_SERVER['REMOTE_ADDR'];
+        }
     }
 }

@@ -97,8 +97,8 @@ class Map extends Object {
      * @return Route or FALSE if this map don`t contain this route.
      */
     public function contains(Route $route) {
-        foreach ($this->routes AS $_route) {
-            if ($_route->getId()==$route->getId()) {
+        foreach ($this->routes as $_route) {
+            if ($_route->getId() == $route->getId()) {
                 return $_route;
             }
         }
