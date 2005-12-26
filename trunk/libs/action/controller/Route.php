@@ -35,164 +35,160 @@
 /**
  * @package locknet7.action.controller.route
  */
-class Route extends Object {
 
-    /** @var string
-        this route name */
-    private $name = '';
-    
-    /** @var string
-        route controller name */
-    private $controller;
-    
-    /** @var string
-        route action name */
-    private $action;
-    
-    /** @var string 
-        unique route identifier. */
-    private $id;
-    
-    /** @var array RouteParam[]
-        route parameters. */
-    private $params;
-    
-    /** @var mixed
-        route access level.*/
-    private $access;
-    
-    /** @var array
-        distinctive route headers*/
-    private $headers;
-    
-    /** @var string 
-        name of the failure Route.*/
-    private $failure;
+/**
+ * A Collection with Components
+ */
+class Components extends AbstractCollection {   }
 
-    /**
-     * Constructor.
-     * @param string controller name
-     * @param string action name
-     */
-    public function __construct($controller, $action= '') {
-        $this->controller= $controller;
-        $this->action= $action;
-        $this->id= md5($this->controller . $this->action);
-        $this->params= array();
-    }
-    
-    /**
-     * Set the failure Route name
-     * @param string name, the name of the failure route.
-     */
-    public function setFailure(Route $route) {
-        $this->failure = $route;
-    }
+/**
+ * A Route Component
+ */
+class Component extends Object {
 
-    /**
-     * Gets the failure Route name
-     * @return string
-     */
-    public function getFailure() {
-        return $this->failure;
-    }
+    private $name;
 
-    /**
-     * It gets this route id,
-     * a md5`ed concat`ed string between controller+action
-     * @return string
-     */
-    public function getId() {
-        return $this->id;
-    }
+    private $dymanic;
 
-    /**
-     * Sets the name of this route.
-     * @param string name
-     */
-    public function setName($name) {
+    private $position;
+
+    public function Component($name) {
         $this->name= $name;
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
+    public function setDynamic($dynamic) {
+        $this->dynamic= (bool)$dynamic;
+    }
+
+    public function isDynamic() {
+        return $this->isDynamic;
+    }
+
+    public function setPosition($position) {
+        $this->position= (int)$position;
+    }
+
+}
+
+/**
+ * Route class.
+ */
+class Route extends Object {
+
+    /** @var string
+        incoming Route Definition list. */
+    private $route_list;
+
+    private $defaults;
+
+    private $name;
+
+    private $components;
+
+
+    public function Route($route_list, $name = '', Array $defaults = array(), Array $requirements = array()) {
+
+        $this->components= new Components();
+
+        $this->route_list= $route_list;
+        $this->defaults= $defaults;
+
+        $this->name= $name;
+
+        $parts= explode('/', trim($this->route_list, '/'));
+
+        foreach ($parts as $key=>$element) {
+
+            if (preg_match('/:[a-z0-9_\-]+/',$element, $match)) {
+                $c= new Component(substr(trim($match[0]), 1));
+                $c->setDynamic(TRUE);
+
+            } else {
+                $c= new Component($element);
+                $c->setDynamic(FALSE);
+            }
+            $c->setPosition($key);
+            $this->components->add($c);
+        }
+
+    }
+
     /**
-     * Gets the name of this route.
-     * @return string name of this route.
+     * It gets the name of this Route.
+     *
+     * @return string name.
      */
     public function getName() {
-        return $this->name == '' ? $this->controller . '/' . $this->action : $this->name;
+        return $this->name;
     }
 
     /**
-     * It sets the action for this route.
-     * @param string action action name
+     * It sets the name of this Route.
+     *
+     * @param string name, the name of this Route.
      */
-    public function setAction($action) {
-        $this->action= $action;
-        $this->id= md5($this->controller . $this->action);
+    public function setName($name) {
+        $this->name= (string)$name;
     }
 
     /**
-     * It gets the action.
-     * @return string action
+     * Sets defaults for this Route.
+     *
+     * @param array an array witch holds defaults values for this Route.
      */
-    public function getAction() {
-        return $this->action;
+    public function setDefaults(Array $defaults) {
+        $this->defaults= $defaults;
     }
 
-    /**
-     * It get the controller
-     * @return string controller, like 'todo'
-     */
-    public function getController() {
-        return $this->controller;
-    }
+    // match the current Route against incoming URL.
+    // @TODO: refactor.
+    // @return bool
+    public function match(Request $request) {
+        $parts= $request->getPathInfoParts();
 
-    /**
-     * It sets the access level.
-     * @param AccessLevel access
-     */
-    public function setAccess($access) {
-        $this->access= $access;
-    }
+        // if / was requested, just skip this part.
+        if (count($parts) !=0 ) {
+            $it= $this->components->iterator();
+            while($it->hasNext()) {
+                $name= $it->next()->getName();
 
-    /**
-     * Adds a new Parameter on this route or a Header.
-     * @param Object argument
-     */
-    public function add($argument) {
-        if ($argument instanceof RouteParam) {
-            $this->params[]  = $argument;
-        } elseif ($argument instanceof RouteHeader) {
-            $this->headers[] = $argument;
-        } else {
-            throw new RouteException('Wrong Argument Type in ' . __METHOD__ . ', Argument should be one of RouteParam or RouteHeader objects!');
+                if (isset($parts[$it->key()])) {
+
+                    if (FALSE===strpos($parts[$it->key()], '.html')) {
+                        $part= $parts[$it->key()];
+                    } else {
+                        list($part)= explode('.', $parts[$it->key()]);
+                    }
+                    $request->setParameter($name, $part);
+                }
+
+            }
         }
-        return $argument;
-    }
 
-    public function addFromArray($params) {
-        foreach($params as $param) {
-            $this->add($param);   
+        // more to be done.
+
+        // check if we have a controller.
+        if (!$request->hasParameter('controller')) {
+            if (array_key_exists('controller', $this->defaults)) {
+                $request->setParameter('controller', $this->defaults['controller']);
+            } else { // we don`t have a controller for this route (?), exit.
+                return FALSE;
+            }
         }
+
+        // check for a default action
+        if (!$request->hasParameter('action')) {
+            if (array_key_exists('action', $this->defaults)) {
+                $request->setParameter('action', $this->defaults['action']);
+            } else {
+                $request->setParameter('action','index');
+            }
+        }
+        return TRUE;
     }
 
-    /**
-     * Gets the list with the attached params
-     * @return array RouteParam[]
-     */
-    public function getParams() {
-        return $this->params;
-    }
-
-    /** 
-     * It gets the list of headers
-     * @return array RouteHeaders
-     */
-    public function getHeaders() {
-        return $this->headers;
-    }
-    
-    public function toString() {
-        return sprintf('Route Controller/Action {Id}: %s/%s {%s}', $this->controller,$this->action, $this->id);
-    }
 }

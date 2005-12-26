@@ -32,77 +32,21 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('action/controller/Route.php');
-include_once('action/controller/route/RouteParam.php');
-
 /**
  * @package locknet7.action.controller
  */
+class Map extends AbstractCollection {
 
-class Map extends Object {
+    private static $instance= NULL;
 
-    /** 
-     * @var array, routes, container for Routes
-     */
-    private $routes = array();
-
-    /**
-     * @var Route the current running route
-     */ 
-    private $curent_route;
-    
-    /**
-     * Sets the current Route
-     * @param Route route
-     */ 
-    public function setCurrentRoute(Route $route) {
-        $this->curent_route= $route;
-    }
-    
-    /**
-     * Gets the current route
-     * @return Route
-     */ 
-    public function getCurrentRoute() {
-        return $this->curent_route;
+    protected function Map() {
+        parent::AbstractCollection(array());
     }
 
-    /**
-     * Adds a route to this map
-     * @param Route route
-     */
-    public function add(Route $route) {
-        if ($this->contains($route)) return;
-        $this->routes[]=$route;
-    }
-
-    /**
-     * It gets a route by his name
-     * @param string the name of the route to look for.
-     * @throw RouteException
-     */
-    public function getRouteByName($name) {
-        foreach ($this->routes as $route) {
-            if ($route->getName()==$name) {
-                return $route;
-            }
+    public static function getInstance() {
+        if (Map::$instance===NULL) {
+            Map::$instance= new Map();
         }
-        throw new RouteException('Cannot find a route with this name: `' . $name . '` !');
-    }
-
-    /**
-     * Check if the current Map contains the given route
-     * If so, we return-it, otherwise we return false
-     * @param Route route
-     * @return Route or FALSE if this map don`t contain this route.
-     */
-    public function contains(Route $route) {
-        foreach ($this->routes as $_route) {
-            if ($_route->getId() == $route->getId()) {
-                return $_route;
-            }
-        }
-        return FALSE;
+        return Map::$instance;
     }
 }
-

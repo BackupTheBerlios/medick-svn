@@ -48,8 +48,8 @@ abstract class Request extends Object {
      * @param mixed, param, the paremeter name
      * @return the param value of NULL if this param was not passed with this Resuest
      */
-    public function getParam($param) {
-        return isset($this->params[$param]) ? $this->params[$param] : NULL;
+    public function getParameter($param) {
+        return $this->hasParameter($param) ? $this->params[$param] : NULL;
     }
 
     /**
@@ -57,7 +57,7 @@ abstract class Request extends Object {
      * @param string param_name the parameter name
      * @return bool TRUE if the parameter_name is included in this request, FALSE otherwise
      */
-    public function hasParam($param_name) {
+    public function hasParameter($param_name) {
         return isset($this->params[$param_name]);
     }
 
@@ -65,7 +65,7 @@ abstract class Request extends Object {
      * It gets all the parameters of this Request
      * @return array this request parameters.
      */
-    public function getParams() {
+    public function getParameters() {
         return $this->params;
     }
 
@@ -75,7 +75,7 @@ abstract class Request extends Object {
      * @param mixed, value, value of the param
      * @return void
      */
-    public function setParam($name, $value) {
+    public function setParameter($name, $value) {
         $this->params[$name] = $value;
     }
 }

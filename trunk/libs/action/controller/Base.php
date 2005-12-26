@@ -142,7 +142,7 @@ class ActionControllerBase extends Object {
         $this->instantiate($request, $response);
         $this->add_models();
         $this->add_before_filters();
-        $this->perform_action($request->getParam('action'));
+        $this->perform_action($request->getParameter('action'));
         return $response;
     }
 
@@ -270,7 +270,7 @@ class ActionControllerBase extends Object {
         $this->response = $response;
         $this->session  = $request->getSession();
         $this->session->start();
-        $this->params   = $request->getParams();
+        $this->params   = $request->getParameters();
 
         $this->logger   = Registry::get('__logger');
         $this->injector = Registry::get('__injector');

@@ -55,13 +55,13 @@ interface ICollection {
      * @param medick.Object the Object we want to remove
      * @return Object, the Object just removed
      */ 
-    function remove(Object $o);
+    // function remove(Object $o);
     
     /**
      * Removes all the objects stored in this Collection
      * @return void
      */
-    function clear();
+    // function clear();
     
     /**
      * Indicates the size of this Collection
@@ -91,7 +91,7 @@ interface ICollection {
      * Returns true if this collection contains the specified element
      * @return bool
      */
-    function contains(Object $o);
+    // function contains(Object $o);
     
 }
 // }}}
@@ -105,7 +105,8 @@ interface ICollection {
 interface IIterator {
 
     /**
-     * Check if this Iterator has more elements
+     * Check if this Collection has more elements
+     *
      * @return TRUE if this Iterator has a next element, 
      *         FALSE if we are at the last element
      */
@@ -113,10 +114,97 @@ interface IIterator {
 
     /**
      * It gets the current element
+     *
      * @return medick.Object
      */
     function next();
     
+    /**
+     * It gets the current element.
+     * 
+     * @return medick.Object
+     */
+    function current();
+
+    /**
+     * It gets the current element key
+     *
+     * @return int
+     */
+    function key();
+    
 }
 // }}}
 
+
+// {{{ AbstractCollection
+abstract class AbstractCollection extends Object implements ICollection {
+
+    private $elements;
+
+    public function AbstractCollection(Array $elements=array()) {
+        $this->elements= $elements;
+    }
+
+    public function iterator() {
+        return new MedickIterator($this);
+    }
+
+    public function add(Object $object) {
+        $this->elements[]= $object;
+    }
+
+    public function size() {
+        return count($this->elements);
+    }
+
+    public function isEmpty() {
+        return $this->size() == 0;
+    }
+
+    public function get($idx) {
+        return $this->elements[(int)$idx];
+    }
+
+    public function toArray() {
+        return $this->elements;
+    }
+
+}
+// }}}
+
+// {{{ MedickIterator
+class MedickIterator implements IIterator {
+
+    private $collection;
+
+    // private $elements;
+
+    private $idx=0;
+
+    public function MedickIterator(ICollection $collection) {
+        $this->collection = $collection;
+        // $this->elements   = $collection->toArray();
+        // reset($this->elements);
+    }
+
+    public function hasNext() {
+        return $this->collection->size() > $this->idx;
+    }
+
+    public function next() {
+        // return $this->elements[$this->idx++];
+        return $this->collection->get($this->idx++);
+    }
+
+    public function current() {
+        // return $this->elements[(int)($this->idx - 1)];
+        return $this->collection->get((int)($this->idx - 1));
+    }
+
+    public function key() {
+        return (int)($this->idx-1);
+    }
+
+}
+// }}}

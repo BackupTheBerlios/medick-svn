@@ -42,9 +42,9 @@ class HTTPRequest extends Request {
     /** @var Session */
     private $session;
 
-    /** @var array
+    /** @var string
         path_info_parts */
-    private $path_info= array();
+    private $path_info= NULL;
 
     /**
      * Constructor.
@@ -52,25 +52,13 @@ class HTTPRequest extends Request {
      */
     public function __construct() {
         foreach ($_REQUEST as $key=>$value) {
-            $this->setParam($key, $value);
+            $this->setParameter($key, $value);
         }
         
         unset($_REQUEST); unset($_GET); unset($_POST);
         
         if (array_key_exists('PATH_INFO', $_SERVER)) {
-            $parts= explode('/', trim($_SERVER['PATH_INFO'], '/'));
-            foreach ($parts as $key=>$part) {
-                if ($key == 0) {
-                    list($controller)= explode('.', $part, 2);
-                    $this->setParam('controller', $controller);
-                } elseif ($key == 1) {
-                    list($action)= explode('.', $part, 2);
-                    $this->setParam('action', $action);
-                } else {
-                    list($param)= explode('.', $part,2);
-                    $this->path_info[] = $param;
-                }
-            }
+            $this->path_info= $_SERVER['PATH_INFO'];
         }
         $this->session = new Session();
     }
@@ -80,8 +68,13 @@ class HTTPRequest extends Request {
      * @param int, key, the part index
      * @return value of this part or NULL if this part is not defined
      */
-    public function getPathInfo($key) {
-        return isset($this->path_info[$key]) ? $this->path_info[$key] : NULL;
+    public function getPathInfo() {
+        return $this->path_info;
+    }
+
+    public function getPathInfoParts() {
+        if (is_null($this->path_info)) return array();
+        return explode('/', trim($this->path_info,'/'));
     }
 
     /**

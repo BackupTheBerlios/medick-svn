@@ -37,46 +37,35 @@ include_once('action/controller/Injector.php');
 /**
  * @package locknet7.action.controller.route
  */
+
 class ActionControllerRouting extends Object {
 
+    // @return Route.
+    // @throws RoutingException
+    private function findRoute(Request $request) {
+        $it= Map::getInstance()->iterator();
+        while($it->hasNext()) {
+            if ($it->next()->match($request)) return $it->current();
+        }
+        throw new RoutingException('Cannot find a Route for this hash: ' . $request->getPathInfo());
+    }
+
+    private function createControllerInstance($controller) {
+        return Registry::put(new Injector(), '__injector')->inject('controller', $controller);
+    }
+
     /**
-     * Check if the application Map contains the current Route.
-     *
-     * If so, we add the route parameters into the current request.
-     *
-     * @param locknet7.action.controller.Request
-     * @return locknet7.action.controller.Base
+     * Recognize a Route Based on the Request.
      */
     public static function recognize(Request $request) {
-        $map   = Registry::get('__map');
-        $logger= Registry::get('__logger');
-        // do we know this route?
-        if ($route= $map->contains(
-                                new Route(
-                                    $request->getParam('controller'), 
-                                    $request->getParam('action')))
-                                  )
-        {
-            $logger->debug('Route Recognized: ' . $route->getName());
-            $params= $route->getParams();
-            foreach ($params as $key=>$param) {
-                if ($request->hasParam($param->getName())) continue;
-                $request->setParam($param->getName(), $request->getPathInfo($key));
-            }
-        } else {
-            $logger->debug('Unknown Route! {' . 
-                            $request->getParam('controller') . 
-                            '/'. $request->getParam('action') . 
-                            '} Loading default...');
-            $route= $map->getRouteByName('default');
-            $request->setParam('controller', $route->getController());
-            $request->setParam('action', $route->getAction());
-        }
-        $logger->debug(
-            'Running on Route: ' . $route->getName() .
-            ' ctrller: ' . $route->getController() .
-            ' act: ' . $route->getAction());
-        $map->setCurrentRoute($route);
-        return Registry::put(new Injector(), '__injector')->inject('controller', $route->getController());
+        $r= new ActionControllerRouting($request);
+        // try {
+        $route = $r->findRoute($request);
+        return   $r->createControllerInstance($request->getParameter('controller'));
+        // } catch (RoutingException $rEx) {
+            // load 404 route, if fails too try the default route, this are named routes.
+        //    echo $rEx;
+        // }
     }
 }
+
