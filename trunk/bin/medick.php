@@ -90,7 +90,7 @@ foreach ($files as $from=>$file) {
 write_file(' ',$app_location.DIRECTORY_SEPARATOR.$folders['log'].DIRECTORY_SEPARATOR.$app_name.'.log',0777);
 
 $schema_sql=<<<EOSQL
--- \$Id $
+-- \$Id$
 -- Database Schema for $app_name
 
 EOSQL;
@@ -102,9 +102,11 @@ $index_html=<<<EOHTML
     <title>Welcome to Medick!</title>
   </head>
   <body>
-    <h3>Welcome To Medick</h3>
+    <h3><center>Welcome To Medick</center></h3>
     <p><b>Application:</b> $app_name</p>
-    <p><b>Location: </b>$app_location</p>
+    <p><b>Develop $app_name on : </b>$app_location</p>
+    <p>Setup a default controller in <i>$app_location/config/$app_name.routes.php</i>, and remove this file.</p>
+    <p>Ask for support on medick <a href="https://lists.berlios.de/mailman/listinfo/medick-devel">development list</a>.</p>
   </body>
 </html>
 
