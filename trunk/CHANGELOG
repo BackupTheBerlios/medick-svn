@@ -2,6 +2,15 @@ $Id$
 (*) SVN version
 
 0.0.4 (*)
+    - added medick application generator (bin/medick.php).
+    - added medick.util, packeage witch holds MedickCollection and MedickIterator.
+    - rewrite the Routing System (more like RoR), it`s not completly done, but we have a nice working version.
+    - clean-up Medick template engine (removed the interface).
+    - code improvements in Logger:
+        - removed heavy backtrace witch was attached to every Logging Events.
+        - new Configuration Options, every Outputter can have properties.
+    - removed un-used application_path from configuration options.
+    - removed deprecated methods from the framework.  
 
 0.0.3 (28.nov.2005)
     - Code Clean-Up:
