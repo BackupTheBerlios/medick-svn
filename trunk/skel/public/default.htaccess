@@ -1,0 +1,18 @@
+# .htaccess file for eldepot sample medick application
+# $Id$
+
+# Configuration
+php_value auto_prepend_file ${CORE}/boot.php
+
+SetEnv MEDICK_APPLICATION_PATH ${APP_PATH}
+SetEnv MEDICK_APPLICATION_NAME ${APP_NAME}
+ 
+RewriteEngine on
+
+########## Set 2
+RewriteCond %{REQUEST_FILENAME} !-s
+RewriteCond %{REQUEST_URI} !^index.php/$
+RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
+
+#RewriteRule !^(stylesheet|images|javascript)/ index.php [NC,L]
+
