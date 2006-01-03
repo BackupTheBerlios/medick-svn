@@ -90,7 +90,7 @@ class Route extends Object {
     private $components;
 
 
-    public function Route($route_list, $name = '', Array $defaults = array(), Array $requirements = array()) {
+    public function Route($route_list, $name = '', /*Array*/ $defaults = array(), /*Array*/ $requirements = array()) {
 
         $this->components= new Components();
 
@@ -140,7 +140,7 @@ class Route extends Object {
      *
      * @param array an array witch holds defaults values for this Route.
      */
-    public function setDefaults(Array $defaults) {
+    public function setDefaults(/*Array*/ $defaults) {
         $this->defaults= $defaults;
     }
 

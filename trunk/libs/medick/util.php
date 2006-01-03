@@ -142,7 +142,7 @@ abstract class AbstractCollection extends Object implements ICollection {
 
     private $elements;
 
-    public function AbstractCollection(Array $elements=array()) {
+    public function AbstractCollection(/*Array*/ $elements=array()) {
         $this->elements= $elements;
     }
 
