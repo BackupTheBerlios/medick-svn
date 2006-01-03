@@ -24,19 +24,18 @@ C. generator scripts (see task 009).
 
 General TODO list:
 ~~~~~~~~~~~~~~~~~~
-1. * Routing System
+1. (0.0.4-0.0.5) Routing System
 
 2. (0.0.5) Validators + Error messages.
-    This task is related with task 1
     
-3. (0.0.5) A RDBAC System should be implemented by default.
+3. (0.2.0) A RDBAC System should be implemented by default.
     This task is related with task 1.
     
-4. (0.0.7) Caching system.
+4. (0.2.0) Caching system.
     This could be done using some sort of isRouteWalked methods.
     this task is related with task 1.
     
-5. A new naming convention, so we can use __autoload function.
+5. (0.2.0) A new naming convention, so we can use __autoload function.
     Will result in long class names, yet this feature is on hold probably until we will have  namespaces in php.
 
 6. XML template engine (?)
@@ -56,7 +55,7 @@ General TODO list:
     Application Generator:
             -> creates a base application skeleton.
             -> name bin/medick.php
-    generator.php
+    (0.2.0) generator.php
             -> right now our generator it`s outdated.
             -> add more datatypes to scaffold (depends on updating old CLI* classes?).
 
