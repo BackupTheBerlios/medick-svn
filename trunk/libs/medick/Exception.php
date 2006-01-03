@@ -130,7 +130,7 @@ class InjectorException extends MedickException { }
  * Exception that occurrs when a problem on the route is found.
  * @package locknet7.action.controller.route
  */
-class RouteException extends MedickException {    }
+class RoutingException extends MedickException {    }
 // }}}
 // {{{ CLIException
 /**
