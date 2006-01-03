@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005,2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -63,8 +63,12 @@ class ActionControllerRouting extends Object {
         $route = $r->findRoute($request);
         return   $r->createControllerInstance($request->getParameter('controller'));
         // } catch (RoutingException $rEx) {
+            // exception thrown by findRoute if we dont match any of the registered route.
             // load 404 route, if fails too try the default route, this are named routes.
-        //    echo $rEx;
+            // echo $rEx;
+        // } catch (FileNotFoundException $fnfEx) {
+            // exception thrown by Injector::injectController when the requested controller is not at the expected location.
+            // echo $fnfEx;
         // }
     }
 }
