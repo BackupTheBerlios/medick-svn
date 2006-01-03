@@ -60,10 +60,14 @@ foreach ($folders as $folder) {
 }
 
 $files= array(
-  'public_html' . DIRECTORY_SEPARATOR . 'index.php'         => 'public' . DIRECTORY_SEPARATOR . 'index.php',
-  'public_html' . DIRECTORY_SEPARATOR . 'default.htaccess'  => 'public' . DIRECTORY_SEPARATOR . '.htaccess',
-  'config' . DIRECTORY_SEPARATOR . 'application.xml'        => 'conf'   . DIRECTORY_SEPARATOR . $app_name.'.xml',
-  'config' . DIRECTORY_SEPARATOR . 'application.routes.php' => 'conf'   . DIRECTORY_SEPARATOR . $app_name.'.routes.php'
+  'skel' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php' 
+                              => 'public' . DIRECTORY_SEPARATOR . 'index.php',
+  'skel' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'default.htaccess'  
+                              => 'public' . DIRECTORY_SEPARATOR . '.htaccess',
+  'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'application.xml'        
+                              => 'conf'   . DIRECTORY_SEPARATOR . $app_name.'.xml',
+  'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'application.routes.php' 
+                              => 'conf'   . DIRECTORY_SEPARATOR . $app_name.'.routes.php'
 );
 
 $search= array(
