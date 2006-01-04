@@ -2,7 +2,7 @@
 
 // $Id$
     
-    class MockCollection extends Collection {
+    class MockCollection extends AbstractCollection {
     
     }
 

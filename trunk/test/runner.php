@@ -21,7 +21,7 @@ ini_set('display_errors', 1);
 include_once('medick/Object.php');
 include_once('medick/Exception.php');
 include_once('medick/Registry.php');
-include_once('medick/Collection.php');
+include_once('medick/util.php');
 include_once('medick/io/Folder.php');
 
 

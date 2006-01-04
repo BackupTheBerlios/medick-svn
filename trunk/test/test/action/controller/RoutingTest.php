@@ -27,7 +27,7 @@ class RoutingTest extends UnitTestCase {
         Registry::close();
     }
     
-    public function testRec() {
+    public function _test_Rec() {
         $route= new Route('foo', 'bar');
         $request= new MockRequest();
         $request->setParam('controller', 'foo');
