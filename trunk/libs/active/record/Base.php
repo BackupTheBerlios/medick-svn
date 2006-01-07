@@ -44,7 +44,14 @@ include_once('creole/Creole.php');
 /**
  * @package locknet7.active.record
  */
-class ActiveRecordBase extends Object {
+abstract class ActiveRecordBase extends Object {
+
+    /* class name: Person */
+    static protected $class_name = NULL;
+    /* table mane: persons */
+    static protected $table_name = NULL;
+    /* database connection */
+    static protected $conn       = NULL;
 
     /** @var FieldsAggregate
         DB Table Fields */
@@ -61,31 +68,19 @@ class ActiveRecordBase extends Object {
     protected $has_and_belongs_to_many= array();
     // }}}
 
-    // {{{ static members
-
-    /** @var Connection
-        database connection*/
-    protected static $conn;
-
-    /** @var string
-        current table name */
-    protected static $table_name;
-
-    // }}}
-
     /**
      * Establish A Database Connection
      */
-    public static function establish_connection () {
+    public static final function establish_connection () {
         if (self::$conn === NULL) {
             self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
     }
 
     /**
-     * Force a closing of the database connection
+     * Close the Database Connection
      */
-    public static function close() {
+    public static final function close_connection() {
         self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
     }
 
@@ -98,14 +93,12 @@ class ActiveRecordBase extends Object {
      */
     public final function __construct($params = array()) {
         self::establish_connection();
+        self::$class_name = $this->getClassName();
+        self::$table_name = Inflector::pluralize(strtolower(Inflector::underscore(self::$class_name)));
 
+        $table_info   = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
+        $this->pk     = $table_info->getPrimaryKey()->getName();
         $this->fields = new FieldsAggregate();
-
-        self::$table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->getClassName())));
-
-        $table_info = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
-        $this->pk   = $table_info->getPrimaryKey()->getName();
-
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
@@ -125,10 +118,8 @@ class ActiveRecordBase extends Object {
             $this->fields->add( $field );
         }
 
-        if ( !empty($params) ) {
-            foreach ($params as $field_name => $field_value) {
-                $this->$field_name = $field_value;
-            }
+        foreach ($params as $field_name => $field_value) {
+            $this->$field_name = $field_value;
         }
     }
 
@@ -141,7 +132,6 @@ class ActiveRecordBase extends Object {
      * @throw ActiveRecordException if the field is not found.
      */
     public function __set($field_name, $field_value) {
-        Registry::get('__logger')->debug('Setting the value of field: ' . $field_name .' to :' . $field_value);
         for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
             if ($it->current()->getName() == $field_name) {
                 $it->current()->setValue($field_value);
@@ -224,7 +214,7 @@ class ActiveRecordBase extends Object {
 
     /** Prepare this Object for serialization */
     public function __sleep() {
-        self::close();
+        self::close_connection();
         return array('fields', 'pk', 'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
     }
 
@@ -318,7 +308,7 @@ class ActiveRecordBase extends Object {
      *      $author->save(); // performs the update and returns the number of affected rows (1).
      * </code>
      */
-    public function save() {
+    public final function save() {
         if ($this->fields->getPrimaryKey()->isAffected) {
             return $this->update();
         } else {
@@ -342,7 +332,7 @@ class ActiveRecordBase extends Object {
      * @return int next primary key id or, 1 (affected rows).
      * @throws SQLException
      */
-    public function insert() {
+    public final function insert() {
         $this->before_insert();
         $af_rows = $this->performQuery($this->getInsertSql());
         $id = $this->getNextId();
@@ -367,7 +357,7 @@ class ActiveRecordBase extends Object {
      * @return int affected rows.
      * @throws SQLException
      */
-    public function update() {
+    public final function update() {
         $this->before_update();
         $af= $this->performQuery($this->getUpdateSql());
         $this->after_update();
@@ -391,7 +381,7 @@ class ActiveRecordBase extends Object {
      * @return int affected rows.
      * @throws SQLException
      */
-    public function delete() {
+    public final function delete() {
         $this->before_delete();
         $whereClause = array();
         foreach ($this->fields->getAffectedFields() as $col) {
@@ -487,6 +477,8 @@ class ActiveRecordBase extends Object {
     }
     // }}}
 
+    abstract static function find();
+
     // {{{ find monster
     /**
      *
@@ -494,21 +486,18 @@ class ActiveRecordBase extends Object {
      * @throws RecordNotFoundException no record responded to this method
      */
     public static final function __find($params= array()) {
-        $numargs = sizeof($params);
-        if($numargs == 0) return self::__find(array('all'));
+        $numargs = count($params);
+        if($numargs == 0) return ActiveRecordBase::__find(array('all'));
 
-        self::establish_connection();
-
-        $clazz= Inflector::singularize(ucfirst(self::$table_name));
+        ActiveRecordBase::establish_connection();
 
         try {
-            $class = new ReflectionClass($clazz);
+            // prepare the class instance.
+            $class = new ReflectionClass(self::$class_name);
         } catch (ReflectionException $rEx) {
-            Registry::get('__logger')->debug('`'.$clazz . '` probably not included. Trying to inject.
-                                            [ User Info: ' . $rEx->getMessage() . ']');
-            Registry::get('__injector')->inject('model', strtolower($clazz));
+            Registry::get('__injector')->inject('model', strtolower(self::$class_name));
             // retry:
-            $class = new ReflectionClass($clazz);
+            $class = new ReflectionClass(self::$class_name);
         }
         $query = new QuerryBuilder(self::$table_name);
 
@@ -535,7 +524,7 @@ class ActiveRecordBase extends Object {
                 return $class->newInstance($rs->getRow());
             } elseif ($rs->getRecordCount() == 0) {
                 throw new RecordNotFoundException(
-                    'Couldn\'t find a `' . Inflector::singularize(ucfirst(self::$table_name)) . '` with ID=' . $params[0]);
+                    'Couldn\'t find a `' . self::$class_name . '` with ID=' . $params[0]);
             }
         } elseif(is_array($params[0])) {
             $query->addArray($params[0]);
@@ -550,28 +539,22 @@ class ActiveRecordBase extends Object {
         $rs = $stmt->executeQuery();
         if ($rs->getRecordCount() == 0) {
             throw new RecordNotFoundException(
-                'Couldn\'t find a ' . Inflector::singularize(ucfirst(self::$table_name),
-                'The Result Set was empty!'));
+                'Couldn\'t find a ' . self::$class_name . ' The Result Set was empty!');
         }
-        // build a list with objects of this type
+        // build a list with objects of this type.
         $results = new RowsAggregate();
         while ($rs->next()) {
             $results->add($class->newInstance($rs->getRow()));
         }
-        $rs->close();
-        $stmt->close();
+        // release resources.
+        $rs->close(); $stmt->close();
         Registry::get('__logger')->debug('Performed sql query: ' . self::$conn->lastQuery);
         return $results;
     }
     // }}}
 
-    /**
-     * Sets the current table name.
-     *
-     * The name is pluralized and to lower case
-     * @param string table name
-     */
-    public static function setTable($table) {
-        self::$table_name = Inflector::pluralize(strtolower($table));
+    public static final function initialize($table) {
+        ActiveRecordBase::$table_name= strtolower(Inflector::pluralize($table));
+        ActiveRecordBase::$class_name= ucfirst($table);
     }
 }

@@ -71,12 +71,20 @@ abstract class Association extends Object {
 
     /** */
     protected function pre_execution() {
-        ActiveRecordBase::setTable(Inflector::pluralize($this->class));
+        return $this->reload($this->class);
     }
 
     /** */
     protected function post_execution() {
-        ActiveRecordBase::setTable(Inflector::pluralize($this->owner));
+        return $this->reload($this->owner);
+    }
+
+    private function reload($what) {
+        if ($this->getClassName() == 'HasAndBelongsToManyAssociation') {
+            return ActiveRecordBase::initialize(Inflector::singularize($what));
+        } else {
+            return ActiveRecordBase::initialize($what);
+        }
     }
 
     /**
