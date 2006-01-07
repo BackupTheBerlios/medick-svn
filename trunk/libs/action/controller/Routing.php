@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005,2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of locknet.ro nor the names of its contributors may
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //

@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005,2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of locknet.ro nor the names of its contributors may
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -39,7 +39,7 @@ include_once('configurator/IConfigurator.php');
  * xml file-based Configurator.
  * @package locknet7.config
  */
- 
+
 class XMLConfigurator extends Object implements IConfigurator {
 
     /** SimpleXML Object */
@@ -50,12 +50,17 @@ class XMLConfigurator extends Object implements IConfigurator {
      * @param string/file xml
      */
     public function __construct($xml) {
-        if (is_file($xml)) $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
-        else $this->sxe = @simplexml_load_string($xml, 'SimpleXMLIterator');
-        if ($this->sxe===false) throw new ConfiguratorException("Cannot read\n<br />" . $xml . "\n<br />Bad Format!");
+        if (is_file($xml)) {
+            $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
+        } else {
+            $this->sxe = @simplexml_load_string($xml, 'SimpleXMLIterator');
+        }
+        if ($this->sxe===false) {
+            throw new ConfiguratorException("Cannot read\n<br />" . $xml . "\n<br />Bad Format!");
+        }
     }
-    
-    /** 
+
+    /**
      * Configuration Example:
      * <code>
      *      <database default="foo">
@@ -73,7 +78,7 @@ class XMLConfigurator extends Object implements IConfigurator {
      *               password ="x-creeme" />
      *      </database>
      * </code>
-     * @see IConfigurator::getDatabaseDsn() 
+     * @see IConfigurator::getDatabaseDsn()
      */
     public function getDatabaseDsn($id = FALSE) {
         if (!$id) $id = $this->sxe->database['default'];
@@ -90,7 +95,7 @@ class XMLConfigurator extends Object implements IConfigurator {
         }
         throw new ConfiguratorException('Database Id ' . $id . 'not found!');
     }
-    
+
     /**
      * Configuration example:
      * <code>
@@ -117,35 +122,45 @@ class XMLConfigurator extends Object implements IConfigurator {
             $i++;
         }
         return $ret;
-        
+
     }
-    
+
     /** @see IConfigurator::getLoggerFormatter */
     public function getLoggerFormatter() {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
     }
-    
+
     /** @see IConfigurator::getProperty */
     public function getProperty($name) {
         foreach($this->sxe->property as  $properties ) {
             if($properties['name'] != $name)
                 continue;
             $_query= (string)trim($properties['value']);
-            if( ($_query=='') OR (strtolower($_query) == 'false') OR (strtolower($_query)=='off') OR ($_query == '0') )
-                return (bool)false;
-            elseif( (strtolower($_query)=='true') OR (strtolower($_query)=='on') OR ($_query == '1') )
-                return (bool)true;
-            else 
+            if(
+                ($_query=='') ||
+                (strtolower($_query) == 'false') ||
+                (strtolower($_query)=='off') ||
+                ($_query == '0')
+            ) {
+                return FALSE;
+            } elseif(
+                (strtolower($_query)=='true') ||
+                (strtolower($_query)=='on') ||
+                ($_query == '1')
+            ) {
+                return TRUE;
+            } else {
                 return (string)$_query;
+            }
         }
         throw new ConfiguratorException('Property ' . $name . ' not found!');
     }
-    
+
     /**
      * Dinamically sets a proprety on runtime.
-     * 
+     *
      * Example:
-     * Assuming that we have 
+     * Assuming that we have
      * <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
      * To change the value of application_path property:
      * <code>
@@ -161,11 +176,11 @@ class XMLConfigurator extends Object implements IConfigurator {
         $xp = new domxpath($dom = $this->toDom());
         $property = $xp->query("//application/property[@name=\"" . $name . "\"]");
         if ($property->length != 1) {
-            throw new ConfiguratorException('Cannot set the property name: ' . $name . 
+            throw new ConfiguratorException('Cannot set the property name: ' . $name .
                 'Property don\'t exist or there are two propreties with the same name');
         }
         $property->item(0)->setAttribute('value', $value);
-        // save the new xml tree 
+        // save the new xml tree
         $this->sxe = simplexml_import_dom($dom, 'SimpleXMLIterator');
     }
 
@@ -188,12 +203,12 @@ class XMLConfigurator extends Object implements IConfigurator {
         $dom = new DomDocument();
         $dom_sxe = $dom->importNode($dom_sxe, true);
         $dom_sxe = $dom->appendChild($dom_sxe);
-        return $dom;  
+        return $dom;
     }
-    
+
     /** return the string representation of this object */
     public function __toString() {
         return $this->sxe->asXML();
     }
-    
+
 }

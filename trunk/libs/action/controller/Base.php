@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of locknet.ro nor the names of its contributors may
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -115,8 +115,8 @@ class ActionControllerBase extends Object {
      * @return Response
      */
     public static function process_with_exception(
-                                                    Request $request, 
-                                                    Response $response, 
+                                                    Request $request,
+                                                    Response $response,
                                                     Exception $exception)
     {
         if(ob_get_length()) {
@@ -333,13 +333,13 @@ class ActionControllerBase extends Object {
      */
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct', '__common');
-        
+
         $action= $this->createMethod($action_name);
-        
+
         if (
-            is_null($action_name) || 
-            in_array($action_name, $forbidden_actions) || 
-            !$action || 
+            is_null($action_name) ||
+            in_array($action_name, $forbidden_actions) ||
+            !$action ||
             $action->isStatic() )
         {
             $action_name = 'index';
@@ -351,7 +351,7 @@ class ActionControllerBase extends Object {
                 );
             }
         }
-        
+
         $this->params['action'] = strtolower($action_name);
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
         // invoke the action.
@@ -377,7 +377,7 @@ class ActionControllerBase extends Object {
      *              return News::find_all();
      *          }
      *          // Notes: 1) use protected for internal filters
-     *          // 2) a filter must return void, in case of a failure, 
+     *          // 2) a filter must return void, in case of a failure,
      *          // use the redirect method.
      *          protected function authenticate() {
      *              // authentication code here
@@ -389,7 +389,7 @@ class ActionControllerBase extends Object {
     private function add_before_filters() {
         if (!is_array($this->before_filter)) {
             throw new MedickException(
-                $this->getClassName() . '->\$before_filter should be an array 
+                $this->getClassName() . '->\$before_filter should be an array
                     of strings, each string representing a method name');
         }
         foreach($this->before_filter as $filter_name) {
@@ -401,9 +401,9 @@ class ActionControllerBase extends Object {
             // a filter should be declared as protected.
             if (!$filter->isProtected()) {
                 throw new MedickException(
-                    'Your filter,`'. $filter_name . '` is declared as a 
+                    'Your filter,`'. $filter_name . '` is declared as a
                         public method of class `' . $this->getClassName() .'` !');
-            }    
+            }
             $this->$filter_name();
         }
     }

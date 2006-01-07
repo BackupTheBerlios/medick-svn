@@ -1,19 +1,19 @@
 <?php
 // {{{ License
-//////////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,43 +26,43 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
-//////////////////////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
 // {{{ ICollection
 /**
  * Base interface for medick Collections
  *
- * A Collection for medick framework is an array witch holds numeric 
+ * A Collection for medick framework is an array witch holds numeric
  * keys with Objects as values
- * 
+ *
  * @package locknet7.medick.util
  */
 interface ICollection {
-    
-    /** 
+
+    /**
      * Adds a new Object into this Collection
      * @param medick.Object
      * @return Object, the Object just added.
-     */ 
+     */
     function add(Object $o);
-    
+
     /**
      * Removes the Object from this collection
      * @param medick.Object the Object we want to remove
      * @return Object, the Object just removed
-     */ 
+     */
     // function remove(Object $o);
-    
+
     /**
      * Removes all the objects stored in this Collection
      * @return void
      */
     // function clear();
-    
+
     /**
      * Indicates the size of this Collection
      * @return int the size
@@ -79,27 +79,27 @@ interface ICollection {
      * It gets the current iterator associated with this collection
      * @return medick.util.IIterator
      */
-    function iterator(); 
-    
+    function iterator();
+
     /**
      * It gets a PHP Array representation of this collection
      * @return array
      */
     function toArray();
-    
+
     /**
      * Returns true if this collection contains the specified element
      * @return bool
      */
     // function contains(Object $o);
-    
+
 }
 // }}}
 
 // {{{ IIterator
 /**
  * An iterator over a Collection
- * 
+ *
  * @package locknet7.medick.util
  */
 interface IIterator {
@@ -107,7 +107,7 @@ interface IIterator {
     /**
      * Check if this Collection has more elements
      *
-     * @return TRUE if this Iterator has a next element, 
+     * @return TRUE if this Iterator has a next element,
      *         FALSE if we are at the last element
      */
     function hasNext();
@@ -118,10 +118,10 @@ interface IIterator {
      * @return medick.Object
      */
     function next();
-    
+
     /**
      * It gets the current element.
-     * 
+     *
      * @return medick.Object
      */
     function current();
@@ -132,7 +132,7 @@ interface IIterator {
      * @return int
      */
     function key();
-    
+
 }
 // }}}
 

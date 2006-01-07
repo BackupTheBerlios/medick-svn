@@ -2,18 +2,18 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,9 +26,9 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
@@ -37,19 +37,19 @@
  * @package locknet7.active.record
  */
 class RowsAggregate extends Object implements IteratorAggregate {
-    
+
     /** @var ArrayObject
         rows container */
     private $container;
-    
-    /** 
+
+    /**
      * Constructor
      */
     public function __construct() {
         $this->container = new ArrayObject();
     }
-    
-    /** 
+
+    /**
      * It adds a new row on this container
      * @param ActiveRecordBase row the row to add into this container
      * @return ActiveRecordBase
@@ -59,14 +59,14 @@ class RowsAggregate extends Object implements IteratorAggregate {
         return $row;
     }
 
-    /** 
-     * It gets the iterator 
+    /**
+     * It gets the iterator
      * @return Iterator
      */
     public function getIterator() {
         return $this->container->getIterator();
     }
-    
+
     /**
      * Count the number of rows in this container
      * @return int
@@ -74,7 +74,7 @@ class RowsAggregate extends Object implements IteratorAggregate {
     public function count() {
         return $this->getIterator()->count();
     }
-    
+
     /**
      * It gets the offset by his index.
      * @param index

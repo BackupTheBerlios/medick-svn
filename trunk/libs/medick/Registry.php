@@ -2,18 +2,18 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,28 +26,28 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
 /**
  * @package locknet7.medick
  */
- 
+
 class Registry extends Object {
 
     /** we want only one instance of the Registry */
     private final function __construct() {   }
     private final function __clone() {   }
-    
+
     // {{{ static
-    
+
     /** @var array registry database */
     private static $registry= array();
 
-    /** 
+    /**
      * put an Object into Registry database
      * @param Object the Object instance to add into registry
      * @param string key
@@ -57,7 +57,7 @@ class Registry extends Object {
         self::$registry[$key]= $obj;
         return $obj;
     }
-    
+
     /**
      * It gets an Object from the registry database
      * @param string key, the object identifier
@@ -70,7 +70,7 @@ class Registry extends Object {
         }
         throw new InvalidOffsetException('Cannot access the object identified by key: `' . $key . '` from Registry Database!');
     }
-    
+
     /**
      * Removes an Object from the Registry Database
      * @param string key, object identifier
@@ -82,14 +82,14 @@ class Registry extends Object {
         unset(self::$registry[$key]);
         return $obj;
     }
-    
+
     /**
      * Closes and clean-up the registry database
      */
     public static function close() {
         return self::$registry= array();
     }
-    
+
     /**
      * It gets the Registry instance
      * @return Registry

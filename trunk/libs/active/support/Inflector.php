@@ -2,18 +2,18 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-//   * Redistributions of source code must retain the above copyright notice, 
-//   this list of conditions and the following disclaimer. 
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
 //   * Redistributions in binary form must reproduce the above copyright notice,
-//   this list of conditions and the following disclaimer in the documentation 
-//   and/or other materials provided with the distribution. 
-//   * Neither the name of locknet.ro nor the names of its contributors may 
-//   be used to endorse or promote products derived from this software without 
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -26,26 +26,26 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // $Id$
-// 
+//
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/** 
+/**
  * @package locknet7.active.record.support
  * Based on: http://dev.rubyonrails.com/file/trunk/activesupport/lib/active_support/inflections.rb
  */
- 
+
 class Inflector extends Object {
 
-    /** 
+    /**
      * Transform word from singular to plural
      * @param string word, the word we want to pluralize
      */
     public static function pluralize($word) {
         $rules = array(
-            '/(quiz)$/i'               => '\1zes', 
+            '/(quiz)$/i'               => '\1zes',
             '/^(ox)$/i'                => '\1en',
             '/([m|l])ouse$/i'          => '\1ice',
             '/(matr|vert|ind)ix|ex$/i' => '\1ices',
@@ -64,7 +64,7 @@ class Inflector extends Object {
             '/s$/i'                    => 's',
             '/$/'                      => 's'
         );
-        
+
         foreach ($rules AS $rule => $replacement) {
             if (preg_match($rule, $word)) {
                 return preg_replace($rule, $replacement, $word);
@@ -73,7 +73,7 @@ class Inflector extends Object {
         return $word;
     }
 
-    /** 
+    /**
      * Transform word from plural to singular
      * @param string word, the word we want to singularize
      */
@@ -104,7 +104,7 @@ class Inflector extends Object {
             '/(matr)ices$/i'        => '\1ix',
             '/(quiz)zes$/i'         => '\1'
         );
-        
+
         foreach (array_reverse($rules) as $rule => $replacement) {
             if (preg_match($rule, $word)) {
                 return preg_replace($rule, $replacement, $word);
@@ -113,15 +113,14 @@ class Inflector extends Object {
         return $word;
     }
 
-    // {{{ based on cake.    
+    // {{{ based on cake.
     public static function camelize($word) {
         return str_replace(" ", "", ucwords(str_replace("_", " ", $word)));
     }
-    
+
     public static function underscore($word) {
         $word = preg_replace('/([A-Z]+)([A-Z])/','\1_\2', $word);
         return strtolower(preg_replace('/([a-z])([A-Z])/','\1_\2', $word));
     }
     // }}}
 }
-

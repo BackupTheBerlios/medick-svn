@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of locknet.ro nor the names of its contributors may
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -98,11 +98,11 @@ class ActiveRecordBase extends Object {
      */
     public final function __construct($params = array()) {
         self::establish_connection();
-        
+
         $this->fields = new FieldsAggregate();
-        
+
         self::$table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->getClassName())));
-        
+
         $table_info = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
         $this->pk   = $table_info->getPrimaryKey()->getName();
 
@@ -221,13 +221,13 @@ class ActiveRecordBase extends Object {
         }
         return $string;
     }
-    
+
     /** Prepare this Object for serialization */
     public function __sleep() {
         self::close();
         return array('fields', 'pk', 'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
     }
-    
+
     /** restore the Object state after unserialize */
     public function __wakeup() {
         self::establish_connection();
@@ -236,7 +236,7 @@ class ActiveRecordBase extends Object {
             $this->$field_name = $it->current()->getValue();
         }
     }
-    
+
     // }}}
 
     // {{{ filters:
@@ -496,7 +496,7 @@ class ActiveRecordBase extends Object {
     public static final function __find($params= array()) {
         $numargs = sizeof($params);
         if($numargs == 0) return self::__find(array('all'));
-        
+
         self::establish_connection();
 
         $clazz= Inflector::singularize(ucfirst(self::$table_name));

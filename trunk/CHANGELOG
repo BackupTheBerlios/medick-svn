@@ -3,14 +3,14 @@ $Id$
 
 0.0.4 (*)
     - added medick application generator (bin/medick.php).
-    - added medick.util, packeage witch holds MedickCollection and MedickIterator.
+    - added medick.util, base package for medick collections.
     - rewrite the Routing System (more like RoR), it`s not completly done, but we have a nice working version.
     - clean-up Medick template engine (removed the interface).
     - code improvements in Logger:
         - removed heavy backtrace witch was attached to every Logging Events.
         - new Configuration Options, every Outputter can have properties.
     - removed un-used application_path from configuration options.
-    - removed deprecated methods from the framework.  
+    - removed deprecated methods from the framework.
 
 0.0.3 (28.nov.2005)
     - Code Clean-Up:
@@ -23,7 +23,7 @@ $Id$
         - active.controller.Injector: This will be the only class that will know how to load (include)
                                        and check user Classes and Files: controllers, helpers, layouts, models and views.
                                       Also, it adds in to the include_path, user folders libs and vendor.
-        - more API docs.            
+        - more API docs.
         - removed action.controller.cli.* classes
         - removed vendor folder, medick 3-rd party imports should be placed inside libs folder.
     - ActiveRecordBase:

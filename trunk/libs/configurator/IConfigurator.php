@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005,2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of locknet.ro nor the names of its contributors may
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -37,19 +37,19 @@
  * @package locknet7.config
  */
 interface IConfigurator {
-    
+
     /**
      * It gets the logger outputters.
      * @return array
      */
     function getLoggerOutputters();
-    
+
     /**
      * It get logger formatter
      * @return string, Logger formatter name eg. FooFormatter.
      */
     function getLoggerFormatter();
-    
+
     /**
      * Propery parser
      * @param String the property name
@@ -57,12 +57,17 @@ interface IConfigurator {
      * @throws ConfiguratorException if the property is not found
      */
     function getProperty($name);
-    
+
     /**
      * Based on id we return the dsn array
      * <code>
      *      // for Creole this dsn format will do the job:
-     *      $dsn = array('phptype'=>'mysql','hostspec'=>'localhost','username'=>'root','password'=>'','database'=>'test'); 
+     *      $dsn = array(
+     *               'phptype'=>'mysql',
+     *               'hostspec'=>'localhost',
+     *               'username'=>'root',
+     *               'password'=>'',
+     *               'database'=>'test');
      * </code>
      * @param string, id, [optional]the dsn id, if none is specified, we will use the default
      * @return array, dsn ready to use
