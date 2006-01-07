@@ -34,177 +34,395 @@
 
 // {{{ ICollection
 /**
- * Base interface for medick Collections
+ * Base interface for Medick Collections
  *
- * A Collection for medick framework is an array witch holds numeric
- * keys with Objects as values
+ * A Collection for medick framework acts as an array witch holds numeric keys
+ * with medick.Object as values.
  *
  * @package locknet7.medick.util
  */
-interface ICollection {
+interface ICollection extends ArrayAccess {
 
     /**
-     * Adds a new Object into this Collection
-     * @param medick.Object
-     * @return Object, the Object just added.
+     * Gets the size of this collection
+     *
+     * @return int the size of this Collection
      */
-    function add(Object $o);
+    public function size();
 
     /**
-     * Removes the Object from this collection
-     * @param medick.Object the Object we want to remove
-     * @return Object, the Object just removed
-     */
-    // function remove(Object $o);
-
-    /**
-     * Removes all the objects stored in this Collection
+     * Clear the contents of this Collection
+     *
      * @return void
      */
-    // function clear();
+    public function clear();
 
     /**
-     * Indicates the size of this Collection
-     * @return int the size
-     */
-    function size();
-
-    /**
-     * Check if this Collection is empty
-     * @return bool, TRUE if this Collection is empty, FALSE otherwise
-     */
-    function isEmpty();
-
-    /**
-     * It gets the current iterator associated with this collection
+     * Gets an iterator over this Collection
+     *
      * @return medick.util.IIterator
      */
-    function iterator();
+    public function iterator();
 
     /**
-     * It gets a PHP Array representation of this collection
-     * @return array
+     * Adds an Object into this Collection
+     *
+     * @param medick.Object obj the Object to add
+     * @return
      */
-    function toArray();
+    public function add(Object $obj);
 
     /**
-     * Returns true if this collection contains the specified element
-     * @return bool
+     * Removes the Object from the Collection
+     *
+     * @param medick.Object obj the Object to remove
+     * @return
      */
-    // function contains(Object $o);
+    public function remove(Object $obj);
 
+    /**
+     * Check if this Collection contains the given Object
+     *
+     * @param medick.Object obj the Object to look for
+     * @return bool, TRUE if the Object is in the collection
+     */
+    public function contains(Object $obj);
 }
 // }}}
 
 // {{{ IIterator
 /**
- * An iterator over a Collection
+ * Medick Iterator Interface.
  *
+ * An Iterator over a Collection
  * @package locknet7.medick.util
  */
 interface IIterator {
 
     /**
-     * Check if this Collection has more elements
+     * Check if this Collection has more elements.
      *
-     * @return TRUE if this Iterator has a next element,
-     *         FALSE if we are at the last element
+     * @return bool, true if the call
      */
-    function hasNext();
+    public function hasNext();
 
     /**
-     * It gets the current element
-     *
+     * It gets the next element in this Collection.
+     * NOTE: the internal pointer is moved to the next element.
      * @return medick.Object
      */
-    function next();
+    public function next();
 
     /**
-     * It gets the current element.
+     * It gets the previous element of this Collection
      *
+     * NOTE: the internal pointer is moved to the previous element
      * @return medick.Object
      */
-    function current();
+    public function prev();
 
     /**
-     * It gets the current element key
+     * It gets the key of the current element
      *
-     * @return int
+     * NOTE: a call to next should be invoked before using this method
      */
-    function key();
-
+    public function key();
 }
 // }}}
 
+// {{{ Collection
+/**
+ * Default implementation for medick collections
+ *
+ * <code>
+ *   class Foo extends Object {  }
+ *   class Bar extends Object {  }
+ *   class Baz extends Object {  }
+ *   $col= new Collection();
+ *   $col[] = new Foo();   // $col->size()=1 (Foo object is added into collection)
+ *   $col->add(new Foo()); // $col->size()=2 (Foo is added again since is a new instance)
+ *   $b= new Bar ();
+ *   $col->add($b); // $col->size()=3; // $b (Bar) is added
+ *   $col[] = $b;   // $col->size()=3; // $b is already in the Collection)
+ *   $col[] = new Bar(); // $col->size()=4; (Bar is added, a new instance)
+ *   $col->contains(new Baz()); // false (Baz waz not added)
+ *   $col->contains($b); // true ($b is there)
+ *   $col->contains(new Bar()); // false (is a new instance)
+ * </code>
+ *
+ * @package locknet7.medick.util
+ */
+class Collection extends Object implements ICollection {
 
-// {{{ AbstractCollection
-abstract class AbstractCollection extends Object implements ICollection {
+    /**
+     * Collection elements.
+     * @var array
+     */
+    protected $elements = array();
 
-    private $elements;
-
-    public function AbstractCollection(/*Array*/ $elements=array()) {
-        $this->elements= $elements;
+    /**
+     * Creates a new Collection from the provided array
+     *
+     * @param array elements defaults to an empty array
+     */
+    public function Collection($elements=array()) {
+        foreach ($elements as $element) {
+            $this->add($element);
+        }
     }
 
-    public function iterator() {
-        return new MedickIterator($this);
+    /**
+     * Method requierd by ArrayAccess interface
+     *
+     * NOTE: avoid to use this method directly
+     * @see: http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa0
+     * @param int offset
+     * @return boot, TRUE if it exists.
+     */
+    public function offsetExists($offset) {
+        return isset($this->elements[$offset]);
     }
 
+    /**
+     * Method requierd by ArrayAccess interface
+     *
+     * NOTE: avoid to use this method directly
+     * @see: http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa1
+     * @param int offset
+     * @throws NoSuchElementException when the offset is invalid
+     */
+    public function offsetGet($offset) {
+        if ($this->offsetExists($offset)) {
+            return $this->elements[$offset];
+        }
+        throw new NoSuchElementException('Invalid offset: ' . $offset);
+    }
+
+    /**
+     * Method requierd by ArrayAccess interface
+     *
+     * NOTE: avoid to use this method directly
+     * @see: http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa2
+     * @param int offset
+     * @param medick.Object item the Object to add
+     * @throws InvalidArgumentException
+     *      when the offset is not an integer
+     *      when the item is not a medick.Object
+     */
+    public function offsetSet($offset, $item) {
+        if (!$item instanceof Object) {
+            throw new InvalidArgumentException('Item should be an medick.Object');
+        }
+        if (!is_null($offset)) {
+            throw new InvalidArgumentException($this->getClassName() . ' accepts only NULL keys!');
+        }
+        if ($this->contains($item)) {
+            return FALSE;
+        }
+        return $this->add($item);
+    }
+
+    /**
+     * Method requierd by ArrayAccess interface
+     *
+     * NOTE: avoid to use this method directly
+     * @see: http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa3
+     * @see: Collection::removeAt()
+     * @param int offset
+     */
+    public function offsetUnset($offset) {
+        $this->removeAt($offset);
+    }
+
+    /**
+     * @see locknet7.medick.util.ICollection::add(locknet7.medick.Object)
+     * @throws IllegalStateException when Collection.onAddObject returns FALSE
+     */
     public function add(Object $object) {
-        $this->elements[]= $object;
+        if ($this->onAdd($object)) {
+            return $this->elements[]= $object;
+        }
+        throw new IllegalStateException('onAdd failed!');
     }
 
+    /**
+     * @see locknet7.medick.util.ICollection::clear()
+     */
+    public function clear() {
+        foreach ($this->elements as $element) {
+            $this->onRemove($element);
+        }
+        $this->elements= array();
+    }
+
+    /**
+     * @see locknet7.medick.util.ICollection.contains(medick.Object)
+     */
+    public function contains(Object $obj) {
+        return $this->indexOf($obj) >= 0;
+    }
+
+    /**
+     * Check if this Collection isEmpty
+     *
+     * @return bool, TRUE if the Collection is empty
+     */
+    public function isEmpty() {
+        return $this->size() > 0;
+    }
+
+    /**
+     * @see medick.util.ICollection.remove(medick.Object)
+     */
+    public function remove(Object $obj) {
+        if( ($index=$this->indexOf($obj))>=0 ) {
+            return $this->removeAt($index);
+        }
+        return FALSE;
+    }
+
+    /**
+     * Removes the element at the given index.
+     *
+     * @param int index the index
+     * @return TRUE if the element was succesfully removed
+     * @throws NoSuchElementException when there is no element at the specified position
+     */
+    public function removeAt($index) {
+        if ($this->offsetExists($index)) {
+            $this->onRemove($this->elements[$index]);
+            array_splice($this->elements,$index,1);
+            return TRUE;
+        }
+        throw new NoSuchElementException('Invalid offset: ' . $offset);
+    }
+
+    /**
+     * It gets the index of the specified Object
+     *
+     * @param medick.Object obj the Object to get the index for.
+     * @return int, -1
+     */
+    public function indexOf(Object $obj) {
+        $pos= array_search($obj, $this->elements, TRUE);
+        if ($pos === FALSE) {
+            $pos = -1;
+        }
+        return $pos;
+    }
+
+    /**
+     * see ICollection.size()
+     */
     public function size() {
         return count($this->elements);
     }
 
-    public function isEmpty() {
-        return $this->size() == 0;
+    /**
+     * @see ICollection.size()
+     */
+    public function iterator() {
+        return new CollectionIterator($this);
     }
 
-    public function get($idx) {
-        return $this->elements[(int)$idx];
-    }
-
+    /**
+     * Returns the underlying array of this Collection
+     *
+     * @return array
+     */
     public function toArray() {
         return $this->elements;
     }
 
+    /**
+     * Callback method called when a new item is added into Collection
+     *
+     * It returns TRUE in this default implementation
+     * Overwrite this method to provide further functionality to your Collection
+     * @return bool, TRUE if we allow this item in the Collection
+     */
+    public function onAdd(Object $object) {
+        return TRUE;
+    }
+
+    /**
+     * Callback method called when an item is removed from Collection
+     *
+     * Overwrite this method to provide further functionality to your Collection
+     * @return void
+     */
+    public function onRemove(Object $object) {  }
+
 }
 // }}}
 
-// {{{ MedickIterator
-class MedickIterator implements IIterator {
+// {{{ CollectionIterator
+/**
+ * An Iterator implementation over a ICollection
+ *
+ * @package medick.util
+ * <code>
+ *    $it=$col->iterator();
+ *    while ($it->hasNext()) {
+ *      $it->next(); // returns the medick.Object and moves to the next element.
+ *    }
+ * </code>
+ */
+class CollectionIterator extends Object implements IIterator {
 
-    private $collection;
+    /**
+     * Collection to loop on
+     *
+     * @var ICollection
+     */
+    protected $collection;
 
-    // private $elements;
+    /**
+     * Internal pointer to Collection elements
+     *
+     * @var int
+     */
+    private $idx;
 
-    private $idx=0;
-
-    public function MedickIterator(ICollection $collection) {
+    /**
+     * Creates a new CollectionIterator on the given Collection
+     */
+    public function CollectionIterator(ICollection $collection) {
         $this->collection = $collection;
-        // $this->elements   = $collection->toArray();
-        // reset($this->elements);
+        $this->idx = 0;
     }
 
+    /**
+     * @see locknet7.medick.util.IIterator::hasNext()
+     */
     public function hasNext() {
         return $this->collection->size() > $this->idx;
     }
 
+    /**
+     * @see locknet7.medick.util.IIterator::next()
+     */
     public function next() {
-        // return $this->elements[$this->idx++];
-        return $this->collection->get($this->idx++);
+        return $this->collection[$this->idx++];
     }
 
-    public function current() {
-        // return $this->elements[(int)($this->idx - 1)];
-        return $this->collection->get((int)($this->idx - 1));
+    /**
+     * @see locknet7.medick.util.IIterator::prev()
+     */
+    public function prev() {
+        return $this->collection[$this->idx--];
     }
 
+    /**
+     * @see locknet7.medick.util.IIterator::key()
+     */
     public function key() {
-        return (int)($this->idx-1);
+        $index = (int)($this->idx-1);
+        if ($index < 0) {
+            throw new IllegalStateException(
+                'Call ' . $this->getClassName() . '::next() method before ' . $this->getClassName() . '::key().');
+        }
+        return $index;
     }
-
 }
 // }}}

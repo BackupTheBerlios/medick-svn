@@ -35,12 +35,12 @@
 /**
  * @package locknet7.action.controller
  */
-class Map extends AbstractCollection {
+class Map extends Collection {
 
     private static $instance= NULL;
 
     protected function Map() {
-        parent::AbstractCollection(array());
+        parent::Collection();
     }
 
     public static function getInstance() {

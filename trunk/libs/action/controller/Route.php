@@ -39,7 +39,7 @@
 /**
  * A Collection with Components
  */
-class Components extends AbstractCollection {   }
+// class Components extends AbstractCollection {   }
 
 /**
  * A Route Component
@@ -92,7 +92,7 @@ class Route extends Object {
 
     public function Route($route_list, $name = '', /*Array*/ $defaults = array(), /*Array*/ $requirements = array()) {
 
-        $this->components= new Components();
+        $this->components= new Collection();
 
         $this->route_list= $route_list;
         $this->defaults= $defaults;

@@ -45,7 +45,8 @@ class ActionControllerRouting extends Object {
     private function findRoute(Request $request) {
         $it= Map::getInstance()->iterator();
         while($it->hasNext()) {
-            if ($it->next()->match($request)) return $it->current();
+            $current= $it->next();
+            if ($current->match($request)) return $current;
         }
         throw new RoutingException('Cannot find a Route for this hash: ' . $request->getPathInfo());
     }
@@ -67,7 +68,8 @@ class ActionControllerRouting extends Object {
             // load 404 route, if fails too try the default route, this are named routes.
             // echo $rEx;
         // } catch (FileNotFoundException $fnfEx) {
-            // exception thrown by Injector::injectController when the requested controller is not at the expected location.
+            // exception thrown by Injector::injectController
+            // when the requested controller is not at the expected location.
             // echo $fnfEx;
         // }
     }
