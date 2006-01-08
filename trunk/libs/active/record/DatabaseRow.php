@@ -39,55 +39,31 @@ include_once('active/record/Field.php');
  * @package locknet7.active.record
  */
 
-class FieldsAggregate extends Object {
-
-    /** @var ArrayObject
-        fields container */
-    private $fields;
+class DatabaseRow extends Collection {
 
     /** @var Field
-        pk field*/
+        pk field */
     private $pk_filed = NULL;
+
+    /** @var array
+        holds the field names */
+    private $field_names     = array();
+
+    /** @var array
+        affected fields, Filed[] */
+    private $affected_fields = array();
 
     /** @var bool
         affected flag. */
     private $affected = FALSE;
 
-    /**
-     * FieldsAggregate Constructor
-     */
-    public function __construct() {
-        $this->fields = new ArrayObject();
-    }
-
-    /**
-     * Add a new Field on the fields container
-     */
-    public function add(Field $field) {
-        if (!$this->contains($field)) $this->fields[] = $field;
-        if ($field->isPk) $this->pk_field = $field;
-        return $field;
-    }
-
-    /**
-     * Check if the container contains the given Field
-     * @return bool, TRUE if it contains this Field, FALSE otherwise
-     */
-    public function contains(Field $field) {
-        for ( $it = $this->getIterator(); $it->valid(); $it->next() ) {
-            if ($it->current()->getName() == $field->getName()) {
-                return TRUE;
-            }
+    public function onAdd(Object $field) {
+        if (!$field instanceof Field) {
+            throw new IllegalArgumentException(
+                $field->getClassName() . ' wrong parameter type, it should be a Field object');
         }
-        return FALSE;
-    }
-
-    /**
-     * It gets the iterator
-     * @return Iterator
-     */
-    public function getIterator() {
-        return $this->fields->getIterator();
+        if ($field->isPk) $this->pk_field = $field;
+        return TRUE;
     }
 
     /**
@@ -107,7 +83,8 @@ class FieldsAggregate extends Object {
     }
 
     /**
-     * it gets the primary key filed
+     * It gets the primary key filed
+     *
      * @return Field, the field containing the pk.
      */
     public function getPrimaryKey() {
@@ -115,17 +92,36 @@ class FieldsAggregate extends Object {
     }
 
     /**
+     * It gets a filed by its name
+     *
+     * @param string field_name the field name to search for
+     * @return Field or FALSE if there is no Field by the given name
+     */
+    public function getFieldByName($field_name) {
+        $it = $this->iterator();
+        while($it->hasNext()) {
+            $current= $it->next();
+            if ($current->getName() == $field_name) {
+                return $current;
+            }
+        }
+        return FALSE;
+    }
+
+    public function updateStatus(Field $field, $value) {
+        $field->setValue($value);
+        $field->isAffected = TRUE;
+        $this->field_names[] = $field->getName();
+        $this->affected_fields[] = $field;
+        $this->affected = TRUE;
+    }
+
+    /**
      * It gets an array with the names of the affected fields
      * @return array
      */
     public function getAffectedFieldsNames() {
-        $names= array();
-        for ($it = $this->getIterator(); $it->valid(); $it->next()) {
-            if ($it->current()->isAffected) {
-                $names[] = $it->current()->getName();
-            }
-        }
-        return $names;
+        return $this->field_names;
     }
 
     /**
@@ -133,13 +129,6 @@ class FieldsAggregate extends Object {
      * @return Field[]
      */
     public function getAffectedFields() {
-        if (!$this->affected) return array();
-        $affected_fields = array();
-        for ( $it = $this->getIterator(); $it->valid(); $it->next() ) {
-            if ($it->current()->isAffected) {
-                $affected_fields[] = $it->current();
-            }
-        }
-        return $affected_fields;
+        return $this->hasAffected() ? $this->affected_fields : array();
     }
 }

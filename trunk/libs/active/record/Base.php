@@ -33,7 +33,8 @@
 // }}}
 
 // ActiveRecord dependencies.
-include_once('active/record/FieldsAggregate.php');
+// include_once('active/record/FieldsAggregate.php');
+include_once('active/record/DatabaseRow.php');
 include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
 include_once('active/support/Inflector.php');
@@ -56,6 +57,8 @@ abstract class ActiveRecordBase extends Object {
     /** @var FieldsAggregate
         DB Table Fields */
     protected $fields;
+
+    protected $row;
 
     /** @var string
         primary key name! */
@@ -98,7 +101,8 @@ abstract class ActiveRecordBase extends Object {
 
         $table_info   = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
         $this->pk     = $table_info->getPrimaryKey()->getName();
-        $this->fields = new FieldsAggregate();
+        //$this->fields = new FieldsAggregate();
+        $this->row = new DatabaseRow();
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
@@ -115,7 +119,8 @@ abstract class ActiveRecordBase extends Object {
             } else {
                 $field->isFK = false;
             }
-            $this->fields->add( $field );
+            // $this->fields->add( $field );
+            $this->row[] = $field;
         }
 
         foreach ($params as $field_name => $field_value) {
@@ -132,13 +137,8 @@ abstract class ActiveRecordBase extends Object {
      * @throw ActiveRecordException if the field is not found.
      */
     public function __set($field_name, $field_value) {
-        for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
-            if ($it->current()->getName() == $field_name) {
-                $it->current()->setValue($field_value);
-                $it->current()->isAffected = TRUE;
-                $this->fields->setAffected(TRUE);
-                return;
-            }
+        if ($field= $this->row->getFieldByName($field_name)) {
+            return $this->row->updateStatus($field, $field_value);
         }
         throw new ActiveRecordException (
             'Cannot Set the value of field: `' . $field_name . '`. No such field!');
@@ -152,12 +152,9 @@ abstract class ActiveRecordBase extends Object {
      * @return field value
      */
     public function __get($field_name) {
-        for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
-            if ( $it->current()->getName() == $field_name ) {
-                return $it->current()->isAffected ? $it->current()->getValue() : NULL;
-            }
+        if ($field= $this->row->getFieldByName($field_name)) {
+            return $field->isAffected ? $field->getValue() : NULL;
         }
-
         try {
             return Association::resolve(
                                 array(
@@ -168,7 +165,7 @@ abstract class ActiveRecordBase extends Object {
                                     ),
                                 self::$table_name,
                                 $field_name,
-                                $this->fields
+                                $this->row
                                 )->execute();
         } catch (AssociationNotFoundException $anfEx) {
             throw new ActiveRecordException (
@@ -309,7 +306,7 @@ abstract class ActiveRecordBase extends Object {
      * </code>
      */
     public final function save() {
-        if ($this->fields->getPrimaryKey()->isAffected) {
+        if ($this->row->getPrimaryKey()->isAffected) {
             return $this->update();
         } else {
             return $this->insert();
@@ -384,10 +381,10 @@ abstract class ActiveRecordBase extends Object {
     public final function delete() {
         $this->before_delete();
         $whereClause = array();
-        foreach ($this->fields->getAffectedFields() as $col) {
+        foreach ($this->row->getAffectedFields() as $col) {
             $whereClause[] = $col->getName() . ' = ? ';
         }
-        $sql = 'DELETE FROM ' . self::$table_name . ' WHERE ' . implode(' AND ', $whereClause);
+        $sql = 'DELETE FROM ' . ActiveRecordBase::$table_name . ' WHERE ' . implode(' AND ', $whereClause);
         $af= $this->performQuery($sql);
         $this->after_delete();
         return $af;
@@ -401,9 +398,9 @@ abstract class ActiveRecordBase extends Object {
      * @return string the next id, or false when the table dont have a primary key
      */
     private function getNextId() {
-        if ($this->fields->getPrimaryKey() !== NULL) {
+        if ($this->row->getPrimaryKey() !== NULL) {
             $_pk = $this->pk;
-            $id  = self::$conn->getIdGenerator()->getId($this->pk);
+            $id  = ActiveRecordBase::$conn->getIdGenerator()->getId($this->pk);
             $this->$_pk = $id;
             return $id;
         } else {
@@ -419,11 +416,11 @@ abstract class ActiveRecordBase extends Object {
      * @throws SQLException
      */
     private function performQuery($sql) {
-        $stmt = self::$conn->prepareStatement($sql);
-        self::populateStmtValues($stmt, $this->fields->getAffectedFields());
+        $stmt = ActiveRecordBase::$conn->prepareStatement($sql);
+        ActiveRecordBase::populateStmtValues($stmt, $this->row->getAffectedFields());
         $af_rows = $stmt->executeUpdate();
         $stmt->close();
-        Registry::get('__logger')->debug('Performing sql query: ' . self::$conn->lastQuery);
+        Registry::get('__logger')->debug('Performing sql query: ' . ActiveRecordBase::$conn->lastQuery);
         // $this->_reset();
         return $af_rows;
     }
@@ -442,10 +439,13 @@ abstract class ActiveRecordBase extends Object {
         if ($this->pk !== NULL) {
             $sqlSnippet = ' WHERE ' . $this->pk . ' = ' . $this->fields->getPrimaryKey()->getValue();
         }
-        $sql = 'UPDATE ' . self::$table_name . ' SET ';
+        $sql  = 'UPDATE ' . ActiveRecordBase::$table_name . ' SET ';
+        $sql .= implode(' = ?, ', $this->row->getAffectedFieldsNames());
+        /*
         foreach($this->fields->getAffectedFields() as $field) {
             $sql .= $field->getName() . ' = ?, ';
         }
+        */
         return substr($sql, 0, -2) . $sqlSnippet;
     }
 
@@ -455,8 +455,8 @@ abstract class ActiveRecordBase extends Object {
      */
     private function getInsertSql() {
         return 'INSERT INTO ' . self::$table_name
-               . ' (' . implode(',', $this->fields->getAffectedFieldsNames()) . ')'
-               . ' VALUES (' . substr(str_repeat('?,', count($this->fields->getAffectedFields())), 0, -1) . ')';
+               . ' (' . implode(',', $this->row->getAffectedFieldsNames()) . ')'
+               . ' VALUES (' . substr(str_repeat('?,', count($this->row->getAffectedFields())), 0, -1) . ')';
     }
 
     /**
@@ -493,13 +493,13 @@ abstract class ActiveRecordBase extends Object {
 
         try {
             // prepare the class instance.
-            $class = new ReflectionClass(self::$class_name);
+            $class = new ReflectionClass(ActiveRecordBase::$class_name);
         } catch (ReflectionException $rEx) {
-            Registry::get('__injector')->inject('model', strtolower(self::$class_name));
+            Registry::get('__injector')->inject('model', strtolower(ActiveRecordBase::$class_name));
             // retry:
-            $class = new ReflectionClass(self::$class_name);
+            $class = new ReflectionClass(ActiveRecordBase::$class_name);
         }
-        $query = new QuerryBuilder(self::$table_name);
+        $query = new QuerryBuilder(ActiveRecordBase::$table_name);
 
         if ( $params[0] == 'all' && $numargs == 1 ) {
             // all table fields and one arg.
@@ -515,7 +515,7 @@ abstract class ActiveRecordBase extends Object {
                 $query->add('condition', $pk_name . '=?');
                 $query->addArray($params[1]);
             }
-            $stmt = self::$conn->prepareStatement($query->buildQuery());
+            $stmt = ActiveRecordBase::$conn->prepareStatement($query->buildQuery());
             $stmt->setInt(1, $params[0]);
             $rs   = $stmt->executeQuery();
             if ($rs->getRecordCount() == 1) {
@@ -524,7 +524,7 @@ abstract class ActiveRecordBase extends Object {
                 return $class->newInstance($rs->getRow());
             } elseif ($rs->getRecordCount() == 0) {
                 throw new RecordNotFoundException(
-                    'Couldn\'t find a `' . self::$class_name . '` with ID=' . $params[0]);
+                    'Couldn\'t find a `' . ActiveRecordBase::$class_name . '` with ID=' . $params[0]);
             }
         } elseif(is_array($params[0])) {
             $query->addArray($params[0]);
@@ -532,14 +532,14 @@ abstract class ActiveRecordBase extends Object {
             throw new ActiveRecordException('Case Not Implemented yet!');
         }
 
-        $stmt = self::$conn->prepareStatement($query->buildQuery());
+        $stmt = ActiveRecordBase::$conn->prepareStatement($query->buildQuery());
         // add limit and/or offset if requested
         if ($limit = $query->getLimit())   $stmt->setLimit($limit);
         if ($offset = $query->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
         if ($rs->getRecordCount() == 0) {
             throw new RecordNotFoundException(
-                'Couldn\'t find a ' . self::$class_name . ' The Result Set was empty!');
+                'Couldn\'t find a ' . ActiveRecordBase::$class_name . ' The Result Set was empty!');
         }
         // build a list with objects of this type.
         $results = new RowsAggregate();
@@ -548,7 +548,7 @@ abstract class ActiveRecordBase extends Object {
         }
         // release resources.
         $rs->close(); $stmt->close();
-        Registry::get('__logger')->debug('Performed sql query: ' . self::$conn->lastQuery);
+        Registry::get('__logger')->debug('Performed sql query: ' . ActiveRecordBase::$conn->lastQuery);
         return $results;
     }
     // }}}

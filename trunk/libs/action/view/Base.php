@@ -40,13 +40,44 @@ include_once('action/view/HTML.php');
 
 // namespace ActionView {
 
+interface ITemplateEngine {
+    public function render($template_file);
+    public function assign($name, $value);
+}
+
+class ActionViewBase extends Object {
+
+    public static function factory($engine) {
+        return new PHPTemplateEngine();
+    }
+
+    /**
+     * Strips slashes
+     * This method is called recursive
+     * TODO: Move this OUT of this class, or, in __set.
+     * TODO: What if $value is Object?
+     * @param mixed value, the value on witch we strip slashes.
+     *                  It can be array/string or object.
+     */
+    public static function stripslashes_deep($value) {
+        if (is_array($value)) {
+            array_map(array('ActionViewBase','stripslashes_deep'), $value);
+        } elseif (is_object($value)) {
+
+        } else {
+            stripslashes($value);
+        }
+        return $value;
+     }
+}
+
 /**
  * ActionViewBase is the default `Template Engine' for Medick Framwork.
  *
  * For a smoother transaction from <tt>Smarty</tt>, some variabiles/methods
  * may share the same name and behavior
  */
-class ActionViewBase extends Object {
+class PHPTemplateEngine extends Object implements ITemplateEngine {
 
     private $vars= array();
 
@@ -63,7 +94,7 @@ class ActionViewBase extends Object {
     public function render($file) {
         if (!is_file($file)) throw new MedickException ('Cannot Find Template: ' . $file);
         if (!empty($this->vars)) {
-            if(!get_magic_quotes_gpc()) $this->vars = self::stripslashes_deep($this->vars);
+            if(!get_magic_quotes_gpc()) $this->vars = ActionViewBase::stripslashes_deep($this->vars);
             extract($this->vars,EXTR_SKIP);
         }
         ob_start();
@@ -105,24 +136,6 @@ class ActionViewBase extends Object {
                  $this->vars[$name] : trigger_error("Undefined Template Variable: " . $name, E_USER_ERROR);
     }
 
-    /**
-     * Strips slashes
-     * This method is called recursive
-     * TODO: Move this OUT of this class, or, in __set.
-     * TODO: What if $value is Object?
-     * @param mixed value, the value on witch we strip slashes.
-     *                  It can be array/string or object.
-     */
-    private static function stripslashes_deep($value) {
-        if (is_array($value)) {
-            array_map(array('ActionViewBase','stripslashes_deep'), $value);
-        } elseif (is_object($value)) {
-
-        } else {
-            stripslashes($value);
-        }
-        return $value;
-    }
 }
 
 // }

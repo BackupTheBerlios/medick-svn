@@ -108,6 +108,7 @@ interface IIterator {
 
     /**
      * It gets the next element in this Collection.
+     *
      * NOTE: the internal pointer is moved to the next element.
      * @return medick.Object
      */
@@ -127,6 +128,14 @@ interface IIterator {
      * NOTE: a call to next should be invoked before using this method
      */
     public function key();
+
+    /**
+     * Resets the pointer
+     *
+     * @return void
+     */
+    public function reset();
+
 }
 // }}}
 
@@ -423,6 +432,13 @@ class CollectionIterator extends Object implements IIterator {
                 'Call ' . $this->getClassName() . '::next() method before ' . $this->getClassName() . '::key().');
         }
         return $index;
+    }
+
+    /**
+     * @see locknet7.medick.util.IIterator::reset()
+     */
+    public function reset() {
+        $this->idx=0;
     }
 }
 // }}}

@@ -48,7 +48,7 @@ class Version extends Object {
      * @return string the medick version
      */
     public static function getVersion() {
-        return Version::MAJOR . '.' . Version::MINOR . '.' . Version::TINY . '-svn';
+        return Version::MAJOR . '.' . Version::MINOR . '.' . Version::TINY;
     }
 
 }

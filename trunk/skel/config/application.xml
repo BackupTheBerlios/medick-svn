@@ -4,14 +4,14 @@
  -->
 
 <application>
-     
+
     <!--  ====================== -->
     <!--   General properties    -->
     <!--  ====================== -->
-    <property name="server_name"      value="http://morgan:8091" />
-    <property name="document_root"    value="/" />
+    <property name="server_name"      value="http://localhost" />
+    <property name="document_root"    value="/${APP_NAME}" />
     <property name="rewrite"          value="on" />
-     
+
     <!--  ====================== -->
     <!--     Logger System       -->
     <!--  ====================== -->
@@ -23,7 +23,7 @@
             </outputter>
             <outputter name="stdout" level="0" />
             <outputter name="mail" level="3">
-                <property name="subject" value="Fatality on ${server}" />
+                <property name="subject" value="Fatality on ${APP_NAME}" />
                 <property name="address" value="user@example.com" />
             </outputter>
         </outputters>
@@ -36,9 +36,9 @@
         <dsn id = "one"
              phptype  = "mysql"
              hostspec = "localhost"
-             database = "elproto"
+             database = "${APP_NAME}"
              username = "root"
-             password = "pazzword" />
+             password = "" />
     </database>
 
 </application>

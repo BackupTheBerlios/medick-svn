@@ -76,15 +76,6 @@ class RowsAggregate extends Object implements IteratorAggregate {
     }
 
     /**
-     * It gets the offset by his index.
-     * @param index
-     * @return
-     */
-    public function offsetGet($index) {
-        return $this->container->offsetGet($index);
-    }
-
-    /**
      * Magick php5 __call
      */
     public function __call($method, $arguments) {

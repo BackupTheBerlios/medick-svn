@@ -122,12 +122,11 @@ class ActionControllerBase extends Object {
         if(ob_get_length()) {
             ob_end_clean();
         }
-        $template = new ActionViewBase();
+        $template = ActionViewBase::factory('php');
         // $template = new ActionView:::Base();
         $template->error= $exception;
         $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
-        $status = Response::SC_INTERNAL_SERVER_ERROR;
-        $response->setStatus($status);
+        $response->setStatus(Response::SC_INTERNAL_SERVER_ERROR);
         $response->setContent($text);
         return $response;
     }
@@ -279,7 +278,7 @@ class ActionControllerBase extends Object {
         $this->app_path      = $this->injector->getPath('__base');
         $this->template_root = $this->injector->getPath('views') . $this->params['controller'] . DIRECTORY_SEPARATOR;
 
-        $this->template = new ActionViewBase();
+        $this->template = ActionViewBase::factory('php');
         // $this->template = new ActionView:::Base();
         $this->template->__base= $this->config->getProperty('document_root');
     }
