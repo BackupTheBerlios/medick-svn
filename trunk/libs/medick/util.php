@@ -277,7 +277,7 @@ class Collection extends Object implements ICollection {
      * @return bool, TRUE if the Collection is empty
      */
     public function isEmpty() {
-        return $this->size() > 0;
+        return $this->size() == 0;
     }
 
     /**

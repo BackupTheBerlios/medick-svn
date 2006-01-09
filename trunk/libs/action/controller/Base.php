@@ -280,7 +280,9 @@ class ActionControllerBase extends Object {
 
         $this->template = ActionViewBase::factory('php');
         // $this->template = new ActionView:::Base();
-        $this->template->__base= $this->config->getProperty('document_root');
+        // predefined variables:
+        $this->template->__base   = $this->config->getProperty('document_root');
+        $this->template->__server = $this->config->getProperty('server_name');
     }
 
     // XXX: not-done!

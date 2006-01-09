@@ -32,7 +32,7 @@ class FindTest extends UnitTestCase {
      public function setUp() {
         Registry::put(new MockConfigurator(), '__configurator');
         Registry::put(new Logger(), '__logger');
-        ActiveRecordBase::close();
+        ActiveRecordBase::close_connection();
         $author= new Author();
         $author->name= "Andrei Cristescu";
         $author->email= "andrei.cristescu@foo-factory.info";

@@ -21,7 +21,7 @@
             <outputter name="file" level="0">
               <property name="path" value="${LOG}" />
             </outputter>
-            <outputter name="stdout" level="0" />
+            <!-- <outputter name="stdout" level="0" /> -->
             <outputter name="mail" level="3">
                 <property name="subject" value="Fatality on ${APP_NAME}" />
                 <property name="address" value="user@example.com" />

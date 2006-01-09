@@ -437,15 +437,15 @@ abstract class ActiveRecordBase extends Object {
     private function getUpdateSql() {
         $sqlSnippet = '';
         if ($this->pk !== NULL) {
-            $sqlSnippet = ' WHERE ' . $this->pk . ' = ' . $this->fields->getPrimaryKey()->getValue();
+            $sqlSnippet = ' WHERE ' . $this->pk . ' = ' . $this->row->getPrimaryKey()->getValue();
         }
         $sql  = 'UPDATE ' . ActiveRecordBase::$table_name . ' SET ';
-        $sql .= implode(' = ?, ', $this->row->getAffectedFieldsNames());
-        /*
-        foreach($this->fields->getAffectedFields() as $field) {
+        // $sql .= implode(' = ?, ', $this->row->getAffectedFieldsNames());
+        
+        foreach($this->row->getAffectedFields() as $field) {
             $sql .= $field->getName() . ' = ?, ';
         }
-        */
+        
         return substr($sql, 0, -2) . $sqlSnippet;
     }
 

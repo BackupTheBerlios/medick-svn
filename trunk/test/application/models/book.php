@@ -9,9 +9,8 @@ class Book extends ActiveRecordBase {
     protected $has_one= array('author');
     
     public static function find() {
-        $args= func_get_args();
-        self::setTable(__CLASS__);
-        return self::__find($args);
+        ActiveRecordBase::initialize(__CLASS__);
+        return ActiveRecordBase::__find(func_get_args());
     }
 
 }

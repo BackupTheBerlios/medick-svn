@@ -178,11 +178,13 @@ class HasOneAssociation extends Association {
      * @see Association#execute
      */
     public function execute() {
-        $fk= $this->class.'_id';
-        for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
-            if ( $it->current()->getName() == $fk ) {
+        $fk= $this->class.'_id'; // foreign key name: the class name+"_id" suffix"
+        $it= $this->fields->iterator();
+        while($it->hasNext()) {
+            $current= $it->next();
+            if ($current->getName() == $fk) {
                 $this->pre_execution();
-                $ret= ActiveRecordBase::__find(array($it->current()->getValue()));
+                $ret= ActiveRecordBase::__find(array($current->getValue()));
                 $this->post_execution();
                 return $ret;
             }

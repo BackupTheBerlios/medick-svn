@@ -49,4 +49,18 @@ class Map extends Collection {
         }
         return Map::$instance;
     }
+    
+    public function match(Request $request) {
+        foreach ($this->elements as $element) {
+            if ($element->match($request)) return $element;
+        }
+        throw new RoutingException('Cannot find a Route for this hash: ' . $request->getPathInfo());    
+    }
+    
+    public function getRouteByName($name) {
+        foreach ($this->elements as $element) {
+            if ($element->getName() == $name) return $element;
+        }
+        throw new RoutingException('Cannot find a Route with this name: ' . $name); 
+    }
 }

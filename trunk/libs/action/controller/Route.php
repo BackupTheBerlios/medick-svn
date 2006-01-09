@@ -82,22 +82,36 @@ class Route extends Object {
     /** @var string
         incoming Route Definition list. */
     private $route_list;
-
+    
+    /** @var array
+        a list with default values */
     private $defaults;
-
+    
+    /** @var string 
+        the route name */
     private $name;
 
+    /** @var Collection
+        route components */
     private $components;
 
+    /** @var string
+        Route Controller */
+    private $controller;
 
+    /**
+     * Creates a new Route
+     *
+     * @param string route_list the route list
+     * @param string name route name
+     * @param array 
+     */
     public function Route($route_list, $name = '', /*Array*/ $defaults = array(), /*Array*/ $requirements = array()) {
 
-        $this->components= new Collection();
-
-        $this->route_list= $route_list;
-        $this->defaults= $defaults;
-
-        $this->name= $name;
+        $this->components = new Collection();
+        $this->route_list = $route_list;
+        $this->defaults   = $defaults;
+        $this->name       = $name;
 
         $parts= explode('/', trim($this->route_list, '/'));
 
@@ -188,7 +202,14 @@ class Route extends Object {
                 $request->setParameter('action','index');
             }
         }
+        
+        $this->controller= $request->getParameter('controller');
+        
         return TRUE;
+    }
+    
+    public function createControllerInstance() {
+        return Registry::put(new Injector(), '__injector')->inject('controller', $this->controller);
     }
 
 }
