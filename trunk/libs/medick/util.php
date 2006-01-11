@@ -175,8 +175,8 @@ class Collection extends Object implements ICollection {
      * @param array elements defaults to an empty array
      */
     public function Collection($elements=array()) {
-        foreach ($elements as $element) {
-            $this->add($element);
+        foreach ($elements as $key=>$element) {
+            $this->offsetSet($element, $key);
         }
     }
 

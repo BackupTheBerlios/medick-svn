@@ -50,13 +50,17 @@ class XMLConfigurator extends Object implements IConfigurator {
      * @param string/file xml
      */
     public function __construct($xml) {
-        if (is_file($xml)) {
-            $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
+        if (file_exists($xml)) {
+            if (is_readable($xml)) {
+                $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
+            } else {
+                throw new IOException("Cannot read: " . $xml . " Permission deny");
+            }
         } else {
-            $this->sxe = @simplexml_load_string($xml, 'SimpleXMLIterator');
+            throw new FileNotFoundException("No such file or directory: " . $xml);
         }
-        if ($this->sxe===false) {
-            throw new ConfiguratorException("Cannot read\n<br />" . $xml . "\n<br />Bad Format!");
+        if ($this->sxe === false) {
+            throw new ConfiguratorException("Cannot read: " . $xml . " Bad Format!");
         }
     }
 

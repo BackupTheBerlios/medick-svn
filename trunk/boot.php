@@ -37,9 +37,11 @@
  * @package locknet7.boot
  */
 
-define( 'MEDICK_PATH', dirname(__FILE__)  . DIRECTORY_SEPARATOR );
 // medick path.
+define( 'MEDICK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR );
+// rewrite system include path
 set_include_path( MEDICK_PATH . 'libs'   . DIRECTORY_SEPARATOR  );
+
 // this should depend on environment
 error_reporting(E_ALL|E_STRICT);
 // php 5.1 strict sdandards.

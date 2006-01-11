@@ -1,13 +1,18 @@
 <?php
+/**
+ * Medick generator.
+ * $Id$
+ */
+ 
 $type= isset($argv[1]) ? $argv[1] : exit("Use one of controller or model for generator.\n");
 $name= isset($argv[2]) ? strtolower($argv[2]) : exit($argv[0] . " needs a " . $argv[1] . " name.\n");
 
 switch ($type) {
     case "controller":
-        generate_controller($name, "/wwwroot/medick/applications/mytodo");
+        generate_controller($name, "${APP_PATH}");
         break;
     case "model":
-        generate_model($name, "/wwwroot/medick/applications/mytodo");
+        generate_model($name, "${APP_PATH}");
          break;
      default:
          exit("Use one of controller or model for generator.\n");

@@ -2,7 +2,6 @@
 # $Id$
 
 # Configuration
-php_value auto_prepend_file ${CORE}/boot.php
 
 SetEnv MEDICK_APPLICATION_PATH ${APP_PATH}
 SetEnv MEDICK_APPLICATION_NAME ${APP_NAME}

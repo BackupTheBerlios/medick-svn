@@ -32,5 +32,7 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/** Main Entry Point */
+// load medick core
+include_once( "${CORE}" . DIRECTORY_SEPARATOR . "boot.php" );
+// Dispatch this request.
 Dispatcher::dispatch();

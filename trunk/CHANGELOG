@@ -5,8 +5,9 @@ $Id$
 
 0.0.4 (09.Jan.2006)
     - added medick application generator (bin/medick.php).
+    - re-wrote scripts/generator.php, will create dummy files (controllers with associated views and models)
     - added medick.util, base package for medick collections.
-    - rewrite the Routing System (more like RoR), it`s not completly done, but we have a nice working version.
+    - rewrite the Routing System (more like RoR), it`s not completly done (20%), but we have a nice working version.
     - minor refactorings in ActiveRecordBase  
     - code improvements in Logger:
         - removed heavy backtrace witch was attached to every Logging Events.
