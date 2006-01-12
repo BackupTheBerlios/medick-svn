@@ -120,7 +120,7 @@ class $model_class_name extends ActiveRecordBase {
       */
      public static function find() {
          ActiveRecordBase::initialize(__CLASS__);
-         return ActiveRecordBase::__find(func_get_arguments());
+         return ActiveRecordBase::__find(func_get_args());
      }
 
   }
