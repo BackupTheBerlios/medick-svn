@@ -39,7 +39,7 @@
 
 class Version extends Object {
 
-    const TINY  = 4;
+    const TINY  = 5;
     const MINOR = 0;
     const MAJOR = 0;
 
@@ -48,7 +48,7 @@ class Version extends Object {
      * @return string the medick version
      */
     public static function getVersion() {
-        return Version::MAJOR . '.' . Version::MINOR . '.' . Version::TINY;
+        return Version::MAJOR . '.' . Version::MINOR . '.' . Version::TINY . '-svn';
     }
 
 }
