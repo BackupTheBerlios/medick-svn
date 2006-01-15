@@ -39,6 +39,7 @@ include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
 include_once('active/support/Inflector.php');
 include_once('active/record/Association.php');
+include_once('active/record/Validator.php');
 // 3-rd party.
 include_once('creole/Creole.php');
 
@@ -56,7 +57,7 @@ abstract class ActiveRecordBase extends Object {
 
     /** @var FieldsAggregate
         DB Table Fields */
-    protected $fields;
+    // protected $fields;
 
     protected $row;
 
@@ -101,7 +102,7 @@ abstract class ActiveRecordBase extends Object {
 
         $table_info   = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
         $this->pk     = $table_info->getPrimaryKey()->getName();
-        //$this->fields = new FieldsAggregate();
+
         $this->row = new DatabaseRow();
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
@@ -119,7 +120,6 @@ abstract class ActiveRecordBase extends Object {
             } else {
                 $field->isFK = false;
             }
-            // $this->fields->add( $field );
             $this->row[] = $field;
         }
 
@@ -225,6 +225,14 @@ abstract class ActiveRecordBase extends Object {
     }
 
     // }}}
+
+    public final function getRow() {
+        return $this->row;
+    }
+
+    public final function validates () {
+        return new Validator($this->row);
+    }
 
     // {{{ filters:
     /**
@@ -441,11 +449,11 @@ abstract class ActiveRecordBase extends Object {
         }
         $sql  = 'UPDATE ' . ActiveRecordBase::$table_name . ' SET ';
         // $sql .= implode(' = ?, ', $this->row->getAffectedFieldsNames());
-        
+
         foreach($this->row->getAffectedFields() as $field) {
             $sql .= $field->getName() . ' = ?, ';
         }
-        
+
         return substr($sql, 0, -2) . $sqlSnippet;
     }
 
@@ -553,7 +561,7 @@ abstract class ActiveRecordBase extends Object {
     }
     // }}}
 
-    public static final function initialize($table) {
+    protected static final function initialize($table) {
         ActiveRecordBase::$table_name= strtolower(Inflector::pluralize($table));
         ActiveRecordBase::$class_name= ucfirst($table);
     }

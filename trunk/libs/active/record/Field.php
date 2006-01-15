@@ -73,12 +73,27 @@ class Field extends Object {
         the foreign key table */
     public $fkTable;
 
+    protected $errors;
+
     /**
      * Creates a new Field Object
      * @param string the name of this Field
      */
-    public function __construct($name) {
+    public function Field($name) {
         $this->name = $name;
+        $this->errors= array();
+    }
+
+    public function addError($message) {
+        $this->errors[]=$message;
+    }
+
+    public function getErrors() {
+        return $this->errors;
+    }
+
+    public function hasErrors() {
+        return count($this->errors) > 0;
     }
 
     /**

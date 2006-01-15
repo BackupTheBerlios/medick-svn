@@ -32,11 +32,91 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+
+class ActiveRecordHelper extends Object {
+
+    public static function error_messages_for(ActiveRecordBase $object) {
+        $r= '<div id="form_errors">';
+        $errors= 0;
+        $p = '';
+        $it= $object->getRow()->iterator();
+        while ($it->hasNext()) {
+            $current= $it->next();
+            if ($current->hasErrors()) {
+                $p .= '<ul>';
+                foreach ($current->getErrors() as $error) {
+                    $p .= '<li>' . ucfirst($current->getName()) .' ' . $error . '</li>';
+                    $errors++;
+                }
+                $p .= '</ul>';
+                // $r[$current->getName()]= $current->getErrors();
+            }
+        }
+        if ($errors > 0) {
+            $r .= '<h2>' . $errors . ' errors prohibited this ' . ucfirst(get_class($object)) . ' from being saved</h2>';
+            $r .= '<p>There were problems with the following fields:</p>';
+            $r .= $p;
+            return $r . '</div>';
+        }
+    }
+
+}
+
+/** @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html */
+
+class FormHelper extends Object {
+
+    public static function text_field(Object $object, $method, $options = array()) {
+        $buff = '<input type="text" id="' . strtolower(get_class($object)) . '_'.$method.'" ';
+        $buff .= 'name="'.strtolower(get_class($object)).'['.$method.']" ';
+        $buff .= 'value="'.$object->$method.'" ';
+        foreach ($options as $key=>$value) {
+            $buff .= $key . '="'.$value.'" ';
+        }
+        return $buff . ' />';
+    }
+
+    public static function text_area(Object $object, $method, $options=array()) {
+        $buff = '<textarea ';
+        $buff .= 'id="' . strtolower(get_class($object)) . '_'.$method.'" ';
+        $buff .= 'name="'.strtolower(get_class($object)).'['.$method.']" ';
+        foreach ($options as $key=>$value) {
+            $buff .= $key . '="'.$value.'" ';
+        }
+        $buff .= '>';
+        $buff .= $object->$method;
+        $buff .= '</textarea>';
+        return $buff;
+    }
+
+    public static function check_box(
+            Object $object,
+            $method,
+            $options = array(),
+            $checked_value = "1",
+            $unchecked_value = "0") {
+        $buff = '<input type="checkbox" id="';
+        $buff .= strtolower(get_class($object)) . '_'.$method.'" ';
+        $buff .= 'name="'.strtolower(get_class($object)).'['.$method.']" ';
+        foreach ($options as $key=>$value) {
+            $buff .= $key . '="'.$value.'" ';
+        }
+        if ((int)$object->$method > 0) {
+            $buff .= 'value="1" checked="checked" ';
+        } else {
+            $buff .= 'value="0"';
+        }
+
+        $buff .= ' />';
+        // $buff .= '<input name="'.strtolower(get_class($object)).'['.$method.']" type="hidden" ';
+        return $buff;
+    }
+}
+
 /**
  * This package will be deprecated at one point and replaced with a modern view.
  * @package locknet7.action.view.HTML
  */
-
 class HTMLElement extends Object {
     public function __construct() {     }
 }
@@ -61,7 +141,7 @@ class URL extends Object {
     }
 }
 
-
+/** @deprecated USE FormHelper! */
 class Form extends Object {
 
     public function __construct($action, $method) {  }
