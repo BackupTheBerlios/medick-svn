@@ -33,68 +33,138 @@
 // }}}
 
 /**
+ * A wrapper around PHP session handling
+ *
  * @package locknet7.action.controller.session
  */
 class Session extends Object {
 
+    /** @var bool
+        started flag */
     private $isStarted = FALSE;
 
+    /** @var ISessionContainer
+        the session container */
+    private $container;
+
     /**
-     * Constructor.
+     * Constructor, creates a new session object
+     *
+     * @throw IllegalStateException if the session is already started
      */
-    public function __construct() {
+    public function Session () {
         if ($this->isStarted) {
             throw new IllegalStateException('Session already Started!');
         }
     }
 
+    /**
+     * Starts a new Session
+     *
+     * Also, it setup our session preferences
+     * @return void
+     * @throw IllegalStateException if the session is already started
+     */
     public function start() {
         if ($this->isStarted) {
             throw new IllegalStateException('Session already Started!');
         }
-        $this->isStarted= TRUE;
+        // TODO: more settings
         // session_cache_limiter("nocache");
         // session_write_close();
         session_start();
         session_regenerate_id(TRUE);
+        $this->isStarted= TRUE;
     }
 
+    /**
+     * Sets a session variable
+     *
+     * @param string name, the name of the session variable
+     * @param mixed value, the value of the variable to set
+     * @return void
+     * @throw IllegalStateException if the session is not started
+     */
     public function putValue($name, $value) {
-        if (!$this->isStarted) {
-            throw new IllegalStateException('Session is not Started!');
-        }
-        $_SESSION[$name]=$value;
+        $this->checkState();
+        $_SESSION[$name] = $value;
     }
 
+    /**
+     * Gets a session variable value
+     *
+     * @param string name, the name of the session variable
+     * @return NULL if the variable is not set, or mixed, the variable value
+     * @throw IllegalStateException if the session is not started
+     */
     public function getValue($name) {
-        if (!$this->isStarted) {
-            throw new IllegalStateException('Session is not Started!');
-        }
-        return isset($_SESSION[$name]) ? $_SESSION[$name] : NULL;
+        return $this->hasValue($name) ? $_SESSION[$name] : NULL;
     }
 
+    /**
+     * Check if this session has a variable with the given name
+     *
+     * @param string name, the name of the session variable
+     * @return bool, TRUE if it has
+     * @throw IllegalStateException if the session is not started
+     */
     public function hasValue($name) {
-        if (!$this->isStarted) {
-            throw new IllegalStateException('Session is not Started!');
-        }
+        $this->checkState();
         return isset($_SESSION[$name]);
     }
 
+    /**
+     * Remove the session value with the given name
+     *
+     * @param string name, the name of the session variable
+     * @return void
+     */
     public function removeValue($name) {
-        $this->__set($name, null);
+        $this->checkState();
         unset($_SESSION[$name]);
     }
 
+    /**
+     * It gets the session id
+     *
+     * @return mixed, the session id
+     * @throw IllegalStateException if the session is not started
+     */
     public function getId(){
+        $this->checkState();
         return session_id();
     }
 
+    /**
+     * It sets the session container
+     *
+     * @param ISessionContainer container to set
+     * @return void
+     */
     public function setContainer(ISessionContainer $container) {
         $this->container= $container;
     }
 
+    /**
+     * It dumps the session contains
+     *
+     * @return array
+     */
     public function dump() {
         return $_SESSION;
     }
 
+    /**
+     * It checks the session state
+     *
+     * This method is called internally to ensure that the session is started before using it.
+     * @return TRUE if the session is started
+     * @throw IllegalStateException if the session is not started
+     */
+    protected function checkState() {
+        if (!$this->isStarted) {
+            throw new IllegalStateException('Session is not Started!');
+        }
+        return TRUE;
+    }
 }

@@ -32,6 +32,35 @@ function write_file($contents, $to, $mode= FALSE) {
     }
 }
 
+function copy_files($from_folder, $to_folder) {
+
+    if (!is_dir($from_folder)) {
+        exit("Cannot copy from {$from_folder}, no such file or directory\n");
+    }
+    if (!is_dir($to_folder)) {
+        exit("Cannot copy to {$to_folder}, no such file or directory\n");
+    }
+
+    $d = dir($from_folder);
+    while (false !== ($entry = $d->read())) {
+        if($entry!='.' && $entry!='..') {
+            if (is_dir($entry)) continue; // skip folders.
+            $from_file = $from_folder . DIRECTORY_SEPARATOR . $entry;
+            $to_file   = $to_folder . DIRECTORY_SEPARATOR . $entry;
+            if (is_file($to_file)) {
+                echo "\texists {$to_file}\n";
+                continue;
+            }
+            if (!copy($from_file, $to_file)) {
+                echo "cannot copy: {$from_file} to {$to_file}!\n";
+                continue;
+            } else {
+                echo "\tcreate {$to_file}\n";
+            }
+        }
+    }
+}
+
 $folders= array(
     'app'         =>'app',
     'models'      =>'app' . DIRECTORY_SEPARATOR . 'models',
@@ -65,6 +94,10 @@ mk_dir($app_location);
 foreach ($folders as $folder) {
     mk_dir($app_location . DIRECTORY_SEPARATOR . $folder);
 }
+
+copy_files($medick_core. DIRECTORY_SEPARATOR .
+            'skel'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'javascript'.DIRECTORY_SEPARATOR,
+            $app_location.DIRECTORY_SEPARATOR.$folders['js']);
 
 $files= array(
   'skel' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php'

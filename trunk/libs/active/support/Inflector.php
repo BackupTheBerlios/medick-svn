@@ -123,4 +123,24 @@ class Inflector extends Object {
         return strtolower(preg_replace('/([a-z])([A-Z])/','\1_\2', $word));
     }
     // }}}
+
+    public static function sanitize($word) {
+        $word = strip_tags($word);
+        $word = htmlentities( $word, ENT_NOQUOTES );
+        // Keep only one char in emtities!
+        $word = preg_replace( '/&(.).+?;/', '$1', $word );
+        // Remove non acceptable chars
+        $word = preg_replace( '/[^A-Za-z0-9]+/', '_', $word );
+        $word = preg_replace( '/^_+/', '', $word );
+        $word = preg_replace( '/_+$/', '', $word );
+        // Uppercase the first character of each word in a string
+        $word = strtolower( $word );
+        preg_match( '/^(.*?)(_[0-9]+)?$/', $word, $matches );
+        $base = substr( $matches[1], 0, 40 );
+        $word = $base;
+        if( isset( $matches[2] ) ) {
+            $word = $base . $matches[2];
+        }
+        return $word;
+    }
 }

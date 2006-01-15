@@ -106,6 +106,8 @@ class ActionControllerBase extends Object {
         the injector. */
     private $injector;
 
+    // private $__flash=array();
+
     /**
      * Process this Request
      *
@@ -196,6 +198,11 @@ class ActionControllerBase extends Object {
                 . '_' . $this->params['controller'] . ' ' . $fnfEx->getMessage());
         }
 
+        if ($this->session->hasValue('flash')) {
+            $this->template->flash = $this->session->getValue('flash');
+        } else {
+            $this->template->flash = NULL;
+        }
         if ($this->use_layout) {
             $layout= $this->use_layout === TRUE ? $this->params['controller'] : $this->use_layout;
             $layout_file= $this->injector->getPath('layouts') . $layout . '.phtml';
@@ -247,16 +254,30 @@ class ActionControllerBase extends Object {
             $this->logger->info('Action already performed...');
             return;
         }
+        $status = $status === NULL ? Response::SC_OK : $status;
+        /*
         if (is_null($status)) {
             $status = Response::SC_OK;
         }
+        */
         $this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
         $this->logger->debug('Action performed.');
+
+        if ($this->session->hasValue('flash')) {
+            $this->session->removeValue('flash');
+        }
+
     }
 
     // }}}
+
+    protected final function flash($name, $value) {
+        // $this->__flash[$name] = $this->session->$name=$value;
+        $this->session->putValue('flash',array($name=>$value));
+        $this->logger->debug($this->session->dump());
+    }
 
     /**
      * Act as an internal constructor.
@@ -346,7 +367,7 @@ class ActionControllerBase extends Object {
             $action_name = 'index';
             $action= $this->createMethod($action_name);
             if (!$action || $action->isStatic()) {
-                throw new RouteException(
+                throw new RoutingException(
                     'Cannot invoke default action, \'index\' for this Route!',
                     'Method named \'index\' is not defined in class: ' . $this->getClassName()
                 );

@@ -52,17 +52,22 @@ class ActionControllerRouting extends Object {
     public static function recognize(Request $request) {
         $r= new ActionControllerRouting($request);
         try {
-        $route = $r->findRoute($request);
-        return   $route->createControllerInstance();
+            $route = $r->findRoute($request);
+            return   $route->createControllerInstance();
         } catch (RoutingException $rEx) {
             // exception thrown by findRoute if we dont match any of the registered route.
             // load 404 route, if fails too try the default route, this are named routes.
             // echo $rEx;
-            return Map::getInstance()->getRouteByName('404')->createControllerInstance();
+            try {
+                return Map::getInstance()->getRouteByName('default')->createControllerInstance();
+            } catch (RoutingException $rEx2) {
+                return Map::getInstance()->getRouteByName('404')->createControllerInstance();
+            }
         } catch (FileNotFoundException $fnfEx) {
             // exception thrown by Injector::injectController
             // when the requested controller is not at the expected location.
             // echo $fnfEx;
+            return Map::getInstance()->getRouteByName('404')->createControllerInstance();
         }
     }
 }
