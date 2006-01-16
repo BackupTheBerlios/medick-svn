@@ -1,9 +1,17 @@
 <h2>All Projects</h2>
 <!-- $Id$ -->
+<? if(isset($flash['notice'])) : ?>
+<div class="flash_notice"><?=$flash['notice'];?></div><br />
+<? endif; ?>
+
+<? if(isset($flash['error'])) : ?>
+<div class="flash_error"><?=$flash['error'];?></div><br />
+<? endif; ?>
+
 <form action="<?=URL::create('project','create');?>" method="post">
     <div>
         <label>Create a new Project:</label>
-        <?=Form::text('project_name', NULL, array('maxlength'=>255,'size'=>55)); ?>
+        <?=Form::text('name', NULL, array('maxlength'=>255,'size'=>45)); ?>
         <?=Form::submit('submit', 'Submit') ?>
     </div>
 </form>
@@ -11,13 +19,16 @@
 <hr />
 
 <? foreach($projects as $project): ?>
+    <div id="e_<?=$project->id;?>"><?=$project->name;?></div>
+    <script language="JavaScript">
+        new Ajax.InPlaceEditor('e_<?=$project->id;?>', '/eltodo/project/edit',
+          { callback: function(form, value) { return 'id=<?=$project->id;?>&name=' + value }});
+     </script>
     <a 
-        href="<?= URL::create('project', 'delete', array('id'=>$project->id));?>" 
-        onclick="return confirm('Are you sure you want to delete the project <?=$project->name;?>');"
-    >
-    <img src="images/delete.png" border="0">
-        </a>
-    <?=$project->name;?><br />
+      href="<?= URL::create('project', 'delete', array('id'=>$project->id));?>" 
+      onclick="return confirm('Are you sure you want to delete the project <?=$project->name;?>');">
+      <img src="images/delete.png" border="0">
+   </a>
 <? endforeach;?>
 
 <? if(!count($projects)):?>

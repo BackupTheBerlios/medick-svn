@@ -57,7 +57,7 @@ class XMLConfigurator extends Object implements IConfigurator {
                 throw new IOException("Cannot read: " . $xml . " Permission deny");
             }
         } else {
-            throw new FileNotFoundException("No such file or directory: " . $xml);
+            $this->sxe = @simplexml_load_string($xml, 'SimpleXMLIterator');
         }
         if ($this->sxe === false) {
             throw new ConfiguratorException("Cannot read: " . $xml . " Bad Format!");

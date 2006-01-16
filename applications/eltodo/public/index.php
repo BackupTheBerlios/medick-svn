@@ -37,5 +37,6 @@
  * The file __APPLICATION__NAME__.bootstrap.php should be included here.
  */
 
+include_once('/wwwroot/medick/trunk/boot.php');
 Dispatcher::dispatch();
 

@@ -17,7 +17,7 @@
         <outputter name="file" level="0">
             <property name="path" value="/wwwroot/medick/applications/eltodo/log/eltodo.log" />
         </outputter>
-        <outputter name="stdout"  level="0" />
+        <!-- <outputter name="stdout"  level="0" /> -->
       </outputters>
   </logger>
 

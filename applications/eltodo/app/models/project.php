@@ -6,17 +6,14 @@
  * @package eltodo.models
  */
 
-class DuplicateRecordException extends MedickException {    }
-
 class Project extends ActiveRecordBase {
 
     public function before_insert() {
-        try {
-            $projects=Project::find(array('condition'=>'name=\''.$this->name.'\''));
-            throw new DuplicateRecordException($this->name . ' already exists.');
-        } catch (RecordNotFoundException $ex) {
-            return true;
-        }
+        $this->validates()->presence_of('name');
+    }
+
+    public function before_update() {
+        $this->validates()->presence_of('name');
     }
 
     public static function find() {

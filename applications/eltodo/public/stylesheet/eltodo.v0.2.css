@@ -55,3 +55,15 @@ body {
     color:#333;
     background-image: url(http://localhost/eltodo/images/bg.gif);
 }
+
+div.flash_notice {
+    background-color: green;
+    color: white;
+    padding: 1em;
+}
+
+div.flash_error {
+    background-color: red;
+    color: white;
+    padding: 1em;
+}

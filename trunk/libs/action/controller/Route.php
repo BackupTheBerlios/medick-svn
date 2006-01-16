@@ -33,16 +33,9 @@
 // }}}
 
 /**
- * @package locknet7.action.controller.route
- */
-
-/**
- * A Collection with Components
- */
-// class Components extends AbstractCollection {   }
-
-/**
  * A Route Component
+ *
+ * @package locknet7.action.controller.route
  */
 class Component extends Object {
 
@@ -76,18 +69,20 @@ class Component extends Object {
 
 /**
  * Route class.
+ *
+ * @package locknet7.action.controller.route
  */
 class Route extends Object {
 
     /** @var string
         incoming Route Definition list. */
     private $route_list;
-    
+
     /** @var array
         a list with default values */
     private $defaults;
-    
-    /** @var string 
+
+    /** @var string
         the route name */
     private $name;
 
@@ -104,7 +99,7 @@ class Route extends Object {
      *
      * @param string route_list the route list
      * @param string name route name
-     * @param array 
+     * @param array
      */
     public function Route($route_list, $name = '', /*Array*/ $defaults = array(), /*Array*/ $requirements = array()) {
 
@@ -116,11 +111,10 @@ class Route extends Object {
         $parts= explode('/', trim($this->route_list, '/'));
 
         foreach ($parts as $key=>$element) {
-
+            // Registry::get('__logger')->debug('Parts:: [' . $key . '] '. $element);
             if (preg_match('/:[a-z0-9_\-]+/',$element, $match)) {
                 $c= new Component(substr(trim($match[0]), 1));
                 $c->setDynamic(TRUE);
-
             } else {
                 $c= new Component($element);
                 $c->setDynamic(FALSE);
@@ -128,7 +122,6 @@ class Route extends Object {
             $c->setPosition($key);
             $this->components->add($c);
         }
-
     }
 
     /**
@@ -164,8 +157,12 @@ class Route extends Object {
     public function match(Request $request) {
         $parts= $request->getPathInfoParts();
 
+        // also if we have more parameters passed, as expected.
+        if ( count($parts) > $this->components->size()) {
+            return FALSE;
+        }
         // if / was requested, just skip this part.
-        if (count($parts) !=0 ) {
+        if ( count($parts) != 0 ) {
             $it= $this->components->iterator();
             while($it->hasNext()) {
                 $name= $it->next()->getName();
@@ -202,14 +199,21 @@ class Route extends Object {
                 $request->setParameter('action','index');
             }
         }
-        
+
         $this->controller= $request->getParameter('controller');
-        
+
         return TRUE;
     }
-    
+
     public function createControllerInstance() {
-        return Registry::put(new Injector(), '__injector')->inject('controller', $this->controller);
+        if ($this->controller === NULL) {
+            throw new RoutingException('Cannot resolve a controller for this Route!');
+        }
+        try {
+            return Registry::put(new Injector(), '__injector')->inject('controller', $this->controller);
+        } catch (FileNotFoundException $fnfEx) {
+            throw new RoutingException('Cannot create a controller instance,' . $fnfEx->getMessage());
+        }
     }
 
 }

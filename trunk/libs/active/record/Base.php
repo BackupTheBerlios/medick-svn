@@ -561,7 +561,7 @@ abstract class ActiveRecordBase extends Object {
     }
     // }}}
 
-    protected static final function initialize($table) {
+    public static final function initialize($table) {
         ActiveRecordBase::$table_name= strtolower(Inflector::pluralize($table));
         ActiveRecordBase::$class_name= ucfirst($table);
     }

@@ -63,11 +63,6 @@ class ActionControllerRouting extends Object {
             } catch (RoutingException $rEx2) {
                 return Map::getInstance()->getRouteByName('404')->createControllerInstance();
             }
-        } catch (FileNotFoundException $fnfEx) {
-            // exception thrown by Injector::injectController
-            // when the requested controller is not at the expected location.
-            // echo $fnfEx;
-            return Map::getInstance()->getRouteByName('404')->createControllerInstance();
         }
     }
 }

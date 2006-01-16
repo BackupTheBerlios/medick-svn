@@ -1,0 +1,9 @@
+/* stylesheet for eltodo project */
+/* $Id: medick.php 335 2006-01-15 14:38:09Z aurelian $ */
+
+body {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid black;
+    font-family:verdana, arial, helvetica, sans-serif;
+}

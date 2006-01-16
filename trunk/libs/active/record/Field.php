@@ -34,6 +34,7 @@
 
 /**
  * It represents a field from DB
+ *
  * @package locknet7.active.record
  */
 class Field extends Object {
@@ -73,10 +74,13 @@ class Field extends Object {
         the foreign key table */
     public $fkTable;
 
+    /** @var array
+        a list of erros associated with this field */
     protected $errors;
 
     /**
      * Creates a new Field Object
+     *
      * @param string the name of this Field
      */
     public function Field($name) {
@@ -84,20 +88,37 @@ class Field extends Object {
         $this->errors= array();
     }
 
+    /**
+     * Adds an error to this field
+     *
+     * @param string message, the error message
+     * @return void
+     */
     public function addError($message) {
         $this->errors[]=$message;
     }
 
+    /**
+     * It gets the errors associated with this field
+     *
+     * @return array the list of errors
+     */
     public function getErrors() {
         return $this->errors;
     }
 
+    /**
+     * Check if this field has errors
+     *
+     * @return bool, TRUE if it has errors
+     */
     public function hasErrors() {
         return count($this->errors) > 0;
     }
 
     /**
      * It gets the name of this field
+     *
      * @return string name
      */
     public function getName() {
@@ -106,6 +127,7 @@ class Field extends Object {
 
     /**
      * It gets the value of this Field
+     *
      * @return string
      */
     public function getValue() {
@@ -114,6 +136,7 @@ class Field extends Object {
 
     /**
      * It sets the value of this Field
+     *
      * @param mixed value
      */
     public function setValue($value) {

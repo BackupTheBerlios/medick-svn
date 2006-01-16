@@ -35,31 +35,41 @@
 
 class ActiveRecordHelper extends Object {
 
-    public static function error_messages_for(ActiveRecordBase $object) {
-        $r= '<div id="form_errors">';
+    public static function error_messages_for(ActiveRecordBase $object, $options=array()) {
+        $css_class= isset($options['css_class']) ? $options['css_class'] : 'formErrors';
+        $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 4;
+        $buffer= '<div id="medickFormErrors" class="' . $css_class . '">';
         $errors= 0;
-        $p = '';
+        $part = '';
         $it= $object->getRow()->iterator();
         while ($it->hasNext()) {
             $current= $it->next();
             if ($current->hasErrors()) {
-                $p .= '<ul>';
+                $part .= '<ul>';
                 foreach ($current->getErrors() as $error) {
-                    $p .= '<li>' . ucfirst($current->getName()) .' ' . $error . '</li>';
+                    $part .= '<li>' . ucfirst($current->getName()) .' ' . $error . '</li>';
                     $errors++;
                 }
-                $p .= '</ul>';
-                // $r[$current->getName()]= $current->getErrors();
+                $part .= '</ul>';
             }
         }
         if ($errors > 0) {
-            $r .= '<h2>' . $errors . ' errors prohibited this ' . ucfirst(get_class($object)) . ' from being saved</h2>';
-            $r .= '<p>There were problems with the following fields:</p>';
-            $r .= $p;
-            return $r . '</div>';
+            $st= $errors == 1 ? 'error' : 'errors';
+            $buffer .= '<h'.$heading.'>'.$errors.' '.$st.' prohibited this ';
+            $buffer .= ucfirst(get_class($object)).' from being saved</h'.$heading.'>';
+            $buffer .= "\n<p>There were problems with the following fields:</p>\n";
+            $buffer .= $part;
+            return $buffer . '</div>';
         }
     }
 
+    public static function error_message_on(ActiveRecordBase $object, $method, $options=array()) {
+        // $prepend_text = isset($options['prepend']) ? $options['prepend'] : "";
+        // $append_text  = isset($options['append']) ? $options['append'] : ""; 
+        // $css_class    = isset($options['css_class']) ? $options['css_class'] : "formError";
+
+    }
+    
 }
 
 /** @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html */

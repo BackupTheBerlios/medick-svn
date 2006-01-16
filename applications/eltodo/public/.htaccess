@@ -2,7 +2,7 @@
 # $Id: .htaccess 181 2005-10-03 20:34:29Z aurelian $
 
 # Configuration
-php_value auto_prepend_file /wwwroot/medick/trunk/boot.php
+# php_value auto_prepend_file /wwwroot/medick/trunk/boot.php
 
 SetEnv MEDICK_APPLICATION_PATH /wwwroot/medick/applications/eltodo
 SetEnv MEDICK_APPLICATION_NAME eltodo
