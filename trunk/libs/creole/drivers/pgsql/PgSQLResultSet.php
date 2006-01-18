@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: PgSQLResultSet.php,v 1.30 2006/01/04 16:17:49 gamr Exp $
+ *  $Id: PgSQLResultSet.php,v 1.31 2006/01/17 19:44:40 hlellelid Exp $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -26,7 +26,7 @@ require_once 'creole/common/ResultSetCommon.php';
  * PostgreSQL implementation of ResultSet.
  *
  * @author	Hans Lellelid <hans@xmpl.org>
- * @version   $Revision: 1.30 $
+ * @version   $Revision: 1.31 $
  * @package   creole.drivers.pgsql
  */
 class PgSQLResultSet extends ResultSetCommon implements ResultSet {
@@ -84,7 +84,10 @@ class PgSQLResultSet extends ResultSetCommon implements ResultSet {
 				throw new SQLException("Error fetching result", $err);				
 			}
 		}
-		
+
+		if ($this->fetchmode === ResultSet::FETCHMODE_ASSOC && $this->lowerAssocCase) {
+            $this->fields = array_change_key_case($this->fields, CASE_LOWER);
+        }
 		// Advance cursor position
 		$this->cursorPos++;	
 		return true;

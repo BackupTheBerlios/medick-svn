@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: OCI8TableInfo.php,v 1.13 2006/01/06 00:02:38 sethr Exp $
+ *  $Id: OCI8TableInfo.php,v 1.14 2006/01/17 19:44:40 hlellelid Exp $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -26,7 +26,7 @@ require_once 'creole/metadata/TableInfo.php';
  * 
  * @author    David Giffin <david@giffin.org>
  * @author    Hans Lellelid <hans@xmpl.org>
- * @version   $Revision: 1.13 $
+ * @version   $Revision: 1.14 $
  * @package   creole.drivers.oracle.metadata
  */
 class OCI8TableInfo extends TableInfo {
@@ -64,7 +64,7 @@ class OCI8TableInfo extends TableInfo {
             WHERE table_name = '{$this->name}'
                 AND OWNER = '{$this->schema}'";
 
-        $statement = @oci_parse($this->dblink,$sql);
+        $statement = @oci_parse($this->conn->getResource(),$sql);
         $success = @oci_execute($statement,OCI_DEFAULT);
 		if (!$success) {
             throw new SQLException("Could Not Get Columns");
@@ -107,7 +107,7 @@ class OCI8TableInfo extends TableInfo {
             ";
 
 
-        $statement = @oci_parse($this->dblink,$sql);
+        $statement = @oci_parse($this->conn->getResource(),$sql);
         $success = @oci_execute($statement,OCI_DEFAULT);
         if (!$success) {
             throw new SQLException("Could Not Get Primary Keys");
@@ -155,7 +155,7 @@ class OCI8TableInfo extends TableInfo {
             ORDER BY allind.index_name,
                 indcol.column_position";
 
-        $statement = @oci_parse($this->dblink,$sql);
+        $statement = @oci_parse($this->conn->getResource(),$sql);
         $success = @oci_execute($statement,OCI_DEFAULT);
         if (!$success) {
             throw new SQLException("Could Not Get Primary Keys");
@@ -217,7 +217,7 @@ class OCI8TableInfo extends TableInfo {
 				AND a.owner = '{$this->schema}'
 		";
 
-        $statement = @oci_parse($this->dblink,$sql);
+        $statement = @oci_parse($this->conn->getResource(),$sql);
         $success = @oci_execute($statement,OCI_DEFAULT);
         if (!$success) {
             throw new SQLException("Could Not Get Primary Keys");

@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: ResultSetCommon.php,v 1.8 2005/09/16 13:09:49 hlellelid Exp $
+ *  $Id: ResultSetCommon.php,v 1.9 2006/01/17 19:44:38 hlellelid Exp $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -47,7 +47,7 @@
  * </code>
  * 
  * @author    Hans Lellelid <hans@xmpl.org>
- * @version   $Revision: 1.8 $
+ * @version   $Revision: 1.9 $
  * @package   creole.common
  */
 abstract class ResultSetCommon {          
@@ -84,9 +84,16 @@ abstract class ResultSetCommon {
     
     /**
      * Whether to convert assoc col case.
+	 * @var boolean
      */
-    protected $ignoreAssocCase = false;
+    protected $lowerAssocCase = false;
     
+	/**
+	 * Whether to apply rtrim() to strings.
+	 * @var boolean
+	 */
+	protected $rtrimString = false;
+	
     /**
      * Constructor.
      */
@@ -99,7 +106,8 @@ abstract class ResultSetCommon {
         } else {
             $this->fetchmode = ResultSet::FETCHMODE_ASSOC; // default
         }
-        $this->ignoreAssocCase = (($conn->getFlags() & Creole::NO_ASSOC_LOWER) === Creole::NO_ASSOC_LOWER);
+        $this->lowerAssocCase = (($conn->getFlags() & Creole::COMPAT_ASSOC_LOWER) === Creole::COMPAT_ASSOC_LOWER);
+		$this->rtrimString = (($conn->getFlags() & Creole::COMPAT_RTRIM_STRING) === Creole::COMPAT_RTRIM_STRING);
     }
     
     /**
@@ -130,11 +138,11 @@ abstract class ResultSetCommon {
     }
     
     /**
-     * @see ResultSet::isIgnoreAssocCase()
+     * @see ResultSet::isLowereAssocCase()
      */
-    public function isIgnoreAssocCase()
+    public function isLowerAssocCase()
     {
-        return $this->ignoreAssocCase;
+        return $this->lowerAssocCase;
     }        
     
     /**
@@ -387,7 +395,7 @@ abstract class ResultSetCommon {
         $idx = (is_int($column) ? $column - 1 : $column);
         if (!array_key_exists($idx, $this->fields)) { throw new SQLException("Invalid resultset column: " . $column); }
         if ($this->fields[$idx] === null) { return null; }
-        return rtrim((string) $this->fields[$idx]);
+		return ($this->rtrimString ? rtrim($this->fields[$idx]) : (string) $this->fields[$idx]);
     }
     
     /**
