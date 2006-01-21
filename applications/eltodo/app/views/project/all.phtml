@@ -11,25 +11,35 @@
 <form action="<?=URL::create('project','create');?>" method="post">
     <div>
         <label>Create a new Project:</label>
-        <?=Form::text('name', NULL, array('maxlength'=>255,'size'=>45)); ?>
+        <?=Form::text('project[name]', NULL, array('maxlength'=>255,'size'=>45)); ?>
         <?=Form::submit('submit', 'Submit') ?>
     </div>
 </form>
 
 <hr />
 
-<? foreach($projects as $project): ?>
-    <div id="e_<?=$project->id;?>"><?=$project->name;?></div>
-    <script language="JavaScript">
-        new Ajax.InPlaceEditor('e_<?=$project->id;?>', '/eltodo/project/edit',
-          { callback: function(form, value) { return 'id=<?=$project->id;?>&name=' + value }});
-     </script>
-    <a 
-      href="<?= URL::create('project', 'delete', array('id'=>$project->id));?>" 
-      onclick="return confirm('Are you sure you want to delete the project <?=$project->name;?>');">
-      <img src="images/delete.png" border="0">
-   </a>
-<? endforeach;?>
+<table id="projectlist">
+  <tbody>
+    <? foreach($projects as $row=>$project): ?>
+      <tr class="<?=$row%2?'even':'odd';?>">
+        <td>
+          <a
+            href="<?= URL::create('project', 'delete', array('id'=>$project->id));?>"
+            onclick="return confirm('Are you sure you want to delete the project <?=$project->name;?>');">
+            <img src="images/delete.png" border="0">
+          </a>
+        </td>
+        <td width="100%">
+          <p id="e_<?=$project->id;?>"><?=$project->name;?></p>
+          <script language="JavaScript">
+              new Ajax.InPlaceEditor('e_<?=$project->id;?>', '/eltodo/project/edit',
+              { callback: function(form, value) { return 'id=<?=$project->id;?>&name=' + value }});
+          </script>
+        </td>
+      </tr>
+    <? endforeach;?>
+  </tbody>
+</table>
 
 <? if(!count($projects)):?>
     No projects found.

@@ -37,7 +37,7 @@ class ActiveRecordHelper extends Object {
 
     public static function error_messages_for(ActiveRecordBase $object, $options=array()) {
         $css_class= isset($options['css_class']) ? $options['css_class'] : 'formErrors';
-        $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 4;
+        $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 2;
         $buffer= '<div id="medickFormErrors" class="' . $css_class . '">';
         $errors= 0;
         $part = '';
@@ -65,38 +65,68 @@ class ActiveRecordHelper extends Object {
 
     public static function error_message_on(ActiveRecordBase $object, $method, $options=array()) {
         // $prepend_text = isset($options['prepend']) ? $options['prepend'] : "";
-        // $append_text  = isset($options['append']) ? $options['append'] : ""; 
+        // $append_text  = isset($options['append']) ? $options['append'] : "";
         // $css_class    = isset($options['css_class']) ? $options['css_class'] : "formError";
 
     }
-    
+
 }
 
 /** @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html */
 
 class FormHelper extends Object {
 
-    public static function text_field(Object $object, $method, $options = array()) {
-        $buff = '<input type="text" id="' . strtolower(get_class($object)) . '_'.$method.'" ';
-        $buff .= 'name="'.strtolower(get_class($object)).'['.$method.']" ';
+    public static function text_field(ActiveRecordBase $object, $method, $options = array()) {
+        if (!$field= $object->getRow()->getFieldByName($method)) {
+            return; // ex?
+        }
+
+        $id   = strtolower(get_class($object)) . '_'.$method;
+        $name = strtolower(get_class($object)).'['.$method.']';
+        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label> \n";
+
+        $errors= FALSE;
+        if($field->hasErrors()) {
+            $buff .= '<div class="fieldWithErrors">';
+            $errors= TRUE;
+        }
+
+        $buff .= '<input type="text" id="' . $id . '" ';
+        $buff .= 'name="'.$name . '" ';
         $buff .= 'value="'.$object->$method.'" ';
         foreach ($options as $key=>$value) {
             $buff .= $key . '="'.$value.'" ';
         }
-        return $buff . ' />';
+        $buff .= ' />';
+        if ($errors) {
+            $buff .= '</div>';
+        }
+        return $buff . "</div>";
     }
 
-    public static function text_area(Object $object, $method, $options=array()) {
-        $buff = '<textarea ';
-        $buff .= 'id="' . strtolower(get_class($object)) . '_'.$method.'" ';
-        $buff .= 'name="'.strtolower(get_class($object)).'['.$method.']" ';
+    public static function text_area(ActiveRecordBase $object, $method, $options=array()) {
+        if (!$field= $object->getRow()->getFieldByName($method)) {
+            return; // ex?
+        }
+        $id   = strtolower(get_class($object)) . '_'.$method;
+        $name = strtolower(get_class($object)).'['.$method.']';
+        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label> \n";
+        $errors= FALSE;
+        if($field->hasErrors()) {
+            $buff .= '<div class="fieldWithErrors">';
+            $errors= TRUE;
+        }
+        $buff .= '<textarea id="' . $id.'" name="'.$name .'"';
         foreach ($options as $key=>$value) {
             $buff .= $key . '="'.$value.'" ';
         }
         $buff .= '>';
         $buff .= $object->$method;
         $buff .= '</textarea>';
-        return $buff;
+        if ($errors) {
+            $buff .= '</div>';
+        }
+        return $buff . "</div>";
     }
 
     public static function check_box(

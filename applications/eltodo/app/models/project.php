@@ -9,11 +9,13 @@
 class Project extends ActiveRecordBase {
 
     public function before_insert() {
-        $this->validates()->presence_of('name');
+        $this->created_at= time();
+        $this->validates()->presence_of('name', 'description');
+        $this->validates()->uniqueness_of('name');
     }
 
     public function before_update() {
-        $this->validates()->presence_of('name');
+        $this->validates()->presence_of('name', 'description');
     }
 
     public static function find() {

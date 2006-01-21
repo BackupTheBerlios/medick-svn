@@ -48,7 +48,7 @@ class Field extends Object {
      * @var string
      * @since Rev. 272
      */
-    public $formattedName;
+    private $formattedName;
 
     /** @var
         mixed value of the field */
@@ -86,6 +86,15 @@ class Field extends Object {
     public function Field($name) {
         $this->name = $name;
         $this->errors= array();
+        $this->formattedName= Inflector::humanize($name);
+    }
+
+    public function getFormattedName() {
+        return $this->formattedName;
+    }
+
+    public function setFormattedName($formattedName) {
+        $this->formattedName= $formattedName;
     }
 
     /**

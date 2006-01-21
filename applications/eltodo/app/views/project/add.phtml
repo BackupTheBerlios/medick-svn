@@ -1,11 +1,13 @@
-<h2>Add Project</h2>
+<h2>New Project</h2>
 <!-- $Id: all.phtml 300 2005-12-12 19:51:31Z aurelian $ -->
-<?=ActiveRecordHelper::error_messages_for($project);?>
 <form action="<?=URL::create('project','create');?>" method="post">
-    <div>
-        <label>Create a new Project:</label>
-        <?=FormHelper::text_field($project, 'name', array('maxlength'=>255,'size'=>45)); ?>
-        <?=Form::submit('submit', 'Submit') ?>
-    </div>
+    <fieldset>
+        <legend>Create a new Project</legend>
+        <?=ActiveRecordHelper::error_messages_for($project);?>
+        <?=FormHelper::text_field($project, 'name', array('maxlength'=>255,'size'=>35)); ?>
+        <br />
+        <?=FormHelper::text_area($project, 'description', array('cols'=>40,'rows'=>20)); ?>
+        <?=Form::submit('submit', 'Submit', array('class'=>'submit-button')) ?>
+    </fieldset>
 </form>
 

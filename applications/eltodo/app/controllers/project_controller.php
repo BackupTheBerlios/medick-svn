@@ -15,7 +15,7 @@ class ProjectController extends ApplicationController {
     protected $use_layout= 'eltodo';
 
     public function edit() {
-      $project= Project::find($this->request->getParameter('id'));
+      $project= Project::find($this->params['id']);
       $project->name= $this->request->getParameter('name');
       // try {
       $project->save();
@@ -25,7 +25,7 @@ class ProjectController extends ApplicationController {
     
     /** Creates a new Project */
     public function create() {
-        $this->template->project= new Project(array('name'=>$this->request->getParameter('name')));
+        $this->template->project= new Project(isset($this->params['project']) ? $this->params['project'] : array());
         try {
             $this->template->project->save();
             $this->flash('notice', 'Project ' . $this->template->project->name . ' added!');
@@ -38,7 +38,7 @@ class ProjectController extends ApplicationController {
 
     /** Removes a project */
     public function delete() {
-        $project= new Project (array('id'=>$this->params['id']));
+        $project= Project::find($this->params['id']);
         try {
             $project->delete();
             $this->flash('notice', 'Project ' . $project->name . ' removed!');
@@ -57,7 +57,7 @@ class ProjectController extends ApplicationController {
     /** List all projects, this is the default Route. */
     public function all() {
         try {
-            $this->template->projects= Project::find();
+          $this->template->projects= Project::find('all', array('order'=>'created_at DESC'));
         } catch (RecordNotFoundException $rnfEx) {
             $this->template->projects= array();
         }

@@ -108,10 +108,11 @@ abstract class ActiveRecordBase extends Object {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
             $field->type = CreoleTypes::getCreoleName( $col->getType() ) ;
-            $field->formattedName =  str_replace( '_', ' ', $col->getName() );
             // set is_nullable
             // $field->isNullable = (bool)$col->isNullable;
-            if ($this->pk == $col->getName() ) $field->isPk = TRUE;
+            if ($this->pk == $col->getName() ) {
+                $field->isPk = TRUE;
+            }
             // set the is_fk and fk_table
             $pattern = '/^(.*)_id$/';
             if ( preg_match($pattern, $col->getName(), $matches) ) {
