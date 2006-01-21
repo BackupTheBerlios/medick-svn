@@ -255,11 +255,8 @@ class ActionControllerBase extends Object {
             return;
         }
         $status = $status === NULL ? Response::SC_OK : $status;
-        /*
-        if (is_null($status)) {
-            $status = Response::SC_OK;
-        }
-        */
+        // try to load the magick __common method.
+
         $this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
@@ -274,9 +271,7 @@ class ActionControllerBase extends Object {
     // }}}
 
     protected final function flash($name, $value) {
-        // $this->__flash[$name] = $this->session->$name=$value;
-        $this->session->putValue('flash',array($name=>$value));
-        $this->logger->debug($this->session->dump());
+        $this->session->putValue('flash', array($name=>$value));
     }
 
     /**
@@ -373,16 +368,16 @@ class ActionControllerBase extends Object {
                 );
             }
         }
-
         $this->params['action'] = strtolower($action_name);
         $this->logger->debug('Incoming action:: ' . strtolower($action_name));
-        // invoke the action.
-        $action->invoke($this);
-        if ($this->action_performed) return;
-        // try to load the magick __common method.
+        // quickly load the common magick method.
         if ($_common= $this->createMethod('__common')) {
             $_common->invoke($this);
         }
+        // invoke the action.
+        $action->invoke($this);
+
+        if ($this->action_performed) return;
         $this->render();
     }
 
