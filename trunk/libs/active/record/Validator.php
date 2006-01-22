@@ -1,26 +1,67 @@
 <?php
+// {{{ License
+// ///////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//   * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
+//   * Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   be used to endorse or promote products derived from this software without
+//   specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// $Id$
+//
+// ///////////////////////////////////////////////////////////////////////////////
+// }}}
 
 class ValidationException extends MedickException {     }
 
 class Validator extends Object {
 
+    /** @var DatabaseRow
+        current database row */
     private $row;
 
+    /**
+     * Creates a new validator
+     *
+     * @param DatabaseRow row
+     */
     public function Validator(DatabaseRow $row) {
         $this->row= $row;
     }
 
-    // pass a separated array list:
-    // presence_of('title','body')
-    public function presence_of() {
-        $args= func_get_args();
+    public function __call ($method, $args) {
         $has_errors= FALSE;
         foreach ($args as $argument) {
-            if ($field=$this->row->getFieldByName($argument)) {
-                if ($field->getValue() == '') {
-                    $field->addError('is empty');
-                    $has_errors= TRUE;
+            if ($field = $this->row->getFieldByName($argument)) {
+                if ($method == "presence_of") {
+                    $has_errors = $this->notEmpty($field);
+                } elseif ($method == "uniqueness_of" ) {
+                    $has_errors = $this->notUnique($field);
+                } else {
+                    trigger_error('No such method validation method:' . $method, E_USER_ERROR);
                 }
+            } else {
+                trigger_error('No such field to validate:' . $argument, E_USER_ERROR);
             }
         }
         if ($has_errors) {
@@ -30,25 +71,21 @@ class Validator extends Object {
         }
     }
 
-    public function uniqueness_of() {
-        $args= func_get_args();
-        $has_errors= FALSE;
-        foreach ($args as $argument) {
-            if ($field = $this->row->getFieldByName($argument)) {
-                try {
-                    ActiveRecordBase::__find(array(
-                        array('condition'=>$field->getName() .'=\''.$field->getValue().'\'')));
-                    $field->addError('is not unique');
-                    $has_errors= TRUE;
-                } catch (RecordNotFoundException $rnfEx) {
-                    continue;
-                }
-            }
-        }
-        if ($has_errors) {
-            throw new ValidationException('Validation failed!');
-        } else {
+    private function notEmpty(Field $field) {
+        if ($field->getValue() == '') {
+            $field->addError('is empty');
             return TRUE;
+        }
+    }
+
+    private function notUnique (Field $field) {
+        try {
+            ActiveRecordBase::__find(array(
+                array('condition'=>$field->getName() .'=\''.$field->getValue().'\'')));
+            $field->addError('is not unique');
+            return TRUE;
+        } catch (RecordNotFoundException $rnfEx) {
+            return FALSE;
         }
     }
 
