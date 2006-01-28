@@ -81,12 +81,14 @@ legend {
     font-size:115%;
 }
 
+
 label {
     margin:0;
     padding:0.2em;
     margin-top:0.3em;
     font-weight:bold;
 }
+
 
 fieldset>input.submit-button {
     margin-left:5em;

@@ -108,6 +108,18 @@ class DatabaseRow extends Collection {
         return FALSE;
     }
 
+    public function collectErrors() {
+        $errors= array();
+        $it = $this->iterator();
+        while($it->hasNext()) {
+            $current= $it->next();
+            if ($current->hasErrors()) {
+                $errors[]= $current->getErrors();
+            }
+        }
+        return $errors;
+    }
+
     public function updateStatus(Field $field, $value) {
         $field->setValue($value);
         $field->isAffected = TRUE;

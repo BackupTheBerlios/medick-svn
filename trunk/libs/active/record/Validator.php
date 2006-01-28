@@ -32,8 +32,6 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-class ValidationException extends MedickException {     }
-
 class Validator extends Object {
 
     /** @var DatabaseRow
@@ -50,13 +48,12 @@ class Validator extends Object {
     }
 
     public function __call ($method, $args) {
-        $has_errors= FALSE;
         foreach ($args as $argument) {
             if ($field = $this->row->getFieldByName($argument)) {
                 if ($method == "presence_of") {
-                    $has_errors = $this->notEmpty($field);
+                    $this->isEmpty($field);
                 } elseif ($method == "uniqueness_of" ) {
-                    $has_errors = $this->notUnique($field);
+                    $this->isNotUnique($field);
                 } else {
                     trigger_error('No such method validation method:' . $method, E_USER_ERROR);
                 }
@@ -64,21 +61,18 @@ class Validator extends Object {
                 trigger_error('No such field to validate:' . $argument, E_USER_ERROR);
             }
         }
-        if ($has_errors) {
-            throw new ValidationException('Validation failed!');
-        } else {
-            return TRUE;
-        }
     }
 
-    private function notEmpty(Field $field) {
+    private function isEmpty(Field $field) {
         if ($field->getValue() == '') {
             $field->addError('is empty');
             return TRUE;
+        } else {
+            return FALSE;
         }
     }
 
-    private function notUnique (Field $field) {
+    private function isNotUnique(Field $field) {
         try {
             ActiveRecordBase::__find(array(
                 array('condition'=>$field->getName() .'=\''.$field->getValue().'\'')));

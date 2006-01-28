@@ -227,6 +227,11 @@ abstract class ActiveRecordBase extends Object {
 
     // }}}
 
+    /**
+     * It gets the current database row
+     *
+     * @return DatabaseRow
+     */
     public final function getRow() {
         return $this->row;
     }
@@ -241,30 +246,40 @@ abstract class ActiveRecordBase extends Object {
      *
      * This filter is executed before running an sql insert.
      * You should overwrite this method in your models.
-     * @return void
+     * @return bool
      * @since Rev.272
      */
-    protected function before_insert() {    }
+    protected function before_insert() { return TRUE; }
 
     /**
      * Before Update Filter.
      *
      * This filter is executed before running an sql update.
      * You should overwrite this method in your models.
-     * @return void
+     * @return bool
      * @since Rev.272
      */
-    protected function before_update() {    }
+    protected function before_update() { return TRUE; }
 
     /**
      * Before Delete Filter.
      *
      * This filter is executed before running an sql delete.
      * You should overwrite this method in your models.
-     * @return void
+     * @return bool
      * @since Rev.272
      */
-    protected function before_delete() {    }
+    protected function before_delete() { return TRUE; }
+
+    /**
+     * Before Save Filter.
+     *
+     * This filter is executed before running an sql insert or update
+     * You should overwrite this method in your models.
+     * @return bool
+     * @since Rev.342
+     */
+    protected function before_save() { return TRUE; }
 
     /**
      * After Insert Filter.
@@ -315,6 +330,9 @@ abstract class ActiveRecordBase extends Object {
      * </code>
      */
     public final function save() {
+        if ( !$this->before_save() || count($this->row->collectErrors()) > 0) {
+            return FALSE;
+        }
         if ($this->row->getPrimaryKey()->isAffected) {
             return $this->update();
         } else {
@@ -339,7 +357,9 @@ abstract class ActiveRecordBase extends Object {
      * @throws SQLException
      */
     public final function insert() {
-        $this->before_insert();
+        if (!$this->before_insert() || count($this->row->collectErrors()) > 0) {
+            return FALSE;
+        }
         $af_rows = $this->performQuery($this->getInsertSql());
         $id = $this->getNextId();
         $this->after_insert();
@@ -364,7 +384,9 @@ abstract class ActiveRecordBase extends Object {
      * @throws SQLException
      */
     public final function update() {
-        $this->before_update();
+        if (!$this->before_update() || count($this->row->collectErrors()) > 0) {
+            return FALSE;
+        }
         $af= $this->performQuery($this->getUpdateSql());
         $this->after_update();
         return $af;
@@ -388,7 +410,9 @@ abstract class ActiveRecordBase extends Object {
      * @throws SQLException
      */
     public final function delete() {
-        $this->before_delete();
+        if (!$this->before_delete() || count($this->row->collectErrors()) > 0) {
+            return FALSE;
+        }
         $whereClause = array();
         foreach ($this->row->getAffectedFields() as $col) {
             $whereClause[] = $col->getName() . ' = ? ';

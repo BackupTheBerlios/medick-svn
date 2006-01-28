@@ -83,7 +83,7 @@ class FormHelper extends Object {
 
         $id   = strtolower(get_class($object)) . '_'.$method;
         $name = strtolower(get_class($object)).'['.$method.']';
-        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label> \n";
+        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label><br />\n";
 
         $errors= FALSE;
         if($field->hasErrors()) {
@@ -110,7 +110,7 @@ class FormHelper extends Object {
         }
         $id   = strtolower(get_class($object)) . '_'.$method;
         $name = strtolower(get_class($object)).'['.$method.']';
-        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label> \n";
+        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label><br />\n";
         $errors= FALSE;
         if($field->hasErrors()) {
             $buff .= '<div class="fieldWithErrors">';
