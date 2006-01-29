@@ -80,7 +80,9 @@ abstract class Association extends Object {
     }
 
     private function reload($what) {
-        if ($this->getClassName() == 'HasAndBelongsToManyAssociation') {
+        if ($this->getClassName() == 'HasAndBelongsToManyAssociation'
+             || $this->getClassName() == 'HasManyAssociation'
+        ) {
             return ActiveRecordBase::initialize(Inflector::singularize($what));
         } else {
             return ActiveRecordBase::initialize($what);

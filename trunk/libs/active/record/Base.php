@@ -55,10 +55,8 @@ abstract class ActiveRecordBase extends Object {
     /* database connection */
     static protected $conn       = NULL;
 
-    /** @var FieldsAggregate
-        DB Table Fields */
-    // protected $fields;
-
+    /** @var DatabaseRow
+        our database row. */
     protected $row;
 
     /** @var string
@@ -74,11 +72,14 @@ abstract class ActiveRecordBase extends Object {
 
     /**
      * Establish A Database Connection
+     *
+     * @return Creole database connection
      */
     public static final function establish_connection () {
         if (self::$conn === NULL) {
             self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
+        return self::$conn;
     }
 
     /**
@@ -538,6 +539,18 @@ abstract class ActiveRecordBase extends Object {
             // all table fields and one arg.
         } elseif ( $params[0] == 'all' && $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
             $query->addArray($params[1]);
+        } elseif ( $params[0] == 'first' && $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
+            $query->addArray($params[1]);
+            $stmt = ActiveRecordBase::$conn->prepareStatement($query->buildQuery());
+            $rs   = $stmt->executeQuery();
+            if ($rs->getRecordCount() == 1) {
+                $rs->next();
+                $stmt->close();
+                return $class->newInstance($rs->getRow());
+            } else {
+                throw new RecordNotFoundException(
+                    'Couldn\'t find a `' . ActiveRecordBase::$class_name . '` to match your query.');
+            }
         } elseif ( is_numeric($params[0])) {
             // we expect only one row!
             // we need the pk name.
@@ -570,10 +583,12 @@ abstract class ActiveRecordBase extends Object {
         if ($limit = $query->getLimit())   $stmt->setLimit($limit);
         if ($offset = $query->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
+        /*
         if ($rs->getRecordCount() == 0) {
             throw new RecordNotFoundException(
                 'Couldn\'t find a ' . ActiveRecordBase::$class_name . ' The Result Set was empty!');
         }
+        */
         // build a list with objects of this type.
         $results = new RowsAggregate();
         while ($rs->next()) {

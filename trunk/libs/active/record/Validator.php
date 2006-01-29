@@ -48,12 +48,13 @@ class Validator extends Object {
     }
 
     public function __call ($method, $args) {
+        $has_errors= FALSE;
         foreach ($args as $argument) {
             if ($field = $this->row->getFieldByName($argument)) {
                 if ($method == "presence_of") {
-                    $this->isEmpty($field);
+                    $has_errors = $this->isEmpty($field);
                 } elseif ($method == "uniqueness_of" ) {
-                    $this->isNotUnique($field);
+                    $has_errors = $this->isNotUnique($field);
                 } else {
                     trigger_error('No such method validation method:' . $method, E_USER_ERROR);
                 }
@@ -61,6 +62,7 @@ class Validator extends Object {
                 trigger_error('No such field to validate:' . $argument, E_USER_ERROR);
             }
         }
+        return $has_errors;
     }
 
     private function isEmpty(Field $field) {
