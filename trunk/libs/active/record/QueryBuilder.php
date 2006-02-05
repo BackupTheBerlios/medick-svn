@@ -33,147 +33,59 @@
 // }}}
 
 /**
- * It builds Select SQL querys
+ * It knows how to create a SQLCommand from an array
+ *
  * @package locknet7.active.record
  */
-class QuerryBuilder extends Object {
+class QueryBuilder extends Object {
 
-    /** @var array
-        select, used in include modifier */
-    private $select = array();
+    private $owner;
 
-    /** @var array
-        from clause, this includes the table name and joins */
-    private $fromClause = array();
+    private $clauses=array();
 
-    /** @var array
-        where clause */
-    private $whereClause = array();
+    private $bindings=array();
 
-    /** @var string
-        adds an order by */
-    private $orderBy;
+    private $type;
 
-    /** @var int limit */
-    private $limit  = FALSE;
-
-    /** @var int offset */
-    private $offset = FALSE;
-
-    /**
-     * Creates a new QueryBuilder
-     * @param string table
-     */
-    public function __construct($table) {
-        $this->fromClause[]= $table;
-    }
-
-    /**
-     * It adds a modifier to this select
-     *
-     * @param string type of this modifier
-     * @param string value of this modifier
-     * @throws ActiveRecordException when the type is unknown
-     * @return void
-     */
-    public function add($type, $value) {
-        switch ($type) {
-            case 'include':
-                $this->addSelect($value);
-                break;
-            case 'condition':
-                $this->addWhere($value);
-                break;
-            case 'left join':
-                $this->addJoin('LEFT', $value);
-                break;
-            case 'limit':
-                $this->limit = (int)$value;
-                break;
-            case 'offset':
-                $this->offset = (int)$value;
-                break;
-            case 'order':
-                $this->orderBy = $value;
-                break;
-            default:
-                throw new ActiveRecordException ('Call to unknow modifier: `' . $type . '`');
-                break;
+    public function QueryBuilder($owner, $arguments) {
+        $this->owner= $owner;
+        if ( !count($arguments) || $arguments[0] == 'all' ) {
+            $this->type= 'all';
+        } else {
+            $this->type = 'first';
+        }
+        if (isset($arguments[0]) && is_numeric($arguments[0])) {
+            $this->clauses['condition']='id=?';
+            $this->bindings[]=$arguments[0];
+        }
+        if (isset($arguments[1])) {
+            $this->clauses= $arguments[1];
+        }
+        if (isset($arguments[2])) {
+            $this->bindings= $arguments[2];
         }
     }
 
-    /**
-     * Adds modifiers as array
-     * @param array the array of parameters to pass
-     */
-    public function addArray(/*array*/ $params) {
-        foreach ($params AS $type=>$value) {
-            $this->add($type, $value);
-        }
+    public function getOwner() {
+        return $this->owner;
     }
 
-    /**
-     * It gets the limit
-     * @return int the limit or FALSE if the limit was not changed
-     */
-    public function getLimit() {
-        return $this->limit;
+    public function getBindings() {
+        return $this->bindings;
     }
 
-    /**
-     * It gets the offset
-     * @return int the offset or FALSE if the offset was not changed
-     */
-    public function getOffset() {
-        return $this->offset;
+
+    public function getType() {
+        return $this->type;
     }
 
-    /**
-     * It buils the select query based on the modifiers passed.
-     * @return string the sql querys
-     */
-    public function buildQuery() {
-        $query =  "SELECT "
-                 . ($this->select ? implode(" ", $this->select) . " " : " * ")
-                 // .implode(", ", $selectClause)
-                 // . " FROM " . implode(", ", $fromClause)
-                 // . " FROM " . $this->table
-                 . " FROM " . implode(" ", $this->fromClause)
-                 . ($this->whereClause ? " WHERE " . implode(" AND ", $this->whereClause) : "")
-                 // .($groupByClause ? " GROUP BY ".implode(",", $groupByClause) : "")
-                 // .($havingString ? " HAVING ".$havingString : "")
-                 // . ($this->orderBy ? " ORDER BY " . implode(",", $this->orderBy) : "");
-                 . ($this->orderBy ? " ORDER BY " . $this->orderBy : "");
-        Registry::get('__logger')->debug('Trying to run sql query:');
-        Registry::get('__logger')->debug($query);
-        return $query;
-
-
+    public function compile() {
+        $command= SQLCommand::select($this->type)->from(Inflector::tabelize($this->owner));
+        if (isset($this->clauses['condition']))  $command->where($this->clauses['condition']);
+        if (isset($this->clauses['order by']))   $command->orderBy($this->clauses['order by']);
+        if (isset($this->clauses['columns']))    $command->columns($this->clauses['columns']);
+        if (isset($this->clauses['left join']))  $command->leftJoin('left outer join ' . $this->clauses['left join']);
+        return $command;
     }
-
-    // {{{ internal helpers.
-    /**
-     * Adds a select clause
-     * @param string select clause to add
-     */
-    private function addSelect($select) {
-        $this->select[] = $select;
-    }
-
-    /**
-     * Adds a where clause
-     * @param string where clause to add
-     */
-    private function addWhere($where) {
-        $this->whereClause[] = $where;
-    }
-
-    /**
-     * Adds a join clause
-     * @param string join clause to add
-     */
-    private function addJoin($args, $value) {
-        $this->fromClause[] = $args . " JOIN " . $value;
-    }
-    // }}}
 }
+

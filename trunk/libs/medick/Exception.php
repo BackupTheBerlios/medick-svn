@@ -178,4 +178,3 @@ class RecordNotFoundException extends ActiveRecordException { }
  */
 class AssociationNotFoundException extends MedickException{ }
 // }}}
-

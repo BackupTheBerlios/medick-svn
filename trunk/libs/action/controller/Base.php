@@ -37,10 +37,11 @@ include_once('action/view/Base.php');
 // namespace ActionController {
 
 /**
- * @package locknet7.action.controller
  * Base Class For Our Application Controllers
+ *
+ * @package locknet7.action.controller
  */
-class ActionControllerBase extends Object {
+class ActionController extends Object {
 
     /** @var Logger
         logger instance */
@@ -68,15 +69,15 @@ class ActionControllerBase extends Object {
 
     /** @var array
         values for template class */
-    protected $assigns;
+    private $assigns;
 
     /** @var string
         Default location for template files*/
-    protected $template_root;
+    private $template_root;
 
     /** @var string
         application path*/
-    protected $app_path;
+    private $app_path;
 
     /** @var string
         the layout to use */
@@ -106,8 +107,6 @@ class ActionControllerBase extends Object {
         the injector. */
     private $injector;
 
-    // private $__flash=array();
-
     /**
      * Process this Request
      *
@@ -124,8 +123,7 @@ class ActionControllerBase extends Object {
         if(ob_get_length()) {
             ob_end_clean();
         }
-        $template = ActionViewBase::factory('php');
-        // $template = new ActionView:::Base();
+        $template = ActionView::factory('php');
         $template->error= $exception;
         $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
         $response->setStatus(Response::SC_INTERNAL_SERVER_ERROR);
@@ -197,16 +195,11 @@ class ActionControllerBase extends Object {
                 . $this->injector->getPath('helpers')
                 . '_' . $this->params['controller'] . ' ' . $fnfEx->getMessage());
         }
-
-        if ($this->session->hasValue('flash')) {
-            $this->template->flash = $this->session->getValue('flash');
-        } else {
-            $this->template->flash = NULL;
-        }
+        $this->register_flash();
         if ($this->use_layout) {
             $layout= $this->use_layout === TRUE ? $this->params['controller'] : $this->use_layout;
             $layout_file= $this->injector->getPath('layouts') . $layout . '.phtml';
-            $this->logger->debug('Trying to use layout: ' . $layout_file);
+            $this->logger->debug('Layout: ' . $layout_file);
             if (!is_file($layout_file)) {
                 $this->logger->debug('...failed.');
                 return $this->render_without_layout($template_file, $status);
@@ -218,19 +211,14 @@ class ActionControllerBase extends Object {
         } else {
             return $this->render_without_layout($template_file, $status);
         }
+    }
 
-        /*
-        // {{{ hook RouteParams here.
-        $hij= array();
-        $route= Registry::get('__map')->getCurrentRoute();
-        foreach($route->getParams() as $param) {
-            $hij[$param->getName()]['message'] = 'foo';
-            $hij[$param->getName()]['value']   = $param->getValue();
-        }
-        $this->template->__param = $hij;
-        // }}}
-        */
-
+    protected function render_partial($partial, $controller=NULL, $status=NULL) {
+        $this->register_flash();
+        if (is_null($controller)) $location = $this->template_root;
+        else $location = $this->injector->getPath('views') . $controller . DIRECTORY_SEPARATOR;
+        // $this->logger->debug('Partial: ' . $location . '_' . $partial . '.phtml');
+        return $this->render_without_layout($location . '_' . $partial . '.phtml', $status);
     }
 
     protected function render_without_layout($template_file, $status) {
@@ -255,8 +243,6 @@ class ActionControllerBase extends Object {
             return;
         }
         $status = $status === NULL ? Response::SC_OK : $status;
-        // try to load the magick __common method.
-
         $this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
@@ -265,12 +251,19 @@ class ActionControllerBase extends Object {
         if ($this->session->hasValue('flash')) {
             $this->session->removeValue('flash');
         }
-
     }
 
     // }}}
 
-    protected final function flash($name, $value) {
+    private function register_flash() {
+        if ($this->session->hasValue('flash')) {
+            $this->template->assign('flash', $this->session->getValue('flash'));
+        } else {
+            $this->template->assign('flash', NULL);
+        }
+    }
+
+    protected function flash($name, $value) {
         $this->session->putValue('flash', array($name=>$value));
     }
 
@@ -294,11 +287,23 @@ class ActionControllerBase extends Object {
         $this->app_path      = $this->injector->getPath('__base');
         $this->template_root = $this->injector->getPath('views') . $this->params['controller'] . DIRECTORY_SEPARATOR;
 
-        $this->template = ActionViewBase::factory('php');
-        // $this->template = new ActionView:::Base();
+        $this->template = ActionView::factory('php');
         // predefined variables:
-        $this->template->__base   = $this->config->getProperty('document_root');
-        $this->template->__server = $this->config->getProperty('server_name');
+        $this->template->assign('__base', $this->config->getProperty('document_root'));
+        $this->template->assign('__server', $this->config->getProperty('server_name'));
+        $this->template->assign('__controller', $this->params['controller']);
+        $this->logger->debug($this->request->toString());
+    }
+
+    /**
+     * Shortcut for template assigns
+     */
+    public function __set($name, $value) {
+        $this->template->assign($name, $value);
+    }
+
+    public function __get($name) {
+        return $this->template->$name;
     }
 
     // XXX: not-done!
@@ -312,23 +317,28 @@ class ActionControllerBase extends Object {
 
     // {{{ redirects
 
-    // XXX: not done.
+    /**
+     * Redirects the current Response
+     *
+     * This changes the flag of action performed to TRUE
+     * @param string action to redirect to
+     * @param string controller defaults to NULL, the current controller
+     * @param array params, additional parameters to pass with this redirect.
+     */
     protected function redirect_to($action, $controller= NULL, $params = array()) {
         // get the curent controller, if NULL is passed.
-        if (is_null($controller)) $controller= $this->params['controller'];
-
-        if ($this->config->getProperty('rewrite')) {
-            $this->response->redirect(
-                $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . '/' .
-                $controller . '/' . $action . '.html');
-        } else {
-            // rewrite-off
-            $this->response->redirect(
-                $this->config->getProperty('server_name') .
-                $this->config->getProperty('document_root') .
-                '/index.php?controller=' . $controller . '&action=' . $action
-            );
+        if (is_null($controller)) {
+            $controller= $this->params['controller'];
         }
+        $redirect_to= $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . '/';
+        if (!$this->config->getProperty('rewrite')) {
+            $redirect_to .= 'index.php/';
+        }
+        $redirect_to .= $controller . '/' . $action;
+        if (count($params)) $redirect_to .= '/' . implode('/', $params);
+        $redirect_to .= '.html';
+        $this->logger->debug('Redirecting to: ' . $redirect_to);
+        $this->response->redirect($redirect_to);
         $this->action_performed = TRUE;
     }
 
@@ -347,6 +357,7 @@ class ActionControllerBase extends Object {
      * Also, the magic __common method is invoked.
      * @param string, action_name, the action to perform
      * TODO: still to refactor.
+     * TODO: do not try to create the ``index" method, just throw an error.
      */
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct', '__common');
@@ -369,7 +380,7 @@ class ActionControllerBase extends Object {
             }
         }
         $this->params['action'] = strtolower($action_name);
-        $this->logger->debug('Incoming action:: ' . strtolower($action_name));
+        // $this->logger->debug('Action:: ' . strtolower($action_name));
         // quickly load the common magick method.
         if ($_common= $this->createMethod('__common')) {
             $_common->invoke($this);
@@ -434,7 +445,6 @@ class ActionControllerBase extends Object {
         }
         foreach ($this->models as $model) {
             if ( trim($model) != '' ) {
-                $this->logger->debug('Injecting Model:: ' . $model);
                 $this->injector->inject('model', trim($model));
             }
         }

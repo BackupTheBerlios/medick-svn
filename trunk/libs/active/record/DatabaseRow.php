@@ -35,7 +35,8 @@
 include_once('active/record/Field.php');
 
 /**
- * It represents a Row from the Database, generic named here FieldsAggregate
+ * It represents a Row from the Database
+ * 
  * @package locknet7.active.record
  */
 
@@ -47,7 +48,7 @@ class DatabaseRow extends Collection {
 
     /** @var array
         holds the field names */
-    private $field_names     = array();
+    private $field_names = array();
 
     /** @var array
         affected fields, Filed[] */
@@ -57,6 +58,33 @@ class DatabaseRow extends Collection {
         affected flag. */
     private $affected = FALSE;
 
+    /** @var string
+        this database table name */ 
+    private $table;
+
+    /**
+     * Creates a new DatabaseRow
+     *
+     * @param string table, the table name where this row is from
+     */ 
+    public function DatabaseRow($table) {
+        $this->table= $table;
+        parent::__construct();
+    }
+
+    /**
+     * It gets the table name
+     *
+     * @return string, the table name
+     */ 
+    public function getTable() {
+        return $this->table;
+    }
+
+    /**
+     * Automatic trigger executed when a new Field is added on to this Collection
+     * @see Collection::onAdd
+     */
     public function onAdd(Object $field) {
         if (!$field instanceof Field) {
             throw new IllegalArgumentException(
@@ -108,6 +136,11 @@ class DatabaseRow extends Collection {
         return FALSE;
     }
 
+    /**
+     * Collects errors from the fields added on this row
+     *
+     * @return array an array of errors
+     */ 
     public function collectErrors() {
         $errors= array();
         $it = $this->iterator();
@@ -144,3 +177,4 @@ class DatabaseRow extends Collection {
         return $this->hasAffected() ? $this->affected_fields : array();
     }
 }
+

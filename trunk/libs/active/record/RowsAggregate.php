@@ -54,7 +54,7 @@ class RowsAggregate extends Object implements IteratorAggregate {
      * @param ActiveRecordBase row the row to add into this container
      * @return ActiveRecordBase
      */
-    public function add(ActiveRecordBase $row) {
+    public function add(ActiveRecord $row) {
         $this->container->append($row);
         return $row;
     }

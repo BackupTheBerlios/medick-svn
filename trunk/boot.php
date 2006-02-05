@@ -70,9 +70,8 @@ Registry::put(new XMLConfigurator($conf_files . '.xml'), '__configurator');
 
 $logger= Registry::put(new Logger(), '__logger');
 
-$logger->debug('Core Loaded...');
-$logger->debug('Running on Medick $v: ' . Version::getVersion());
-$logger->debug('XML Config File: ' . $conf_files . '.xml');
-$logger->debug('Routes File: ' . $conf_files . '.routes.php');
-
+$logger->debug('Medick $v: ' . Version::getVersion());
+$logger->debug('Config: ' . $conf_files . '.xml');
+$logger->debug('Routes: ' . $conf_files . '.routes.php');
 include_once($conf_files . '.routes.php');
+

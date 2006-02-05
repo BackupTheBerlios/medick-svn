@@ -38,6 +38,7 @@ include_once('active/record/Base.php');
  * Solves dependencys, by including application specific files
  * controllers, models, layout files.
  * Aditional using php reflection api, it validates the user classes
+ *
  * @package locknet7.action.controller
  */
 
@@ -123,16 +124,15 @@ class Injector extends Object {
      */
     protected function injectModel($name) {
         $location= $this->path['models'] . $name . '.php';
-        $this->logger->debug('Model Location:: ' . $location);
+        $this->logger->debug('Model: ' . $location);
         $this->includeFile($location, ucfirst($name));
         $model_class_name= Inflector::camelize($name);
-        $this->logger->debug('Model Class Name:: ' . $model_class_name);
         try {
             $model_object = new ReflectionClass($model_class_name);
 
-            if (@$model_object->getParentClass()->name != 'ActiveRecordBase') {
+            if (@$model_object->getParentClass()->name != 'ActiveRecord') {
                 throw new InjectorException (
-                    'Wrong Definition of user Model, `' . $model_class_name . '`, it must extend ActiveRecordBase object!');
+                    'Wrong Definition of user Model, `' . $model_class_name . '`, it must extend ActiveRecord object!');
             }
 
             // if (!$model_object->hasMethod('find')) { XXX. php 5.1 only.
@@ -178,7 +178,7 @@ class Injector extends Object {
                 (
                     (@$controller_class->getParentClass()->name == 'ApplicationController')
                     ||
-                    (@$controller_class->getParentClass()->name == 'ActionControllerBase')
+                    (@$controller_class->getParentClass()->name == 'ActionController')
                 )
             )
             {
@@ -186,7 +186,7 @@ class Injector extends Object {
             } else {
                 throw new InjectorException (
                     'Wrong Definition of user controller class,
-                    `' . $clazz . '` must extend ApplicationController or ActionControllerBase and
+                    `' . $clazz . '` must extend ApplicationController or ActionController and
                     should be instantiable (must have a public constructor)!');
             }
         } catch (ReflectionException $rEx) {
@@ -204,7 +204,7 @@ class Injector extends Object {
      */
     protected function injectHelper($location) {
         $helper_file= $this->path['helpers'] . $location . '_helper.php';
-        $this->logger->debug('Trying to load user helper from: ' . $helper_file);
+        $this->logger->debug('Helper: ' . $helper_file);
         return $this->includeFile($helper_file, $location . '_helper.php');
     }
 

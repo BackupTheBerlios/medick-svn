@@ -33,15 +33,16 @@
 // }}}
 
 /**
- * @package locknet7.medick
  * The Medick Error Handler.
+ *
+ * @package locknet7.medick
  */
 class ErrorHandler extends Object {
 
     /**
      * Setup this ErrorHandler
      */
-    public function __construct() {
+    public function ErrorHandler() {
         ini_set('docref_root', null);
         ini_set('docref_ext', null);
     }
@@ -55,15 +56,11 @@ class ErrorHandler extends Object {
      */
     function raiseError($errno, $errstr, $errfile, $errline) {
         $errRep = error_reporting();
-
         if( ($errno & $errRep) != $errno) {
             return;
         }
-
         $trace = debug_backtrace();
         array_shift($trace);
-
         throw new Error( $errstr, $errno, $errfile, $errline, $trace );
-
     }
 }

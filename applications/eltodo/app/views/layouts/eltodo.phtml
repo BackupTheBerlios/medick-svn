@@ -21,14 +21,14 @@
             <div id="sidebar">
                 <h1>sidebar</h1>
                 <ul>
-                    <li>My Projects</li>
-                    <li>Add Project</li>
+                    <li><a href="<?=URL::create('project', 'all');?>">My Projects</a></li>
+                    <li><a href="<?=URL::create('project', 'add');?>">Add Project</a></li>
                 </ul>
             </div>
 
             <div id="content"><?=$content_for_layout;?></div>
 
-            <div id="footer">elTodo :: powered by medick.</div>
+            <div id="footer"><p>elTodo :: powered by <a href="http://medick.locknet.ro">medick</a>.</p></div>
 
         </div>
 

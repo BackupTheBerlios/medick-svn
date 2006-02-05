@@ -85,8 +85,6 @@ class Logger extends Object implements ILogger {
             include_once('logger' . DIRECTORY_SEPARATOR . 'formatter' . DIRECTORY_SEPARATOR . $_klazz . '.php');
             $this->formatter= new $_klazz;
         }
-
-        $this->debug('Logger ready');
     }
 
     /** __magic __overloading__ */

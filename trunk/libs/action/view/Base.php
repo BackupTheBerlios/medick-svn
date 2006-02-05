@@ -32,20 +32,21 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/**
- * @package locknet7.action.view.base
- */
-
 include_once('action/view/HTML.php');
+
+/**
+ * @package locknet7.action.view
+ */
 
 // namespace ActionView {
 
 interface ITemplateEngine {
+    public function render_partial($controller, $partial);
     public function render($template_file);
     public function assign($name, $value);
 }
 
-class ActionViewBase extends Object {
+class ActionView extends Object {
 
     public static function factory($engine) {
         return new PHPTemplateEngine();
@@ -61,7 +62,7 @@ class ActionViewBase extends Object {
      */
     public static function stripslashes_deep($value) {
         if (is_array($value)) {
-            array_map(array('ActionViewBase','stripslashes_deep'), $value);
+            array_map(array('ActionView','stripslashes_deep'), $value);
         } elseif (is_object($value)) {
 
         } else {
@@ -72,7 +73,7 @@ class ActionViewBase extends Object {
 }
 
 /**
- * ActionViewBase is the default `Template Engine' for Medick Framwork.
+ * A ``PHPTemplateEngine" is the default `Template Engine' for Medick Framwork.
  *
  * For a smoother transaction from <tt>Smarty</tt>, some variabiles/methods
  * may share the same name and behavior
@@ -85,6 +86,17 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
         return $this->render($template_file);
     }
 
+    public function render_partial($controller, $partial) {
+        $path= Registry::get('__injector')->getPath('views');
+        if (NULL === $controller) {
+            $path .= $this->__controller;
+        } else {
+            $path .= $controller;
+        }
+        $path .= DIRECTORY_SEPARATOR . '_' . $partial . '.phtml';
+        return $this->render($path);
+    }
+
     /**
      * Render the file
      * @param string, file, the file to render.
@@ -92,9 +104,11 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
      * @throws Exception if the file is wrong.
      */
     public function render($file) {
-        if (!is_file($file)) throw new MedickException ('Cannot Find Template: ' . $file);
+        if (!is_file($file)) {
+            throw new FileNotFoundException ('Cannot Find Template: ' . $file);
+        }
         if (!empty($this->vars)) {
-            if(!get_magic_quotes_gpc()) $this->vars = ActionViewBase::stripslashes_deep($this->vars);
+            if(!get_magic_quotes_gpc()) $this->vars = ActionView::stripslashes_deep($this->vars);
             extract($this->vars,EXTR_SKIP);
         }
         ob_start();
@@ -139,3 +153,4 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
 }
 
 // }
+

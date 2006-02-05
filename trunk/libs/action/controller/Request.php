@@ -78,5 +78,19 @@ abstract class Request extends Object {
     public function setParameter($name, $value) {
         $this->params[$name] = $value;
     }
+
+    /**
+     * Gets a string representation of this Object
+     *
+     * @return string
+     */ 
+    public function toString() {
+        $buff = "{".$this->getClassName()."}-->";
+        foreach ($this->getParameters() as $name=>$value) {
+            $buff .= "[{$name}={$value}]";
+        }
+        return $buff;
+    }
+    
 }
 

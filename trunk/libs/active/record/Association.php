@@ -34,6 +34,7 @@
 
 /**
  * Association base abstract class
+ * 
  * @package locknet7.active.record
  */
 abstract class Association extends Object {
@@ -68,27 +69,7 @@ abstract class Association extends Object {
 
     /** execute function */
     abstract public function execute();
-
-    /** */
-    protected function pre_execution() {
-        return $this->reload($this->class);
-    }
-
-    /** */
-    protected function post_execution() {
-        return $this->reload($this->owner);
-    }
-
-    private function reload($what) {
-        if ($this->getClassName() == 'HasAndBelongsToManyAssociation'
-             || $this->getClassName() == 'HasManyAssociation'
-        ) {
-            return ActiveRecordBase::initialize(Inflector::singularize($what));
-        } else {
-            return ActiveRecordBase::initialize($what);
-        }
-    }
-
+    
     /**
      * Resolves this Association
      *
@@ -149,12 +130,10 @@ abstract class Association extends Object {
 class HasManyAssociation extends Association {
 
     public function execute() {
-        $this->class = Inflector::singularize($this->class);
-        $this->pre_execution();
-        $ret = ActiveRecordBase::__find(array(
-                array('condition'=>Inflector::singularize($this->owner) . '_id=' . $this->pk)));
-        $this->post_execution();
-        return $ret;
+        $fk= Inflector::singularize($this->owner) . '_id';
+        $arguments= array('all', array('condition'=>$fk.'=?'), array($this->pk));
+        $builder= new QueryBuilder(Inflector::singularize($this->class), $arguments);
+        return ActiveRecord::build($builder);
     }
 
 }
@@ -177,19 +156,17 @@ class HasOneAssociation extends Association {
 
     /**
      * It Executes this Association
+     * 
+     * @todo: what if we don`t find the field?
      * @see Association#execute
      */
     public function execute() {
         $fk= $this->class.'_id'; // foreign key name: the class name+"_id" suffix"
-        $it= $this->fields->iterator();
-        while($it->hasNext()) {
-            $current= $it->next();
-            if ($current->getName() == $fk) {
-                $this->pre_execution();
-                $ret= ActiveRecordBase::__find(array($current->getValue()));
-                $this->post_execution();
-                return $ret;
-            }
+        if ($field= $this->fields->getFieldByName($fk)) {
+            $arguments= array('first', array('condition'=>'id=?'), array($field->getValue()));
+            return ActiveRecord::build(new QueryBuilder($this->class, $arguments));
+        } else {
+            throw new AssociationNotFoundException('Cannot execute Association ``has_one" on ' . $this->class);
         }
     }
 }
@@ -217,25 +194,20 @@ class BelongsToAssociation extends HasOneAssociation {    }
 class HasAndBelongsToManyAssociation extends Association {
 
     public function execute() {
-        $this->pre_execution();
         if ($this->class < $this->owner) {
             $join_table= $this->class . '_' . Inflector::pluralize($this->owner);
         } else {
             $join_table= Inflector::pluralize($this->owner) . '_' . Inflector::pluralize($this->class);
         }
-        $ret= ActiveRecordBase::__find(
-                            array(
-                                array(
-                                    'include'  => $this->class . '.*',
-                                    'left join'=>
-                                        $join_table . ' ON ' . $this->class .
-                                        '.id=' . $join_table . '.' . Inflector::singularize($this->class) . '_id',
-                                     'condition'=>
-                                        $join_table . '.' . Inflector::singularize($this->owner) . '_id=' . $this->pk
-                                    )
-                                )
-                            );
-        $this->post_execution();
-        return $ret;
+        $arguments=array();
+        $arguments[]='all';
+        $clauses= array();
+        $clauses['columns']   = $this->class.'.*';
+        $clauses['left join'] = $join_table . ' on ' . $this->class . '.id=' . $join_table . '.' . Inflector::singularize($this->class) . '_id';
+        $clauses['condition'] = $join_table . '.' . Inflector::singularize($this->owner) . '_id=?';
+        $arguments[]= $clauses;
+        $arguments[]= array($this->pk);
+        return ActiveRecord::build(new QueryBuilder(Inflector::singularize($this->class), $arguments));
     }
 }
+

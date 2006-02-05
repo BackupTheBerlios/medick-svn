@@ -113,6 +113,11 @@ class Inflector extends Object {
         return $word;
     }
 
+    public static function tabelize($class) {
+        $s= strtolower(Inflector::pluralize($class));
+        return $s;
+    }
+    
     // {{{ based on cake.
     public static function camelize($word) {
         return str_replace(" ", "", ucwords(str_replace("_", " ", $word)));

@@ -38,6 +38,8 @@ include_once('action/controller/Response.php');
 include_once('action/controller/Base.php');
 
 /**
+ * It knows how to dispatch a request
+ *
  * @package locknet7.medick
  */
 class Dispatcher extends Object {
@@ -52,9 +54,8 @@ class Dispatcher extends Object {
         try {
             ActionControllerRouting::recognize($request)->process($request, $response)->dump();
         } catch (Exception $ex) {
-            ActionControllerBase::process_with_exception($request, $response, $ex)->dump();
+            ActionController::process_with_exception($request, $response, $ex)->dump();
             Registry::get('__logger')->warn($ex->getMessage());
         }
     }
 }
-

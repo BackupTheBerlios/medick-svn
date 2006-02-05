@@ -35,7 +35,7 @@
 
 class ActiveRecordHelper extends Object {
 
-    public static function error_messages_for(ActiveRecordBase $object, $options=array()) {
+    public static function error_messages_for(ActiveRecord $object, $options=array()) {
         $css_class= isset($options['css_class']) ? $options['css_class'] : 'formErrors';
         $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 2;
         $buffer= '<div id="medickFormErrors" class="' . $css_class . '">';
@@ -63,7 +63,7 @@ class ActiveRecordHelper extends Object {
         }
     }
 
-    public static function error_message_on(ActiveRecordBase $object, $method, $options=array()) {
+    public static function error_message_on(ActiveRecord $object, $method, $options=array()) {
         // $prepend_text = isset($options['prepend']) ? $options['prepend'] : "";
         // $append_text  = isset($options['append']) ? $options['append'] : "";
         // $css_class    = isset($options['css_class']) ? $options['css_class'] : "formError";
@@ -76,7 +76,7 @@ class ActiveRecordHelper extends Object {
 
 class FormHelper extends Object {
 
-    public static function text_field(ActiveRecordBase $object, $method, $options = array()) {
+    public static function text_field(ActiveRecord $object, $method, $options = array()) {
         if (!$field= $object->getRow()->getFieldByName($method)) {
             return; // ex?
         }
@@ -104,7 +104,7 @@ class FormHelper extends Object {
         return $buff . "</div>";
     }
 
-    public static function text_area(ActiveRecordBase $object, $method, $options=array()) {
+    public static function text_area(ActiveRecord $object, $method, $options=array()) {
         if (!$field= $object->getRow()->getFieldByName($method)) {
             return; // ex?
         }
@@ -135,9 +135,20 @@ class FormHelper extends Object {
             $options = array(),
             $checked_value = "1",
             $unchecked_value = "0") {
-        $buff = '<input type="checkbox" id="';
-        $buff .= strtolower(get_class($object)) . '_'.$method.'" ';
-        $buff .= 'name="'.strtolower(get_class($object)).'['.$method.']" ';
+                
+        if (!$field= $object->getRow()->getFieldByName($method)) {
+            return; // ex?
+        }
+        $id   = strtolower(get_class($object)) . '_'.$method;
+        $name = strtolower(get_class($object)).'['.$method.']';
+        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label><br />\n";
+        $errors= FALSE;
+        if($field->hasErrors()) {
+            $buff .= '<div class="fieldWithErrors">';
+            $errors= TRUE;
+        }
+                
+        $buff .= '<input type="checkbox" id="' . $id . '" name="' . $name . '" ';
         foreach ($options as $key=>$value) {
             $buff .= $key . '="'.$value.'" ';
         }

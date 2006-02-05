@@ -76,8 +76,16 @@ class Validator extends Object {
 
     private function isNotUnique(Field $field) {
         try {
-            ActiveRecordBase::__find(array(
-                array('condition'=>$field->getName() .'=\''.$field->getValue().'\'')));
+            ActiveRecord::build(
+                new QueryBuilder(
+                    $this->row->getTable(), 
+                    array(
+                        'first', 
+                        array('condition'=>$field->getName() . '=?'), 
+                        array($field->getValue()
+                    )
+                )
+            ));
             $field->addError('is not unique');
             return TRUE;
         } catch (RecordNotFoundException $rnfEx) {

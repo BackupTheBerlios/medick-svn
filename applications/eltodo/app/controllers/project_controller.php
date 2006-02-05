@@ -39,6 +39,10 @@ class ProjectController extends ApplicationController {
         }
     }
 
+    public function overview() {
+        $this->template->project= Project::find($this->params['id']);
+    }
+
     /** Removes a project */
     public function delete() {
         $project= Project::find($this->params['id']);

@@ -33,34 +33,34 @@
 // }}}
 
 // ActiveRecord dependencies.
-// include_once('active/record/FieldsAggregate.php');
 include_once('active/record/DatabaseRow.php');
 include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
-include_once('active/support/Inflector.php');
+include_once('active/record/SQLCommand.php');
 include_once('active/record/Association.php');
 include_once('active/record/Validator.php');
+include_once('active/support/Inflector.php');
 // 3-rd party.
 include_once('creole/Creole.php');
 
 /**
  * @package locknet7.active.record
  */
-abstract class ActiveRecordBase extends Object {
+abstract class ActiveRecord extends Object {
 
     /* class name: Person */
-    static protected $class_name = NULL;
+    protected $class_name = NULL;
     /* table mane: persons */
-    static protected $table_name = NULL;
+    protected $table_name = NULL;
     /* database connection */
-    static protected $conn       = NULL;
+    static protected $conn= NULL;
 
     /** @var DatabaseRow
         our database row. */
     protected $row;
 
     /** @var string
-        primary key name! */
+        primary key name */
     private $pk;
 
     // {{{ Associations
@@ -96,15 +96,15 @@ abstract class ActiveRecordBase extends Object {
      * PHP Engine will call this constructor by default.
      * @param array, params, parameters as pair of `field name` => `value`
      */
-    public final function __construct($params = array()) {
+    public final function ActiveRecord($params = array()) {
         self::establish_connection();
-        self::$class_name = $this->getClassName();
-        self::$table_name = Inflector::pluralize(strtolower(Inflector::underscore(self::$class_name)));
+        $this->class_name = $this->getClassName();
+        $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
 
-        $table_info   = self::$conn->getDatabaseInfo()->getTable(self::$table_name);
+        $table_info   = self::$conn->getDatabaseInfo()->getTable($this->table_name);
         $this->pk     = $table_info->getPrimaryKey()->getName();
 
-        $this->row = new DatabaseRow();
+        $this->row = new DatabaseRow($this->table_name);
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
@@ -165,7 +165,7 @@ abstract class ActiveRecordBase extends Object {
                                     'has_many'   => $this->has_many,
                                     'has_and_belongs_to_many' => $this->has_and_belongs_to_many
                                     ),
-                                self::$table_name,
+                                $this->table_name,
                                 $field_name,
                                 $this->row
                                 )->execute();
@@ -177,7 +177,9 @@ abstract class ActiveRecordBase extends Object {
     }
 
     /**
-     * This method is run before any call to ActiveRecordBase public methods!
+     * @TODO: This method is not working as expected!
+     *
+     * This method is run before any call to ActiveRecord public methods! (nope: php 5.1.2)
      * Removes some duplicate code from the list with <tt>know_methods</tt>.
      * ALso, it defines some methods aliases (eg: delete===distroy)
      *
@@ -213,13 +215,13 @@ abstract class ActiveRecordBase extends Object {
 
     /** Prepare this Object for serialization */
     public function __sleep() {
-        self::close_connection();
-        return array('fields', 'pk', 'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
+        ActiveRecord::close_connection();
+        return array('row', 'pk', 'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
     }
 
     /** restore the Object state after unserialize */
     public function __wakeup() {
-        self::establish_connection();
+        ActiveRecord::establish_connection();
         for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
             $field_name= $it->current()->getName();
             $this->$field_name = $it->current()->getValue();
@@ -418,7 +420,7 @@ abstract class ActiveRecordBase extends Object {
         foreach ($this->row->getAffectedFields() as $col) {
             $whereClause[] = $col->getName() . ' = ? ';
         }
-        $sql = 'DELETE FROM ' . ActiveRecordBase::$table_name . ' WHERE ' . implode(' AND ', $whereClause);
+        $sql = 'DELETE FROM ' . $this->table_name . ' WHERE ' . implode(' AND ', $whereClause);
         $af= $this->performQuery($sql);
         $this->after_delete();
         return $af;
@@ -434,7 +436,7 @@ abstract class ActiveRecordBase extends Object {
     private function getNextId() {
         if ($this->row->getPrimaryKey() !== NULL) {
             $_pk = $this->pk;
-            $id  = ActiveRecordBase::$conn->getIdGenerator()->getId($this->pk);
+            $id  = ActiveRecord::$conn->getIdGenerator()->getId($this->pk);
             $this->$_pk = $id;
             return $id;
         } else {
@@ -443,18 +445,19 @@ abstract class ActiveRecordBase extends Object {
     }
 
     /**
-     * Helper internal method witch performs an sql query
+     * @TODO: can we use QueryBuilder for this?
+     * Helper, internal method witch performs an sql query, other than select.
      *
      * @param string sql the sql query to execute
      * @return int affected rows
      * @throws SQLException
      */
     private function performQuery($sql) {
-        $stmt = ActiveRecordBase::$conn->prepareStatement($sql);
-        ActiveRecordBase::populateStmtValues($stmt, $this->row->getAffectedFields());
+        $stmt = ActiveRecord::$conn->prepareStatement($sql);
+        ActiveRecord::populateStmtValues($stmt, $this->row->getAffectedFields());
         $af_rows = $stmt->executeUpdate();
         $stmt->close();
-        Registry::get('__logger')->debug('Performing sql query: ' . ActiveRecordBase::$conn->lastQuery);
+        // Registry::get('__logger')->debug('Performing sql query: ' . ActiveRecord::$conn->lastQuery);
         // $this->_reset();
         return $af_rows;
     }
@@ -473,7 +476,7 @@ abstract class ActiveRecordBase extends Object {
         if ($this->pk !== NULL) {
             $sqlSnippet = ' WHERE ' . $this->pk . ' = ' . $this->row->getPrimaryKey()->getValue();
         }
-        $sql  = 'UPDATE ' . ActiveRecordBase::$table_name . ' SET ';
+        $sql  = 'UPDATE ' . $this->table_name . ' SET ';
         // $sql .= implode(' = ?, ', $this->row->getAffectedFieldsNames());
 
         foreach($this->row->getAffectedFields() as $field) {
@@ -488,7 +491,7 @@ abstract class ActiveRecordBase extends Object {
      * @return string
      */
     private function getInsertSql() {
-        return 'INSERT INTO ' . self::$table_name
+        return 'INSERT INTO ' . $this->table_name
                . ' (' . implode(',', $this->row->getAffectedFieldsNames()) . ')'
                . ' VALUES (' . substr(str_repeat('?,', count($this->row->getAffectedFields())), 0, -1) . ')';
     }
@@ -513,96 +516,43 @@ abstract class ActiveRecordBase extends Object {
 
     abstract static function find();
 
-    // {{{ find monster
-    /**
-     *
-     * @throws ActiveRecordException if a requested case is not yet implemented (or invalid)
-     * @throws RecordNotFoundException no record responded to this method
-     */
-    public static final function __find($params= array()) {
-        $numargs = count($params);
-        if($numargs == 0) return ActiveRecordBase::__find(array('all'));
-
-        ActiveRecordBase::establish_connection();
-
+    public static function build(QueryBuilder $builder) {
+        $class_name= $builder->getOwner();
         try {
             // prepare the class instance.
-            $class = new ReflectionClass(ActiveRecordBase::$class_name);
+            $class = new ReflectionClass($class_name);
         } catch (ReflectionException $rEx) {
-            Registry::get('__injector')->inject('model', strtolower(ActiveRecordBase::$class_name));
+            Registry::get('__injector')->inject('model', strtolower($class_name));
             // retry:
-            $class = new ReflectionClass(ActiveRecordBase::$class_name);
+            $class = new ReflectionClass($class_name);
         }
-        $query = new QuerryBuilder(ActiveRecordBase::$table_name);
-
-        if ( $params[0] == 'all' && $numargs == 1 ) {
-            // all table fields and one arg.
-        } elseif ( $params[0] == 'all' && $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
-            $query->addArray($params[1]);
-        } elseif ( $params[0] == 'first' && $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
-            $query->addArray($params[1]);
-            $stmt = ActiveRecordBase::$conn->prepareStatement($query->buildQuery());
-            $rs   = $stmt->executeQuery();
+        ActiveRecord::establish_connection();
+        Registry::get('__logger')->debug($builder->compile()->getQueryString());
+        $stmt = ActiveRecord::$conn->prepareStatement($builder->compile()->getQueryString());
+        $i=1; foreach($builder->getBindings() as $binding) {
+            $stmt->set($i++, $binding);
+        }
+        $rs = $stmt->executeQuery();
+        if ($builder->getType() == 'first') {
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
                 $stmt->close();
-                return $class->newInstance($rs->getRow());
+                $result= $class->newInstance($rs->getRow());
+                $rs->close();
+                return $result;
             } else {
                 throw new RecordNotFoundException(
-                    'Couldn\'t find a `' . ActiveRecordBase::$class_name . '` to match your query.');
+                    'Couldn\'t find a `' . $class_name . '` to match your query.');
             }
-        } elseif ( is_numeric($params[0])) {
-            // we expect only one row!
-            // we need the pk name.
-            $pk_name = self::$conn->getDatabaseInfo()->getTable(self::$table_name)->getPrimaryKey()->getName();
-            if ( $numargs == 1 ) {
-                $query->add('condition', $pk_name . '=?');
-            } elseif ( $numargs == 2 && is_array($params[1]) && !empty($params[1]) ) {
-                $query->add('condition', $pk_name . '=?');
-                $query->addArray($params[1]);
-            }
-            $stmt = ActiveRecordBase::$conn->prepareStatement($query->buildQuery());
-            $stmt->setInt(1, $params[0]);
-            $rs   = $stmt->executeQuery();
-            if ($rs->getRecordCount() == 1) {
-                $rs->next();
-                $stmt->close();
-                return $class->newInstance($rs->getRow());
-            } elseif ($rs->getRecordCount() == 0) {
-                throw new RecordNotFoundException(
-                    'Couldn\'t find a `' . ActiveRecordBase::$class_name . '` with ID=' . $params[0]);
-            }
-        } elseif(is_array($params[0])) {
-            $query->addArray($params[0]);
-        } else {
-            throw new ActiveRecordException('Case Not Implemented yet!');
         }
-
-        $stmt = ActiveRecordBase::$conn->prepareStatement($query->buildQuery());
-        // add limit and/or offset if requested
-        if ($limit = $query->getLimit())   $stmt->setLimit($limit);
-        if ($offset = $query->getOffset()) $stmt->setOffset($offset);
-        $rs = $stmt->executeQuery();
-        /*
-        if ($rs->getRecordCount() == 0) {
-            throw new RecordNotFoundException(
-                'Couldn\'t find a ' . ActiveRecordBase::$class_name . ' The Result Set was empty!');
-        }
-        */
-        // build a list with objects of this type.
         $results = new RowsAggregate();
         while ($rs->next()) {
             $results->add($class->newInstance($rs->getRow()));
         }
         // release resources.
-        $rs->close(); $stmt->close();
-        Registry::get('__logger')->debug('Performed sql query: ' . ActiveRecordBase::$conn->lastQuery);
+        $rs->close();$stmt->close();
+        Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);
         return $results;
     }
-    // }}}
-
-    public static final function initialize($table) {
-        ActiveRecordBase::$table_name= strtolower(Inflector::pluralize($table));
-        ActiveRecordBase::$class_name= ucfirst($table);
-    }
 }
+

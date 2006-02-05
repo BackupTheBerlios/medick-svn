@@ -12,7 +12,7 @@
     <div>
         <label>Create a new Project:</label>
         <?=Form::text('project[name]', NULL, array('maxlength'=>255,'size'=>45)); ?>
-        <?=Form::submit('submit', 'Submit') ?>
+        <?=Form::submit('submit', 'Go!') ?>
     </div>
 </form>
 
@@ -30,11 +30,17 @@
           </a>
         </td>
         <td width="100%">
-          <p id="e_<?=$project->id;?>"><?=$project->name;?></p>
+          <!-- <p id="e_<?=$project->id;?>"> -->
+        <a href="<?=URL::create('project','overview',array('id'=>$project->id));?>">
+            <?=$project->name;?>
+        </a>
+          <!-- </p> -->
+            <!--
           <script language="JavaScript">
               new Ajax.InPlaceEditor('e_<?=$project->id;?>', '/eltodo/project/edit',
               { callback: function(form, value) { return 'id=<?=$project->id;?>&name=' + value }});
           </script>
+            -->
         </td>
       </tr>
     <? endforeach;?>
