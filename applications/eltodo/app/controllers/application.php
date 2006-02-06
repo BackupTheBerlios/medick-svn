@@ -6,10 +6,11 @@
  * @package eltodo.controllers
  */
 
-class ApplicationController extends ActionControllerBase {
+class ApplicationController extends ActionController {
 
     public function __common() {
         $this->template->title= $this->params['controller'] . '/' . $this->params['action'];
     }
 
 }
+

@@ -4,10 +4,10 @@
 
 include_once('active/record/Base.php');
 
-class Author extends ActiveRecordBase {
+class Author extends ActiveRecord {
     public static function find() {
-        ActiveRecordBase::initialize(__CLASS__);
-        return ActiveRecordBase::__find(func_get_args());
+        $args= func_get_args();
+        return ActiveRecord::build(new QueryBuilder(__CLASS__, $args));
     }
 }
 

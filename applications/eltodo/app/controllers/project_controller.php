@@ -25,13 +25,13 @@ class ProjectController extends ApplicationController {
 
     /** Creates a new Project */
     public function create() {
-        $this->template->project= new Project(isset($this->params['project']) ? $this->params['project'] : array());
+        $this->project= new Project(isset($this->params['project']) ? $this->params['project'] : array());
         try {
-            if ( !$this->template->project->save() ) {
+            if ( !$this->project->save() ) {
                 $this->logger->debug('Cannot save.');
                 return $this->render('add');
             }
-            $this->flash('notice', 'Project <i>' . $this->template->project->name . '</i> added!');
+            $this->flash('notice', 'Project <i>' . $this->project->name . '</i> added!');
             $this->redirect_to('all');
         } catch (Exception $ex) {
             $this->render('add');
@@ -40,7 +40,7 @@ class ProjectController extends ApplicationController {
     }
 
     public function overview() {
-        $this->template->project= Project::find($this->params['id']);
+        $this->project= Project::find($this->params['id']);
     }
 
     /** Removes a project */
@@ -58,16 +58,16 @@ class ProjectController extends ApplicationController {
 
     /** prints the for for creating a new project */
     public function add() {
-        $this->template->project= new Project();
+        $this->project= new Project();
     }
 
     /** List all projects, this is the default Route. */
     public function all() {
-        try {
-          $this->template->projects= Project::find('all', array('order'=>'created_at DESC'));
-        } catch (RecordNotFoundException $rnfEx) {
-            $this->template->projects= array();
+        $this->projects= Project::find('all', array('order by'=>'created_at desc'));
+        if ($this->projects->count() == 0) {
+            $this->projects= array();
         }
     }
 
 }
+

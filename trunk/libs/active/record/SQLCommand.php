@@ -64,7 +64,7 @@ class SQLCommand extends Object {
         $this->command= $command;
     }
 
-    public static function select($ret_values) {
+    public static function select() {
         return new SQLCommand('select');
     }
 
@@ -105,7 +105,7 @@ class SQLCommand extends Object {
     }
 
     private function appendColumns() {
-        return $this->columns ? " " . $this->columns . " " : "*";
+        return $this->columns ? $this->columns : "*";
     }
 
     private function appendFrom() {
@@ -130,4 +130,3 @@ class SQLCommand extends Object {
     }
 
 }
-

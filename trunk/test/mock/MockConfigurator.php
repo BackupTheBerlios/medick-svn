@@ -17,7 +17,7 @@ class MockConfigurator extends Object implements IConfigurator {
     public function getProperty($name) {
         switch ($name) {
             case 'application_path':
-                return 'application' . DIRECTORY_SEPARATOR;
+                return 'application';
             default:
                 throw new ConfiguratorException(__CLASS__ . ' Property `' . $name . '` not implemented!');
          }

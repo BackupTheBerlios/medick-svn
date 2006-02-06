@@ -4,13 +4,13 @@
 
 include_once('active/record/Base.php');
 
-class Book extends ActiveRecordBase {
+class Book extends ActiveRecord {
 
     protected $has_one= array('author');
     
     public static function find() {
-        ActiveRecordBase::initialize(__CLASS__);
-        return ActiveRecordBase::__find(func_get_args());
+        $args= func_get_args();
+        return ActiveRecord::build(new QueryBuilder(__CLASS__,$args));
     }
 
 }

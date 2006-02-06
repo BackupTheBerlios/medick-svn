@@ -191,7 +191,7 @@ class Route extends Object {
             }
         }
 
-        // check for a default action
+        // check for an action
         if (!$request->hasParameter('action')) {
             if (array_key_exists('action', $this->defaults)) {
                 $request->setParameter('action', $this->defaults['action']);
@@ -201,7 +201,7 @@ class Route extends Object {
         }
 
         $this->controller= $request->getParameter('controller');
-
+        Registry::get('__logger')->debug($this->toString());
         return TRUE;
     }
 
@@ -215,6 +215,15 @@ class Route extends Object {
             throw new RoutingException('Cannot create a controller instance,' . $fnfEx->getMessage());
         }
     }
-
+    
+    /**
+     * A String representation of this Route
+     *
+     * @return string
+     */ 
+    public function toString() {
+        return "{".$this->getClassName()."}-->{$this->route_list}";
+    }
+    
 }
 

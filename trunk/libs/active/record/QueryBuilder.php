@@ -39,13 +39,18 @@
  */
 class QueryBuilder extends Object {
 
+    /** result type owner */
     private $owner;
 
     private $clauses=array();
 
     private $bindings=array();
-
+    /** Type of select (all or first) */
     private $type;
+    /** limit */
+    private $limit;
+    /**  offset */
+    private $offset;
 
     public function QueryBuilder($owner, $arguments) {
         $this->owner= $owner;
@@ -66,6 +71,14 @@ class QueryBuilder extends Object {
         }
     }
 
+    public function getLimit() {
+        return $this->limit;    
+    }
+
+    public function getOffset() {
+        return $this->offset;
+    }
+
     public function getOwner() {
         return $this->owner;
     }
@@ -79,13 +92,29 @@ class QueryBuilder extends Object {
         return $this->type;
     }
 
+    /**
+     * Compile an SQLCommand from this query clauses.
+     * 
+     * Valid Clauses:
+     * <code>
+     *  'condition' => to insert a sql condition
+     *  'order by'  => to set an order by
+     *  'columns'   => specify only the columns you want to select (check if it work on aliases too?)
+     *  'limit'     => adjust the limit (this is not sended to the SQLCommand since is intended to be used with PreparedStatements)
+     *  'offset'    => adds an offset (this is not sended to the SQLCommand since is intended to be used with PreparedStatements)
+     *  'left join' => add a left join
+     * </code>
+     *
+     * @return SQLCommand
+     */
     public function compile() {
-        $command= SQLCommand::select($this->type)->from(Inflector::tabelize($this->owner));
+        $command= SQLCommand::select()->from(Inflector::tabelize($this->owner));
         if (isset($this->clauses['condition']))  $command->where($this->clauses['condition']);
         if (isset($this->clauses['order by']))   $command->orderBy($this->clauses['order by']);
         if (isset($this->clauses['columns']))    $command->columns($this->clauses['columns']);
+        if (isset($this->clauses['limit']))      $this->limit= $this->clauses['limit'];
+        if (isset($this->clauses['offset']))     $this->offset= $this->clauses['offset'];
         if (isset($this->clauses['left join']))  $command->leftJoin('left outer join ' . $this->clauses['left join']);
         return $command;
     }
 }
-

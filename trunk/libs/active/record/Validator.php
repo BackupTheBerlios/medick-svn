@@ -78,7 +78,7 @@ class Validator extends Object {
         try {
             ActiveRecord::build(
                 new QueryBuilder(
-                    $this->row->getTable(), 
+                    Inflector::singularize($this->row->getTable()), 
                     array(
                         'first', 
                         array('condition'=>$field->getName() . '=?'), 

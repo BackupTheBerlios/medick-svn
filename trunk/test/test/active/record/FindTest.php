@@ -32,7 +32,7 @@ class FindTest extends UnitTestCase {
      public function setUp() {
         Registry::put(new MockConfigurator(), '__configurator');
         Registry::put(new Logger(), '__logger');
-        ActiveRecordBase::close_connection();
+        ActiveRecord::close_connection();
         $author= new Author();
         $author->name= "Andrei Cristescu";
         $author->email= "andrei.cristescu@foo-factory.info";
@@ -63,7 +63,7 @@ class FindTest extends UnitTestCase {
 
     /** id field is not selected, should be NULL */
     public function testFindAllArrayInclude() {
-        $authors= Author::find('all', array('include'=>'name, email'));
+        $authors= Author::find('all', array('columns'=>'name, email'));
         foreach ($authors as $author) {
             $this->assertNull($author->id);
         }
@@ -71,7 +71,7 @@ class FindTest extends UnitTestCase {
 
     /** select by condition */
     public function testFindAllArrayCondition() {
-        $authors= Author::find('all', array('condition'=>'name="Andrei Cristescu"'));
+        $authors= Author::find('all', array('condition'=>'name=?'), array("Andrei Cristescu"));
         $this->assertEqual($authors->count(), 1);
         foreach ($authors as $author) {
             $this->assertEqual('andrei.cristescu@foo-factory.info', $author->email);
@@ -86,7 +86,7 @@ class FindTest extends UnitTestCase {
 
     /** order syntax. */
     public function testFindAllArrayOrder() {
-        $authors= Author::find('all', array('order'=>'id DESC'));
+        $authors= Author::find('all', array('order by'=>'id desc'));
         $i=4; foreach ($authors as $author) {
             $this->assertEqual(--$i, $author->id);
         }
@@ -98,3 +98,4 @@ class FindTest extends UnitTestCase {
         $this->assertEqual($authors->count(), 1);
     }
 }
+

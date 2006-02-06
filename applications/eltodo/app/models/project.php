@@ -6,7 +6,7 @@
  * @package eltodo.models
  */
 
-class Project extends ActiveRecordBase {
+class Project extends ActiveRecord {
 
     public function before_insert() {
         $this->created_at= time();
@@ -21,8 +21,10 @@ class Project extends ActiveRecordBase {
     }
 
     public static function find() {
-        ActiveRecordBase::initialize(__CLASS__);
-        return ActiveRecordBase::__find(func_get_args());
+        $args= func_get_args();
+        return ActiveRecord::build(new QueryBuilder(__CLASS__,$args));
+        // ActiveRecordBase::initialize(__CLASS__);
+        // return ActiveRecordBase::__find(func_get_args());
     }
 
 }

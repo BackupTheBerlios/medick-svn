@@ -13,7 +13,7 @@ class DBOperationsTest extends UnitTestCase {
      * Constructor Once/TestCase
      * Prequsites for this TestCase to run: Create a sqlite DB
      */
-    public function __construct() {
+    public function DBOperationsTest() {
         @unlink(TMP . 'test.db');
         $query='
             CREATE TABLE authors (
@@ -23,13 +23,14 @@ class DBOperationsTest extends UnitTestCase {
             );
         ';
         sqlite_query(sqlite_open(TMP . 'test.db'), $query);
+        parent::UnitTestCase();
     }
 
     /** set up */
     public function setUp() {
         Registry::put(new MockConfigurator(), '__configurator');
         Registry::put(new Logger(), '__logger');
-        ActiveRecordBase::close_connection();
+        ActiveRecord::close_connection();
     }
     
     /** tearDown */

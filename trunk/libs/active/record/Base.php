@@ -532,13 +532,14 @@ abstract class ActiveRecord extends Object {
         $i=1; foreach($builder->getBindings() as $binding) {
             $stmt->set($i++, $binding);
         }
+        if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
+        if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
         if ($builder->getType() == 'first') {
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
-                $stmt->close();
                 $result= $class->newInstance($rs->getRow());
-                $rs->close();
+                $stmt->close();$rs->close();
                 return $result;
             } else {
                 throw new RecordNotFoundException(

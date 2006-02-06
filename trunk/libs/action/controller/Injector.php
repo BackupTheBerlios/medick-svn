@@ -59,17 +59,28 @@ class Injector extends Object {
     /**
      * Creates a new instance of this Injector.
      */
-    public function __construct() {
+    public function __construct($append= TRUE) {
         $this->config = Registry::get('__configurator');
         $this->logger = Registry::get('__logger');
-        $app_path = $_SERVER['MEDICK_APPLICATION_PATH'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
+        if (array_key_exists('MEDICK_APPLICATION_PATH', $_SERVER)) {
+            $app_path = $_SERVER['MEDICK_APPLICATION_PATH'];
+        } else {
+            $app_path = $this->config->getProperty('application_path');
+        }
+        
+        $app_path .= DIRECTORY_SEPARATOR;
+        
+        if ($append) {
+            $app_path .= 'app' . DIRECTORY_SEPARATOR;
+        }
+        
         $this->path['__base']      = $app_path;
         $this->path['models']      = $app_path . 'models'      . DIRECTORY_SEPARATOR;
         $this->path['controllers'] = $app_path . 'controllers' . DIRECTORY_SEPARATOR;
         $this->path['views']       = $app_path . 'views'       . DIRECTORY_SEPARATOR;
         $this->path['layouts']     = $this->path['views']      . 'layouts' . DIRECTORY_SEPARATOR;
         $this->path['helpers']     = $app_path . 'helpers'     . DIRECTORY_SEPARATOR;
-        $this->inject('include_path');
+        $this->injectInclude_path();
     }
 
     /**
@@ -88,7 +99,7 @@ class Injector extends Object {
             if ($param=='') return $this->$method();
             else return $this->$method($param);
         } else {
-            throw new InjectorException('Unknow injection type: `' . $type . '`');
+            throw new InjectorException('Unknow injection type: ``' . $type . '"');
         }
     }
 
@@ -97,8 +108,8 @@ class Injector extends Object {
      * @param string path type
      * @return string
      */
-    public function getPath($type) {
-        return isset($this->path[$type]) ? $this->path[$type] : $this->path;
+    public function getPath($type=NULL) {
+        return isset($this->path[$type]) && (!is_null($type)) ? $this->path[$type] : $this->path;
     }
 
 
@@ -162,7 +173,7 @@ class Injector extends Object {
         try {
             $this->includeFile($this->path['controllers'] . 'application.php', 'ApplicationController');
         } catch (FileNotFoundException $fnfEx) {
-            $this->logger->warn($fnfEx->getMessage);
+            $this->logger->warn($fnfEx->getMessage());
         }
 
         $file= $this->path['controllers'] . strtolower($name) . '_controller.php';
