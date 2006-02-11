@@ -189,7 +189,7 @@ $application_controller=<<<EOCLASS
    * \$Id$
    * @package $app_name.controllers
    */
-  class ApplicationController extends ActionControllerBase {
+  class ApplicationController extends ActionController {
 
   }
 

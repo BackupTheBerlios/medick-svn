@@ -2,26 +2,27 @@ $Id$
 (*) SVN version
 
 0.0.5(*)
-    - Renamed ActionViewBase to ActionView, ActionControllerBase to ActionController and ActiveRecordBase to ActiveRecord
+    - Renamed ActionViewBase to ActionView, ActionControllerBase to ActionController and ActiveRecordBase to ActiveRecord;
     - 3-rd version of ActiveRecord::find() method, this time the user model classes find method should be written as:
       class News extends ActiveRecord{
         public static function find() {
           $args= func_get_args();
           return ActiveRecord::build(new QueryBuilder(__CLASS__, $args));
         }
-      }
-    - re-wrote QueryBuilder, this time it knows how to build sqlquery`s from an array of options
-    - added SQLCommand class (more API on request!)
-    - added Validators (more API will be provided on request!)
+      };
+    - re-wrote QueryBuilder, this time it knows how to build sqlquery`s from an array of options;
+    - added SQLCommand class (more API on request!);
+    - added Validators (more API will be provided on request!);
     - ActiveRecord filters should return TRUE 
         and the size of errors associated with a databaserow should be 0 (no errors), 
-        otherwise changing an object state will fail
-    - added the "flash" thing
-    - added ActiveRecordHelper and FormHelper classes on ActionView:::HTML namespace  
-    - added 3 new methods on Inflector: sanitize, tabelize() and humanize()
-    - on logger, the full path to application is replaced with the name of the application.
-    - removed some debugging infos  
-    - more API docs.
+        otherwise changing an object state will fail;
+    - added the "flash" thing;
+    - added ActiveRecordHelper and FormHelper classes on ActionView:::HTML;
+    - added 3 new methods on Inflector: sanitize, tabelize() and humanize();
+    - on logger, the full path to application is replaced with the name of the application;
+    - removed some debugging infos;
+    - more API docs and Unit Tests;
+    - Injector: if SERVER['MEDICK_APPLICATION_PATH'] key is missing, use application_path from Configurator,
     - bundled prototype (http://prototype.conio.net/) 
       and script.aculo.us (http://script.aculo.us/) javascript libraries, both under a MIT-style licence.
 
