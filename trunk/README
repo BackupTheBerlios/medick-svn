@@ -1,13 +1,13 @@
-============================
+================================================
 Medick :: One PHP Framework
 $Id$
-============================
+================================================
 
 ABOUT:
 ------
     Medick is a free software licensed under a BSD-style licence, see LICENSE file for details.
     At this point, the project is on pre-alpha stage.
-    The alpha version will require at least php 5.1.1 and it will be released around 1.february.2006
+    The alpha version will require at least php 5.1.1 and it will be released around 1.March.2006
 
 REQUIREMENTS:
 -------------
@@ -47,4 +47,5 @@ GETTING STARTED.
 CONTACT:
 --------
     aurelian [ AT ] locknet [ DOT ] ro
-
+    http://medick.locknet.ro
+    
