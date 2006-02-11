@@ -14,6 +14,10 @@ class ValidatorTest extends UnitTestCase {
      */
     public function ValidatorTest() {
         @unlink(TMP . 'test.db');
+        parent::UnitTestCase();
+    }
+
+    private function createDatabase() {
         $query='
             CREATE TABLE news (
                 id INTEGER PRIMARY KEY,
@@ -22,11 +26,15 @@ class ValidatorTest extends UnitTestCase {
             );
         ';
         sqlite_query(sqlite_open(TMP . 'test.db'), $query);
-        parent::UnitTestCase();
     }
 
+    private function removeDatabase() {
+        unlink(TMP.'test.db');
+    }
+    
     /** set up */
     public function setUp() {
+        $this->createDatabase();
         Registry::put(new MockConfigurator(), '__configurator');
         Registry::put(new Logger(), '__logger');
         ActiveRecord::close_connection();
@@ -35,6 +43,7 @@ class ValidatorTest extends UnitTestCase {
     /** tearDown */
     public function tearDown() {
         Registry::close();
+        $this->removeDatabase();
     }
 
     public function testEmpty() {

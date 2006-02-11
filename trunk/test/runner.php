@@ -24,16 +24,17 @@ include_once('medick/Registry.php');
 include_once('medick/util.php');
 include_once('medick/io/Folder.php');
 
-
 // include_once('simpletest/web_tester.php');
 include_once('simpletest/unit_tester.php');
 include_once('simpletest/reporter.php');
 
 
-$test= new GroupTest('====== Medick Framework Unit Tests =====');
+$test= new GroupTest(" ");
+echo " === Medick Framework Unit Tests ===\n";
 
 $test_files = Folder::recursiveFindRelative('.', 'test', 'Test.php');
 foreach($test_files as $file) {
+    echo ">>> Adding file: $file\n";
     $test->addTestFile($file);
 }
 
