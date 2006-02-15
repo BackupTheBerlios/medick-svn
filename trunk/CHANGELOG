@@ -21,6 +21,7 @@ $Id$
     - added 3 new methods on Inflector: sanitize, tabelize() and humanize();
     - on logger, the full path to application is replaced with the name of the application;
     - removed some debugging infos;
+    - initilal import of ConsoleOptions;  
     - more API docs and Unit Tests;
     - Injector: if SERVER['MEDICK_APPLICATION_PATH'] key is missing, use application_path from Configurator,
     - bundled prototype (http://prototype.conio.net/) 

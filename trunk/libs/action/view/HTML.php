@@ -173,22 +173,20 @@ class HTMLElement extends Object {
 }
 
 class URL extends Object {
-    public static function create($controller, $action='index', $params=array(), $separator='&amp;') {
+  
+    public static function create($controller, $action='index', $params=array(), $ext='html') {
         $config = Registry::get('__configurator');
         $base   = $config->getProperty('document_root');
+        
         if (!$config->getProperty('rewrite')) {
-            $buff = $base . '/index.php?controller=' . $controller . $separator . 'action=' . $action;
-            foreach ($params AS $key=>$value) {
-                $buff .= $separator . $key . '=' . $value;
-            }
-            return $buff;
-        } else {
-            $buff = $base . '/' . $controller . '/' . $action;
-            foreach ($params AS $key=>$value) {
-                $buff .= '/' . $value;
-            }
-            return $buff . '.html';
+            $base .= '/index.php';
         }
+        $buff = $base . '/' . $controller . '/' . $action;
+        Registry::get('__logger')->debug($params);
+        foreach ($params as $key=>$value) {
+            $buff .= '/' . $value;
+        }
+        return $buff . '.' . $ext;
     }
 }
 
