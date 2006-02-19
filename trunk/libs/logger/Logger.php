@@ -72,8 +72,7 @@ class Logger extends Object implements ILogger {
      * Constructor.
      * It reads the config file and setup the logging system
      */
-    public function __construct() {
-        $configurator = Registry::get('__configurator');
+    public function Logger(IConfigurator $configurator) {
         $outputters   = $configurator->getLoggerOutputters();
         if (sizeof($outputters) != 0) {
             $this->load($outputters);

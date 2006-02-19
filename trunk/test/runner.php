@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 // $Id$
@@ -23,24 +22,39 @@ include_once('medick/Exception.php');
 include_once('medick/Registry.php');
 include_once('medick/util.php');
 include_once('medick/io/Folder.php');
+include_once('medick/ConsoleOptions.php');
 
 // include_once('simpletest/web_tester.php');
+
 include_once('simpletest/unit_tester.php');
 include_once('simpletest/reporter.php');
 
+$options= new ConsoleOptions();
+$options->setNoValueFor('debug', '-d', '--debug');
+$options->load(isset($argv)?$argv:$_SERVER['argv']);
+$options->alias('debug', '-d, --debug');
 
-$test= new GroupTest(" ");
-echo " === Medick Framework Unit Tests ===\n";
+include_once('configurator/LoggerConfigurator.php');
+include_once('logger/Logger.php');
+
+$logger= new Logger(new LoggerConfigurator());
+
+$test= new GroupTest("=== Medick Framework Unit Tests ===");
 
 $test_files = Folder::recursiveFindRelative('.', 'test', 'Test.php');
 foreach($test_files as $file) {
-    echo ">>> Adding file: $file\n";
+    if ($options->has('debug')) {
+        $logger->debug('Adding test file: ' . $file);
+    }
     $test->addTestFile($file);
 }
 
 $test->run(new TextReporter());
 
-$time_end = microtime(true);
-echo "Done in " . ($time_end - $time_start) . " seconds\n";
+if ($options->has('debug')) {
+    $time_end = microtime(true);
+    $logger->debug('Done in ' . round($time_end - $time_start,4) . ' seconds');
+}
 
 @unlink(TMP . 'test.db');
+

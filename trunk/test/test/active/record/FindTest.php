@@ -30,8 +30,8 @@ class FindTest extends UnitTestCase {
   
      /** set up this test case, we insert 3 fileds in DB table */
      public function setUp() {
-        Registry::put(new MockConfigurator(), '__configurator');
-        Registry::put(new Logger(), '__logger');
+        Registry::put($configurator= new MockConfigurator(), '__configurator');
+        Registry::put(new Logger($configurator), '__logger');
         ActiveRecord::close_connection();
         $author= new Author();
         $author->name= "Andrei Cristescu";

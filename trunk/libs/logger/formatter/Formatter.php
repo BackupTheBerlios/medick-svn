@@ -54,7 +54,9 @@ abstract class Formatter extends Object {
      */
     protected function extractMessage($message) {
         if(!is_string($message)) $message = print_r($message, TRUE);
-        $message= str_replace($_SERVER['MEDICK_APPLICATION_PATH'], "{" . strtoupper($_SERVER['MEDICK_APPLICATION_NAME']) . "}", $message);
+        if (array_key_exists('MEDICK_APPLICATION_PATH', $_SERVER)) {
+            $message= str_replace($_SERVER['MEDICK_APPLICATION_PATH'], "{" . strtoupper($_SERVER['MEDICK_APPLICATION_NAME']) . "}", $message);
+        }
         return $message;
     }
 }

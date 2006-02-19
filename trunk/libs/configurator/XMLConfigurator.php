@@ -49,7 +49,7 @@ class XMLConfigurator extends Object implements IConfigurator {
      * Constructor.
      * @param string/file xml
      */
-    public function __construct($xml) {
+    public function XMLConfigurator($xml) {
         if (file_exists($xml)) {
             if (is_readable($xml)) {
                 $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');

@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005,2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -32,47 +32,21 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/**
- * It boots a medick application
- * @package locknet7.boot
- */
+include_once('configurator/IConfigurator.php');
+ 
+class LoggerConfigurator extends Object implements IConfigurator {
+ 
+    public function getLoggerOutputters() {
+        return array(array('name' => 'stdout','level' => '0'));
+    }
+  
+    public function getLoggerFormatter() {
+        return 'SimpleFormatter';
+    }
 
-// medick path.
-define( 'MEDICK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR );
-// rewrite system include path
-set_include_path( MEDICK_PATH . 'libs'   . DIRECTORY_SEPARATOR  );
+    public function getProperty($name) {     }
 
-// this should depend on environment
-error_reporting(E_ALL|E_STRICT);
-// php 5.1 strict sdandards.
-if (version_compare(PHP_VERSION, '5.1.0') > 0) {
-    date_default_timezone_set('Europe/Bucharest');
+    public function getDatabaseDsn($id = FALSE) {  }
+    
 }
-// load core classes
-include_once('medick/Object.php');
-include_once('medick/Exception.php');
-include_once('medick/ErrorHandler.php');
-set_error_handler(array(new ErrorHandler(), 'raiseError'));
-include_once('medick/util.php');
-include_once('medick/Registry.php');
-include_once('medick/Dispatcher.php');
-include_once('medick/Version.php');
-include_once('configurator/XMLConfigurator.php');
-include_once('logger/Logger.php');
-include_once('action/controller/Map.php');
-include_once('action/controller/Route.php');
-include_once('action/controller/Routing.php');
-
-$conf_files = $_SERVER['MEDICK_APPLICATION_PATH'] . DIRECTORY_SEPARATOR . 'conf' .
-                        DIRECTORY_SEPARATOR . $_SERVER['MEDICK_APPLICATION_NAME'];
-
-$configurator= new XMLConfigurator($conf_files . '.xml');                        
-Registry::put($configurator, '__configurator');
-
-$logger= Registry::put(new Logger($configurator), '__logger');
-
-$logger->debug('Medick $v: ' . Version::getVersion());
-$logger->debug('Config: ' . $conf_files . '.xml');
-$logger->debug('Routes: ' . $conf_files . '.routes.php');
-include_once($conf_files . '.routes.php');
 

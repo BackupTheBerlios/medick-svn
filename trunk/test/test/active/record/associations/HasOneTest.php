@@ -35,8 +35,8 @@ class HasOneTest extends UnitTestCase {
 
     /** set up */
     public function setUp() {
-        Registry::put(new MockConfigurator(), '__configurator');
-        Registry::put(new Logger(), '__logger');
+        Registry::put($configurator= new MockConfigurator(), '__configurator');
+        Registry::put(new Logger($configurator), '__logger');
         ActiveRecord::close_connection();
         
         $author= new Author();

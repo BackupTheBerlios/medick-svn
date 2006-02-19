@@ -66,6 +66,8 @@ class ConsoleOptions extends Object {
     /** @var array
         a list of defined aliases */
     private $aliases;
+
+    private $skipValues;
     
     /**
      * Creates a new ConsoleOptions object
@@ -75,11 +77,12 @@ class ConsoleOptions extends Object {
     public function ConsoleOptions($options= array()) {
         $this->isLoaded = false;
         $this->options  = array();
+        $this->skipValues= array();
+        $this->aliases = array();
         if (!empty($options)) {
             $this->load($options);
         }
         $this->index   = NULL;
-        $this->aliases = array();
     }
     
     /**
@@ -106,10 +109,45 @@ class ConsoleOptions extends Object {
             throw new IllegalStateException('Options already loaded!');
         }
         $this->scriptName= array_shift($options);
-        for($i=0; $i < count($options); $i+=2) {
-          $this->options[$options[$i]]= isset($options[$i+1]) ? $options[$i+1] : NULL;
+        $i=0;
+        while($i<count($options)) {
+            if (in_array($options[$i], $this->skipValues)) {
+                $this->options[$options[$i]]= -1;
+                $i++;
+            } else {
+                $this->options[$options[$i]]= isset($options[$i+1]) ? $options[$i+1] : NULL;
+                $i=$i+2;
+            }
         } 
         $this->isLoaded= true;
+    }
+    
+    /**
+     * Adds an empty value for a list of options
+     *
+     * Options are taken with <tt>func_get_args()</tt> and a second call to this method will
+     * overwrite the values previously added.
+     * Add aliases too!
+     *
+     * <code>
+     * // script called with php script.php --force --controller invoker
+     * $c= new ConsoleOptions();
+     * $c->setNoValueFor('debug','force','-f','--force','-d','--debug'); // before loading!
+     * $c->load($args);
+     * $c->alias('force', '-f, --force'); // after loading
+     * $c->alias('debug', '-d, --debug'); // after loading
+     * $c->has('force'); // returns true
+     * $c->get(); // returns -1
+     * $c->has('controller'); // returns true
+     * $c->get(); // return invoker
+     * </code>
+     * @throws IllegalStateException if the options are loaded
+     */ 
+    public function setNoValueFor() {
+        if ($this->isLoaded) {
+            throw new IllegalStateException('Options already loaded, cannot add empty values!');
+        }
+        $this->skipValues= func_get_args();
     }
     
     /**
