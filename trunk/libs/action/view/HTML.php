@@ -182,7 +182,6 @@ class URL extends Object {
             $base .= '/index.php';
         }
         $buff = $base . '/' . $controller . '/' . $action;
-        Registry::get('__logger')->debug($params);
         foreach ($params as $key=>$value) {
             $buff .= '/' . $value;
         }
