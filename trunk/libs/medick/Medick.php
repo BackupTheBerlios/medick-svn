@@ -32,23 +32,25 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-/**
- * Holds the current Medick version
- * @package locknet7.medick
+// loads main framework dependecies.
+include_once('medick/Object.php');
+include_once('medick/Exception.php');
+include_once('medick/util.php');
+include_once('medick/ErrorHandler.php');
+include_once('medick/Registry.php');
+
+/** 
+ * @package locknet7.medick 
  */
-
-class Version extends Object {
-
-    const TINY  = 5;
-    const MINOR = 0;
-    const MAJOR = 0;
+class Medick extends Object {
 
     /**
      * It gets the medick version.
+     * 
      * @return string the medick version
      */
     public static function getVersion() {
-        return Version::MAJOR . '.' . Version::MINOR . '.' . Version::TINY . '-svn';
+        return '0.0.5-svn';
     }
 
 }

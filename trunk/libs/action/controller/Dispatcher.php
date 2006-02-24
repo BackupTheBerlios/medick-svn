@@ -32,6 +32,8 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('action/controller/Map.php');
+include_once('action/controller/Route.php');
 include_once('action/controller/Routing.php');
 include_once('action/controller/Request.php');
 include_once('action/controller/Response.php');
@@ -40,7 +42,7 @@ include_once('action/controller/Base.php');
 /**
  * It knows how to dispatch a request
  *
- * @package locknet7.medick
+ * @package locknet7.action.controller
  */
 class Dispatcher extends Object {
 

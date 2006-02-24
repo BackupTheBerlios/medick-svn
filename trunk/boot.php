@@ -50,19 +50,11 @@ if (version_compare(PHP_VERSION, '5.1.0') > 0) {
 }
 
 // load core classes
-include_once('medick/Object.php');
-include_once('medick/Exception.php');
-include_once('medick/ErrorHandler.php');
+include_once('medick/Medick.php');
 set_error_handler(array(new ErrorHandler(), 'raiseError'));
-include_once('medick/util.php');
-include_once('medick/Registry.php');
 include_once('action/controller/Dispatcher.php');
-include_once('medick/Version.php');
 include_once('configurator/XMLConfigurator.php');
 include_once('logger/Logger.php');
-include_once('action/controller/Map.php');
-include_once('action/controller/Route.php');
-include_once('action/controller/Routing.php');
 
 $conf_files = $_SERVER['MEDICK_APPLICATION_PATH'] . DIRECTORY_SEPARATOR . 'conf' .
                         DIRECTORY_SEPARATOR . $_SERVER['MEDICK_APPLICATION_NAME'];
@@ -72,7 +64,7 @@ Registry::put($configurator, '__configurator');
 
 $logger= Registry::put(new Logger($configurator), '__logger');
 
-$logger->debug('Medick $v: ' . Version::getVersion());
+$logger->debug('Medick $v: ' . Medick::getVersion());
 $logger->debug('Config: ' . $conf_files . '.xml');
 $logger->debug('Routes: ' . $conf_files . '.routes.php');
 include_once($conf_files . '.routes.php');
