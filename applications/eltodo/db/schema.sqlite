@@ -1,0 +1,16 @@
+-- ------------------------
+-- eltodo database schema for SQLite
+-- $Id$
+-- ------------------------
+
+-- ------------------------------------------------
+-- projects table
+
+CREATE TABLE projects (
+    id          INT(11)       NOT NULL,
+    name        VARCHAR(255)  NOT NULL,
+    description TEXT          NOT NULL,
+    created_at  DATETIME      NOT NULL,
+    PRIMARY KEY (id)
+);
+
