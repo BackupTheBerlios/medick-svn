@@ -75,13 +75,13 @@ h2 {
   background-color: #fff;
 }
 
-a:link, a:visited{
+a:link, a:visited {
     color: #30c;
     background-color: transparent;
     text-decoration: underline;
 }
 
-a:hover,a:active{
+a:hover,a:active {
     color: #c03;
     background-color: transparent;
 }

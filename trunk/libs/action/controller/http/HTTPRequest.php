@@ -46,11 +46,15 @@ class HTTPRequest extends Request {
         path_info_parts */
     private $path_info= NULL;
 
+    /** @var array
+        the list of headers associated with this HTTPRequest */
+    private $headers= array();
+
     /**
      * Constructor.
      * It builds the HTTPRequest object
      */
-    public function __construct() {
+    public function HTTPRequest() {
         foreach ($_REQUEST as $key=>$value) {
             $this->setParameter($key, $value);
         }
@@ -61,6 +65,19 @@ class HTTPRequest extends Request {
             $this->path_info= $_SERVER['PATH_INFO'];
         }
         $this->session = new Session();
+        $this->headers = HTTPRequest::getAllHeaders();
+    }
+
+    public function getHeaders() {
+        return $this->headers;
+    }
+    
+    public function getHeader($name) {
+        return $this->hasHeader($name) ? $this->headers[ucfirst($name)] : FALSE;
+    }
+    
+    public function hasHeader($name) {
+        return isset($this->headers[ucfirst($name)]);
     }
 
     /**
@@ -90,6 +107,28 @@ class HTTPRequest extends Request {
     public function getRequestURI() {  }
     public function getProtocol() {  }
     // }}}
+    
+    /**
+     * A wrapper around getallheaders apache function that gets a list
+     * of headers associated with this HTTPRequest.
+     *
+     * @TODO: 
+     * @return array
+     */
+    protected static function getAllHeaders() {
+        $headers= array();
+        if (function_exists('getallheaders')) {
+            // this will work only for mod_php
+            $headers= getallheaders();
+        } else {
+            foreach($_SERVER as $header=>$value) {
+                if(ereg('HTTP_(.+)',$header,$hp)) {
+                    $headers[ucfirst(strtolower($hp[1]))] = $value;
+                }
+            }       
+        }
+        return $headers;
+    }
 
 }
 

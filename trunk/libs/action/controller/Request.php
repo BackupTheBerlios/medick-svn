@@ -37,11 +37,14 @@ include_once('action/controller/http/HTTPRequest.php');
 /**
  * @package locknet7.action.controller.request
  */
-abstract class Request extends Object {
+class Request extends Object {
 
     /** @var array
         current request parameters */
     private $params = array();
+
+    /** Hidden Constructor */
+    protected function Request() {  }
 
     /**
      * It gets the param
@@ -91,6 +94,4 @@ abstract class Request extends Object {
         }
         return $buff;
     }
-    
 }
-

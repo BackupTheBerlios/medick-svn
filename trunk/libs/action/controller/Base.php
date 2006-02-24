@@ -126,7 +126,7 @@ class ActionController extends Object {
         $template = ActionView::factory('php');
         $template->error= $exception;
         $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
-        $response->setStatus(Response::SC_INTERNAL_SERVER_ERROR);
+        $response->setStatus(HTTPResponse::SC_INTERNAL_SERVER_ERROR);
         $response->setContent($text);
         return $response;
     }
@@ -161,7 +161,7 @@ class ActionController extends Object {
      *  }
      * </code>
      * @param string template_name, [optional], the template name, default is null, the curent action.
-     * @param Response::SC_*, status, [optional] status code, default is 200 OK
+     * @param HTTPResponse::SC_*, status, [optional] status code, default is 200 OK
      * @return void
      */
     protected function render($template_name = NULL, $status = NULL) {
@@ -242,7 +242,7 @@ class ActionController extends Object {
             $this->logger->info('Action already performed...');
             return;
         }
-        $status = $status === NULL ? Response::SC_OK : $status;
+        $status = $status === NULL ? HTTPResponse::SC_OK : $status;
         $this->response->setStatus($status);
         $this->response->setContent($text);
         $this->action_performed = TRUE;
@@ -289,7 +289,8 @@ class ActionController extends Object {
 
         $this->template = ActionView::factory('php');
         // predefined variables:
-        $this->template->assign('__base', $this->config->getProperty('document_root'));
+        // TODO: check if we have a / at the end, if not, add one
+        $this->template->assign('__base', $this->config->getProperty('document_root').'/');
         $this->template->assign('__server', $this->config->getProperty('server_name'));
         $this->template->assign('__controller', $this->params['controller']);
         $this->logger->debug($this->request->toString());
@@ -374,8 +375,8 @@ class ActionController extends Object {
             $action= $this->createMethod($action_name);
             if (!$action || $action->isStatic()) {
                 throw new RoutingException(
-                    'Cannot invoke default action, \'index\' for this Route!',
-                    'Method named \'index\' is not defined in class: ' . $this->getClassName()
+                    'Cannot invoke default action, ``index" for this Route!',
+                    'Method named ``index" is not defined in class: ' . $this->getClassName()
                 );
             }
         }
@@ -423,15 +424,16 @@ class ActionController extends Object {
         foreach($this->before_filter as $filter_name) {
             if (!$filter= $this->createMethod($filter_name)) {
                 $this->logger->info(
-                    'Could not create filter: `'.$filter_name.'`, skipping...');
+                    'Could not create filter: ``'.$filter_name.'", skipping...');
                 continue;
             }
             // a filter should be declared as protected.
             if (!$filter->isProtected()) {
                 throw new MedickException(
-                    'Your filter,`'. $filter_name . '` is declared as a
-                        public method of class `' . $this->getClassName() .'` !');
+                    'Your filter,``'. $filter_name . '" is declared as a
+                        public method of class ``' . $this->getClassName() .'" !');
             }
+            // can we use invoke?
             $this->$filter_name();
         }
     }

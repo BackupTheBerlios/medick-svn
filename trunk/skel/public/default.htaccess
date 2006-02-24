@@ -2,13 +2,19 @@
 # $Id$
 
 # Configuration
-
+# 1. Medick Related.
 SetEnv MEDICK_APPLICATION_PATH ${APP_PATH}
 SetEnv MEDICK_APPLICATION_NAME ${APP_NAME}
- 
-RewriteEngine on
 
-########## Set 2
+# 2. php options.
+php_value short_open_tag 1
+# this should depend on environment.
+# while we are on "planning", we will 
+# keep this to 1
+php_value display_errors 1
+
+# Rewrite
+RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-s
 RewriteCond %{REQUEST_URI} !^index.php/$
 RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]

@@ -7,6 +7,8 @@
 SetEnv MEDICK_APPLICATION_PATH /wwwroot/medick/applications/eltodo
 SetEnv MEDICK_APPLICATION_NAME eltodo
 
+php_value short_open_tag 1
+
 #ErrorDocument 404 /todo.html
  
 RewriteEngine on

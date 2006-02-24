@@ -35,11 +35,43 @@
 /**
  * @package locknet7.action.controller.response
  */
-
 class HTTPResponse extends Response {
 
+    /** Status code (200) indicating the request succeeded normally. */
+    const SC_OK = 200;
+
+    /** Status code (304) indicating that a conditional GET
+        operation found that the resource was available and not modified. */
+    const SC_NOT_MODIFIED = 304;
+
+    /** Status code (400) indicating the request sent by the
+        client was syntactically incorrect. */
+    const SC_BAD_REQUEST = 400;
+
+    /** Status code (403) indicating the server
+        understood the request but refused to fulfill it. */
+    const SC_FORBIDDEN = 403;
+
+    /** Status code (404) indicating that the requested
+        resource is not available. */
+    const SC_NOT_FOUND = 404;
+
+    /** Status code (500) indicating an error inside
+        the HTTP server which prevented it from fulfilling the request. */
+    const SC_INTERNAL_SERVER_ERROR = 500;
+
+    /** Status code (503) indicating that the HTTP server
+        is temporarily overloaded, and unable to handle the request. */
+    const SC_SERVICE_UNAVAILABLE = 503;
+
+    /** Constructor */
+    public function HTTPResponse() {
+
+    }
+    
     /**
      * Sets the header $name with $value
+     *
      * @param string, name the name of the header
      * @param mixed, value, the value of this header
      */
@@ -49,6 +81,7 @@ class HTTPResponse extends Response {
 
     /**
      * Sets the content type header
+     *
      * @param strign type, the content type
      */
     public function setContentType($type) {
@@ -56,20 +89,24 @@ class HTTPResponse extends Response {
     }
 
     /**
-     * @see Response::setStatus($status)
+     * Sets the status of this response
+     *
+     * @TODO: should choose between HTTP/1.1 and HTTP/1.0
+     * @TODO: more cases in the switch
+     * @param HTTPResponse::SC_*, status, the status of this response
      */
     public function setStatus($status) {
         switch($status){
-            case self::SC_OK: // 200
+            case HTTPResponse::SC_OK: // 200
                 $message = 'OK';
                 break;
-            case self::SC_NOT_MODIFIED: // 304
+            case HTTPResponse::SC_NOT_MODIFIED: // 304
                 $message = 'Not Modified';
                 break;
-            case self::SC_NOT_FOUND: // 404
+            case HTTPResponse::SC_NOT_FOUND: // 404
                 $message = 'Not Found';
                 break;
-            case self::SC_INTERNAL_SERVER_ERROR: // 500
+            case HTTPResponse::SC_INTERNAL_SERVER_ERROR: // 500
                 $message = 'Internal Server Error';
                 break;
             default:
@@ -78,7 +115,11 @@ class HTTPResponse extends Response {
         header("HTTP/1.1 " . $status . $message, TRUE, $status);
     }
 
-    /** Perform a HTTP redirection */
+    /**
+     * Perform a HTTP redirect
+     *
+     * @param string location, location to redirect to
+     */
     public function redirect($location) {
         $this->setHeader('Location', $location);
         $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
