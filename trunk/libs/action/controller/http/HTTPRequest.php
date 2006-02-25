@@ -61,9 +61,16 @@ class HTTPRequest extends Request {
 
         unset($_REQUEST); unset($_GET); unset($_POST);
 
-        if (array_key_exists('PATH_INFO', $_SERVER)) {
+        if (array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO']!='' ) {
             $this->path_info= $_SERVER['PATH_INFO'];
         }
+        // TODO:
+        //      -> this is for php as cgi
+        //      -> should substract the documnet root
+        elseif (array_key_exists('REQUEST_URI', $_SERVER)) {
+            $this->path_info= substr($_SERVER['REQUEST_URI'],7);
+        }
+        
         $this->session = new Session();
         $this->headers = HTTPRequest::getAllHeaders();
     }

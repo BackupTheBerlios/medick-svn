@@ -13,6 +13,11 @@ php_value short_open_tag 1
  
 RewriteEngine on
 
+RewriteRule ^$ index.php  [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) index.php/$1  [QSA,L]
+
 # all files with .something are skipped
 # RewriteCond %{REQUEST_URI} \..+$
 # RewriteCond %{REQUEST_URI} !\.html$
@@ -20,7 +25,7 @@ RewriteEngine on
 # the others are redirected to the front web controller
 # RewriteRule ^(.*)$ index.php [QSA,L]
 
-RewriteCond %{REQUEST_FILENAME} !-s
-RewriteCond %{REQUEST_URI} !^index.php/$
-RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
+#RewriteCond %{REQUEST_FILENAME} !-s
+#RewriteCond %{REQUEST_URI} !^index.php/$
+#RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
 
