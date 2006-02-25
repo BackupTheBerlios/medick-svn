@@ -1,0 +1,87 @@
+$Id$
+(*) SVN version
+
+0.0.5(*)
+    - Renamed ActionViewBase to ActionView, ActionControllerBase to ActionController and ActiveRecordBase to ActiveRecord;
+    - 3-rd version of ActiveRecord::find() method, this time the user model classes find method should be written as:
+      class News extends ActiveRecord{
+        public static function find() {
+          $args= func_get_args();
+          return ActiveRecord::build(new QueryBuilder(__CLASS__, $args));
+        }
+      };
+    - re-wrote QueryBuilder, this time it knows how to build sqlquery`s from an array of options;
+    - added SQLCommand class (more API on request!);
+    - added Validators (more API will be provided on request!);
+    - ActiveRecord filters should return TRUE 
+        and the size of errors associated with a databaserow should be 0 (no errors), 
+        otherwise changing an object state will fail;
+    - added the "flash" thing;
+    - added ActiveRecordHelper and FormHelper classes on ActionView:::HTML;
+    - added 3 new methods on Inflector: sanitize, tabelize() and humanize();
+    - on logger, the full path to application is replaced with the name of the application;
+    - removed some debugging infos;
+    - initilal import of ConsoleOptions;  
+    - more API docs and Unit Tests;
+    - Injector: if SERVER['MEDICK_APPLICATION_PATH'] key is missing, use application_path from Configurator,
+    - bundled prototype (http://prototype.conio.net/) 
+      and script.aculo.us (http://script.aculo.us/) javascript libraries, both under a MIT-style licence.
+
+0.0.4 (09.Jan.2006)
+    - added medick application generator (bin/medick.php).
+    - re-wrote scripts/generator.php, will create dummy files (controllers with associated views and models)
+    - added medick.util, base package for medick collections.
+    - rewrite the Routing System (more like RoR), it`s not completly done (20%), but we have a nice working version.
+    - minor refactorings in ActiveRecordBase  
+    - code improvements in Logger:
+        - removed heavy backtrace witch was attached to every Logging Events.
+        - new Configuration Options, every Outputter can have properties.
+    - removed un-used application_path from configuration options.
+    - removed deprecated methods from the framework.
+
+0.0.3 (28.Nov.2005)
+    - Code Clean-Up:
+        - logger.Logger:
+                * removed logger.outputters.Outputter::getId() abstract method;
+                * speed improvments if no outputters are added;
+                * fix: file name in logger.LoggingEvent was wrong;
+                * more code clean-up.
+        - configurator.XMLConfigurator.
+        - active.controller.Injector: This will be the only class that will know how to load (include)
+                                       and check user Classes and Files: controllers, helpers, layouts, models and views.
+                                      Also, it adds in to the include_path, user folders libs and vendor.
+        - more API docs.
+        - removed action.controller.cli.* classes
+        - removed vendor folder, medick 3-rd party imports should be placed inside libs folder.
+    - ActiveRecordBase:
+        added before/after filters on update/insert/delete methods
+        created associations classes and implemented has_and_belongs_to_many, belongs_to, has_many, has_one associations (read-only)
+        fix: broken (strange) behavior when trying to return an empty result set in __find() method
+        fix: proper serialization of ARBase Objects (thanks andrei)
+    - ActionController:
+        added process_with_exception method.
+        layout fix, by introducing $use_layout
+    - session.Session:
+        initial working session class
+    - active.support.inflector
+        added camelize and underscore methods
+    - Errors and Exceptions:
+        added custom ErrorHandler,
+        added more specialized Errors and Exceptions, for better debugging.
+        moved all exceptions class to one file: medick.Exception.
+    - using a boot.php file witch will be common to all the applications developed with medick.
+        this should be used with a .htaccess file and it was introduced in an attempt to ease the installation procedure.
+    - initial import of an INI style file configurator (INIConfigurator), not used yet.
+    - bundled creole, creole is a DB Abstraction layer for PHP5 released under LGPL licence,
+                    more details on http://creole.phpdb.org
+
+0.0.2 (14.Oct.2005)
+    - initial import of Session
+    - added core classes (Object, Registry, Collection and Exception) and Mapping concept: Map->Route->Params->Validators-->Headers;
+    - implement the Registry system to hold our classes instances;
+    - Model is capable of getting values by foreign keys. Eg.: $todo->project->name;
+    - many minor fixes.
+
+0.0.1 (6.Jul.2005)
+    - minimal functional version
+
