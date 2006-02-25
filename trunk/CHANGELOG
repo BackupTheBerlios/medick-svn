@@ -18,6 +18,7 @@ $Id$
         otherwise changing an object state will fail;
     - added the "flash" thing;
     - added ActiveRecordHelper and FormHelper classes on ActionView:::HTML;
+    - minor fixes for apache 1 and php as a CGI;   
     - added 3 new methods on Inflector: sanitize, tabelize() and humanize();
     - on logger, the full path to application is replaced with the name of the application;
     - removed some debugging infos;
