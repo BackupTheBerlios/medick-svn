@@ -59,9 +59,9 @@ class ActionControllerRouting extends Object {
             // load 404 route, if fails too try the default route, this are named routes.
             // echo $rEx;
             try {
-                return Map::getInstance()->getRouteByName('default')->createControllerInstance();
+                return Map::getInstance()->getRouteByName(Route::NOTFOUND)->createControllerInstance();
             } catch (RoutingException $rEx2) {
-                return Map::getInstance()->getRouteByName('404')->createControllerInstance();
+                return Map::getInstance()->getRouteByName(Route::WELCOME)->createControllerInstance();
             }
         }
     }

@@ -41,7 +41,7 @@ class Component extends Object {
 
     private $name;
 
-    private $dymanic;
+    private $dynamic;
 
     private $position;
 
@@ -58,11 +58,19 @@ class Component extends Object {
     }
 
     public function isDynamic() {
-        return $this->isDynamic;
+        return $this->dynamic;
     }
 
     public function setPosition($position) {
         $this->position= (int)$position;
+    }
+
+    public function getPosition() {
+        return $this->position;
+    }
+
+    public function toString() {
+        return sprintf('{%s}--->name=%s[dynamic=%s]', $this->getClassName(), $this->name, $this->dynamic ? 'TRUE':'FALSE');
     }
 
 }
@@ -73,6 +81,12 @@ class Component extends Object {
  * @package locknet7.action.controller.route
  */
 class Route extends Object {
+
+    const WELCOME  = 0x200;
+
+    const ERROR    = 0x500;
+
+    const NOTFOUND = 0x400;
 
     /** @var string
         incoming Route Definition list. */
