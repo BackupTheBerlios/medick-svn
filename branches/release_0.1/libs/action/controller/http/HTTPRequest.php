@@ -44,7 +44,7 @@ class HTTPRequest extends Request {
 
     /** @var string
         path_info_parts */
-    private $path_info= NULL;
+    private $requestUri= NULL;
 
     /** @var array
         the list of headers associated with this HTTPRequest */
@@ -53,6 +53,8 @@ class HTTPRequest extends Request {
     /**
      * Constructor.
      * It builds the HTTPRequest object
+     *
+     * TODO: a URI Helper should be written.
      */
     public function HTTPRequest() {
         foreach ($_REQUEST as $key=>$value) {
@@ -62,13 +64,14 @@ class HTTPRequest extends Request {
         unset($_REQUEST); unset($_GET); unset($_POST);
 
         if (array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO']!='' ) {
-            $this->path_info= $_SERVER['PATH_INFO'];
+            $this->requestUri= $_SERVER['PATH_INFO'];
         }
         // TODO:
-        //      -> this is for php as cgi
+        //      -> this is for php as cgi, or where PATH_INFO is not available
+        //      -> ORIG_PATH_INFO should also work
         //      -> should substract the documnet root
         elseif (array_key_exists('REQUEST_URI', $_SERVER)) {
-            $this->path_info= substr($_SERVER['REQUEST_URI'],7);
+            $this->requestUri= substr($_SERVER['REQUEST_URI'],7);
         }
         
         $this->session = new Session();
@@ -88,17 +91,27 @@ class HTTPRequest extends Request {
     }
 
     /**
+     * Sets this Request URI
+     *
+     * Usefull for testing
+     * @return void
+     */
+    public function setRequestUri($uri) {
+      $this->requestUri= $uri;
+    }
+    
+    /**
      * It gets a part of the path info associated with this request
      * @param int, key, the part index
      * @return value of this part or NULL if this part is not defined
      */
-    public function getPathInfo() {
-        return $this->path_info;
+    public function getRequestUri() {
+        return $this->requestUri;
     }
 
-    public function getPathInfoParts() {
-        if (is_null($this->path_info)) return array();
-        return explode('/', trim($this->path_info,'/'));
+    public function getUriParts() {
+        if (is_null($this->requestUri)) return array();
+        return explode('/', trim($this->requestUri,'/'));
     }
 
     /**
@@ -111,7 +124,7 @@ class HTTPRequest extends Request {
 
     // {{{ todos.
     public function getIP() {  }
-    public function getRequestURI() {  }
+    // public function getRequestURI() {  }
     public function getProtocol() {  }
     // }}}
     

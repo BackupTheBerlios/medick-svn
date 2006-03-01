@@ -43,11 +43,14 @@ class Request extends Object {
         current request parameters */
     private $params = array();
 
-    /** Hidden Constructor */
+    /** 
+     * Hidden Constructor 
+     */
     protected function Request() {  }
 
     /**
-     * It gets the param
+     * It gets a Request Parameter
+     * 
      * @param mixed, param, the paremeter name
      * @return the param value of NULL if this param was not passed with this Resuest
      */
@@ -57,6 +60,7 @@ class Request extends Object {
 
     /**
      * Check if the current Request has the parameter with the specified name
+     * 
      * @param string param_name the parameter name
      * @return bool TRUE if the parameter_name is included in this request, FALSE otherwise
      */
@@ -66,6 +70,7 @@ class Request extends Object {
 
     /**
      * It gets all the parameters of this Request
+     * 
      * @return array this request parameters.
      */
     public function getParameters() {
@@ -73,7 +78,8 @@ class Request extends Object {
     }
 
     /**
-     * It sets a param.
+     * It sets a Request Parameter
+     *
      * @param string, name, the name of the param to set
      * @param mixed, value, value of the param
      * @return void
@@ -82,6 +88,18 @@ class Request extends Object {
         $this->params[$name] = $value;
     }
 
+    /**
+     * It adds an array of parameters on this Request
+     *
+     * @param array parameters, parameters name/value pairs
+     * @return void
+     */ 
+    public function setParameters(/*Array*/ $parameters=array()) {
+        foreach ($parameters as $name=>$value) {
+            $this->setParameter($name, $value);
+        }
+    }
+    
     /**
      * Gets a string representation of this Object
      *
