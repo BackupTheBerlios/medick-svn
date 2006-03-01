@@ -53,15 +53,15 @@ class ActionControllerRouting extends Object {
         $r= new ActionControllerRouting($request);
         try {
             $route = $r->findRoute($request);
-            return   $route->createControllerInstance();
+            return   $route->createControllerInstance($request);
         } catch (RoutingException $rEx) {
             // exception thrown by findRoute if we dont match any of the registered route.
             // load 404 route, if fails too try the default route, this are named routes.
             // echo $rEx;
             try {
-                return Map::getInstance()->getRouteByName(Route::NOTFOUND)->createControllerInstance();
+                return Map::getInstance()->getRouteByName(Route::NOTFOUND)->createControllerInstance($request);
             } catch (RoutingException $rEx2) {
-                return Map::getInstance()->getRouteByName(Route::WELCOME)->createControllerInstance();
+                return Map::getInstance()->getRouteByName(Route::WELCOME)->createControllerInstance($request);
             }
         }
     }
