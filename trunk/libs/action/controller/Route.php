@@ -126,6 +126,8 @@ class Route extends Object {
         between 2 route recogitions */
     static private $old_merges= array();
     
+    /** @var array
+        cheap cache for old defaults */
     static private $old_defaults= array();
     
     /** @var string
@@ -139,7 +141,8 @@ class Route extends Object {
     /** @var bool
         flag to indicate that this route is loaded.
         on initial phase, we will use this flag for knowing 
-        if we already loaded the defaults values */
+        if we already loaded the defaults values 
+        Later on this will be also used for validating Route Requirements. */
     private $isLoaded;
     
     /** @var string
@@ -178,16 +181,14 @@ class Route extends Object {
      */ 
     private function loadComponents() {
         $parts= explode('/', trim($this->route_list, '/'));
-
         foreach ($parts as $key=>$element) {
             if (preg_match('/:[a-z0-9_\-]+/',$element, $match)) {
                 $c= new Component(substr(trim($match[0]), 1));
-                $c->setDynamic(TRUE);
+                $c->setDynamic(true);
             } else {
                 $c= new Component($element);
-                $c->setDynamic(FALSE);
+                $c->setDynamic(false);
             }
-            // $c->setPosition($key);
             $this->components->add($c);
         }
     }
@@ -334,7 +335,6 @@ class Route extends Object {
     }
     
     private function loadDefaults(Request $request) {
-        // var_dump(Route::$old_defaults);
         foreach ($this->defaults as $name=>$value) {
             if (isset(Route::$old_defaults[$name])) unset(Route::$old_defaults[$name]);
             $request->setParameter($name, $value);
@@ -343,7 +343,6 @@ class Route extends Object {
             $request->setParameter($name, NULL);
         }
         Route::$old_defaults= $this->defaults;
-        // var_dump(Route::$old_defaults);
     }
     
     /**
@@ -353,11 +352,11 @@ class Route extends Object {
      */ 
     private function loadActionAndController(Request $request) {
         // check if we have a controller.
-        if (!$request->hasParameter('controller') && !$request->getParameter('controller')) {
+        if (!$request->hasParameter('controller') || $request->getParameter('controller') == '') {
             throw new RoutingException('Cannot Resolve A Controller for this Route!');
         }
         // check for an action
-        if (!$request->hasParameter('action')) {
+        if (!$request->hasParameter('action') || $request->getParameter('action') == '') {
             $request->setParameter('action','index');
         }
     }
