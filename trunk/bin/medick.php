@@ -169,7 +169,7 @@ $index_html=<<<EOHTML
     <h3><center>Welcome To Medick</center></h3>
     <p><b>Application:</b> $short_name</p>
     <p><b>Develop $short_name on: </b>$app_location</p>
-    <p>Setup a default controller in
+    <p>Setup the WELCOME route in
         <i>$app_location/config/$short_name.routes.php</i>, <br />
         and remove this file ($app_location/public/index.html).
     </p>
