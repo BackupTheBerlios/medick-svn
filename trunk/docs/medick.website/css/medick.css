@@ -1,0 +1,144 @@
+/* ******************************************
+ * medick.css 
+ * aurelian [ at ] locknet [ dot ] ro / 2006 
+ * $Id$
+ * ******************************************/
+
+/* Main Elements */
+body {
+  margin: 0;
+  padding: 0;
+  font:80%/140% "Lucida Grande",Verdana, Helvetica,sans-serif;
+  background: url("/s/bg-main.gif") repeat-x;
+  background-color: #F5FEE8;
+}
+ul {
+  margin-left: 40px;
+  list-style: outside;
+}
+li {
+  padding: 10px;
+  list-style: url("/s/bullet.gif") none;
+}
+a:link, a:visited {
+  color: #30c;
+  background-color: transparent;
+  text-decoration: underline;
+}
+a:hover,a:active {
+  color: #c03;
+  background-color: transparent;
+}
+a img {
+  border:0;
+}
+h4 {
+  font-size:100%;
+  font-weight:bold;
+}
+
+pre {
+  background: #F5FEE8;
+  border: 1px dotted #E5328B;
+  font-weight:bold;
+  padding: .3em;
+  margin: .5em 0;
+}
+
+/* Styles */
+.top {
+  float:right;
+  margin-right:25px;
+}
+.chapter_title {
+  margin-left: 20px;
+  font-size:120%;
+  font-weight:bold;
+}
+.chapter {
+  margin:20px;
+}
+.picture { 
+  float: left; 
+  padding: 15px; 
+  margin-right: 1.0em; 
+  margin-left: 1.0em;
+}
+
+.toc {
+  font-size: 100%;
+  padding:2px;
+  margin:0;
+  margin-left:35px;
+}
+.toc ul {
+}
+.toc li {
+  padding:0px;
+  margin:0;
+  list-style: decimal inside;
+}
+
+.subtoc {
+  margin-left:15px;
+}
+.subtoc li {
+  font-size:80%;
+  list-style: none;
+}
+
+.note {
+  border: solid black 1px;
+}
+.note_label {
+  background: #E5328B;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+}
+.note_content {
+  background: #F5FEE8;
+  color: black;
+  line-height: 120%;
+  font-size: 90%;
+  padding: 5px 10px;
+}
+
+/* Page Layout */
+#container {
+  width: 722px;
+  text-align: left;
+  margin: 30px auto 0px auto;
+  padding: 30px 0px 0px 0px;
+}
+#content {
+  background: #F9F6F6;
+  border-top: 5px solid #E5328B;
+
+}
+#header {
+  background: url("/s/header.gif");
+  background-repeat:no-repeat;
+  width: 722px;
+  height: 105px;
+}
+#header h1 {
+  padding-top:25px;
+  text-align: center;
+  font-style: italic;
+}
+#footer {
+  background: url("/s/footer.gif");
+  background-repeat: no-repeat;
+  width: 722px;
+  height: 91px;
+  text-align: center;
+  margin-top: -15px;
+  border-top: 3px dotted #E5328B;
+}
+
+#documentation-container {
+  margin-left: 40px;
+  font-size: 90%;
+}
+

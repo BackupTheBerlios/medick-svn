@@ -1,0 +1,564 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Oancea Aurelian" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="robots" content="all" />
+  <title> { Medick } PHP Web Framework :: Documentation </title>
+  <!-- $Id$-->
+  <style type="text/css" title="Medick StyleSheet" media="screen">
+    @import "/css/medick.css";
+    @import "/css/lightbox.css";
+  </style>
+  <script type="text/javascript" src="/js/lightbox.js"></script>
+</head>
+<body>
+  <div id="container">
+    <div id="header">
+      <h1>medick - PHP Framework - soon...</h1>
+    </div>
+
+    <div id="content">
+      <h3><a name="top">Intro - Table of Contents</a></h3>
+      <ul class="toc">
+        <li><a href="#what_is_this">What is this?</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#state">Project State</a></li>
+        <li><a href="#getting_started">Getting Started</a>
+          <ul class="subtoc">
+            <li>4.1&nbsp;<a href="#checkout">Checkout the Sources</a></li>
+            <li>4.2&nbsp;<a href="#symlink">Symlink or make the public, public</a></li>
+            <li>4.3&nbsp;<a href="#database_setup">Database Setup</a></li>
+            <li>4.4&nbsp;<a href="#final_touch">Final Touch</a></li>
+            <li>4.5&nbsp;<a href="#what_went_wrong">What Went Wrong?</a></li>
+            <li>4.6&nbsp;<a href="#downloadable">Using the Downloadable Version</a></li>
+          </ul>
+          </li>
+        <li><a href="#hello_world">Hello World</a>
+          <ul class="subtoc">
+            <li>5.1&nbsp;<a href="#new_project">New Project</a></li>
+            <li>5.2&nbsp;<a href="#public">Again the Public move</a></li>
+            <li>5.3&nbsp;<a href="#voila">Et Voila!</a></li>
+            <li>5.4&nbsp;<a href="#new_controller">Controllers, Actions and URLs</a></li>
+          </ul>
+        </li>
+        <li><a href="#history">Project History</a></li>
+      </ul>
+
+      <hr />
+
+      <!-- what_is_this? -->
+      <div class="chapter">
+        <h4 class="chapter_title"><a name="what_is_this">What is this?</a></h4>
+        <div class="picture">
+          <img src="/i/medick.jpg" alt="Black Medick" title="Black Medick" longdesc="" height="167" width="200" />
+        </div>
+          &nbsp;&nbsp;Medick <i>is</i> a <a href="http://php.net" title="PHP Web-Site" target="_blank">PHP</a>
+          <a href="http://en.wikipedia.org/wiki/Framework" title="Framework" target="_blank">Framework</a>,
+          focused on creating a solid ground for php programmers
+          for developing with fun and ease modern web applications.<br />
+          &nbsp;&nbsp;Medick <i>is</i> also a place where I can experiment diffrent programming techniques 
+          and where I spend some quality coding time during my weekends.<br />
+          &nbsp;&nbsp;Medick <i>is not</i> the place where you should ask questions about how to install 
+          php or related software applications. 
+          Samples of questions that will remain without an answer: <b>How to build a web form that sends an email?</b>, 
+          <b>Help!!!!!, how can I install phpBB</b>, 
+          <b>Whats my IP address?</b>, 
+          <b>Where can I find a php2exe application</b> 
+          or <b>Who shot Kennedy?</b>.<br />
+          &nbsp;&nbsp;
+          &nbsp;&nbsp;Medick, the name, came from
+          <a 
+            href="http://www.arthurleej.com/a-blackmedick.html" 
+            title="Black Medick" 
+            target="_blank">Black Medick</a> - <i>Medicago lupulina</i> L.
+        <a href="#top" class="top">Top</a>
+      </div>
+      <!-- /what_is_this? -->
+
+      <!-- requirements -->
+      <div class="chapter">
+        <h4 class="chapter_title"><a name="requirements">Requirements</a></h4>
+        &nbsp;&nbsp;<b>PHP, version 5.0.3 or higher, 5.1.2 recommended</b><br />
+        PHP Extensions and Settings:<br />
+        &nbsp;&nbsp;<i><a href="http://php.net/simplexml" title="Simple XML" target="_blank">SimpleXML</a></i>, 
+        for parsing app.xml file, it's enabled by default on every php installation otherwise, 
+        compile php with: <i>--enable-simplexml</i><br />
+        &nbsp;&nbsp;<i><a href="http://php.net/reflection" target="_blank" title="Reflection API">Reflection</a></i>, 
+        from php 5.1.2 you will also need this extension, 
+        for php 5.0.5 this is compiled into the php core and cannot be disabled.
+        Reflection is enabled by default on every php installation, otherwise, compile php with: <i>--enable-reflection</i><br />
+        &nbsp;&nbsp;<i><a href="http://php.net/spl" target="_blank" title="Standard PHP Lybrary">SPL</a></i>, 
+        enabled by default on every php installation, otherwise, compile php with: <i>--enable-spl</i><br />
+        On Windows, this 3 extensions cannot be disabled so you will not have to activate anything to run medick.<br />
+        &nbsp;&nbsp;<b>Web Server, Apache 2.0 recommended</b><br />
+        Alltrough I tested medick with <a 
+          href="http://www.lighttpd.net/" 
+          target="_blank" 
+          title="If you prefer, call it just 'Lighty'. We want to keep your tongue intact. :)">LightTPD</a> 
+        and <a href="http://httpd.apache.org/docs/1.3/" target="_blank" title="Apache 1 Web Server">Apache 1</a>, 
+        <a href="http://httpd.apache.org/docs/2.0/" target="_blank" title="Apache 2.0 Web Server">Apache 2</a> 
+        with <i>mod_php</i> remains the main development platform.<br />
+        Apache Setting and modules:<br />
+        &nbsp;&nbsp;<i><a 
+            href="http://httpd.apache.org/docs/2.0/mod/mod_access.html" 
+            target="_blank" 
+            title="Apache Module mod_access">mod_access</a></i> should be turned on, and 
+        <i><a 
+            href="http://httpd.apache.org/docs/2.0/mod/core.html#allowoverride" 
+            title="AllowOverride Directive" 
+            target="_blank">AllowOverride</a></i> 
+        directive from httpd.conf must be set to <b>All</b> - or similar - to allow 
+        <a href="http://httpd.apache.org/docs/2.0/howto/htaccess.html" target="_blank" title=".htaccess files">.htaccess</a> files<br />
+        &nbsp;&nbsp;<i><a 
+            href="http://httpd.apache.org/docs/2.0/mod/core.html#acceptpathinfo" 
+            target="_blank" 
+            title="AcceptPathInfo Directive">AcceptPathInfo</a></i> should be <b>On</b>. 
+        However, we managed to install a medick application without this directive (can be triky with php as CGI) 
+        and I'm planning to remove this requirement from medick 0.2.<br />
+        &nbsp;&nbsp;<i><a 
+            href="http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html"
+            title="Apache Module mod_rewrite"
+            target="_blank">mod_rewrite</a></i> for nice URLs.<br />
+        &nbsp;&nbsp;<b>Database Server</b><br />
+        If you are going to use a database as a backend for your application, 
+        medick commes with <a 
+          href="http://creole.phpdb.org" 
+          title="Database Abstraction Layer for PHP5" 
+          target="_blank">Creole</a> bundled.<br />
+        So, medick will work with whatever sql driver is supported by Creole and by your php installation. 
+        This includes: mysql, pgsql, sqlite, mssql, oracle, odbc or mysqli.<br />
+        <a href="#top" class="top">Top</a>
+      </div>
+      <!-- /requirements -->
+
+      <!-- state  -->
+      <div class="chapter">
+        <h4 class="chapter_title"><a name="state">Project State</a></h4>
+        &nbsp;&nbsp;Medick project is on alpha stage, this means that we can change the API or break BC without a prior notice.
+        Well, that's a lay, if you where subscribed to our internal development list you will know about those changes.
+        <a href="#top" class="top">Top</a>
+      </div>
+      <!-- /state  -->
+
+      <!-- getting_started  -->
+      <div class="chapter">
+        <h4 class="chapter_title"><a name="getting_started">Getting Started 
+            (Installing elTodo sample application on your computer)</a></h4>
+        &nbsp;&nbsp;The online elTodo sample is located <a href="http://29dots.com/eltodo" target="_blank">here</a>.
+        This is what I will try in this section to install on your computer.<br />
+        &nbsp;&nbsp;Grab yourself a copy of medick, either download an almost stable release (see our front page),
+        or do a checkout from the project subversion tree. In this short section, we will go with the second option.<br />
+        &nbsp;&nbsp;First, make sure you have <a 
+          href="http://subversion.tigris.org/" 
+          target="_blank" 
+          title="Version Control System">Subversion</a>, the client libraries, installed on your computer. 
+        For Windows a client like <a 
+          href="http://tortoisesvn.tigris.org/"
+          title="TortoiseSVN is a Subversion client, implemented as a windows shell extension."
+          target="_blank">TurtoiseSvn</a> will do the job.<br />
+        &nbsp;&nbsp;Also, check again if you meet medick <a href="#requirements">requirements</a> and that you have all the required software installed and properly working.
+        &nbsp;&nbsp;<h4><a name="checkout">4.1 Checkout the Sources</a></h4>
+        <pre>$ svn checkout svn://svn.berlios.de/medick medick</pre>
+        This will create a <i>medick</i> folder under the current working directory, we will refer to this as <b>$MEDICK_HOME</b> 
+        from now on. Subfolders will include <i>trunk/</i>, <i>branches/</i> and <i>applications/</i>.
+        &nbsp;&nbsp;<h4><a name="symlink">4.2 Symlink or Make the Public, PUBLIC</a></h4>
+        Next step is to copy or to create a symbolic link under linux from the <i>$MEDICK_HOME/applications/eltodo</i> 
+        to your web server document root. Change the working directory to document root, and do:<br />
+        <pre>$ ln -s $MEDICK_HOME/applications/eltodo/public eltodo</pre>
+        Under Windows, just move <i>$MEDICK_HOME/applications/eltodo/public</i> to <i>eltodo</i> under your web server document root. 
+        Same for linux if the above command will not do.
+        &nbsp;&nbsp;<h4><a name="database_setup">4.3 Database Setup</a></h4>
+        elTodo application can use mysql or sqlite databases as backend. We will use mysql since everyone is familiar with it.<br />
+        Import <i>$MEDICK_HOME/applications/eltodo/db/schema.mysql</i> database schema:<br />
+        <pre>$ mysql -u $USERNAME -p$PASSWORD &lt; $MEDICK_HOME/applications/eltodo/db/schema.mysql</pre>
+        Replace $USERNAME and $PASSWORD with your real database username/password. This should also work under Windows.
+        If not, you can use <a 
+          href="http://phpmyadmin.net" 
+          title="The phpMyAdmin Project / Effective MySQL Management" 
+          target="_blank">phpMyAdmin</a> or other database clients.
+        &nbsp;&nbsp;<h4><a name="final_touch">4.4 Final Touch</a></h4>
+        This section will be deprecated for medick 0.2.0, since many of those settings 
+        will go to only one file, the <i>application_name</i>.xml.<br />
+        Create an empty file, <i>eltodo.log</i> on <i>$MEDICK_HOME/applications/eltodo/log/eltodo.log</i> for logging.
+        <pre>$ touch $MEDICK_HOME/applications/eltodo/log/eltodo.log
+$ chmod 777 $MEDICK_HOME/applications/eltodo/log/eltodo.log</pre>
+        Open <i>$MEDICK_HOME/applications/eltodo/conf/eltodo.xml</i> and configure the application to match your setup.<br />
+        For sure you will need to change under <b>Logger System</b> section, the property named <b>path</b>, to use yours.<br />
+        Also, under <b>Database Settings</b> you will need to change the <b>user</b> and <b>pass</b> sections.<br />
+        Make sure that <b>server_name</b> and <b>document_root</b> will also work for you.<br />
+        Open <i>$MEDICK_HOME/applications/eltodo/public/.htaccess</i> and change the line with 
+        <b>MEDICK_APPLICATION_PATH</b> to point to <i>$MEDICK_HOME/applications/eltodo</i><br />
+        Open <i>$MEDICK_HOME/applications/eltodo/public/index.php</i> and change the 
+        <b>include_once</b> to <i>$MEDICK_HOME/trunk/boot.php</i>.<br />
+        Uff, so, are you still with me? Great. So who said "<a 
+          href="http://rubyonrails.org"
+          target="_blank"
+          title="Web development that dosen't hurt.">convention over configuration</a>"?<br />
+        Well, we almost did it!. Just point your browser to <a href="http://localhost/eltodo">http://localhost/eltodo</a> and...
+        &nbsp;&nbsp;<h4><a name="what_went_wrong">4.5 What Went Wrong?</a></h4>
+        For php installed as a CGI, I had to manually define <i>MEDICK_APPLICATION_PATH</i> and <i>MEDICK_APPLICATION_NAME</i>:
+        <pre>// in index.php before include_once
+$_SERVER['MEDICK_APPLICATION_PATH']='$MEDICK_HOME/applications/eltodo';
+$_SERVER['MEDICK_APPLICATION_NAME']='eltodo';
+</pre>
+        Remember to replace <i>$MEDICK_HOME</i> with your actual path!<br />
+        If you get a blank page, try to turn on <b>display_errors</b> setting from <b>php.ini</b>.<br />
+        You get a <b>403 - Forbidden</b> page, and on apache logs you can read:
+        <pre>[error] [client 127.0.0.1] Symbolic link not allowed: [....]</pre>
+        This usually means that the user that runs apache is not allowed to read from <i>$MEDICK_HOME/applications/eltodo/public</i>
+        as a quick solution, try to create a <b>VirtualHost</b> for elTodo application 
+        or try to move <i>$MEDICK_HOME</i> under <b>ServerRoot</b>. 
+        However, I was unable to reproduce this problem under Windows.<br />
+        My setup includes <i>ServerRoot</i> to <i>/wwwroot</i>, <i>DocumentRoot</i> 
+        on <i>/wwwroot/htdocs</i> and <i>$MEDICK_HOME</i> to <i>/wwwroot/medick</i> and it just works.<br />
+        Please contact us if you cannot setup the elTodo sample.<br />
+        More to be added as we discover more problems...
+        &nbsp;&nbsp;<h4><a name="downloadable">4.6 Using the Downloadable Version</a></h4>
+        If you choose to download medick, just unpack the tgz archive somewhere:
+        <pre>$ tar -xzvf medick-x.y.z.tgx</pre>
+        For Windows you can use <a 
+          href="http://www.7-zip.org/"
+          target="_blank"
+          title="7-Zip is a file archiver with high compression ratio.">7-Zip</a> to unpack.<br />
+        The resulting folder will be your <i>$MEDICK_HOME</i>. But instead of 
+        <i>trunk/</i> you will have <i>framework/</i> and <i>applications/</i> is replaced by <i>samples/</i>.
+        The above steps will also work for this type of setup.<br />
+        <a href="#top" class="top">Top</a>
+      </div>
+      <!-- /getting_started  -->
+      
+      <!-- hello_world -->
+      <div class="chapter">
+        <h4 class="chapter_title"><a name="hello_world">Hello World</a></h4>
+        &nbsp;&nbsp;Ok, now it's time for a ``real" medick application. 
+        We will do a short introduction and overview of the main medick features.
+        Yes, we will do, ``the hello medick world"!<br />
+        &nbsp;&nbsp;I assume that you already have the medick source code somewhere on your computer and 
+        as mentioned in the <a href="#getting_started">previous chapter</a> I will use $MEDICK_HOME to reffer that folder.<br />
+        &nbsp;&nbsp;Also, in this short introduction I will use linux commands, but this will also work under other OSs.
+        Just dont be afraid to use your command prompt.
+        &nbsp;&nbsp;<h4><a name="new_project">5.1 Creating a new project</a></h4>
+        &nbsp;&nbsp;On this first step, we will use <i>bin/medick.php</i> script witch 
+        should be invoked from the command line. 
+        Since I like to keep some sort of order on my computer I will run this script 
+        from <i>$MEDICK_HOME/applications</i>.
+        <pre>[aurelian@gremlin applications]$ php $MEDICK_HOME/trunk/bin/medick.php $MEDICK_HOME/applications/hello
+Creating application: hello
+Location:
+    /wwwroot/medick/applications/hello
+          
+    create /wwwroot/medick/applications/hello
+    create /wwwroot/medick/applications/hello/app
+    create /wwwroot/medick/applications/hello/app/models
+    [...]
+    create /wwwroot/medick/applications/hello/db/schema.sql
+          
+Medick ($v: 0.2.0-svn) [ DONE ].</pre>
+        This script, will generate our new hello application skeleton.<br />
+        <div class="note"><div class="note_label">Note</div>
+          <div class="note_content">&nbsp;&nbsp;If one will rerun this script will 
+            overwrite all the files created by the first run without asking, 
+            so make sure you create a backup of your modified files before.
+          </div>
+        </div>
+        If we will list that folder we will see this structure:
+        <pre>[aurelian@gremlin applications]$ ls -l $MEDICK_HOME/applications/hello/
+total 32
+drwxr-xr-x  6 aurelian aurelian 4096 Mar  5 16:35 app/
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 conf/
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 db/
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 doc/
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 libs/
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 log/
+drwxr-xr-x  5 aurelian aurelian 4096 Mar  5 16:35 public/
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 scripts/</pre>
+        <!--Looks familiar, <a href="http://rubyonrails.org" title="Web developer that dosen't hurt" target="_blank">right?</a>-->
+        <b>TDB: explain folder structure.</b>
+        &nbsp;&nbsp;<h4><a name="public">5.2 Again the Public move</a></h4>
+        As we did when we installed elTodo, in this step we need to make the public folder accessible from the web space. 
+        My favorite method is to create a symbolic link from my document root to that folder, so beeing inside the document root 
+        I execute:
+        <pre>[aurelian@gremlin htdocs]$ ln -s $MEDICK_HOME/applications/hello/public hello</pre>
+        Other methods, like moving the <i>public/</i> folder to <i>hello</i> inside document root will also work, same for one who can write a 
+        <b>VirtualHost</b>.<br />
+        Listing that folder:
+        <pre>[aurelian@gremlin htdocs]$ ll hello/
+total 20
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 images/
+-rw-r--r--  1 aurelian aurelian  865 Mar  5 16:35 index.html
+-rw-r--r--  1 aurelian aurelian 1970 Mar  5 16:35 index.php
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 javascript/
+drwxr-xr-x  2 aurelian aurelian 4096 Mar  5 16:35 stylesheet/</pre>
+        &nbsp;&nbsp;<h4><a name="voila">5.3 Et Voila!</a></h4>
+        Point the browser on <a href="http://localhost/hello">http://localhost/hello</a><br />
+        <div class="picture">
+          <a href="/i/welcome.jpg" rel="lightbox" title="Medick Welcome Screen">
+            <img 
+              src="/i/welcome.jpg" 
+              height="200" 
+              width="400" 
+              alt="Medick Welcome Screen"
+              title="Medick Welcome Screen"/>
+            <center>Click on image for a larger view.</center>
+            </a>
+        </div>
+        &nbsp;&nbsp;You should see the "Welcome to Medick" page as shown on my screenshoot. 
+        Don't be confused about my 8091 port number.
+        &nbsp;&nbsp;<h4><a name="new_controller">5.4 Controllers, Actions and URLs</a></h4>
+        In medick framework, Controller classes are made to handle requests made by the user. 
+        Any incoming URL is mapped to a Controller class and to a method within that class.<br />
+        If you type an URL, like <a href="http://localhost/hello/foo">http://localhost/hello/foo</a> you will get an "Server Error" with the message "Cannot Process your request!" and as details "RoutingException - Message: Cannot find a Route with this name: 512". Also a nice backtrace is shown there.
+        <div class="picture">
+          <a href="/i/foo.jpg" rel="lightbox" title="Medick Welcome Screen">
+            <img 
+              src="/i/foo.jpg"
+              height="200"
+              width="400"
+              alt="Medick Routing Exception"
+              title="Medick Routing Exception"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <br />
+        Now we can use the other medick helper script, witch can generate for us a new Controller. 
+        It's located on the application folder/scripts, hello/scripts/generator.php.
+        The first parameter that this script takes is <i>controller </i>
+        (what we want to generate, later on we will use the same script for creating other helper scripts),
+        and the second is the <i>name</i> of that controller, basically the controller class name.
+        I choose to use <i>main</i> as the name, and from $MEDICK_HOME/applications, 
+        I ran:<br style="clear:both"/>
+        <pre>[aurelian@gremlin applications]$ php hello/scripts/generator.php controller main
+Creating controller class MainController from main
+    create /wwwroot/medick/applications/hello/app/views/main
+    create /wwwroot/medick/applications/hello/app/views/layouts/main.phtml
+    create /wwwroot/medick/applications/hello/app/helpers/main_helper.php
+    create /wwwroot/medick/applications/hello/app/controllers/main_controller.php
+    
+Medick ($v: 0.2.0-svn) [ DONE ].</pre>
+        As you can see, the generator just created for us a Controller class <i>MainController</i> 
+        located on the file <i>$MEDICK_HOME/applications/hello/app/controllers/main_controller.php</i>.
+        <div class="picture">
+          <a href="/i/no_index.jpg" rel="lightbox" title="No Index">
+            <img
+              src="/i/no_index.jpg" 
+              height="200"
+              width="400"
+              alt="No index to invoke for this Controller" 
+              title="No index to invoke for this Controller"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <br />
+        If you load the page <a href="http://localhost/hello/main">http://localhost/hello/main</a> 
+        you will get another error, but this means that we are on the right trak, an action named 
+        "index" dosen't exists for the route "main"
+        - or in php therms, the class MainController dosen't have a method named "index".<br />
+        We will use the generator again to create that method. We will run the same command but this time
+        we add a new parameter witch is the action method name that we want to create. Infact, 
+        everything after the controller name is interpreted as an action to be added on that controller.
+        <br />
+        Ok, so, lets create 2 methods, index and say for the main controller:<br />
+        <div class="note"><div class="note_label">Note</div>
+          <div class="note_content">&nbsp;&nbsp;Again, this script will overwrite without asking all
+          the existing files.
+          </div>
+        </div>        
+        <br style="clear:both"/>
+        <pre>[aurelian@gremlin applications]$ php hello/scripts/generator.php controller main index say
+Creating controller class MainController from main
+    exists /wwwroot/medick/applications/hello/app/views/main
+    exists /wwwroot/medick/applications/hello/app/views/layouts/main.phtml
+    exists /wwwroot/medick/applications/hello/app/helpers/main_helper.php
+    adding method: index
+    create: /wwwroot/medick/applications/hello/app/views/main/index.phtml
+    adding method: say
+    create: /wwwroot/medick/applications/hello/app/views/main/say.phtml
+    overwrote /wwwroot/medick/applications/hello/app/controllers/main_controller.php
+
+Medick ($v: 0.2.0-svn) [ DONE ].</pre>
+        <div class="picture">
+          <a href="/i/index.jpg" rel="lightbox" title="We have an index!">
+            <img
+              src="/i/index.jpg"
+              height="194"
+              width="350"
+              alt="We have an index!"
+              title="We have an index!"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        Reload your browser and you will see the default medick generated action: MainController#index 
+        sorounded by a nice black border. For the other method, 
+        <i><a href="http://locahost/hello/main/say">say</a></i> we will have something similar.
+        <br style="clear:both"/>
+        Let's do something creative, and open the class Controller file,
+        <i>$MEDICK_HOME/applications/hello/app/controllers/main_controller.php</i>. At the first look, we will see
+        a class declaration with 2 methods, so nothing too special here. 
+        We will add some medick magic into the index method and we will write:
+        <i>$this->render_text("Hello Medick World!");</i>.
+        <div class="picture">
+          <a href="/i/render_text.jpg" rel="lightbox" title="Render Text on Index">
+            <img 
+              src="/i/render_text.jpg" 
+              height="200" 
+              width="400" 
+              alt="Render Text on Index" 
+              title="Render Text on Index"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        &nbsp;<br style="clear:both"/>
+        After reloading the browser:
+        <div class="picture">
+          <a href="/i/hello_medick_world.jpg" rel="lightbox" title="Render Text on Index">
+            <img 
+              src="/i/hello_medick_world.jpg" 
+              height="200" 
+              width="400"
+              alt="Render Text on Index"
+              title="Render Text on Index"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <br />
+        Wow! Where did MainController#index go?
+        As you can see with <i>render_text</i> method you printed something without using or needing a template file.
+        <br />
+        <b>more TBAdded.</b>
+        &nbsp;<br style="clear:both"/>
+        <div class="picture">
+          <a href="/i/say_method.jpg" rel="lightbox" title="Editing MainController">
+            <img 
+              src="/i/say_method.jpg" 
+              height="200" 
+              width="400"
+              alt="Editing MainController" 
+              title="Editing MainController"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <b>more to be added on editing maincontroller</b>
+        &nbsp;<br style="clear:both;"/>
+        <div class="picture">
+          <a href="/i/say_view.jpg" rel="lightbox" title="Editing the Template">
+            <img 
+              src="/i/say_view.jpg" 
+              height="200"
+              width="400"
+              alt="Editing the Template" 
+              title="Editing the Tempalate"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <b>more to be added on editing say template</b>
+        &nbsp;<br style="clear:both;"/>
+        <div class="picture">
+          <a href="/i/say_web.jpg" rel="lightbox" title="The Result">
+            <img 
+              src="/i/say_web.jpg" 
+              height="200"
+              width="400"
+              alt="The Result" 
+              title="The Result"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <b>more to be added on editing say web</b>
+        &nbsp;<br style="clear:both;"/>
+        <div class="picture">
+          <a href="/i/welcome_route.jpg" rel="lightbox" title="Editing hello.routes.php">
+            <img 
+              src="/i/welcome_route.jpg" 
+              height="200"
+              width="400"
+              alt="Editing hello.routes.php" 
+              title="Editing hello.routes.php"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <b>more to be added on editing hello.routes.php</b>
+        &nbsp;<br style="clear:both;"/>
+        
+        <div class="picture">
+          <a href="/i/welcome_route_web.jpg" rel="lightbox" title="Default Application Entry">
+            <img 
+              src="/i/welcome_route_web.jpg" 
+              height="200"
+              width="400"
+              alt="Default Application Entry" 
+              title="Default Application Entry"/>
+              <center>Click on image for a larger view.</center>
+          </a>
+        </div>
+        <b>more to be added on default application entry</b>
+        &nbsp;<br style="clear:both;"/>           
+        
+        <a href="#top" class="top">Top</a>
+      </div>
+      <!-- /hello_world -->
+      
+      <!-- contribute -->
+      
+      <div class="chapter">
+        <h4 class="chapter_title"><a name="contribute">Contribute</a></h4>
+        <b>TBD.</b>
+        <a href="#top" class="top">Top</a>
+      </div>
+      
+      <!-- /contribute -->
+      
+      <!-- history -->
+      <div class="chapter">
+        <h4 class="chapter_title"><a name="history">Project History</a></h4>
+        &nbsp;&nbsp;The idea of writing my own php framework raised after I've read the article
+        <a href="http://www.phparch.com/issue.php?mid=9">"An introduction to the Model-View-Controller Pattern"</a>
+        written by Jason Sweat in may 2003 issue of <a href="http://www.phparch.com">php|architect</a>.<br /><br />
+
+        &nbsp;&nbsp;The first working "version" was used, somewhere in August 2004,
+        for an internal web site for the company that I was working for.<br />
+        &nbsp;&nbsp;This "core" engine, was integrating it self very well with Smarty
+        and AdoDB, witch, at that time represented the M an V from MVC.
+        Moreover, a caching system was wrote since it was an web site about
+        large  statistics witch required a lot of data manipulation.<br /><br />
+
+        &nbsp;&nbsp;Next projects where I was involved as a freelancer, reuse
+        almost the same ideas  and core engine.<br />
+        &nbsp;&nbsp;Unfortunately, from that period of time, http://www.roumanie-france.ro/
+        is the only web site that is still on line<br />
+        Again Smarty and Ado DB, but also a modified version of
+        PEAR_DB_Nested_Set (you  can see it on the left menu
+        and on the web pages breadcrumbs) and the excellent
+        phpOpenTraker for web statistics. The same caching engine is still used.<br />
+        &nbsp;&nbsp;On the administrative side, the user can perform various actions
+        with the web  pages (add/edit/move to other parents or
+        delete/de-activate).<br /><br />
+
+        &nbsp;&nbsp;In April-May 2005 I was starting to think about registering this ideas
+        as an  open-source project, and in June 2005, medick was born
+        (it didn't have a name until then) on  http://developer.berlios.de.<br />
+        &nbsp;&nbsp;On the same period, the ruby web framework, RubyOnRails, started to
+        raise the  hype. I have enjoyed playing with many of the RoR features and I wanted
+        to have  something similar for medick.<br />
+        <!-- &nbsp;&nbsp;So this is what we try to be: a cheap RoR copy. We try to bring the RoR fun to php. -->
+        <a href="#top" class="top">Top</a>
+    </div>
+    <!-- /history -->
+    
+  </div>
+  <div id="footer">
+    <p>
+      Medick is an <a href="http://www.opensource.org/docs/definition.php"
+title="Open Source Definition" target="_blank">open source</a> project released
+under a <a href="http://www.opensource.org/licenses/bsd-license.php"
+title="BSD-style LICENSE" target="_blank">BSD-style</a> <a href="/LICENSE"
+title="BSD-style Licence">LICENSE</a>.
+    </p>
+  </div>
+
+  </div>
+</body>
+</html>
