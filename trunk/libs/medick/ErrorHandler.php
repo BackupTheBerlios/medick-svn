@@ -51,11 +51,11 @@ class ErrorHandler extends Object {
     /**
      * Raise An Error
      * 
-     * @param int $errno
-     * @param string $errstr
-     * @param string $errfile
-     * @param int $errline
-     * @throw Error
+     * @param int errno
+     * @param string errstr
+     * @param string errfile
+     * @param int errline
+     * @throws Error
      */
     function raiseError($errno, $errstr, $errfile, $errline) {
         $errRep = error_reporting();

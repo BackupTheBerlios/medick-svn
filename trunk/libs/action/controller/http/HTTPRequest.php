@@ -35,7 +35,8 @@
 include_once('action/controller/session/Session.php');
 
 /**
- * 
+ * A HTTPRequest
+ *
  * @package medick.action.controller
  * @subpackage http
  * @author Oancea Aurelian
@@ -136,7 +137,6 @@ class HTTPRequest extends Request {
      * A wrapper around getallheaders apache function that gets a list
      * of headers associated with this HTTPRequest.
      *
-     * @TODO: 
      * @return array
      */
     protected static function getAllHeaders() {

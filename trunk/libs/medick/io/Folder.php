@@ -35,7 +35,7 @@
 /**
  * A Folder class
  * 
- * This is used only when collection test cases.
+ * This is used only when collecting test cases.
  * @package medick.core
  * @subpackage io
  * @author Oancea Aurelian

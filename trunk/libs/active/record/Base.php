@@ -140,10 +140,11 @@ abstract class ActiveRecord extends Object {
     // {{{ __magic functions
     /**
      * It sets the value of the field
+     *
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string, field_name, the field name
      * @param mixed, field_value, field value
-     * @throw ActiveRecordException if the field is not found.
+     * @throws ActiveRecordException if the field is not found.
      */
     public function __set($field_name, $field_value) {
         if ($field= $this->row->getFieldByName($field_name)) {
@@ -155,9 +156,10 @@ abstract class ActiveRecord extends Object {
 
     /**
      * It gets the value of the field
+     * 
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string, field_name, the field name
-     * @throw ActiveRecordException
+     * @throws ActiveRecordException
      * @return field value
      */
     public function __get($field_name) {
@@ -184,7 +186,7 @@ abstract class ActiveRecord extends Object {
     }
 
     /**
-     * @TODO: This method is not working as expected!
+     * @todo This method is not working as expected!
      *
      * This method is run before any call to ActiveRecord public methods! (nope: php 5.1.2)
      * Removes some duplicate code from the list with <tt>know_methods</tt>.
@@ -192,6 +194,7 @@ abstract class ActiveRecord extends Object {
      *
      * Basically it checks before save, insert, update or delete calls that
      * the current run has affected fields and throws an ActiveRecordException if not.
+     * 
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string method name
      * @param array arguments
@@ -452,7 +455,7 @@ abstract class ActiveRecord extends Object {
     }
 
     /**
-     * @TODO: can we use QueryBuilder for this?
+     * @todo can we use QueryBuilder for this?
      * Helper, internal method witch performs an sql query, other than select.
      *
      * @param string sql the sql query to execute

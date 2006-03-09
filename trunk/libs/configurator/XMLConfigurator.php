@@ -35,19 +35,22 @@
 include_once('configurator/IConfigurator.php');
 
 /**
- * xml file-based Configurator.
+ * XML file-based Configurator
  * 
  * @package medick.configurator
  * @author Oancea Aurelian
  */
+
 class XMLConfigurator extends Object implements IConfigurator {
 
     /** @var SimpleXML */
     protected $sxe;
 
     /**
-     * Constructor.
+     * Constructor
+     * 
      * @param string/file xml
+     * @throws ConfiguratorException
      */
     public function XMLConfigurator($xml) {
         if (file_exists($xml)) {
@@ -67,20 +70,20 @@ class XMLConfigurator extends Object implements IConfigurator {
     /**
      * Configuration Example:
      * <code>
-     *      <database default="foo">
-     *          <dsn id="one"
-     *               phptype  = "mysql"
-     *               hostspec = "localhost"
-     *               database = "todo"
-     *               username = "root"
-     *               password = "zzz" />
-     *          <dsn id = "foo"
-     *               phptype  = "pgsql"
-     *               hostspec = "192.18.1.1"
-     *               database ="test"
-     *               username ="antonescu"
-     *               password ="x-creeme" />
-     *      </database>
+     *   <database default="foo">
+     *     <dsn id="one"
+     *          phptype  = "mysql"
+     *          hostspec = "localhost"
+     *          database = "baz"
+     *          username = "root"
+     *          password = "zzz" />
+     *     <dsn id = "foo"
+     *          phptype  = "pgsql"
+     *          hostspec = "192.18.1.1"
+     *          database ="test"
+     *          username ="antonescu"
+     *          password ="x-creeme" />
+     *   </database>
      * </code>
      * @see IConfigurator::getDatabaseDsn()
      */
@@ -103,15 +106,20 @@ class XMLConfigurator extends Object implements IConfigurator {
     /**
      * Configuration example:
      * <code>
-     *      <logger>
-     *          <outputters>
-     *              <outputter name="file"    level="0" value="/wwwroot/htdocs/locknet7/log/locknet7.log" />
-     *              <outputter name="mail"    level="2" value="xxxx@xxxx.xxxx" />
-     *              <outputter name="stdout"  level="0" />
-     *          </outputters>
-     *      </logger>
+     *   <logger>
+     *     <outputters>
+     *       <outputter name="file" level="0">
+     *         <property name="path" value="/wwwroot/whereto.log" />
+     *       </outputter>
+     *       <outputter name="stdout" level="0" />
+     *       <outputter name="mail" level="3">
+     *         <property name="subject" value="[Uh-Ah]Fatality on my server!" />
+     *         <property name="address" value="user@example.com" />
+     *       </outputter>
+     *     </outputters>
+     *   </logger>
      * </code>
-     * @see IConfigurator::getLoggerOutputters
+     * @see IConfigurator::getLoggerOutputters()
      * @return array
      */
     public function getLoggerOutputters() {
@@ -129,12 +137,12 @@ class XMLConfigurator extends Object implements IConfigurator {
 
     }
 
-    /** @see medick.configurator.IConfigurator::getLoggerFormatter() */
+    /** @see IConfigurator::getLoggerFormatter() */
     public function getLoggerFormatter() {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
     }
 
-    /** @see medick.configurator.IConfigurator::getProperty(string name) */
+    /** @see IConfigurator::getProperty() */
     public function getProperty($name) {
         foreach($this->sxe->property as  $properties ) {
             if($properties['name'] != $name)
@@ -163,12 +171,13 @@ class XMLConfigurator extends Object implements IConfigurator {
     /**
      * Dinamically sets a proprety on runtime.
      *
-     * Example:
      * Assuming that we have
-     * <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
+     * <code>
+     *   <property name="application_path" value="/wwwroot/htdocs/locknet7/app" />
+     * </code>  
      * To change the value of application_path property:
      * <code>
-     *      $config->setProperty('application_path', 'C:\\Fast\\www\\medick\\app');
+     *   $config->setProperty('application_path', 'C:\\Fast\\www\\medick\\app');
      * </code>
      *
      * Note: This method is used only in unittests.
@@ -200,6 +209,7 @@ class XMLConfigurator extends Object implements IConfigurator {
 
     /**
      * Convert this document from SXE to DOM
+     * 
      * @return DomDocument
      */
     public function toDom() {
@@ -210,12 +220,10 @@ class XMLConfigurator extends Object implements IConfigurator {
         return $dom;
     }
 
-    /** 
-     * @return the string representation of this object 
-     */
+    /** @return the string representation of this object */
     public function toString() {
         return $this->sxe->asXML();
     }
 
-a
 }
+

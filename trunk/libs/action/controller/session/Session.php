@@ -52,7 +52,7 @@ class Session extends Object {
     /**
      * Constructor, creates a new session object
      *
-     * @throw IllegalStateException if the session is already started
+     * @throws IllegalStateException if the session is started
      */
     public function Session () {
         if ($this->isStarted) {
@@ -65,7 +65,7 @@ class Session extends Object {
      *
      * Also, it setup our session preferences
      * @return void
-     * @throw IllegalStateException if the session is already started
+     * @throws IllegalStateException if the session is already started
      */
     public function start() {
         if ($this->isStarted) {
@@ -85,7 +85,7 @@ class Session extends Object {
      * @param string name, the name of the session variable
      * @param mixed value, the value of the variable to set
      * @return void
-     * @throw IllegalStateException if the session is not started
+     * @throws IllegalStateException if the session is not started
      */
     public function putValue($name, $value) {
         $this->checkState();
@@ -97,7 +97,7 @@ class Session extends Object {
      *
      * @param string name, the name of the session variable
      * @return NULL if the variable is not set, or mixed, the variable value
-     * @throw IllegalStateException if the session is not started
+     * @throws IllegalStateException if the session is not started
      */
     public function getValue($name) {
         return $this->hasValue($name) ? $_SESSION[$name] : NULL;
@@ -108,7 +108,7 @@ class Session extends Object {
      *
      * @param string name, the name of the session variable
      * @return bool, TRUE if it has
-     * @throw IllegalStateException if the session is not started
+     * @throws IllegalStateException if the session is not started
      */
     public function hasValue($name) {
         $this->checkState();
@@ -130,7 +130,7 @@ class Session extends Object {
      * It gets the session id
      *
      * @return mixed, the session id
-     * @throw IllegalStateException if the session is not started
+     * @throws IllegalStateException if the session is not started
      */
     public function getId(){
         $this->checkState();
@@ -161,7 +161,7 @@ class Session extends Object {
      *
      * This method is called internally to ensure that the session is started before using it.
      * @return TRUE if the session is started
-     * @throw IllegalStateException if the session is not started
+     * @throws IllegalStateException if the session is not started
      */
     protected function checkState() {
         if (!$this->isStarted) {

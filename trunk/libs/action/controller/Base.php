@@ -34,11 +34,45 @@
 
 include_once('action/view/Base.php');
 
-// namespace ActionController {
-
 /**
  * Base Class For Our Application Controllers
  *
+ * Controller Sample
+ * <code>
+ *  class ProjectController extends ApplicationController {
+ *    public function index() {
+ *      $this->render_text("Hello Index!");
+ *    }
+ *  }
+ * </code>
+ * Valid Controllers will be keept inside the folder app/controllers and will extend
+ * ApplicationController or ActionController.
+ *
+ * Incoming actions should be declared as public methods inside the ActionController.
+ * Keep your helper methods as protected or private since one could somehow find 
+ * the URL to invoke them.
+ *
+ * Inside ApplicationController (usualy is the base class for your application controllers)
+ * a method named <i>__common</i> is always invoked before the action itself. You can use this
+ * method for assing template variables common to all your templates (like a menu with items from database).
+ *
+ * ActionController also defines some magic medick template variables. We will use <i>__</i> to mark them.
+ * Predefined medick variables available in templates:
+ * <ul>
+ *  <li>__base: the document root</li>
+ *  <li>__server_name: this server name</li>
+ *  <li>__controller: incoming controller</li>
+ * </ul>
+ * 
+ * Other features:
+ * <ul>
+ *  <li>flash() method can keep anything in session for the next controller, after that the flash container is discarded</li>
+ *  <li>unified look and feel for your application by using layouts</li>
+ *  <li>straight access to ActionView</li>
+ *  <li>filters (this is still a work in progress)</li>
+ *  <li>logging capabilities</li>
+ * </ul>
+ * 
  * @package medick.action.controller
  * @author Oancea Aurelian
  */
@@ -134,6 +168,7 @@ class ActionController extends Object {
 
     /**
      * Will process the request returning the resulting response
+     * 
      * @param Request request, the request
      * @param Response response, the response
      * @return Response
@@ -229,14 +264,17 @@ class ActionController extends Object {
 
     /**
      * Will render some text.
-     * Is the _base_ method for render_file
+     * 
+     * Is the _base_ method for render_file.
+     * 
      * This method is useful when you want to output some text without using the template engine
+     * 
      * In case the action was already performed we will silently exit,
      * otherwise, we set the response status and body and
-     * switch the <code>action_performed</code> flag to <code>TRUE</code>
-     * @param string text, [optional]the text you want to send, default is an empty string
-     * @param Response::SC_*, status, [optional] status code, default is 200 OK
-     * @return void
+     * switch the action_performed flag to <i>TRUE</i>
+     * 
+     * @param string text [optional]the text you want to send, default is an empty string
+     * @param Response::SC_* status, [optional] status code, default is 200 OK
      */
     protected function render_text($text = '', $status = NULL) {
         if ($this->action_performed) {
@@ -270,9 +308,9 @@ class ActionController extends Object {
 
     /**
      * Act as an internal constructor.
+     * 
      * @param Request request, the request
      * @param Response response, the response
-     * @return void
      */
     private function instantiate(Request $request, Response $response) {
         $this->request  = $request;
@@ -356,10 +394,12 @@ class ActionController extends Object {
     /**
      * Performs the action
      *
-     * Also, the magic __common method is invoked.
+     * The magic __common method is also invoked just before the action to perform
+     * 
      * @param string, action_name, the action to perform
-     * TODO: still to refactor.
-     * TODO: do not try to create the ``index" method, just throw an error.
+     * @todo still to refactor.
+     * @todo do not try to create the ``index" method, just throw an error.
+     * @throws RoutingException if the action cannot be invoked and the index method is not defined
      */
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct', '__common');
@@ -399,22 +439,22 @@ class ActionController extends Object {
      *
      * Loop on before_filter array, invoking the method before the action
      * <code>
-     *      class NewsController extends ActionControllerBase {
-     *          // use protected on before_filter member
-     *          protected before_filter = array('authenticate');
-     *          // an action
-     *          public function index() {
-     *              return News::find_all();
-     *          }
-     *          // Notes: 1) use protected for internal filters
-     *          // 2) a filter must return void, in case of a failure,
-     *          // use the redirect method.
-     *          protected function authenticate() {
-     *              // authentication code here
-     *          }
-     *      }
+     *  class NewsController extends ActionControllerBase {
+     *    // use protected on before_filter member
+     *    protected before_filter = array('authenticate');
+     *    // an action
+     *    public function index() {
+     *      return News::find_all();
+     *    }
+     *    // Notes: 1) use protected for internal filters
+     *    // 2) a filter must return void, in case of a failure,
+     *    // use the redirect method.
+     *    protected function authenticate() {
+     *      // authentication code here
+     *    }
+     *  }
      * </code>
-     * @access private
+     * @throws MedickException if the definition of the before filter is wrong
      */
     private function add_before_filters() {
         if (!is_array($this->before_filter)) {
@@ -459,7 +499,7 @@ class ActionController extends Object {
      *
      * This method is used to perform the actions given by before/pre filters
      * and also when we perform the action
-     * TODO: can we move this to the Object class?
+     * @todo can we move this to the Object class?
      * @param string method_name, the method.
      *                            NOTE: We force the name to be on lower case.
      * @return RelfectionMethod or FALSE in case of failure.

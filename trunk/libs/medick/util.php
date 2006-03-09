@@ -54,39 +54,35 @@ interface ICollection extends ArrayAccess {
 
     /**
      * Clear the contents of this Collection
-     *
-     * @return void
      */
     public function clear();
 
     /**
      * Gets an iterator over this Collection
      *
-     * @return medick.util.IIterator
+     * @return IIterator
      */
     public function iterator();
 
     /**
      * Adds an Object into this Collection
      *
-     * @param medick.core.Object obj the Object to add
-     * @return
+     * @param Object obj the Object to add
      */
     public function add(Object $obj);
 
     /**
      * Removes the Object from the Collection
      *
-     * @param medick.core.Object obj the Object to remove
-     * @return
+     * @param Object obj the Object to remove
      */
     public function remove(Object $obj);
 
     /**
      * Check if this Collection contains the given Object
      *
-     * @param medick.core.Object obj the Object to look for
-     * @return bool, TRUE if the Object is in the collection
+     * @param Object obj the Object to look for
+     * @return bool TRUE if the Object is in the collection
      */
     public function contains(Object $obj);
 }
@@ -106,7 +102,7 @@ interface IIterator {
     /**
      * Check if this Collection has more elements.
      *
-     * @return bool, true if the call
+     * @return bool TRUE if this collection has more elements
      */
     public function hasNext();
 
@@ -114,7 +110,7 @@ interface IIterator {
      * It gets the next element in this Collection.
      *
      * NOTE: the internal pointer is moved to the next element.
-     * @return medick.core.Object
+     * @return Object
      */
     public function next();
 
@@ -122,7 +118,7 @@ interface IIterator {
      * It gets the previous element of this Collection
      *
      * NOTE: the internal pointer is moved to the previous element
-     * @return medick.core.Object
+     * @return Object
      */
     public function prev();
 
@@ -133,11 +129,7 @@ interface IIterator {
      */
     public function key();
 
-    /**
-     * Resets the pointer
-     *
-     * @return void
-     */
+    /** Resets the pointer */
     public function reset();
 
 }
@@ -148,19 +140,19 @@ interface IIterator {
  * Default implementation for medick collections
  *
  * <code>
- *   class Foo extends Object {  }
- *   class Bar extends Object {  }
- *   class Baz extends Object {  }
- *   $col= new Collection();
- *   $col[] = new Foo();   // $col->size()=1 (Foo object is added into collection)
- *   $col->add(new Foo()); // $col->size()=2 (Foo is added again since is a new instance)
- *   $b= new Bar ();
- *   $col->add($b); // $col->size()=3; // $b (Bar) is added
- *   $col[] = $b;   // $col->size()=3; // $b is already in the Collection)
- *   $col[] = new Bar(); // $col->size()=4; (Bar is added, a new instance)
- *   $col->contains(new Baz()); // false (Baz waz not added)
- *   $col->contains($b); // true ($b is there)
- *   $col->contains(new Bar()); // false (is a new instance)
+ *  class Foo extends Object {  }
+ *  class Bar extends Object {  }
+ *  class Baz extends Object {  }
+ *  $col= new Collection();
+ *  $col[] = new Foo();   // $col->size()=1 (Foo object is added into collection)
+ *  $col->add(new Foo()); // $col->size()=2 (Foo is added again since is a new instance)
+ *  $b= new Bar ();
+ *  $col->add($b); // $col->size()=3; // $b (Bar) is added
+ *  $col[] = $b;   // $col->size()=3; // $b is already in the Collection)
+ *  $col[] = new Bar(); // $col->size()=4; (Bar is added, a new instance)
+ *  $col->contains(new Baz()); // false (Baz waz not added)
+ *  $col->contains($b); // true ($b is there)
+ *  $col->contains(new Bar()); // false (is a new instance)
  * </code>
  *
  * @package medick.core
@@ -169,10 +161,8 @@ interface IIterator {
  */
 class Collection extends Object implements ICollection {
 
-    /**
-     * Collection elements.
-     * @var array
-     */
+    /** @var array
+        Collection Elements */
     protected $elements = array();
 
     /**
@@ -190,9 +180,9 @@ class Collection extends Object implements ICollection {
      * Method requierd by ArrayAccess interface
      *
      * NOTE: avoid to use this method directly
-     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa0
+     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html
      * @param int offset
-     * @return boot, TRUE if it exists.
+     * @return boot TRUE if it exists.
      */
     public function offsetExists($offset) {
         return isset($this->elements[$offset]);
@@ -202,7 +192,7 @@ class Collection extends Object implements ICollection {
      * Method requierd by ArrayAccess interface
      *
      * NOTE: avoid to use this method directly
-     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa1
+     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html
      * @param int offset
      * @throws NoSuchElementException when the offset is invalid
      */
@@ -217,16 +207,16 @@ class Collection extends Object implements ICollection {
      * Method requierd by ArrayAccess interface
      *
      * NOTE: avoid to use this method directly
-     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa2
+     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html
      * @param int offset
-     * @param medick.Object item the Object to add
+     * @param Object item the Object to add
      * @throws InvalidArgumentException
      *      when the offset is not an integer
-     *      when the item is not a medick.Object
+     *      when the item is not a Object
      */
     public function offsetSet($offset, $item) {
         if (!$item instanceof Object) {
-            throw new InvalidArgumentException('Item should be an medick.Object');
+            throw new InvalidArgumentException('Item should be an medick.core.Object');
         }
         if (!is_null($offset)) {
             throw new InvalidArgumentException($this->getClassName() . ' accepts only NULL keys!');
@@ -241,7 +231,7 @@ class Collection extends Object implements ICollection {
      * Method requierd by ArrayAccess interface
      *
      * NOTE: avoid to use this method directly
-     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html#ArrayAccessa3
+     * @see http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html
      * @see Collection::removeAt()
      * @param int offset
      */
@@ -250,8 +240,11 @@ class Collection extends Object implements ICollection {
     }
 
     /**
-     * @see medick.core.util.ICollection::add(medick.core.Object object)
-     * @throws IllegalStateException when Collection.onAddObject returns FALSE
+     * Adds an Object in this Collection
+     *
+     * @see ICollection::add()
+     * @see ICollection::onAdd()
+     * @throws IllegalStateException when Collection::onAdd() returns FALSE
      */
     public function add(Object $object) {
         if ($this->onAdd($object)) {
@@ -260,9 +253,7 @@ class Collection extends Object implements ICollection {
         throw new IllegalStateException('onAdd failed!');
     }
 
-    /**
-     * @see medick.core.util.ICollection::clear()
-     */
+    /** @see ICollection::clear() */
     public function clear() {
         foreach ($this->elements as $element) {
             $this->onRemove($element);
@@ -270,9 +261,7 @@ class Collection extends Object implements ICollection {
         $this->elements= array();
     }
 
-    /**
-     * @see medick.core.util.ICollection.contains(medick.core.Object obj)
-     */
+    /** @see ICollection.contains(Object obj) */
     public function contains(Object $obj) {
         return $this->indexOf($obj) >= 0;
     }
@@ -280,13 +269,13 @@ class Collection extends Object implements ICollection {
     /**
      * Check if this Collection isEmpty
      *
-     * @return bool, TRUE if the Collection is empty
+     * @return bool TRUE if the Collection is empty
      */
     public function isEmpty() {
         return $this->size() == 0;
     }
 
-    /** @see medick.core.util.ICollection.remove(medick.core.Object obj) */
+    /** @see ICollection.remove(Object obj) */
     public function remove(Object $obj) {
         if( ($index=$this->indexOf($obj))>=0 ) {
             return $this->removeAt($index);
@@ -313,8 +302,8 @@ class Collection extends Object implements ICollection {
     /**
      * It gets the index of the specified Object
      *
-     * @param medick.core.Object obj the Object to get the index for.
-     * @return int, -1
+     * @param Object obj the Object to get the index for.
+     * @return int or int -1 if we can get the index
      */
     public function indexOf(Object $obj) {
         $pos= array_search($obj, $this->elements, TRUE);
@@ -324,12 +313,12 @@ class Collection extends Object implements ICollection {
         return $pos;
     }
 
-    /** @see medick.core.util.ICollection.size() */
+    /** @see ICollection::size() */
     public function size() {
         return count($this->elements);
     }
 
-    /** @see medick.core.util.ICollection.iterator() */
+    /** @see ICollection::iterator() */
     public function iterator() {
         return new CollectionIterator($this);
     }
@@ -344,18 +333,18 @@ class Collection extends Object implements ICollection {
     }
 
     /**
-     * Callback method called when a new item is added into Collection
+     * Callback method invoked when a new item is added into Collection
      *
-     * It returns TRUE in this default implementation
+     * It returns TRUE in this default implementation.
      * Overwrite this method to provide further functionality to your Collection
-     * @return bool, TRUE if we allow this item in the Collection
+     * @return bool TRUE if we allow this item in the Collection
      */
     public function onAdd(Object $object) {
         return TRUE;
     }
 
     /**
-     * Callback method called when an item is removed from Collection
+     * Callback method invoked when an item is removed from Collection
      *
      * Overwrite this method to provide further functionality to your Collection
      * @return void
@@ -370,10 +359,11 @@ class Collection extends Object implements ICollection {
  * An Iterator implementation over a ICollection
  *
  * <code>
- *    $it=$col->iterator();
- *    while ($it->hasNext()) {
- *      $it->next(); // returns the medick.Object and moves to the next element.
- *    }
+ *  $it= $col->iterator();
+ *  while ($it->hasNext()) {
+ *    $current= $it->next(); // returns the medick.Object and moves to the next element.
+ *    $current->doSomething(); // invoke a method on the current object
+ *  }
  * </code>
  *
  * @package medick.core
@@ -382,46 +372,41 @@ class Collection extends Object implements ICollection {
  */
 class CollectionIterator extends Object implements IIterator {
 
-    /**
-     * Collection to loop on
-     *
-     * @var ICollection
-     */
+    /** @var ICollection
+        Collection to loop on */
     protected $collection;
 
-    /**
-     * Internal pointer to Collection elements
-     *
-     * @var int
-     */
+    /** @var int
+        Internal pointer to Collection elements */
     private $idx;
 
     /**
-     * Creates a new CollectionIterator on the given Collection
+     * Creates a new CollectionIterator on the given Collection.
      *
-     * @param medick.core.util.ICollection collection collection to iterate on
+     * Sets the iteration pointer to 0
+     * @param ICollection collection to iterate on
      */
     public function CollectionIterator(ICollection $collection) {
         $this->collection = $collection;
         $this->idx = 0;
     }
 
-    /** @see medick.core.util.IIterator::hasNext() */
+    /** @see IIterator::hasNext() */
     public function hasNext() {
         return $this->collection->size() > $this->idx;
     }
 
-    /** @see medick.core.util.IIterator::next() */
+    /** @see IIterator::next() */
     public function next() {
         return $this->collection[$this->idx++];
     }
 
-    /** @see medick.core.util.IIterator::prev() */
+    /** @see IIterator::prev() */
     public function prev() {
         return $this->collection[$this->idx--];
     }
 
-    /** @see medick.core.util.IIterator::key() */
+    /** @see IIterator::key() */
     public function key() {
         $index = (int)($this->idx-1);
         if ($index < 0) {
@@ -431,7 +416,7 @@ class CollectionIterator extends Object implements IIterator {
         return $index;
     }
 
-    /** @see medick.core.util.IIterator::reset() */
+    /** @see IIterator::reset() */
     public function reset() {
         $this->idx=0;
     }
