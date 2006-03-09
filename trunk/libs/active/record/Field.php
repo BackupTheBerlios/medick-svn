@@ -51,8 +51,8 @@ class Field extends Object {
      */
     private $formattedName;
 
-    /** @var
-        mixed value of the field */
+    /** @var mixed 
+        value of the field */
     private $value;
 
     /** @var string

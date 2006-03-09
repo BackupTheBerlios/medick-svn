@@ -35,7 +35,7 @@
 /**
  * It writes logging messages to a file
  * 
- * @package locknet7.logger
+ * @package medick.logger
  * @subpackage outputter
  * @author Oancea Aurelian
  */
