@@ -33,19 +33,25 @@
 // }}}
 
 include_once('configurator/IConfigurator.php');
- 
+
+/**
+ * A plain Application Configurator
+ * 
+ * @package medick.configurator
+ * @author Oancea Aurelian
+ */ 
 class LoggerConfigurator extends Object implements IConfigurator {
- 
+    /** @see medick.configurator.IConfigurator::getLoggerOutputters() */
     public function getLoggerOutputters() {
         return array(array('name' => 'stdout','level' => '0'));
     }
-  
+    /** @see medick.configurator.IConfigurator::getLoggerFormatter */
     public function getLoggerFormatter() {
         return 'SimpleFormatter';
     }
-
+    /** @see medick.configurator.IConfigurator::getProperty(string name) */
     public function getProperty($name) {     }
-
+    /** @see medick.configurator.IConfigurator::getDatabaseDsn(bool id) */
     public function getDatabaseDsn($id = FALSE) {  }
     
 }

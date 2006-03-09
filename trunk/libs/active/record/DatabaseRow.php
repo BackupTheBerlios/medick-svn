@@ -37,9 +37,9 @@ include_once('active/record/Field.php');
 /**
  * It represents a Row from the Database
  * 
- * @package locknet7.active.record
+ * @package medick.active.record
+ * @author Oancea Aurelian
  */
-
 class DatabaseRow extends Collection {
 
     /** @var Field
@@ -50,8 +50,8 @@ class DatabaseRow extends Collection {
         holds the field names */
     private $field_names = array();
 
-    /** @var array
-        affected fields, Filed[] */
+    /** @var Field[]
+        affected fields */
     private $affected_fields = array();
 
     /** @var bool
@@ -83,6 +83,7 @@ class DatabaseRow extends Collection {
 
     /**
      * Automatic trigger executed when a new Field is added on to this Collection
+     * 
      * @see Collection::onAdd
      */
     public function onAdd(Object $field) {
@@ -96,6 +97,7 @@ class DatabaseRow extends Collection {
 
     /**
      * Set the affected modifier
+     * 
      * @param bool affected
      */
     public function setAffected($affected) {
@@ -104,6 +106,7 @@ class DatabaseRow extends Collection {
 
     /**
      * It checks if it has affected fields by this run
+     * 
      * @return bool TRUE if it has, FALSE otherwise
      */
     public function hasAffected() {
@@ -152,7 +155,13 @@ class DatabaseRow extends Collection {
         }
         return $errors;
     }
-
+    
+    /**
+     * Updates the Status of a Filed
+     *
+     * @param Field field
+     * @param mixed value the new field value
+     */ 
     public function updateStatus(Field $field, $value) {
         $field->setValue($value);
         $field->isAffected = TRUE;
@@ -163,6 +172,7 @@ class DatabaseRow extends Collection {
 
     /**
      * It gets an array with the names of the affected fields
+     * 
      * @return array
      */
     public function getAffectedFieldsNames() {
@@ -171,6 +181,7 @@ class DatabaseRow extends Collection {
 
     /**
      * Get an array of objects Field[] that are affected(changed) by this run
+     * 
      * @return Field[]
      */
     public function getAffectedFields() {

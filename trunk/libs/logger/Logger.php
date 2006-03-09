@@ -39,9 +39,10 @@ include_once('logger/outputter/Outputter.php');
 include_once('logger/formatter/Formatter.php');
 
 /**
- * @package locknet7.logger
+ * 
+ * @package medick.logger
+ * @author Oancea Aurelian
  */
-
 class Logger extends Object implements ILogger {
 
     /** a fancy way of telling the level */
@@ -231,3 +232,4 @@ class Logger extends Object implements ILogger {
         return $this->level;
     }
 }
+

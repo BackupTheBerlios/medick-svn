@@ -1,8 +1,8 @@
-/* ******************************************
+/* ***************************************************
  * medick.css 
  * aurelian [ at ] locknet [ dot ] ro / 2006 
  * $Id$
- * ******************************************/
+ * ***************************************************/
 
 /* Main Elements */
 body {
@@ -36,7 +36,6 @@ h4 {
   font-size:100%;
   font-weight:bold;
 }
-
 pre {
   background: #F5FEE8;
   border: 1px dotted #E5328B;
@@ -48,11 +47,12 @@ pre {
 /* Styles */
 .top {
   float:right;
+  padding: 5px;
   margin-right:25px;
 }
 .chapter_title {
   margin-left: 20px;
-  font-size:120%;
+  font-size:125%;
   font-weight:bold;
 }
 .chapter {

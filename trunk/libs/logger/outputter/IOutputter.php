@@ -34,9 +34,15 @@
 
 /**
  * Outputters interface
- * @package locknet7.logger.outputter
+ * 
+ * @package medick.logger
+ * @subpackage outputter
  */
-
 interface IOutputter {
+    
+    /**
+     * @param medick.logger.ILogger logger the logger to update
+     */ 
     function update(ILogger $logger);
 }
+

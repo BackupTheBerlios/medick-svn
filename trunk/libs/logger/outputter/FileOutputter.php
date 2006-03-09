@@ -34,16 +34,20 @@
 
 /**
  * It writes logging messages to a file
- * @package locknet7.logger.outputter
+ * 
+ * @package locknet7.logger
+ * @subpackage outputter
+ * @author Oancea Aurelian
  */
-
 class FileOutputter extends Outputter {
 
-    /** file handler */
+    /** @var resource
+        file handler */
     private $handler;
 
     /**
      * Initialize this outputter
+     * 
      * @param int, level, this outputter individual level
      * @param string the file to write on
      */
@@ -64,7 +68,11 @@ class FileOutputter extends Outputter {
         }
     }
 
-    /** it writes the message */
+    /** 
+     * It writes the message
+     *
+     * @param string message
+     */
     protected function write($message) {
         if (flock($this->handler, LOCK_EX|LOCK_NB)) {
             fwrite($this->handler, $message . "\n");
@@ -72,3 +80,4 @@ class FileOutputter extends Outputter {
         return;
     }
 }
+

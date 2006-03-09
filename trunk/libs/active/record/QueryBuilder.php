@@ -35,23 +35,45 @@
 /**
  * It knows how to create a SQLCommand from an array
  *
- * @package locknet7.active.record
+ * @package medick.active.record
+ * @author Oancea Aurelian
  */
 class QueryBuilder extends Object {
 
-    /** result type owner */
+    /** @var string 
+        result type owner */
     private $owner;
-
+    
+    /** @var array
+        clauses */ 
     private $clauses=array();
 
+    /** @var array
+        current bindings */ 
     private $bindings=array();
-    /** Type of select (all or first) */
+    
+    /** @var string
+        Type of select (all or first) */
     private $type;
-    /** limit */
+    
+    /** @var int 
+        limit */
     private $limit;
-    /**  offset */
+    
+    /** @var int
+        offset */
     private $offset;
 
+    /**
+     * Constructor.
+     * 
+     * It parses the arguments and will create the instance variables.
+     * Usually this class is a parameter for ActiveRecord::build method, but it is 
+     * also used from Associations.
+     * @see medick.active.record.ActiveRecord::build, medick.active.record.association
+     * @param string owner
+     * @param array arguments
+     */ 
     public function QueryBuilder($owner, $arguments) {
         $this->owner= $owner;
         if ( !count($arguments) || $arguments[0] == 'all' ) {
@@ -70,24 +92,48 @@ class QueryBuilder extends Object {
             $this->bindings= $arguments[2];
         }
     }
-
+    
+    /**
+     * It gets the limit
+     *
+     * @return int limit
+     */ 
     public function getLimit() {
         return $this->limit;    
     }
-
+    
+    /**
+     * It gets the offset
+     *
+     * @return int the offset
+     */ 
     public function getOffset() {
         return $this->offset;
     }
-
+    
+    /**
+     * It gets the owner
+     *
+     * @return string the owner
+     */ 
     public function getOwner() {
         return $this->owner;
     }
-
+    
+    /**
+     * It gets the current list of bindings
+     *
+     * @return array the list of bindings
+     */ 
     public function getBindings() {
         return $this->bindings;
     }
 
-
+    /**
+     * It gets the type
+     *
+     * @return string
+     */ 
     public function getType() {
         return $this->type;
     }
@@ -118,3 +164,4 @@ class QueryBuilder extends Object {
         return $command;
     }
 }
+

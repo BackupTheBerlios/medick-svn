@@ -34,13 +34,16 @@
 
 /**
  * Simple formatter.
- * @package locknet7.logger.formatter
+ * 
+ * @package medick.logger
+ * @subpackage formatter
+ * @author Oancea Aurelian
  */
-
 class SimpleFormatter extends Formatter {
-    /** @see Formatter::format */
+    /** @see medick.logger.formatter.Formatter::format(medick.logger.LoggingEvent event) */
     public function format(LoggingEvent $event) {
         return "{$event->ip} -- " . strftime("%d/%m/%Y %H:%M:%S", $event->date) .
             " [ {$event->level} ] >>> {$this->extractMessage($event->message)}";
     }
 }
+

@@ -34,18 +34,24 @@
 
 include_once('action/view/HTML.php');
 
-/**
- * @package locknet7.action.view
- */
-
 // namespace ActionView {
 
+/**
+ * 
+ * @package medick.action.view
+ * @author Oancea Aurelian
+ */
 interface ITemplateEngine {
     public function render_partial($controller, $partial);
     public function render($template_file);
     public function assign($name, $value);
 }
 
+/**
+ * 
+ * @package medick.action.view
+ * @author Oancea Aurelian
+ */ 
 class ActionView extends Object {
 
     public static function factory($engine) {
@@ -55,8 +61,8 @@ class ActionView extends Object {
     /**
      * Strips slashes
      * This method is called recursive
-     * TODO: Move this OUT of this class, or, in __set.
-     * TODO: What if $value is Object?
+     * @todo Move this OUT of this class, or, in __set.
+     * @todo What if $value is Object?
      * @param mixed value, the value on witch we strip slashes.
      *                  It can be array/string or object.
      */
@@ -73,10 +79,13 @@ class ActionView extends Object {
 }
 
 /**
- * A ``PHPTemplateEngine" is the default `Template Engine' for Medick Framwork.
+ * PHPTemplateEngine is the default `Template Engine' for Medick Framwork.
  *
- * For a smoother transaction from <tt>Smarty</tt>, some variabiles/methods
+ * For a smoother transaction from Smarty, some variabiles/methods
  * may share the same name and behavior
+ *
+ * @package medick.action.view
+ * @author Oancea Aurelian
  */
 class PHPTemplateEngine extends Object implements ITemplateEngine {
 
@@ -129,7 +138,7 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
     }
 
     /**
-     * Overload default set behavior from PHP
+     * Overload default __set behavior from PHP
      * This way, I`m able to register the vars passed to the template
      * Advantages: cannot call from template the private vars of this class
      * since $vars will act as a registry system

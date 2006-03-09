@@ -45,7 +45,8 @@
  * </code>
  * More methods will be added later-on, API will be provided on request.
  * 
- * @package locknet7.active.record
+ * @package medick.active.record
+ * @author Oancea Aurelian
  * @since Rev. 343
  */
 class SQLCommand extends Object {
@@ -130,3 +131,4 @@ class SQLCommand extends Object {
     }
 
 }
+

@@ -35,19 +35,28 @@
 include_once('action/controller/Injector.php');
 
 /**
- * @package locknet7.action.controller.route
+ * 
+ * @package medick.action.controller
+ * @subpackage routing
+ * @author Oancea Aurelian
  */
-
 class ActionControllerRouting extends Object {
 
-    // @return Route.
-    // @throws RoutingException
+    /**
+     * 
+     * @return Route.
+     * @throws RoutingException
+     */ 
     private function findRoute(Request $request) {
         return Map::getInstance()->match($request);
     }
 
     /**
      * Recognize a Route Based on the Request.
+     *
+     * @param Request request the Request
+     * @return ActionController
+     * @throws RoutingEception
      */
     public static function recognize(Request $request) {
         $r= new ActionControllerRouting($request);

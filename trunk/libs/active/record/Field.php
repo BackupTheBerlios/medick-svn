@@ -35,7 +35,8 @@
 /**
  * It represents a field from DB
  *
- * @package locknet7.active.record
+ * @package medick.active.record
+ * @author Oancea Aurelian
  */
 class Field extends Object {
 
@@ -152,3 +153,4 @@ class Field extends Object {
         $this->value = $value;
     }
 }
+

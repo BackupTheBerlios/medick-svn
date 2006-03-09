@@ -34,7 +34,9 @@
 
 /**
  * Configurator Interface.
- * @package locknet7.config
+ * 
+ * @package medick.config
+ * @author Oancea Aurelian
  */
 interface IConfigurator {
 
@@ -75,3 +77,4 @@ interface IConfigurator {
      */
     function getDatabaseDsn($id = FALSE);
 }
+

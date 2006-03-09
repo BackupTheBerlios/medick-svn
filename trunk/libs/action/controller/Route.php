@@ -35,12 +35,14 @@
 /**
  * A Route Component
  *
- * @see locknet7.action.controller.Route
- * @package locknet7.action.controller
+ * @see medick.action.controller.routing.Route
+ * @package medick.action.controller
+ * @subpackage routing
+ * @author Oancea Aurelian
  */
 class Component extends Object {
 
-    /** @var string
+    ** @var string
         the component name */
     private $name;
 
@@ -89,20 +91,23 @@ class Component extends Object {
  * Route class.
  * 
  * A Route resolves the incoming Request URI to a known Controller/Action,
- * also, it will merge Route Components Names to Request parameters
+ * also, it will merge Route Components Names to Request parameters.
+ * 
  * Usually, a Map holds the Route Definitions for an Web Application
- * and the Recogition is performed inside the ActionControllerRouting::recognize(Request $request) method
+ * and the Recogition is performed inside the ActionControllerRouting::recognize(Request $request) method.
+ * 
  * Routes are defined inside __APPLICATION__PATH/conf/__APPLICATION__NAME__.routes.php file,
  * a plain php code file
  *
- * @see locknet7.action.controller.Map
- * @see locknet7.action.controller.Routing
- * @see locknet7.action.controller.Component
+ * @see medick.action.controller.routing.Map
+ * @see medick.action.controller.routing.Routing
+ * @see medick.action.controller.routing.Component
  *
- * @TODO:
- *      -> Route Requirements
+ * @todo Route Requirements
  * 
- * @package locknet7.action.controller
+ * @package medick.action.controller
+ * @subpakage routing
+ * @author Oancea Aurelian
  */
 class Route extends Object {
 

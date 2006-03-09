@@ -34,7 +34,7 @@
   
 /**
  * Class for reading console options.
- * @see: http://www.php.net/manual/en/features.commandline.php
+ * @see http://www.php.net/manual/en/features.commandline.php
  * <code>
  *    $c= new ConsoleOptions(isset($argv)?$argv:$_SERVER['argv']); // create a new ConsoleOptions Object, loaded with $argv
  *    $c->alias('controller', '-c, --c'); // sets some aliases.
@@ -48,7 +48,9 @@
  *    $c->get('foo'); // NULL
  * </code>
  * 
- * @package medick.console
+ * @package medick.core
+ * @subpackage console
+ * @author Oancea Aurelian
  */
 class ConsoleOptions extends Object {
     /** @var array

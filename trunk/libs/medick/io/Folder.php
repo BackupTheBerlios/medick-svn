@@ -33,10 +33,13 @@
 // }}}
 
 /**
- * A Folder class.
- * @package locknet7.io
+ * A Folder class
+ * 
+ * This is used only when collection test cases.
+ * @package medick.core
+ * @subpackage io
+ * @author Oancea Aurelian
  */
-
 class Folder extends Object {
 
     public static function recursiveFindRelative( $baseDir, $subDir, $suffix ) {
@@ -70,3 +73,4 @@ class Folder extends Object {
         return $returnFiles;
     }
 }
+

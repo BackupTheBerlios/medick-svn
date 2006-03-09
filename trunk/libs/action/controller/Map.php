@@ -33,7 +33,11 @@
 // }}}
 
 /**
- * @package locknet7.action.controller
+ * A Map is a Collection of Routes
+ * 
+ * @package medick.action.controller
+ * @subpackage routing
+ * @author Oancea Aurelian
  */
 class Map extends Collection {
 
@@ -64,3 +68,4 @@ class Map extends Collection {
         throw new RoutingException('Cannot find a Route with this name: ' . $name); 
     }
 }
+

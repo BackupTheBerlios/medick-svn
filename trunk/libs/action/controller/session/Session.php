@@ -35,7 +35,9 @@
 /**
  * A wrapper around PHP session handling
  *
- * @package locknet7.action.controller.session
+ * @package medick.action.controller
+ * @subpackage session
+ * @author Oancea Aurelian
  */
 class Session extends Object {
 
@@ -168,3 +170,4 @@ class Session extends Object {
         return TRUE;
     }
 }
+

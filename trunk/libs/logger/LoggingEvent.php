@@ -34,7 +34,9 @@
 
 /**
  * A logged event object
- * @package locknet7.logger
+ * 
+ * @package medick.logger
+ * @author Oancea Aurelian
  */
 class LoggingEvent extends Object {
 
@@ -56,6 +58,7 @@ class LoggingEvent extends Object {
 
     /**
      * Constructor, set`s the properties
+     * 
      * @param mixed, message, the message
      * @param string, this event level
      */
@@ -68,3 +71,4 @@ class LoggingEvent extends Object {
         }
     }
 }
+

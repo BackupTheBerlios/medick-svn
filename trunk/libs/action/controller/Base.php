@@ -39,7 +39,8 @@ include_once('action/view/Base.php');
 /**
  * Base Class For Our Application Controllers
  *
- * @package locknet7.action.controller
+ * @package medick.action.controller
+ * @author Oancea Aurelian
  */
 class ActionController extends Object {
 
@@ -108,7 +109,7 @@ class ActionController extends Object {
     private $injector;
 
     /**
-     * Process this Request
+     * Process this Request when an exception occured
      *
      * @param Request $request
      * @param Response $response

@@ -32,17 +32,17 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-
 include_once('configurator/IConfigurator.php');
 
 /**
  * xml file-based Configurator.
- * @package locknet7.config
+ * 
+ * @package medick.configurator
+ * @author Oancea Aurelian
  */
-
 class XMLConfigurator extends Object implements IConfigurator {
 
-    /** SimpleXML Object */
+    /** @var SimpleXML */
     protected $sxe;
 
     /**
@@ -129,12 +129,12 @@ class XMLConfigurator extends Object implements IConfigurator {
 
     }
 
-    /** @see IConfigurator::getLoggerFormatter */
+    /** @see medick.configurator.IConfigurator::getLoggerFormatter() */
     public function getLoggerFormatter() {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
     }
 
-    /** @see IConfigurator::getProperty */
+    /** @see medick.configurator.IConfigurator::getProperty(string name) */
     public function getProperty($name) {
         foreach($this->sxe->property as  $properties ) {
             if($properties['name'] != $name)
@@ -210,9 +210,12 @@ class XMLConfigurator extends Object implements IConfigurator {
         return $dom;
     }
 
-    /** return the string representation of this object */
-    public function __toString() {
+    /** 
+     * @return the string representation of this object 
+     */
+    public function toString() {
         return $this->sxe->asXML();
     }
 
+a
 }

@@ -35,7 +35,10 @@
 include_once('action/controller/session/Session.php');
 
 /**
- * @package locknet7.action.controller.request
+ * 
+ * @package medick.action.controller
+ * @subpackage http
+ * @author Oancea Aurelian
  */
 class HTTPRequest extends Request {
 
@@ -54,7 +57,7 @@ class HTTPRequest extends Request {
      * Constructor.
      * It builds the HTTPRequest object
      *
-     * TODO: a URI Helper should be written.
+     * @todo a URI Helper should be written.
      */
     public function HTTPRequest() {
         foreach ($_REQUEST as $key=>$value) {
@@ -94,6 +97,7 @@ class HTTPRequest extends Request {
      * Sets this Request URI
      *
      * Usefull for testing
+     * @param uri string incoming URI
      * @return void
      */
     public function setRequestUri($uri) {

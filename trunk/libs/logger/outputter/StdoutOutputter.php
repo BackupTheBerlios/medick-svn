@@ -34,21 +34,27 @@
 
 /**
  * StdoutOutputter
- * @package locknet7.logger.outputter
+ * 
+ * @package medick.logger
+ * @subpackage outputter
+ * @author Oancea Aurelian
  */
-
 class StdoutOutputter extends Outputter {
 
-    /** the sapi name */
+    /** @var bool
+        FALSE if the sapi name is cli */
     private $isCLI = FALSE;
-    /** end of line style (can be \n for cli or html)*/
+    
+    /** @var string
+        end of line style (can be \n for cli or html) */
     private $eol;
-    /** buffer */
+    
+    /** @var string
+        buffer */
     private $output;
 
     /**
-     * It builds a new StdOutputter
-     * @param int, level, logger level.
+     * It initialize this Outputter
      */
     public function initialize() {
         if (php_sapi_name() == 'cli') {
@@ -61,7 +67,9 @@ class StdoutOutputter extends Outputter {
         }
     }
 
-    /** It flushes (echoes) the output buffer on exit */
+    /** 
+     * It flushes (echoes) the output buffer on exit 
+     */
     public function __destruct() {
         if ($this->isCLI) {
             $this->output .= $this->eol;
@@ -71,13 +79,18 @@ class StdoutOutputter extends Outputter {
         echo $this->output;
     }
 
-    /** it writes the message to the buffer */
+    /** 
+     * It writes the message to the buffer 
+     */
     protected function write($message) {
         $this->output .= $message . $this->eol;
     }
 
-    /** It gets the output */
+    /** 
+     * It gets the output 
+     */
     public function getOutput() {
         return $this->output;
     }
 }
+

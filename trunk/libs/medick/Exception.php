@@ -35,7 +35,8 @@
 // {{{ MedickException
 /**
  * Our base Exception Class
- * @package locknet7.medick
+ * 
+ * @package medick.core
  */
 class MedickException extends Exception {
 
@@ -74,7 +75,7 @@ class MedickException extends Exception {
 // {{{ Error
 /**
  * Error, a routine error.
- * @package locknet7.medick
+ * @package medick.core
  */
 class Error extends MedickException {
     public function __construct($message, $code, $file, $line, $trace) {
@@ -89,92 +90,89 @@ class Error extends MedickException {
 // {{{ InvalidOffsetException
 /**
  * Exception thrown when trying to acces an array by an invalid identifier(offset)
- * @package locknet7.medick
+ * @package medick.core
  */
 class InvalidOffsetException extends MedickException { }
 // }}}
-
 // {{{ InvalidArgumentException
 if (!class_exists('InvalidArgumentException')) {
     /**
      * Exception that denotes invalid arguments were passed
-     * @package locknet7.medick
+     * @package medick.core
      */
     class InvalidArgumentException extends MedickException {    }
 }
 // }}}
-
 // {{{ IOException
 /**
  * General Input/Output Exception
- * @package locknet7.medick.io
+ * @package medick.core
+ * @subpackage io
  */
 class IOException extends MedickException { }
 // }}}
 // {{{ FileNotFoundException
 /**
  * Indicates that a file could not be found.
- * @package locknet7.medick.io
+ * @package medick.core
+ * @subpackage io
  */
 class FileNotFoundException extends IOException { }
 // }}}
 // {{{ InjectorException
 /**
  * It signals a problem with the Injector.
- * @package locknet7.action.controller
+ * @package medick.action.controller
  */
 class InjectorException extends MedickException { }
 // }}}
 // {{{ RouteException
 /**
  * Exception that occurrs when a problem on the route is found.
- * @package locknet7.action.controller.route
+ * @package medick.action.controller
+ * @subpackage routing
  */
 class RoutingException extends MedickException {    }
-// }}}
-// {{{ CLIException
-/**
- * @package locknet7.action.controller.request
- */
-class CLIException extends MedickException {      }
 // }}}
 // {{{ IllegalStateException
 /**
  * Indicates an Illegal State of an Object (eg: when trying to use a Session before calling the start method)
- * @package locknet7.medick
+ * @package medick.core
  */
 class IllegalStateException extends MedickException {    }
 // }}}
 // {{{ ConfiguratorException
 /**
  * It indicates a Cofigurator Exception
- * @package locknet7.config
+ * @package medick.configurator
  */
 class ConfiguratorException extends MedickException {       }
 // }}}
 // {{{ LoggingException
 /**
  * Logging Exception
- * @package locknet7.logger
+ * @package medick.logger
  */
 class LoggingException extends MedickException {       }
 // }}}
 // {{{ ActiveRecordException
 /**
- * @package locknet7.active.record
+ * @package medick.active.record
  */
 class ActiveRecordException extends MedickException {     }
 // }}}
 // {{{ RecordNotFoundException
 /**
- * @package locknet7.active.record
+ * @package medick.active.record
  */
 class RecordNotFoundException extends ActiveRecordException { }
 // }}}
 // {{{ AssociationNotFoundException
 /**
- * @package locknet7.active.record.association
+ * @package medick.active.record
+ * @subpackage association
  * @since Rev. 272
  */
 class AssociationNotFoundException extends MedickException{ }
 // }}}
+

@@ -39,9 +39,8 @@ include_once('active/record/Base.php');
  * controllers, models, layout files.
  * Aditional using php reflection api, it validates the user classes
  *
- * @package locknet7.action.controller
+ * @package medick.action.controller
  */
-
 class Injector extends Object {
 
     /** @var string
@@ -58,8 +57,9 @@ class Injector extends Object {
 
     /**
      * Creates a new instance of this Injector.
+     * @todo refactor this constructor
      */
-    public function __construct($append= TRUE) {
+    public function Injector($append= TRUE) {
         $this->config = Registry::get('__configurator');
         $this->logger = Registry::get('__logger');
         if (array_key_exists('MEDICK_APPLICATION_PATH', $_SERVER)) {

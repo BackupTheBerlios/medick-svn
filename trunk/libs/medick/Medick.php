@@ -39,8 +39,10 @@ include_once('medick/util.php');
 include_once('medick/ErrorHandler.php');
 include_once('medick/Registry.php');
 
-/** 
- * @package locknet7.medick 
+/**
+ * 
+ * @package medick.core
+ * @author Oancea Aurelian
  */
 class Medick extends Object {
 

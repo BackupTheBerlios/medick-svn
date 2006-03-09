@@ -44,15 +44,23 @@ include_once('active/support/Inflector.php');
 include_once('creole/Creole.php');
 
 /**
- * @package locknet7.active.record
+ * Main ActiveRecord Class
+ * 
+ * @package medick.active.record
+ * @author Oancea Aurelian
  */
 abstract class ActiveRecord extends Object {
 
-    /* class name: Person */
+    /** @var string 
+        class name: Person */
     protected $class_name = NULL;
-    /* table mane: persons */
+    
+    /** @var string
+        table mane: persons */
     protected $table_name = NULL;
-    /* database connection */
+    
+    /** @var CreoleConnection
+        database connection */
     static protected $conn= NULL;
 
     /** @var DatabaseRow
@@ -75,7 +83,7 @@ abstract class ActiveRecord extends Object {
      *
      * @return Creole database connection
      */
-    public static final function establish_connection () {
+    public static function establish_connection () {
         if (self::$conn === NULL) {
             self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
@@ -85,16 +93,15 @@ abstract class ActiveRecord extends Object {
     /**
      * Close the Database Connection
      */
-    public static final function close_connection() {
+    public static function close_connection() {
         self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
     }
 
     /**
      * Constructor
      *
-     * Is final, because there is no reason to overwrite in parent classes.
-     * PHP Engine will call this constructor by default.
      * @param array, params, parameters as pair of `field name` => `value`
+     * @final because there is no reason to overwrite in parent classes, PHP Engine will call this constructor by default.
      */
     public final function ActiveRecord($params = array()) {
         self::establish_connection();
