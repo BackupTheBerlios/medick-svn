@@ -41,8 +41,11 @@ include_once('action/controller/Base.php');
 
 /**
  * It knows how to dispatch a request
+ * 
+ * The role of this class will increase in the next version.
  *
- * @package locknet7.action.controller
+ * @package medick.action.controller
+ * @author Oancea Aurelian
  */
 class Dispatcher extends Object {
 
@@ -61,3 +64,4 @@ class Dispatcher extends Object {
         }
     }
 }
+

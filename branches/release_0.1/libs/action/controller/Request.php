@@ -35,7 +35,12 @@
 include_once('action/controller/http/HTTPRequest.php');
 
 /**
- * @package locknet7.action.controller.request
+ * It is an incoming request from the user
+ * 
+ * Contains various informations about the Request Parameters
+ * @see HTTPRequest, Dispatcher, Route
+ * @package medick.action.controller
+ * @author Oancea Aurelian
  */
 class Request extends Object {
 
@@ -113,3 +118,4 @@ class Request extends Object {
         return $buff;
     }
 }
+

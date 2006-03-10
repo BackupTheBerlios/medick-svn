@@ -34,13 +34,15 @@
 
 /**
  * Outputters interface
- * @package locknet7.logger
+ * 
+ * @package medick.logger
+ * @author Oancea Aurelian
  */
-
 interface ILogger {
 
     /**
      * Attaches an Output Appender.
+     * 
      * @param Outputter appender
      */
     function attach(IOutputter $appender);
@@ -50,3 +52,4 @@ interface ILogger {
      */
     function notify();
 }
+

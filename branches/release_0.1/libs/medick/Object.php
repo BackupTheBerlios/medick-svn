@@ -34,13 +34,15 @@
 
 /**
  * Base Framework Object
- * @package locknet7.medick
+ * 
+ * @package medick.core
+ * @author Oancea Aurelian
  */
-
 class Object {
 
     /**
      * It gets the class name
+     * 
      * @return string
      */
     public function getClassName() {
@@ -58,12 +60,22 @@ class Object {
 
     /**
      * Compare two Medick Objects
+     * 
      * @return bool
      */
     public function equals(Object $obj) {
         return $this===$obj;
     }
 
+    /**
+     * A nice name for a magic PHP method
+     *
+     * @return string 
+     */ 
+    public function toString() {
+        return $this->__toString();
+    }
+    
     /**
      * Magick __toString method, returns a string representation of this object
      * <code>

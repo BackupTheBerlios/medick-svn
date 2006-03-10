@@ -33,45 +33,67 @@
 // }}}
 
 /**
- * Configurator Interface.
- * @package locknet7.config
+ * Configurator Interface is the central point for providing 
+ * configurations for a medick applications
+ *
+ * While the application is running, the configurations options are read-only,
+ * but one might provide methods for writing or changing values.
+ *
+ * A configuration is resolved using the application name. 
+ * Usually, the place for keeping configuration file is under conf/application_name.(xml|ini)
+ *
+ * The olny implementation that it's working right now is XMLConfigurator.
+ * Also, a plain php code configurator is used for testing the Logger.
+ *
+ * From medick 0.2, the options will be splitted based on context, and we will
+ * provide web specific configuration section as well as logger and database contextes.
+ * 
+ * @package medick.configurator
+ * @see XMLConfigurator
+ * @see LoggerConfigurator
+ * @author Oancea Aurelian
  */
 interface IConfigurator {
 
     /**
      * It gets the logger outputters.
+     *
      * @return array
      */
     function getLoggerOutputters();
 
     /**
-     * It get logger formatter
+     * It gets the logger formatter
+     *
      * @return string, Logger formatter name eg. FooFormatter.
      */
     function getLoggerFormatter();
 
     /**
      * Propery parser
-     * @param String the property name
-     * @return String, the property value
+     *
+     * @param string the property name
+     * @return string, the property value
      * @throws ConfiguratorException if the property is not found
      */
     function getProperty($name);
 
     /**
      * Based on id we return the dsn array
+     *
      * <code>
-     *      // for Creole this dsn format will do the job:
-     *      $dsn = array(
-     *               'phptype'=>'mysql',
-     *               'hostspec'=>'localhost',
-     *               'username'=>'root',
-     *               'password'=>'',
-     *               'database'=>'test');
+     *   // for Creole this dsn format will do the job:
+     *   $dsn = array(
+     *           'phptype'=>'mysql',
+     *           'hostspec'=>'localhost',
+     *           'username'=>'root',
+     *           'password'=>'',
+     *           'database'=>'test');
      * </code>
-     * @param string, id, [optional]the dsn id, if none is specified, we will use the default
-     * @return array, dsn ready to use
+     * @param string the dsn id, if none is specified, we will use the default
+     * @return array a dsn ready to use with Creole
      * @throws ConfiguratorException if the id is not found
      */
     function getDatabaseDsn($id = FALSE);
 }
+

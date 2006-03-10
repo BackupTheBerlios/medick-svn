@@ -34,23 +34,37 @@
 
 /**
  * It sends an email message with the logger event
- * @TODO: ignore multiple messages by using a file lock (or smthing)
- * @package locknet7.logger.outputter
+ * 
+ * @todo ignore multiple messages by using a file lock (or smthing)
+ * @package medick.logger
+ * @subpackage outputter
+ * @author Oancea Aurelian
  */
-
 class MailOutputter extends Outputter {
 
-    /** the email address */
+    /** @var string
+        the email address */
     private $email;
-    /** email subject */
+    
+    /** @var string
+        email subject */
     private $subject;
-
+    
+    /**
+     * Initialize this outputer
+     */ 
     public function initialize() {
         $this->email   = $this->getProperty('address');
         $this->subject = $this->getProperty('subject');
     }
-
+    
+    /**
+     * Write the message and send an email with it
+     *
+     * @param string message
+     */ 
     protected function write($message) {
         @mail($this->email, $this->subject, $message);
     }
 }
+

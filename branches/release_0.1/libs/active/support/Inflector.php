@@ -33,14 +33,16 @@
 // }}}
 
 /**
- * @package locknet7.active.record.support
+ * Convenient methods to work on english words 
  * Based on: http://dev.rubyonrails.com/file/trunk/activesupport/lib/active_support/inflections.rb
+ * @package medick.active.support
  */
 
 class Inflector extends Object {
 
     /**
      * Transform word from singular to plural
+     * 
      * @param string word, the word we want to pluralize
      */
     public static function pluralize($word) {
@@ -75,6 +77,7 @@ class Inflector extends Object {
 
     /**
      * Transform word from plural to singular
+     * 
      * @param string word, the word we want to singularize
      */
     public static function singularize($word) {
@@ -154,3 +157,4 @@ class Inflector extends Object {
         return $word;
     }
 }
+

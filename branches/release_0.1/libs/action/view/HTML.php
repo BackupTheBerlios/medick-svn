@@ -32,9 +32,26 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-
+/**
+ * @package medick.action.view
+ * @subpackage helpers
+ * @author Oancea Aurelian
+ */ 
 class ActiveRecordHelper extends Object {
-
+    
+    /**
+     * Finds and retuns a HTML formatted string with errors for an ActiveRecord object
+     *
+     * Eg.
+     * <code>
+     *  <?=ActiveRecordHelper::error_messages_for($person);?>
+     * </code>
+     * will show all the errors for the person object
+     * @param ActiveRecord object the ActiveRecord object to check for errors
+     * @param array options the options where we can cusomize the look and feel of the error message.
+     *                      this includes: css_class and heading
+     * @return string a HTML formatted string
+     */ 
     public static function error_messages_for(ActiveRecord $object, $options=array()) {
         $css_class= isset($options['css_class']) ? $options['css_class'] : 'formErrors';
         $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 2;
@@ -72,8 +89,13 @@ class ActiveRecordHelper extends Object {
 
 }
 
-/** @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html */
-
+/** 
+ *
+ * @package medick.action.view
+ * @subpackage helpers
+ * @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html 
+ * @author Oancea Aurelian
+ */
 class FormHelper extends Object {
 
     public static function text_field(ActiveRecord $object, $method, $options = array()) {
@@ -165,13 +187,11 @@ class FormHelper extends Object {
 }
 
 /**
- * This package will be deprecated at one point and replaced with a modern view.
- * @package locknet7.action.view.HTML
- */
-class HTMLElement extends Object {
-    public function __construct() {     }
-}
-
+ * 
+ * @package medick.action.view
+ * @subpackage helpers
+ * @author Oancea Aurelian
+ */ 
 class URL extends Object {
   
     public static function create($controller, $action='index', $params=array(), $ext='html') {
@@ -189,7 +209,13 @@ class URL extends Object {
     }
 }
 
-/** @deprecated USE FormHelper! */
+/**
+ * 
+ * @package medick.action.view
+ * @subpackage helpers
+ * @deprecated use FormHelper since it provides more features
+ * @author Oancea Aurelian
+ */
 class Form extends Object {
 
     public function __construct($action, $method) {  }

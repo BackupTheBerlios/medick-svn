@@ -39,8 +39,10 @@ include_once('medick/util.php');
 include_once('medick/ErrorHandler.php');
 include_once('medick/Registry.php');
 
-/** 
- * @package locknet7.medick 
+/**
+ * 
+ * @package medick.core
+ * @author Oancea Aurelian
  */
 class Medick extends Object {
 
@@ -50,7 +52,7 @@ class Medick extends Object {
      * @return string the medick version
      */
     public static function getVersion() {
-        return '0.1.0-svn';
+        return '0.1.1';
     }
 
 }

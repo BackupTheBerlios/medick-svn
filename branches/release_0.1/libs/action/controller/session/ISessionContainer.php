@@ -33,7 +33,10 @@
 // }}}
 
 /**
- * @package locknet7.action.controller.session
+ * 
+ * @package medick.action.controller
+ * @subpackage session
+ * @author Oancea Aurelian
  */
 interface ISessionContainer {
 
@@ -68,3 +71,4 @@ interface ISessionContainer {
      */
     public function gc($maxlifetime=300);
 }
+

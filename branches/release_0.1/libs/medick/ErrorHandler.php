@@ -35,7 +35,8 @@
 /**
  * The Medick Error Handler.
  *
- * @package locknet7.medick
+ * @package medick.core
+ * @author Oancea Aurelian
  */
 class ErrorHandler extends Object {
 
@@ -48,11 +49,13 @@ class ErrorHandler extends Object {
     }
 
     /**
-     * @param int $errno
-     * @param string $errstr
-     * @param string $errfile
-     * @param int $errline
-     * @throw Error
+     * Raise An Error
+     * 
+     * @param int errno
+     * @param string errstr
+     * @param string errfile
+     * @param int errline
+     * @throws Error
      */
     function raiseError($errno, $errstr, $errfile, $errline) {
         $errRep = error_reporting();
@@ -64,3 +67,4 @@ class ErrorHandler extends Object {
         throw new Error( $errstr, $errno, $errfile, $errline, $trace );
     }
 }
+

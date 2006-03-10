@@ -32,6 +32,26 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+/**
+ * Active Record Validator
+ *
+ * In medick, Validations is performed in ActiveRecord with the help
+ * of before_* filters
+ * <code>
+ *  class Person extends ActiveRecord {
+ *      protected funtion before_save() {
+ *          $this->validates->presence_of('name','first_name');
+ *          $this->validates->uniqueness_of('phone_no');
+ *          return TRUE; // don't forget to return true, otherwise this object will not be saved in DB!
+ *      }
+ *  [....]
+ * </code>
+ * Validators will not throw any exception, but the class methods 
+ * will return a boolean value, false if the validation failed.
+ * In the next release, Validators will be extenible, but until then, API will be provided on request.
+ * @package medick.active.record
+ * @author Oancea Aurelian
+ */ 
 class Validator extends Object {
 
     /** @var DatabaseRow
@@ -46,7 +66,14 @@ class Validator extends Object {
     public function Validator(DatabaseRow $row) {
         $this->row= $row;
     }
-
+    
+    /**
+     * Magic PHP method that performs our validation
+     *
+     * @param string method the method name we want to invoke on this class
+     * @param array args the method arguments
+     * @return bool, true if this validation has errors
+     */ 
     public function __call ($method, $args) {
         $has_errors= FALSE;
         foreach ($args as $argument) {
@@ -59,12 +86,19 @@ class Validator extends Object {
                     trigger_error('No such method validation method:' . $method, E_USER_ERROR);
                 }
             } else {
+                // exception?
                 trigger_error('No such field to validate:' . $argument, E_USER_ERROR);
             }
         }
         return $has_errors;
     }
-
+    
+    /**
+     * It checks if the given field is empty
+     *
+     * @param Field field
+     * @return bool TRUE if is empty
+     */ 
     private function isEmpty(Field $field) {
         if ($field->getValue() == '') {
             $field->addError('is empty');
@@ -73,7 +107,13 @@ class Validator extends Object {
             return FALSE;
         }
     }
-
+    
+    /**
+     * Check if the given filed is not unique
+     *
+     * @param Filed field
+     * @return bool TRUE if is not unique
+     */ 
     private function isNotUnique(Field $field) {
         try {
             ActiveRecord::build(
@@ -94,3 +134,4 @@ class Validator extends Object {
     }
 
 }
+

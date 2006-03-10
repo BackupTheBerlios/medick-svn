@@ -33,8 +33,10 @@
 // }}}
 
 /**
- * Container for FiedsAggregate Objects
- * @package locknet7.active.record
+ * Container for DatabaseRow Objects
+ * 
+ * @package medick.active.record
+ * @author Oancea Aurelian
  */
 class RowsAggregate extends Object implements IteratorAggregate {
 
@@ -44,15 +46,16 @@ class RowsAggregate extends Object implements IteratorAggregate {
 
     /**
      * Constructor
+     * Instanciate the instance variables
      */
-    public function __construct() {
+    public function RowsAggregate() {
         $this->container = new ArrayObject();
     }
 
     /**
      * It adds a new row on this container
-     * @param ActiveRecordBase row the row to add into this container
-     * @return ActiveRecordBase
+     * @param ActiveRecord row the row to add into this container
+     * @return ActiveRecord
      */
     public function add(ActiveRecord $row) {
         $this->container->append($row);
@@ -82,3 +85,4 @@ class RowsAggregate extends Object implements IteratorAggregate {
         trigger_error(sprintf('Call to undefined method: %s->%s(%s).', get_class($this), $method,$arguments), E_USER_ERROR);
     }
 }
+

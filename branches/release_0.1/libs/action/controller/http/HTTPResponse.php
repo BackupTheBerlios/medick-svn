@@ -33,7 +33,10 @@
 // }}}
 
 /**
- * @package locknet7.action.controller.response
+ * 
+ * @package medick.action.controller
+ * @subpackage http
+ * @author Oancea Aurelian
  */
 class HTTPResponse extends Response {
 
@@ -91,8 +94,8 @@ class HTTPResponse extends Response {
     /**
      * Sets the status of this response
      *
-     * @TODO: should choose between HTTP/1.1 and HTTP/1.0
-     * @TODO: more cases in the switch
+     * @todo should choose between HTTP/1.1 and HTTP/1.0
+     * @todo more cases in the switch
      * @param HTTPResponse::SC_*, status, the status of this response
      */
     public function setStatus($status) {

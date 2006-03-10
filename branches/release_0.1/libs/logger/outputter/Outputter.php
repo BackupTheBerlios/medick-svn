@@ -34,16 +34,26 @@
 
 /**
  * Abstract Outputter
- * @package locknet7.logger.outputter
+ * 
+ * @package medick.logger
+ * @subpackage outputter
+ * @author Oancea Aurelian
  */
-
 abstract class Outputter extends Object implements IOutputter {
 
-    /** individual outputter level*/
+    /** @var int
+        individual outputter level*/
     protected $level;
 
+    /** @var array
+        this outputter properties */ 
     private $properties= array();
 
+    /**
+     * Creates a new Outputter
+     * 
+     * @param int level the minimum level to respond
+     */ 
     public function __construct($level) {
         $this->level= $level;
     }
@@ -73,8 +83,7 @@ abstract class Outputter extends Object implements IOutputter {
     }
 
     /**
-     * Receive the Logger update
-     * and writes the log event using to the formatter
+     * Receive the Logger update and writes the log event using the formatter
      */
     public function update(ILogger $logger) {
         if ($this->level <= $logger->getMessageLevel()) {
@@ -83,8 +92,10 @@ abstract class Outputter extends Object implements IOutputter {
     }
 
     // {{{ abstract methods
+    /** Initialize this specific outputter */
     public abstract function initialize();
-    /** it writes the message */
+    /** It writes the message */
     protected abstract function write($message);
     // }}}
 }
+

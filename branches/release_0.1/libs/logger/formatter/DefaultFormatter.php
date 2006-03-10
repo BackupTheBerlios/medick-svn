@@ -33,13 +33,16 @@
 // }}}
 
 /**
- * Default formatter.
- * @package locknet7.logger.formatter
+ * Default Logger formatter
+ * 
+ * @package medick.logger
+ * @subpackage formatter
+ * @author Oancea Aurelian
  */
-
 class DefaultFormatter extends Formatter {
-    /** @see Formatter::formatter */
+    /** @see medick.logger.formatter.Formatter::format(medick.logger.LoggingEvent event) */
     public function format(LoggingEvent $event) {
         return $event->level . " >>> " . $event->message;
     }
 }
+

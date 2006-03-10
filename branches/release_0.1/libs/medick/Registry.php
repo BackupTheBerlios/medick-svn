@@ -33,12 +33,15 @@
 // }}}
 
 /**
- * @package locknet7.medick
+ * Replacement for multiple singletons
+ *
+ * Registry is an object witch holds instances of other objects
+ * 
+ * @package medick.core
+ * @author Oancea Aurelian
  */
-
 class Registry extends Object {
 
-    /** we want only one instance of the Registry */
     private final function __construct() {   }
     private final function __clone() {   }
 
@@ -62,7 +65,7 @@ class Registry extends Object {
      * It gets an Object from the registry database
      * @param string key, the object identifier
      * @return Object
-     * @throws NullPointerException
+     * @throws InvalidOffsetException
      */
     public static function get($key) {
         if (isset(self::$registry[$key])) {

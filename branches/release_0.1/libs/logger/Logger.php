@@ -39,9 +39,10 @@ include_once('logger/outputter/Outputter.php');
 include_once('logger/formatter/Formatter.php');
 
 /**
- * @package locknet7.logger
+ * 
+ * @package medick.logger
+ * @author Oancea Aurelian
  */
-
 class Logger extends Object implements ILogger {
 
     /** a fancy way of telling the level */
@@ -70,6 +71,7 @@ class Logger extends Object implements ILogger {
 
     /**
      * Constructor.
+     * 
      * It reads the config file and setup the logging system
      */
     public function Logger(IConfigurator $configurator) {
@@ -106,18 +108,14 @@ class Logger extends Object implements ILogger {
 
     /**
      * It logs a message.
-     * @param mixed, $message, the message to log.
-     * @param Logger, $level, the level, it can be Logger::DEBUG (0), Logger::INFO (1)...
-     * @return void
+     * @param mixed message the message to log.
+     * @param int   level   the level, it can be Logger::DEBUG (0), Logger::INFO (1)...
      */
     public function log($message, $level) {
         return $this->__call($this->levels[$level], $message);
     }
 
-    /**
-     * Notify the outputters
-     * @return void
-     */
+    /**  Notify the outputters */
     public function notify() {
         foreach($this->outputters as $outputter) {
             $outputter->update($this);
@@ -126,8 +124,8 @@ class Logger extends Object implements ILogger {
 
     /**
      * Attach an outputter
-     * @param IOutputter, outputter, the outputter
-     * @return void
+     * 
+     * @param IOutputter outputter the outputter
      */
     public function attach(IOutputter $outputter) {
         if (!$this->contains($outputter)) {
@@ -136,9 +134,10 @@ class Logger extends Object implements ILogger {
     }
 
     /**
-     * check to see if the list outputters contains the given outputter.
-     * @TODO: we have a base Object now, can we remove the call to getId?
-     * @param IObserver $observer a observer
+     * Check to see if the list outputters contains the given outputter.
+     *
+     * @todo can we use a Collection for this?
+     * @param IOutputter outputter an outputter witch acts as an observer
      * @return bool
      */
     private function contains(IOutputter $outputter) {
@@ -152,6 +151,7 @@ class Logger extends Object implements ILogger {
 
     /**
      * Loads the Outputters.
+     * 
      * @param array outputters
      */
     public function load(/*Array*/ $outputters) {
@@ -175,6 +175,7 @@ class Logger extends Object implements ILogger {
 
     /**
      * It gets the list with attached outputters
+     * 
      * @return IOutputter[]
      */
     public function getOutputters() {
@@ -183,6 +184,7 @@ class Logger extends Object implements ILogger {
 
     /**
      * It gets the last message level
+     * 
      * @return int, the message level
      */
     public function getMessageLevel() {
@@ -191,6 +193,7 @@ class Logger extends Object implements ILogger {
 
     /**
      * It gets the event
+     * 
      * @return LoggingEvent
      */
     public function getEvent() {
@@ -198,9 +201,9 @@ class Logger extends Object implements ILogger {
     }
 
     /**
-     * Set`s the event formatter
-     * @param Formatter formatter, the formatter
-     * @return void
+     * Set's the event formatter
+     * 
+     * @param Formatter formatter the formatter
      */
     public function setFormatter(Formatter $formatter) {
         $this->formatter = $formatter;
@@ -208,6 +211,7 @@ class Logger extends Object implements ILogger {
 
     /**
      * It gets the formatter
+     * 
      * @return Formatter
      */
     public function getFormatter() {
@@ -216,8 +220,8 @@ class Logger extends Object implements ILogger {
 
     /**
      * It sets the logging level
-     * @param Logger, $level, the level, it can be Logger::DEBUG (0), Logger::INFO (1)...
-     * @return void
+     * 
+     * @param Logger level the level, it can be Logger::DEBUG (0), Logger::INFO (1)...
      */
     public function setLevel($level) {
         $this->level = $level;
@@ -225,9 +229,11 @@ class Logger extends Object implements ILogger {
 
     /**
      * It gets the level.
-     * @return the logging level
+     * 
+     * @return int the logging level
      */
     public function getLevel() {
         return $this->level;
     }
 }
+

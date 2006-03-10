@@ -44,15 +44,23 @@ include_once('active/support/Inflector.php');
 include_once('creole/Creole.php');
 
 /**
- * @package locknet7.active.record
+ * Main ActiveRecord Class
+ * 
+ * @package medick.active.record
+ * @author Oancea Aurelian
  */
 abstract class ActiveRecord extends Object {
 
-    /* class name: Person */
+    /** @var string 
+        class name: Person */
     protected $class_name = NULL;
-    /* table mane: persons */
+    
+    /** @var string
+        table mane: persons */
     protected $table_name = NULL;
-    /* database connection */
+    
+    /** @var CreoleConnection
+        database connection */
     static protected $conn= NULL;
 
     /** @var DatabaseRow
@@ -75,7 +83,7 @@ abstract class ActiveRecord extends Object {
      *
      * @return Creole database connection
      */
-    public static final function establish_connection () {
+    public static function establish_connection () {
         if (self::$conn === NULL) {
             self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
@@ -85,16 +93,15 @@ abstract class ActiveRecord extends Object {
     /**
      * Close the Database Connection
      */
-    public static final function close_connection() {
+    public static function close_connection() {
         self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
     }
 
     /**
      * Constructor
      *
-     * Is final, because there is no reason to overwrite in parent classes.
-     * PHP Engine will call this constructor by default.
      * @param array, params, parameters as pair of `field name` => `value`
+     * @final because there is no reason to overwrite in parent classes, PHP Engine will call this constructor by default.
      */
     public final function ActiveRecord($params = array()) {
         self::establish_connection();
@@ -133,10 +140,11 @@ abstract class ActiveRecord extends Object {
     // {{{ __magic functions
     /**
      * It sets the value of the field
+     *
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string, field_name, the field name
      * @param mixed, field_value, field value
-     * @throw ActiveRecordException if the field is not found.
+     * @throws ActiveRecordException if the field is not found.
      */
     public function __set($field_name, $field_value) {
         if ($field= $this->row->getFieldByName($field_name)) {
@@ -148,9 +156,10 @@ abstract class ActiveRecord extends Object {
 
     /**
      * It gets the value of the field
+     * 
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string, field_name, the field name
-     * @throw ActiveRecordException
+     * @throws ActiveRecordException
      * @return field value
      */
     public function __get($field_name) {
@@ -177,7 +186,7 @@ abstract class ActiveRecord extends Object {
     }
 
     /**
-     * @TODO: This method is not working as expected!
+     * @todo This method is not working as expected!
      *
      * This method is run before any call to ActiveRecord public methods! (nope: php 5.1.2)
      * Removes some duplicate code from the list with <tt>know_methods</tt>.
@@ -185,6 +194,7 @@ abstract class ActiveRecord extends Object {
      *
      * Basically it checks before save, insert, update or delete calls that
      * the current run has affected fields and throws an ActiveRecordException if not.
+     * 
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string method name
      * @param array arguments
@@ -445,7 +455,7 @@ abstract class ActiveRecord extends Object {
     }
 
     /**
-     * @TODO: can we use QueryBuilder for this?
+     * @todo can we use QueryBuilder for this?
      * Helper, internal method witch performs an sql query, other than select.
      *
      * @param string sql the sql query to execute

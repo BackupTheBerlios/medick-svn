@@ -35,17 +35,21 @@
 include_once('action/view/HTML.php');
 
 /**
- * @package locknet7.action.view
+ * 
+ * @package medick.action.view
+ * @author Oancea Aurelian
  */
-
-// namespace ActionView {
-
 interface ITemplateEngine {
     public function render_partial($controller, $partial);
     public function render($template_file);
     public function assign($name, $value);
 }
 
+/**
+ * 
+ * @package medick.action.view
+ * @author Oancea Aurelian
+ */ 
 class ActionView extends Object {
 
     public static function factory($engine) {
@@ -53,10 +57,10 @@ class ActionView extends Object {
     }
 
     /**
-     * Strips slashes
-     * This method is called recursive
-     * TODO: Move this OUT of this class, or, in __set.
-     * TODO: What if $value is Object?
+     * Strips slashes, method called recursive
+     * 
+     * @todo Move this OUT of this class, or, in __set.
+     * @todo What if $value is Object?
      * @param mixed value, the value on witch we strip slashes.
      *                  It can be array/string or object.
      */
@@ -73,19 +77,37 @@ class ActionView extends Object {
 }
 
 /**
- * A ``PHPTemplateEngine" is the default `Template Engine' for Medick Framwork.
+ * PHPTemplateEngine is the default `Template Engine' for Medick Framwork.
  *
- * For a smoother transaction from <tt>Smarty</tt>, some variabiles/methods
+ * For a smoother transaction from Smarty, some variabiles/methods
  * may share the same name and behavior
+ *
+ * @package medick.action.view
+ * @author Oancea Aurelian
  */
 class PHPTemplateEngine extends Object implements ITemplateEngine {
-
+    
+    /** @var array
+        Container for templates variables */  
     private $vars= array();
-
+    
+    /**
+     * It renders a template file
+     *
+     * @param string template file
+     */ 
     public function render_file($template_file) {
         return $this->render($template_file);
     }
 
+    /**
+     * It renders a partial template.
+     *
+     * This method can be called from the templates. Usualy it is used with AJAX calls
+     *
+     * @param string controller
+     * @param string patrial
+     */ 
     public function render_partial($controller, $partial) {
         $path= Registry::get('__injector')->getPath('views');
         if (NULL === $controller) {
@@ -98,10 +120,11 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
     }
 
     /**
-     * Render the file
-     * @param string, file, the file to render.
-     * @return string, contents of the file
-     * @throws Exception if the file is wrong.
+     * Render the file.
+     * 
+     * @param string file, the file to render.
+     * @return string contents of the file
+     * @throws FileNotFoundException if we cannot find the specified file
      */
     public function render($file) {
         if (!is_file($file)) {
@@ -119,22 +142,26 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
     }
 
     /**
-     * Wrapper for __set
+     * Wrapper for __set.
+     * 
      * A convenient way to make the migration from Smarty smoother
-     * @param name
-     * @param value
+     * @see PHPTemplateEngine::__set()
+     * @param string name
+     * @param string value
      */
     public function assign($name, $value){
         $this->__set($name, $value);
     }
 
     /**
-     * Overload default set behavior from PHP
-     * This way, I`m able to register the vars passed to the template
+     * Overload default __set behavior from PHP
+     * 
+     * This way, I`m able to register the vars passed to the template.
+     * 
      * Advantages: cannot call from template the private vars of this class
      * since $vars will act as a registry system
-     * @param name, mixed, the name of the var.
-     * @param value, mixed, the value of var.
+     * @param string name the name of the variable
+     * @param mixed value the value of variable
      */
     public function __set($name, $value) {
         $this->vars[$name] = $value;
@@ -142,8 +169,9 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
 
     /**
      * Overload the default behavior of PHP get var.
-     * We will rise an error if the var is not set
-     * @param name, string, the name of var.
+     * 
+     * NOTE: Will rise an error if the variable is not set
+     * @param string name the name of variable
      */
     public function __get($name) {
         return array_key_exists($name,$this->vars) ?
@@ -151,6 +179,4 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
     }
 
 }
-
-// }
 

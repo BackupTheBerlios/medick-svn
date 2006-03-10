@@ -35,7 +35,12 @@
 include_once('action/controller/http/HTTPResponse.php');
 
 /**
- * @package locknet7.action.controller.response
+ * It is a Response that a medick application will always try to build.
+ * 
+ * A Dispatcher will know how to dump the buffer of this response back to the user.
+ * 
+ * @package medick.action.controller
+ * @author Oancea Aurelian
  */
 class Response extends Object {
     
@@ -45,28 +50,44 @@ class Response extends Object {
 
     /**
      * Hidden Constructor
+     *
+     * This class is not meant to be instanciated,
+     * insteard use inheritance to extend and build more specialized Responses
+     *
+     * @see HTTPResponse
      */
     protected function Response(){  }
 
     /**
      * Set the content
+     * Will discard all the changes made on the buffer so far
+     * 
      * @param mixed content, the content
      */
     public function setContent($content) {
         $this->content = $content;
     }
 
-    /** Appends some content */
+    /** 
+     * Add content on the buffer
+     *
+     * @param mixed content
+     */
     public function append($content) {
         $this->content .= $content;
     }
 
-    /** It gets the content */
+    /** 
+     * It gets the content
+     * @return string the content that we push so far on to this Response
+     */
     public function getContent() {
         return $this->content;
     }
 
-    /** echo`s the content */
+    /** 
+     * Echos the content (buffer)
+     */
     public function dump() {
         echo $this->content;
     }

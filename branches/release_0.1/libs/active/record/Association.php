@@ -34,46 +34,84 @@
 
 /**
  * Association base abstract class
+ *
+ * As it is right now, associations are read-only
+ * this means that you cannot save the data using an association.
+ * This will be fixed probably in a next medick version.
  * 
- * @package locknet7.active.record
+ * @package medick.active.record
+ * @subpackage association
+ * @author Oancea Aurelian
  */
 abstract class Association extends Object {
 
-    /** current object name */
+    /** @var string 
+        current object name */
     protected $owner= NULL;
 
-    /** returning object name(to search for) */
+    /** @var string
+        returning object name(to search for) */
     protected $class= NULL;
 
-    /** primary key value */
+    /** @var int
+        value of the primary key */
     protected $pk   = NULL;
 
-    /** */
+    /** @var DatabaseRow 
+        */
     protected $fields;
 
+    /**
+     * It sets this Association Fields
+     *
+     * @param DatabaseRow fields
+     */ 
     public function setFields($fields) {
         $this->fields = $fields;
     }
-
+    
+    /**
+     * It sets the current class to search for
+     *
+     * @param string class, class name
+     */ 
     public function setClass($class) {
         $this->class = $class;
     }
 
+    /**
+     * It sets the current owner
+     *
+     * @param string owner
+     */ 
     public function setOwner($owner) {
         $this->owner = $owner;
     }
 
+    /**
+     * It sets the primary key value
+     *
+     * @param int pk primary key value
+     */ 
     public function setPk($pk) {
         $this->pk = $pk;
     }
 
-    /** execute function */
+    /** 
+     * Executes the current solved association
+     *
+     * @throws AssociationNotFoundException
+     */
     abstract public function execute();
     
     /**
      * Resolves this Association
      *
-     * Returns a new instance of the solved Association
+     * Returns a new instance of the solved Association and it acts as a factory
+     * @param array associations ActiveRecord defined associations
+     * @param string owner current ActiveRecord woner name
+     * @param string class name of the object we want to return
+     * @param DatabaseRow fields ActiveRecord fields
      * @return Association
      * @throws AssociationNotFoundException when we cannot resolve this Association
      * @since Rev. 272
@@ -118,17 +156,20 @@ abstract class Association extends Object {
  *
  * It solves associations based on sql foreign keys
  * <code>
- *     class Author extends ActiveRecordBase {
+ *     class Author extends ActiveRecord {
  *         protected $has_many=array('articles'); // plural!
  *         // same as:
  *         // protected $has_many='articles';
  * </code>
  *
- * @package locknet7.active.record.association
+ * @package medick.active.record
+ * @subpackage association
+ * @author Oancea Aurelian
  * @since Rev. 272
  */
 class HasManyAssociation extends Association {
 
+    /** @see Association::execute() */
     public function execute() {
         $fk= Inflector::singularize($this->owner) . '_id';
         $arguments= array('all', array('condition'=>$fk.'=?'), array($this->pk));
@@ -143,13 +184,15 @@ class HasManyAssociation extends Association {
  *
  * It solves associations based on sql foreign keys
  * <code>
- *     class Article extends ActiveRecordBase {
+ *     class Article extends ActiveRecord {
  *         protected $has_one=array('author');
  *         // same as:
  *         // protected $has_one='author';
  * </code>
  *
- * @package locknet7.active.record.association
+ * @package medick.active.record
+ * @subpackage association
+ * @author Oancea Aurelian
  * @since Rev. 272
  */
 class HasOneAssociation extends Association {
@@ -157,8 +200,8 @@ class HasOneAssociation extends Association {
     /**
      * It Executes this Association
      * 
-     * @todo: what if we don`t find the field?
-     * @see Association#execute
+     * @todo what if we don`t find the field?
+     * @see Association::execute()
      */
     public function execute() {
         $fk= $this->class.'_id'; // foreign key name: the class name+"_id" suffix"
@@ -176,23 +219,29 @@ class HasOneAssociation extends Association {
  *
  * A Special case of HasOneAssociation
  * <code>
- *     class Article extends ActiveRecordBase {
+ *     class Article extends ActiveRecord {
  *         protected $belongs_to=array('author');
  *         // same as:
  *         // protected $belongs_to='author';
  * </code>
  *
- * @package locknet7.active.record.association
+ * @package medick.active.record
+ * @subpackage association
+ * @author Oancea Aurelian
  * @since Rev. 272
  */
 class BelongsToAssociation extends HasOneAssociation {    }
 
 /**
  * HasAndBelongsToManyAssociation
- * @package locknet7.active.record.association
+ * 
+ * @package medick.active.record
+ * @subpackage association
+ * @author Oancea Aurelian
  */
 class HasAndBelongsToManyAssociation extends Association {
 
+    /** @see Association::execute() */
     public function execute() {
         if ($this->class < $this->owner) {
             $join_table= $this->class . '_' . Inflector::pluralize($this->owner);

@@ -35,15 +35,17 @@
 include_once('configurator/IConfigurator.php');
 
 /**
- * ini file-based Configurator.
- * @package locknet7.config
+ * INI file-based Configurator.
+ * 
+ * @deprecated this class is deprecated, use medick.configurator.XMLConfigurator
+ * @package medick.configurator
+ * @author Oancea Aurelian
  */
-
 class INIConfigurator extends Object implements IConfigurator {
 
     private $handler;
-
-    public function __construct($file) {
+    
+    public function INIConfigurator($file) {
       $this->handler= parse_ini_file($file, TRUE);
     }
 

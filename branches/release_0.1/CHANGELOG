@@ -1,7 +1,9 @@
 $Id$
 (*) SVN version
 
-0.0.5(*)
+0.2.0(*)
+
+0.1.0(04.Mar.2006)
     - Renamed ActionViewBase to ActionView, ActionControllerBase to ActionController and ActiveRecordBase to ActiveRecord;
     - 3-rd version of ActiveRecord::find() method, this time the user model classes find method should be written as:
       class News extends ActiveRecord{

@@ -34,13 +34,15 @@
 
 /**
  * Base abstract Event Formatter.
- * @package locknet7.logger.formatter
+ * 
+ * @package medick.logger
+ * @subpackage formatter
+ * @author Oancea Aurelian
  */
-
 abstract class Formatter extends Object {
     /**
      * Formats the event
-     * @param LoggingEvent event, the event
+     * @param medick.logger.LoggingEvent event, the event
      * @return string
      */
     abstract public function format(LoggingEvent $event);

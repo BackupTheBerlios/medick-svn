@@ -35,8 +35,10 @@
 /**
  * A Route Component
  *
- * @see locknet7.action.controller.Route
- * @package locknet7.action.controller
+ * @see Route
+ * @package medick.action.controller
+ * @subpackage routing
+ * @author Oancea Aurelian
  */
 class Component extends Object {
 
@@ -89,20 +91,36 @@ class Component extends Object {
  * Route class.
  * 
  * A Route resolves the incoming Request URI to a known Controller/Action,
- * also, it will merge Route Components Names to Request parameters
- * Usually, a Map holds the Route Definitions for an Web Application
- * and the Recogition is performed inside the ActionControllerRouting::recognize(Request $request) method
- * Routes are defined inside __APPLICATION__PATH/conf/__APPLICATION__NAME__.routes.php file,
- * a plain php code file
- *
- * @see locknet7.action.controller.Map
- * @see locknet7.action.controller.Routing
- * @see locknet7.action.controller.Component
- *
- * @TODO:
- *      -> Route Requirements
+ * also, it will merge Route Components Names to Request parameters.
  * 
- * @package locknet7.action.controller
+ * Usually, a Map holds the Route Definitions for an Web Application
+ * and the Recogition is performed inside the ActionControllerRouting::recognize(Request $request) method.
+ * 
+ * Routes are defined inside __APPLICATION__PATH/conf/__APPLICATION__NAME__.routes.php file,
+ * a plain php code file.
+ * 
+ * When we find the first Route to match the incoming URL, we try to create the controller class instance 
+ * and the other routes in the map are discarded.
+ *
+ * Default Route:
+ * <code>
+ *   $route= new Route(':controller/:action/:id');
+ * </code>
+ * In this case, <i>:controller</i>, <i>:action</i> and <i>id</i> are dynamic Components
+ * and incoming URL parameters will be coverted to Request parameters:
+ * <code>
+ *  // incoming URI:
+ *  // /project/view/12.html
+ *  $request->getParameter('controller'); // => project
+ *  $request->getParameter('action'); // => view
+ *  $request->getParameter('id'); // => 12
+ * </code>
+ * @see Map, ActionControllerRouting, Component
+ * @todo Route Requirements
+ * @todo more docs
+ * @package medick.action.controller
+ * @subpackage routing
+ * @author Oancea Aurelian
  */
 class Route extends Object {
 
@@ -196,7 +214,7 @@ class Route extends Object {
     /**
      * It gets the name of this Route.
      * 
-     * @see: locknet7.action.controller.Route#getNameToHuman
+     * @see Route::getNameToHuman
      * @return string name.
      */
     public function getName() {
@@ -260,9 +278,13 @@ class Route extends Object {
         }
     }
     
-    // match the current Route against incoming URI.
-    // @TODO: refactor.
-    // @return bool
+    /** 
+     * Match the current Route against incoming URI.
+     *
+     * @param Request request incoming request
+     * @todo refactor.
+     * @return bool
+     */ 
     public function match(Request $request) {
         $parts= $request->getUriParts();
         
@@ -310,7 +332,7 @@ class Route extends Object {
     /**
      * Merges this Route Parameters into Request Parameters
      *
-     * @param Request, request, the request on witch we want to merge
+     * @param Request request, the request on witch we want to merge
      */ 
     private function doMerge(Request $request) {
         foreach ($this->merges as $name=>$value) {
@@ -363,7 +385,8 @@ class Route extends Object {
     
     /**
      * Creates a Controller Instance
-     *
+     * 
+     * @throws RoutingException
      * @return ActionControllerBase
      */ 
     public function createControllerInstance(Request $request) {
