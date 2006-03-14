@@ -59,9 +59,10 @@ class HTTPRequest extends Request {
      * It builds the HTTPRequest object
      *
      * @todo a URI Helper should be written.
+     * @todo $_COOKIES are not merged anymore!!!
      */
     public function HTTPRequest() {
-        foreach ($_REQUEST as $key=>$value) {
+        foreach (array_merge($_GET,$_POST) as $key=>$value) {
             $this->setParameter($key, $value);
         }
 
@@ -77,7 +78,7 @@ class HTTPRequest extends Request {
         elseif (array_key_exists('REQUEST_URI', $_SERVER)) {
             $this->requestUri= substr($_SERVER['REQUEST_URI'],7);
         }
-        
+
         $this->session = new Session();
         $this->headers = HTTPRequest::getAllHeaders();
     }
@@ -85,11 +86,11 @@ class HTTPRequest extends Request {
     public function getHeaders() {
         return $this->headers;
     }
-    
+
     public function getHeader($name) {
         return $this->hasHeader($name) ? $this->headers[ucfirst($name)] : FALSE;
     }
-    
+
     public function hasHeader($name) {
         return isset($this->headers[ucfirst($name)]);
     }
@@ -104,7 +105,7 @@ class HTTPRequest extends Request {
     public function setRequestUri($uri) {
       $this->requestUri= $uri;
     }
-    
+
     /**
      * It gets a part of the path info associated with this request
      * @param int, key, the part index
@@ -132,7 +133,7 @@ class HTTPRequest extends Request {
     // public function getRequestURI() {  }
     public function getProtocol() {  }
     // }}}
-    
+
     /**
      * A wrapper around getallheaders apache function that gets a list
      * of headers associated with this HTTPRequest.
@@ -149,7 +150,7 @@ class HTTPRequest extends Request {
                 if(ereg('HTTP_(.+)',$header,$hp)) {
                     $headers[ucfirst(strtolower($hp[1]))] = $value;
                 }
-            }       
+            }
         }
         return $headers;
     }

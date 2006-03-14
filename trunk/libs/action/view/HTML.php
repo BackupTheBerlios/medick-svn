@@ -36,9 +36,9 @@
  * @package medick.action.view
  * @subpackage helpers
  * @author Oancea Aurelian
- */ 
+ */
 class ActiveRecordHelper extends Object {
-    
+
     /**
      * Finds and retuns a HTML formatted string with errors for an ActiveRecord object
      *
@@ -51,7 +51,7 @@ class ActiveRecordHelper extends Object {
      * @param array options the options where we can cusomize the look and feel of the error message.
      *                      this includes: css_class and heading
      * @return string a HTML formatted string
-     */ 
+     */
     public static function error_messages_for(ActiveRecord $object, $options=array()) {
         $css_class= isset($options['css_class']) ? $options['css_class'] : 'formErrors';
         $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 2;
@@ -89,11 +89,11 @@ class ActiveRecordHelper extends Object {
 
 }
 
-/** 
+/**
  *
  * @package medick.action.view
  * @subpackage helpers
- * @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html 
+ * @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html
  * @author Oancea Aurelian
  */
 class FormHelper extends Object {
@@ -102,11 +102,9 @@ class FormHelper extends Object {
         if (!$field= $object->getRow()->getFieldByName($method)) {
             return; // ex?
         }
-
         $id   = strtolower(get_class($object)) . '_'.$method;
         $name = strtolower(get_class($object)).'['.$method.']';
-        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label><br />\n";
-
+        $buff = '';
         $errors= FALSE;
         if($field->hasErrors()) {
             $buff .= '<div class="fieldWithErrors">';
@@ -123,7 +121,7 @@ class FormHelper extends Object {
         if ($errors) {
             $buff .= '</div>';
         }
-        return $buff . "</div>";
+        return $buff;
     }
 
     public static function text_area(ActiveRecord $object, $method, $options=array()) {
@@ -132,7 +130,7 @@ class FormHelper extends Object {
         }
         $id   = strtolower(get_class($object)) . '_'.$method;
         $name = strtolower(get_class($object)).'['.$method.']';
-        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label><br />\n";
+        $buff = '';
         $errors= FALSE;
         if($field->hasErrors()) {
             $buff .= '<div class="fieldWithErrors">';
@@ -148,56 +146,50 @@ class FormHelper extends Object {
         if ($errors) {
             $buff .= '</div>';
         }
-        return $buff . "</div>";
+        return $buff;
     }
 
-    public static function check_box(
-            Object $object,
-            $method,
-            $options = array(),
-            $checked_value = "1",
-            $unchecked_value = "0") {
-                
+    public static function check_box(Object $object, $method, $options = array()) {
         if (!$field= $object->getRow()->getFieldByName($method)) {
             return; // ex?
         }
-        $id   = strtolower(get_class($object)) . '_'.$method;
-        $name = strtolower(get_class($object)).'['.$method.']';
-        $buff = "<div class=\"formRow\">\n<label for=\"" . $id . "\">" . $field->getFormattedName() . "</label><br />\n";
+        $id   = strtolower($object->getClassName()) . '_' .$method;
+        $name = strtolower($object->getClassName()) . '[' . $method . ']';
+        $buff = '';
         $errors= FALSE;
         if($field->hasErrors()) {
             $buff .= '<div class="fieldWithErrors">';
             $errors= TRUE;
         }
-                
         $buff .= '<input type="checkbox" id="' . $id . '" name="' . $name . '" ';
         foreach ($options as $key=>$value) {
-            $buff .= $key . '="'.$value.'" ';
+            $buff .= $key . '="' . $value . '" ';
         }
         if ((int)$object->$method > 0) {
-            $buff .= 'value="1" checked="checked" ';
+            $buff .= 'value="1" checked="checked"';
         } else {
             $buff .= 'value="0"';
         }
-
         $buff .= ' />';
-        // $buff .= '<input name="'.strtolower(get_class($object)).'['.$method.']" type="hidden" ';
+        if ($errors) {
+            $buff .= '</div>';
+        }
+        $buff .= '<input name="' . $name . '" value="' . $object->$method . '" type="hidden" />';
         return $buff;
     }
 }
 
 /**
- * 
+ *
  * @package medick.action.view
  * @subpackage helpers
  * @author Oancea Aurelian
- */ 
+ */
 class URL extends Object {
-  
+
     public static function create($controller, $action='index', $params=array(), $ext='html') {
         $config = Registry::get('__configurator');
         $base   = $config->getProperty('document_root');
-        
         if (!$config->getProperty('rewrite')) {
             $base .= '/index.php';
         }
@@ -210,7 +202,7 @@ class URL extends Object {
 }
 
 /**
- * 
+ *
  * @package medick.action.view
  * @subpackage helpers
  * @deprecated use FormHelper since it provides more features

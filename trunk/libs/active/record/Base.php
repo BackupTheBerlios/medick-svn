@@ -45,20 +45,20 @@ include_once('creole/Creole.php');
 
 /**
  * Main ActiveRecord Class
- * 
+ *
  * @package medick.active.record
  * @author Oancea Aurelian
  */
 abstract class ActiveRecord extends Object {
 
-    /** @var string 
+    /** @var string
         class name: Person */
     protected $class_name = NULL;
-    
+
     /** @var string
         table mane: persons */
     protected $table_name = NULL;
-    
+
     /** @var CreoleConnection
         database connection */
     static protected $conn= NULL;
@@ -84,17 +84,17 @@ abstract class ActiveRecord extends Object {
      * @return Creole database connection
      */
     public static function establish_connection () {
-        if (self::$conn === NULL) {
-            self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
+        if (ActiveRecord::$conn === NULL) {
+            ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
-        return self::$conn;
+        return ActiveRecord::$conn;
     }
 
     /**
      * Close the Database Connection
      */
     public static function close_connection() {
-        self::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
+        ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
     }
 
     /**
@@ -104,7 +104,7 @@ abstract class ActiveRecord extends Object {
      * @final because there is no reason to overwrite in parent classes, PHP Engine will call this constructor by default.
      */
     public final function ActiveRecord($params = array()) {
-        self::establish_connection();
+        ActiveRecord::establish_connection();
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
 
@@ -131,8 +131,9 @@ abstract class ActiveRecord extends Object {
             }
             $this->row[] = $field;
         }
-
+        // $logger= Registry::get('__logger');
         foreach ($params as $field_name => $field_value) {
+            // $logger->debug('['.__LINE__ . '] Name: ' . $field_name . ' Value: ' . $field_value);
             $this->$field_name = $field_value;
         }
     }
@@ -156,7 +157,7 @@ abstract class ActiveRecord extends Object {
 
     /**
      * It gets the value of the field
-     * 
+     *
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string, field_name, the field name
      * @throws ActiveRecordException
@@ -194,7 +195,7 @@ abstract class ActiveRecord extends Object {
      *
      * Basically it checks before save, insert, update or delete calls that
      * the current run has affected fields and throws an ActiveRecordException if not.
-     * 
+     *
      * @see http://php.net/manual/en/language.oop5.overloading.php
      * @param string method name
      * @param array arguments
@@ -343,9 +344,20 @@ abstract class ActiveRecord extends Object {
      * </code>
      */
     public final function save() {
+        $logger= Registry::get('__logger');
+        if ( !$this->before_save() ) {
+            $logger->info('Before Save Failed!');
+            return false;
+        }
+        if (count($this->row->collectErrors()) > 0) {
+            $logger->info('Object has Errors!');
+            return false;
+        }
+/*
         if ( !$this->before_save() || count($this->row->collectErrors()) > 0) {
             return FALSE;
         }
+*/
         if ($this->row->getPrimaryKey()->isAffected) {
             return $this->update();
         } else {
@@ -370,9 +382,20 @@ abstract class ActiveRecord extends Object {
      * @throws SQLException
      */
     public final function insert() {
-        if (!$this->before_insert() || count($this->row->collectErrors()) > 0) {
-            return FALSE;
+        $logger= Registry::get('__logger');
+        if ( !$this->before_insert() ) {
+            $logger->info('Before Save Failed!');
+            return false;
         }
+        if (count($this->row->collectErrors()) > 0) {
+            $logger->info('Object has Errors!');
+            return false;
+        }
+/*
+        if (!$this->before_insert() || count($this->row->collectErrors()) > 0) {
+            return false;
+        }
+*/
         $af_rows = $this->performQuery($this->getInsertSql());
         $id = $this->getNextId();
         $this->after_insert();
@@ -397,13 +420,27 @@ abstract class ActiveRecord extends Object {
      * @throws SQLException
      */
     public final function update() {
-        if (!$this->before_update() || count($this->row->collectErrors()) > 0) {
-            return FALSE;
+        $logger= Registry::get('__logger');
+        if ( !$this->before_update() ) {
+            $logger->info('Before Update Failed!');
+            return false;
+        }
+        if (count($this->row->collectErrors()) > 0) {
+            $logger->info('Object has Errors!');
+            return false;
         }
         $af= $this->performQuery($this->getUpdateSql());
         $this->after_update();
         return $af;
     }
+
+    public final function attributes(/*Array*/ $params=array()) {
+        foreach($params as $name=>$value) {
+            $this->$name=$value;
+        }
+        return $this;
+    }
+
     // }}}
 
     // {{{ delete
@@ -467,7 +504,7 @@ abstract class ActiveRecord extends Object {
         ActiveRecord::populateStmtValues($stmt, $this->row->getAffectedFields());
         $af_rows = $stmt->executeUpdate();
         $stmt->close();
-        // Registry::get('__logger')->debug('Performing sql query: ' . ActiveRecord::$conn->lastQuery);
+        Registry::get('__logger')->debug('Query: ' . ActiveRecord::$conn->lastQuery);
         // $this->_reset();
         return $af_rows;
     }

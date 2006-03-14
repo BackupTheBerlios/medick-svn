@@ -36,7 +36,7 @@ include_once('active/record/Field.php');
 
 /**
  * It represents a Row from the Database
- * 
+ *
  * @package medick.active.record
  * @author Oancea Aurelian
  */
@@ -59,14 +59,14 @@ class DatabaseRow extends Collection {
     private $affected = FALSE;
 
     /** @var string
-        this database table name */ 
+        this database table name */
     private $table;
 
     /**
      * Creates a new DatabaseRow
      *
      * @param string table, the table name where this row is from
-     */ 
+     */
     public function DatabaseRow($table) {
         $this->table= $table;
         parent::__construct();
@@ -76,14 +76,14 @@ class DatabaseRow extends Collection {
      * It gets the table name
      *
      * @return string, the table name
-     */ 
+     */
     public function getTable() {
         return $this->table;
     }
 
     /**
      * Automatic trigger executed when a new Field is added on to this Collection
-     * 
+     *
      * @see Collection::onAdd
      */
     public function onAdd(Object $field) {
@@ -97,7 +97,7 @@ class DatabaseRow extends Collection {
 
     /**
      * Set the affected modifier
-     * 
+     *
      * @param bool affected
      */
     public function setAffected($affected) {
@@ -106,7 +106,7 @@ class DatabaseRow extends Collection {
 
     /**
      * It checks if it has affected fields by this run
-     * 
+     *
      * @return bool TRUE if it has, FALSE otherwise
      */
     public function hasAffected() {
@@ -143,7 +143,7 @@ class DatabaseRow extends Collection {
      * Collects errors from the fields added on this row
      *
      * @return array an array of errors
-     */ 
+     */
     public function collectErrors() {
         $errors= array();
         $it = $this->iterator();
@@ -155,24 +155,24 @@ class DatabaseRow extends Collection {
         }
         return $errors;
     }
-    
+
     /**
      * Updates the Status of a Filed
      *
      * @param Field field
      * @param mixed value the new field value
-     */ 
+     */
     public function updateStatus(Field $field, $value) {
         $field->setValue($value);
         $field->isAffected = TRUE;
         $this->field_names[] = $field->getName();
-        $this->affected_fields[] = $field;
+        $this->affected_fields[$field->getName()] = $field;
         $this->affected = TRUE;
     }
 
     /**
      * It gets an array with the names of the affected fields
-     * 
+     *
      * @return array
      */
     public function getAffectedFieldsNames() {
@@ -181,7 +181,7 @@ class DatabaseRow extends Collection {
 
     /**
      * Get an array of objects Field[] that are affected(changed) by this run
-     * 
+     *
      * @return Field[]
      */
     public function getAffectedFields() {

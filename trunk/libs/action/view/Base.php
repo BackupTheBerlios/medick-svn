@@ -35,7 +35,7 @@
 include_once('action/view/HTML.php');
 
 /**
- * 
+ *
  * @package medick.action.view
  * @author Oancea Aurelian
  */
@@ -46,10 +46,10 @@ interface ITemplateEngine {
 }
 
 /**
- * 
+ *
  * @package medick.action.view
  * @author Oancea Aurelian
- */ 
+ */
 class ActionView extends Object {
 
     public static function factory($engine) {
@@ -58,7 +58,7 @@ class ActionView extends Object {
 
     /**
      * Strips slashes, method called recursive
-     * 
+     *
      * @todo Move this OUT of this class, or, in __set.
      * @todo What if $value is Object?
      * @param mixed value, the value on witch we strip slashes.
@@ -86,16 +86,16 @@ class ActionView extends Object {
  * @author Oancea Aurelian
  */
 class PHPTemplateEngine extends Object implements ITemplateEngine {
-    
+
     /** @var array
-        Container for templates variables */  
+        Container for templates variables */
     private $vars= array();
-    
+
     /**
      * It renders a template file
      *
      * @param string template file
-     */ 
+     */
     public function render_file($template_file) {
         return $this->render($template_file);
     }
@@ -107,7 +107,7 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
      *
      * @param string controller
      * @param string patrial
-     */ 
+     */
     public function render_partial($controller, $partial) {
         $path= Registry::get('__injector')->getPath('views');
         if (NULL === $controller) {
@@ -121,7 +121,7 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
 
     /**
      * Render the file.
-     * 
+     *
      * @param string file, the file to render.
      * @return string contents of the file
      * @throws FileNotFoundException if we cannot find the specified file
@@ -143,7 +143,7 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
 
     /**
      * Wrapper for __set.
-     * 
+     *
      * A convenient way to make the migration from Smarty smoother
      * @see PHPTemplateEngine::__set()
      * @param string name
@@ -155,9 +155,9 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
 
     /**
      * Overload default __set behavior from PHP
-     * 
+     *
      * This way, I`m able to register the vars passed to the template.
-     * 
+     *
      * Advantages: cannot call from template the private vars of this class
      * since $vars will act as a registry system
      * @param string name the name of the variable
@@ -169,7 +169,7 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
 
     /**
      * Overload the default behavior of PHP get var.
-     * 
+     *
      * NOTE: Will rise an error if the variable is not set
      * @param string name the name of variable
      */
