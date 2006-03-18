@@ -127,9 +127,9 @@ function generate_model($name, $app_location) {
 <?php
 
  /**
-  * This class is part of ${APP_NAME} project
+  * This class is part of ${app.name} project
   *
-  * @package ${APP_NAME}.models
+  * @package ${app.name}.models
   * \$Id$
   */
 class $model_class_name extends ActiveRecord {
