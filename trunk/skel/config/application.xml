@@ -1,45 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+<!-- 
  ! $Id$
- -->
+ ! -->
+<application name="${app.name}">
+    <!-- localhost environment -->
+    <environment name="localhost">
+        <!-- general properties -->
+        <properties>
+            <path>${app.path}</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://localhost</server_name>
+            <document_root>/${app.name}</document_root>
+            <rewrite>on</rewrite>
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="0">
+                    <property name="path" value="${app.path}${ds}log${ds}${app.name}.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on ${app.name}" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "${app.name}"
+                 username = "root"
+                 password = "" />
+        </database>
+    </environment>
 
-<application>
-
-    <!--  ====================== -->
-    <!--   General properties    -->
-    <!--  ====================== -->
-    <property name="server_name"      value="http://localhost" />
-    <property name="document_root"    value="/${APP_NAME}" />
-    <property name="rewrite"          value="on" />
-
-    <!--  ====================== -->
-    <!--     Logger System       -->
-    <!--  ====================== -->
-    <logger>
-        <formatter>simple</formatter>
-        <outputters>
-            <outputter name="file" level="0">
-              <property name="path" value="${LOG}" />
-            </outputter>
-            <!-- <outputter name="stdout" level="0" /> -->
-            <outputter name="mail" level="3">
-                <property name="subject" value="Fatality on ${APP_NAME}" />
-                <property name="address" value="user@example.com" />
-            </outputter>
-        </outputters>
-    </logger>
-
-    <!-- ======================= -->
-    <!--   Database(s) Settings  -->
-    <!-- ======================= -->
-    <database default="one">
-        <dsn id = "one"
-             phptype  = "mysql"
-             hostspec = "localhost"
-             database = "${APP_NAME}"
-             username = "root"
-             password = "" />
-    </database>
-
+    <!-- a sample test environment -->
+    <environment name="test">
+        <!-- general properties -->
+        <properties>
+            <path>${app.path}</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://exemplu.com</server_name>
+            <document_root>/${app.name}</document_root>
+            <rewrite>on</rewrite>
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="0">
+                    <property name="path" value="${app.path}${ds}log${ds}${app.name}.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on Exemplu.com::${app.name}" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "sqlite"
+                 database = "${app.path}${ds}db${ds}${app.name}-sqlite.db" />
+        </database>
+    </environment>
+  
 </application>
-
+  

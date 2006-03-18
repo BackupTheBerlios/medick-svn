@@ -1,7 +1,12 @@
 $Id$
 (*) SVN version
 
-0.2.0(*)
+0.2.1(18.Mar.2006)
+    - Added ``environment" concept
+    - Added ActiveRecord::attributes() method
+    - Added ContextManager
+    - removed _SERVER[MEDICK_APPLICATION_NAME] and _SERVER[MEDICK_APPLICATION_PATH]
+    - COOKIES are not merged with HTTPRequest::parameters
 
 0.1.0(04.Mar.2006)
     - Renamed ActionViewBase to ActionView, ActionControllerBase to ActionController and ActiveRecordBase to ActiveRecord;

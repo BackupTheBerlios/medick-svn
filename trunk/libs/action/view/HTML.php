@@ -189,8 +189,9 @@ class URL extends Object {
 
     public static function create($controller, $action='index', $params=array(), $ext='html') {
         $config = Registry::get('__configurator');
-        $base   = $config->getProperty('document_root');
-        if (!$config->getProperty('rewrite')) {
+        $base   = $config->getWebContext()->document_root;
+        $rewrite= strtolower($config->getWebContext()->rewrite);
+        if ($rewrite == 'false' || $rewrite == 'off' || $rewrite == 0) {
             $base .= '/index.php';
         }
         $buff = $base . '/' . $controller . '/' . $action;

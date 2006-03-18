@@ -38,29 +38,49 @@ include_once('action/controller/Routing.php');
 include_once('action/controller/Request.php');
 include_once('action/controller/Response.php');
 include_once('action/controller/Base.php');
+include_once('context/ContextManager.php');
+include_once('logger/Logger.php');
 
 /**
  * It knows how to dispatch a request
  * 
- * The role of this class will increase in the next version.
+ * The role of this class will increase in the next versions.
  *
  * @package medick.action.controller
  * @author Oancea Aurelian
  */
 class Dispatcher extends Object {
 
+    private $manager;
+    
+    public function Dispatcher(ContextManager $manager) {
+        $this->manager= $manager;
+    }
+    
     /**
      * Framework entry point
      * @return void.
      */
-    public static function dispatch() {
+    public function dispatch() {
         $request  = new HTTPRequest();
         $response = new HTTPResponse();
+        
         try {
+            $configurator= $this->manager->getConfigurator();
+            Registry::put($configurator, '__configurator');
+            Registry::put($logger= new Logger($configurator), '__logger');
+            $logger->debug('Config File: ' . $configurator->getConfigFile());
+            $ap= $configurator->getApplicationPath();
+            $an= $configurator->getApplicationName();
+            $logger->debug("{app.name} -> $an");
+            $routes_path= $ap . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . $an . '.routes.php';
+            include_once($routes_path);
+            $logger->debug("routes loaded from: $routes_path");
+            $logger->debug("Medick {" . Medick::getVersion() . "} ready to dispatch.");
             ActionControllerRouting::recognize($request)->process($request, $response)->dump();
         } catch (Exception $ex) {
             ActionController::process_with_exception($request, $response, $ex)->dump();
-            Registry::get('__logger')->warn($ex->getMessage());
+            $logger->warn($ex->getMessage());
         }
     }
 }

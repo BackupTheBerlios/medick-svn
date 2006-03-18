@@ -329,9 +329,12 @@ class ActionController extends Object {
         $this->template = ActionView::factory('php');
         // predefined variables:
         // TODO: check if we have a / at the end, if not, add one
-        $this->template->assign('__base', $this->config->getProperty('document_root').'/');
-        $this->template->assign('__server', $this->config->getProperty('server_name'));
+        
+        $this->template->assign('__base', $this->config->getWebContext()->document_root .'/');
+        $this->template->assign('__server', $this->config->getWebContext()->server_name);
+        
         $this->template->assign('__controller', $this->params['controller']);
+        $this->template->assign('__version', Medick::getVersion());
         $this->logger->debug($this->request->toString());
     }
 
@@ -370,8 +373,9 @@ class ActionController extends Object {
         if (is_null($controller)) {
             $controller= $this->params['controller'];
         }
-        $redirect_to= $this->config->getProperty('server_name') . $this->config->getProperty('document_root') . '/';
-        if (!$this->config->getProperty('rewrite')) {
+        $redirect_to= $this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root . '/';
+        $rewrite = strtolower($this->config->getWebContext()->rewrite);
+        if ($rewrite == 'false' || $rewrite == 'off' || $rewrite == 0) {
             $redirect_to .= 'index.php/';
         }
         $redirect_to .= $controller . '/' . $action;

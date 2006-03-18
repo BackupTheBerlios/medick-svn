@@ -113,19 +113,23 @@ $files= array(
 );
 
 $search= array(
-            '${LOG}',
-            '${CORE}',
-            '${APP_PATH}',
-            '${APP_NAME}',
-            '${MEDICK_V}'
+            // '${LOG}',
+            '${medick.core}',
+            '${app.path}',
+            '${app.name}',
+            '${ds}',
+            '${medick.version}',
+            '${date}'
           );
 
 $replace= array(
-            $app_location.DIRECTORY_SEPARATOR.$folders['log'].DIRECTORY_SEPARATOR.$short_name.'.log',
+            // $app_location.DIRECTORY_SEPARATOR.$folders['log'].DIRECTORY_SEPARATOR.$short_name.'.log',
             $medick_core,
             $app_location,
             $short_name,
-            $medick_version
+            DIRECTORY_SEPARATOR,
+            $medick_version,
+            date('Y M d H:i:s')
           );
 
 foreach ($files as $from=>$file) {

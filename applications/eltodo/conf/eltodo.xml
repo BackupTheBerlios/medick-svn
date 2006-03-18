@@ -1,35 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- ! $Id: application.xml 187 2005-10-07 05:09:20Z aurelian $
- -->
+<!-- 
+ ! $Id: $
+ ! -->
+<application name="eltodo">
+    <!-- localhost environment -->
+    <environment name="localhost">
+        <!-- general properties -->
+        <properties>
+            <path>/wwwroot/medick/applications/eltodo</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://localhost</server_name>
+            <document_root>/eltodo</document_root>
+            <rewrite>on</rewrite>
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="0">
+                    <property name="path" value="/wwwroot/medick/applications/eltodo/log/eltodo.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on eltodo" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "eltodo"
+                 username = "root"
+                 password = "virus" />
+        </database>
+    </environment>
 
-<application>
-     
-  <!-- General properties -->
-  <property name="server_name"      value="http://localhost" />
-  <property name="document_root"    value="/eltodo" />
-  <property name="rewrite"          value="on" />
-     
-  <!-- Logger System -->
-  <logger>
-      <formatter>simple</formatter>
-      <outputters>
-        <outputter name="file" level="0">
-            <property name="path" value="/wwwroot/medick/applications/eltodo/log/eltodo.log" />
-        </outputter>
-        <!-- <outputter name="stdout"  level="0" /> -->
-      </outputters>
-  </logger>
-
-  <!-- Database(s) Settings -->
-  <database default="one">
-    <dsn id = "one"
-           phptype  = "mysql"
-           hostspec = "localhost"
-           database = "eltodo"
-           username = "root"
-           password = "virus" />
-  </database>
-
+    <!-- a sample test environment -->
+    <environment name="test">
+        <!-- general properties -->
+        <properties>
+            <path>/wwwroot/medick/applications/eltodo</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://29dots.com</server_name>
+            <document_root>/eltodo</document_root>
+            <rewrite>on</rewrite>
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="0">
+                    <property name="path" value="/wwwroot/medick/applications/eltodo/log/eltodo-test.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on 29dots.com::eltodo" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "sqlite"
+                 database = "/wwwroot/medick/applications/eltodo/db/eltodo-sqlite.db" />
+        </database>
+    </environment>
+  
 </application>
-
+  

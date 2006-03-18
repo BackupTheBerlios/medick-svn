@@ -1,25 +1,45 @@
 <?php
 /**
  * Medick generator.
+ * @todo this will be refactored to use the planned IGenerator classes
+ * @package medick.generator
  * $Id$
  */
  
-$type= isset($argv[1]) ? $argv[1] : exit("Use one of controller or model for generator.\n");
+// {{{ main
+$type= isset($argv[1]) ? $argv[1] : exit(main_banner($argv[0]));
 $name= isset($argv[2]) ? strtolower($argv[2]) : exit($argv[0] . " needs a " . $argv[1] . " name.\n");
-
+  
 switch ($type) {
     case "controller":
-        generate_controller($name, "${APP_PATH}");
+        generate_controller($name, '${app.path}');
         break;
     case "model":
-        generate_model($name, "${APP_PATH}");
-         break;
-     default:
-         exit("Use one of controller or model for generator.\n");
-  }
+        generate_model($name, '${app.path}');
+        break;
+    default:
+        exit(main_banner($argv[0]));
+}  
+exit ("\nMedick (\$v: ${medick.version}) [ DONE ].\n");
+// }}}
 
-exit ("\nMedick (\$v: ${MEDICK_V}) [ DONE ].\n");
+// {{{ main_banner
+function main_banner($script_name) {
+    $buffer =<<<EOBANNER
+Medick Generator ${medick.version} 
+(c) 2005-2006 Oancea Aurelian, see LICENSE file for copyright details.
+ 
+     Use one of controller or model:
+ 
+$script_name controller to generate a controller or
+$script_name model to generate a model.
+ 
+EOBANNER;
+     echo $buffer;   
+}
+// }}}
 
+// {{{ generate_controller(string name, string app_location)
 function generate_controller($name, $app_location) {
     $controller_class_name= ucfirst(strtolower($name)) . 'Controller';
     echo "Creating controller class $controller_class_name from $name\n";
@@ -92,16 +112,18 @@ LAYOUT;
      file_put_contents($controller_location, $controller_class_text);
      echo "$controller_location\n";
   }
+// }}}
 
- function generate_model($name, $app_location) {
-     $model_class_name = ucfirst(strtolower($name));
-     $model_location   = $app_location.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.$name.'.php';
-     echo "Generating model $model_class_name from $name\n";
-     if (file_exists($model_location)) {
-         echo "\texits $model_location\n";
-         return;
-     }
-     $model_class_text =<<<EOCLASS
+// {{{ generate_model(string name, string app_location)
+function generate_model($name, $app_location) {
+    $model_class_name = ucfirst(strtolower($name));
+    $model_location   = $app_location.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.$name.'.php';
+    echo "Generating model $model_class_name from $name\n";
+    if (file_exists($model_location)) {
+        echo "\texits $model_location\n";
+        return;
+    }
+    $model_class_text =<<<EOCLASS
 <?php
 
  /**
@@ -129,6 +151,7 @@ EOCLASS;
 
     file_put_contents($model_location, $model_class_text);
     echo "\tcreate $model_location\n";
-  }
+}
+// }}}
 
- ?>
+?>

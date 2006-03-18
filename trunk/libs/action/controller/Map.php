@@ -58,7 +58,7 @@ class Map extends Collection {
         foreach ($this->elements as $element) {
             if ($element->match($request)) return $element;
         }
-        throw new RoutingException('Cannot find a Route for this hash: ' . $request->getPathInfo());    
+        throw new RoutingException('Cannot find a Route for this hash: ' . $request->getRequestURI());
     }
     
     public function getRouteByName($name) {

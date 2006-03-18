@@ -1,8 +1,8 @@
 <?php
 // {{{ License
-// ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005,2006 Oancea Aurelian <aurelian@locknet.ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -29,31 +29,33 @@
 //
 // $Id$
 //
-// ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 // }}}
-
-// loads main framework dependecies.
-include_once('medick/Object.php');
-include_once('medick/Exception.php');
-include_once('medick/util.php');
-include_once('medick/ErrorHandler.php');
-include_once('medick/Registry.php');
 
 /**
  * 
- * @package medick.core
- * @author Oancea Aurelian
+ * @package medick.context
  */
-class Medick extends Object {
+class ContextManager extends Object {
 
-    /**
-     * It gets the medick version.
-     * 
-     * @return string the medick version
-     */
-    public static function getVersion() {
-        return '0.2.1';
+    static protected $instance= NULL;
+
+    static public function load($stream, $environment) {
+
+        if (ContextManager::$instance === NULL) {
+            ContextManager::$instance= new ContextManager($stream, $environment);
+        }
+        return ContextManager::$instance;
     }
 
-}
+    private function ContextManager($stream, $environment) {
+        include_once('configurator/XMLConfigurator.php');
+        $this->configurator= new XMLConfigurator($stream, $environment);
+    }
 
+    public function getConfigurator() {
+        return $this->configurator;
+    }
+    
+}
+ 

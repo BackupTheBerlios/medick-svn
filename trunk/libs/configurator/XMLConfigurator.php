@@ -46,13 +46,31 @@ class XMLConfigurator extends Object implements IConfigurator {
     /** @var SimpleXML */
     protected $sxe;
 
+    protected $application_name;
+    
+    protected $config_file;
+    
     /**
      * Constructor
      * 
      * @param string/file xml
      * @throws ConfiguratorException
      */
-    public function XMLConfigurator($xml) {
+    public function XMLConfigurator($stream, $env) {
+        $xmlelement= simplexml_load_file($stream);
+        foreach($xmlelement->environment as $e) {
+            if ($e['name']==$env) {
+                $this->sxe= $e;
+                break;
+            }
+        }
+
+        if ($this->sxe === NULL) {
+            throw new ConfiguratorException('Cannot find environment: ' . $env . ' in ' . $stream);
+        }
+        $this->application_name= $xmlelement['name'];
+        $this->config_file = $stream;
+        /*
         if (file_exists($xml)) {
             if (is_readable($xml)) {
                 $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
@@ -65,8 +83,25 @@ class XMLConfigurator extends Object implements IConfigurator {
         if ($this->sxe === false) {
             throw new ConfiguratorException("Cannot read: " . $xml . " Bad Format!");
         }
+        */
     }
 
+    public function getApplicationName() {
+        return $this->application_name;
+    }
+    
+    public function getApplicationPath() {
+        return $this->sxe->properties->path;
+    }
+    
+    public function getWebContext() {
+        return $this->sxe->web;
+    }
+    
+    public function getConfigFile() {
+        return $this->config_file;
+    }
+    
     /**
      * Configuration Example:
      * <code>
@@ -140,32 +175,6 @@ class XMLConfigurator extends Object implements IConfigurator {
     /** @see IConfigurator::getLoggerFormatter() */
     public function getLoggerFormatter() {
         return ucfirst((string)trim($this->sxe->logger->formatter) . 'Formatter');
-    }
-
-    /** @see IConfigurator::getProperty() */
-    public function getProperty($name) {
-        foreach($this->sxe->property as  $properties ) {
-            if($properties['name'] != $name)
-                continue;
-            $_query= (string)trim($properties['value']);
-            if(
-                ($_query=='') ||
-                (strtolower($_query) == 'false') ||
-                (strtolower($_query)=='off') ||
-                ($_query == '0')
-            ) {
-                return FALSE;
-            } elseif(
-                (strtolower($_query)=='true') ||
-                (strtolower($_query)=='on') ||
-                ($_query == '1')
-            ) {
-                return TRUE;
-            } else {
-                return (string)$_query;
-            }
-        }
-        throw new ConfiguratorException('Property ' . $name . ' not found!');
     }
 
     /**

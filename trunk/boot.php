@@ -53,19 +53,4 @@ if (version_compare(PHP_VERSION, '5.1.0') > 0) {
 include_once('medick/Medick.php');
 set_error_handler(array(new ErrorHandler(), 'raiseError'));
 include_once('action/controller/Dispatcher.php');
-include_once('configurator/XMLConfigurator.php');
-include_once('logger/Logger.php');
-
-$conf_files = $_SERVER['MEDICK_APPLICATION_PATH'] . DIRECTORY_SEPARATOR . 'conf' .
-                        DIRECTORY_SEPARATOR . $_SERVER['MEDICK_APPLICATION_NAME'];
-
-$configurator= new XMLConfigurator($conf_files . '.xml');                        
-Registry::put($configurator, '__configurator');
-
-$logger= Registry::put(new Logger($configurator), '__logger');
-
-$logger->debug('Medick $v: ' . Medick::getVersion());
-$logger->debug('Config: ' . $conf_files . '.xml');
-$logger->debug('Routes: ' . $conf_files . '.routes.php');
-include_once($conf_files . '.routes.php');
 

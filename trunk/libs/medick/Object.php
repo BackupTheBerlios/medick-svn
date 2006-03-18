@@ -55,7 +55,7 @@ class Object {
      * @throws ReflectionException
      */
     public function getClass() {
-        return new ReflectionClass($this->getClassName());
+        return new MedickClass($this->getClassName());
     }
 
     /**
@@ -88,6 +88,22 @@ class Object {
     public function __toString() {
         return ucfirst($this->getClassName());
     }
+
+}
+
+class MedickClass extends ReflectionClass {
+
+    public function inheritsFrom($parent) {
+        return $this->isSubclassOf(new MedickClass($parent));
+    }
+    
+}
+
+class MedickMethod extends ReflectionMethod {
+
+}
+
+class MedickProperty extends ReflectionProperty {
 
 }
 

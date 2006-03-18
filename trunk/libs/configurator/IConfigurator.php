@@ -76,7 +76,7 @@ interface IConfigurator {
      * @return string, the property value
      * @throws ConfiguratorException if the property is not found
      */
-    function getProperty($name);
+    // function getProperty($name);
 
     /**
      * Based on id we return the dsn array

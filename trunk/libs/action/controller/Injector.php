@@ -62,13 +62,7 @@ class Injector extends Object {
     public function Injector($append= TRUE) {
         $this->config = Registry::get('__configurator');
         $this->logger = Registry::get('__logger');
-        if (array_key_exists('MEDICK_APPLICATION_PATH', $_SERVER)) {
-            $app_path = $_SERVER['MEDICK_APPLICATION_PATH'];
-        } else {
-            $app_path = $this->config->getProperty('application_path');
-        }
-        
-        $app_path .= DIRECTORY_SEPARATOR;
+        $app_path= $this->config->getApplicationPath() . DIRECTORY_SEPARATOR;
         
         if ($append) {
             $app_path .= 'app' . DIRECTORY_SEPARATOR;
