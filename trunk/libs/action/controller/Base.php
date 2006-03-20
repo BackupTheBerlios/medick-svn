@@ -151,10 +151,9 @@ class ActionController extends Object {
      * @return Response
      */
     public static function process_with_exception(
-                                                    Request $request,
-                                                    Response $response,
-                                                    Exception $exception)
-    {
+                                                   Request $request,
+                                                   Response $response,
+                                                   Exception $exception) {
         if(ob_get_length()) {
             ob_end_clean();
         }
@@ -331,7 +330,7 @@ class ActionController extends Object {
         // TODO: check if we have a / at the end, if not, add one
         
         $this->template->assign('__base', $this->config->getWebContext()->document_root .'/');
-        $this->template->assign('__server', $this->config->getWebContext()->server_name);
+        $this->template->assign('__server', (string)$this->config->getWebContext()->server_name);
         
         $this->template->assign('__controller', $this->params['controller']);
         $this->template->assign('__version', Medick::getVersion());
@@ -375,7 +374,7 @@ class ActionController extends Object {
         }
         $redirect_to= $this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root . '/';
         $rewrite = strtolower($this->config->getWebContext()->rewrite);
-        if ($rewrite == 'false' || $rewrite == 'off' || $rewrite == 0) {
+        if ($rewrite == 'false' || $rewrite == 'off' || $rewrite == '0') {
             $redirect_to .= 'index.php/';
         }
         $redirect_to .= $controller . '/' . $action;
@@ -518,4 +517,3 @@ class ActionController extends Object {
     }
 }
 
-// }

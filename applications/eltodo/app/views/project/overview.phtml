@@ -1,5 +1,13 @@
 <!-- $Id$ -->
 <h2>Project Overview</h2>
 
-<b><?= $project->name;?></b>
+<div id="project_name"><?=$project->name;?></div>
+
+<script language="JavaScript">
+    new Ajax.InPlaceEditor('project_name', '/eltodo/project/update',
+    { callback: function(form, value) { return 'id=<?=$project->id;?>&name=' + value }});
+</script>
+
+
 <?= Textile::textilize($project->description);?>
+

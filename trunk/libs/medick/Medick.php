@@ -52,7 +52,7 @@ class Medick extends Object {
      * @return string the medick version
      */
     public static function getVersion() {
-        return '0.2.1';
+        return '0.2.2-svn';
     }
 
 }
