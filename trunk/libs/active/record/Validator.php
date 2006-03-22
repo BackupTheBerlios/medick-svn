@@ -111,18 +111,29 @@ class Validator extends Object {
     /**
      * Check if the given filed is not unique
      *
+     * Executes:
+     * <code>
+     *  SELECT ${FIELD.NAME} FROM ${TABLE} WHERE ${FIELD.NAME}=${FIELD.VALUE} AND ${ROW.PRIMARY_KEY.NAME}!=${ROW.PRIMARY_KEY.VALUE}
+     * </code>
+     * If the result set is empty, we return FALSE, otherwise this Filed is unique and therefore we return TRUE
+     *
+     * @todo this should also work for fields without PK?
+     * 
      * @param Filed field
      * @return bool TRUE if is not unique
      */ 
     private function isNotUnique(Field $field) {
+        $supp= $this->row->getPrimaryKey()->getValue()===NULL ? '' : ' and ' . $this->row->getPrimaryKey()->getName() . '!=?';
         try {
             ActiveRecord::build(
                 new QueryBuilder(
                     Inflector::singularize($this->row->getTable()), 
                     array(
                         'first', 
-                        array('condition'=>$field->getName() . '=?'), 
-                        array($field->getValue()
+                        array('condition'=>$field->getName() . '=?' . $supp,
+                              'columns'=>$field->getName()
+                    ), 
+                        array($field->getValue(), $this->row->getPrimaryKey()->getValue()
                     )
                 )
             ));

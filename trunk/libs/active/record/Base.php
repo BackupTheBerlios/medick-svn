@@ -108,7 +108,7 @@ abstract class ActiveRecord extends Object {
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
 
-        $table_info   = self::$conn->getDatabaseInfo()->getTable($this->table_name);
+        $table_info   = ActiveRecord::$conn->getDatabaseInfo()->getTable($this->table_name);
         $this->pk     = $table_info->getPrimaryKey()->getName();
 
         $this->row = new DatabaseRow($this->table_name);
@@ -582,6 +582,7 @@ abstract class ActiveRecord extends Object {
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
         if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
+        Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);
         if ($builder->getType() == 'first') {
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
@@ -599,7 +600,6 @@ abstract class ActiveRecord extends Object {
         }
         // release resources.
         $rs->close();$stmt->close();
-        Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);
         return $results;
     }
 }

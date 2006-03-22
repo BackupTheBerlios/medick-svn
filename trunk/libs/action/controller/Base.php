@@ -329,7 +329,7 @@ class ActionController extends Object {
         // predefined variables:
         // TODO: check if we have a / at the end, if not, add one
         
-        $this->template->assign('__base', $this->config->getWebContext()->document_root .'/');
+        $this->template->assign('__base', $this->config->getWebContext()->document_root);
         $this->template->assign('__server', (string)$this->config->getWebContext()->server_name);
         
         $this->template->assign('__controller', $this->params['controller']);

@@ -1,10 +1,10 @@
 <!-- $Id$ -->
 <h2>Project Overview</h2>
 
-<div id="project_name"><?=$project->name;?></div>
+<div id="project_name" style="font-weight:bold;font-size:1.8em"><?=$project->name;?></div>
 
 <script language="JavaScript">
-    new Ajax.InPlaceEditor('project_name', '/eltodo/project/update',
+    new Ajax.InPlaceEditor('project_name', '/eltodo/project/update_name',
     { callback: function(form, value) { return 'id=<?=$project->id;?>&name=' + value }});
 </script>
 

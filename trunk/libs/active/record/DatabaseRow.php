@@ -36,7 +36,8 @@ include_once('active/record/Field.php');
 
 /**
  * It represents a Row from the Database
- *
+ * 
+ * @todo this should be refactored to remove dupplicate affected_fields array, it`s not faster.
  * @package medick.active.record
  * @author Oancea Aurelian
  */
@@ -165,7 +166,9 @@ class DatabaseRow extends Collection {
     public function updateStatus(Field $field, $value) {
         $field->setValue($value);
         $field->isAffected = TRUE;
-        $this->field_names[] = $field->getName();
+        if (!in_array($field->getName(), $this->field_names)) {
+            $this->field_names[] = $field->getName();
+        }
         $this->affected_fields[$field->getName()] = $field;
         $this->affected = TRUE;
     }

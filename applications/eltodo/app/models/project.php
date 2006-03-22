@@ -20,11 +20,14 @@ class Project extends ActiveRecord {
         return TRUE;
     }
 
+    public static function find_by_id(Request $request) {
+        return Project::find($request->getParameter('id'));
+    }
+    
     public static function find() {
         $args= func_get_args();
         return ActiveRecord::build(new QueryBuilder(__CLASS__,$args));
-        // ActiveRecordBase::initialize(__CLASS__);
-        // return ActiveRecordBase::__find(func_get_args());
     }
 
 }
+

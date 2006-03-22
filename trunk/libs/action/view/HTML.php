@@ -84,7 +84,16 @@ class ActiveRecordHelper extends Object {
         // $prepend_text = isset($options['prepend']) ? $options['prepend'] : "";
         // $append_text  = isset($options['append']) ? $options['append'] : "";
         // $css_class    = isset($options['css_class']) ? $options['css_class'] : "formError";
-
+        $field= $object->getRow()->getFieldByName($method);
+        if (!$field or !$field->hasErrors()) {
+            return;
+        }
+        $buff= '<div class="formErrors">';
+        foreach ($field->getErrors() as $error) {
+            $buff .= $error . '<br />';
+        }
+        $buff .= "</div>\n";
+        return $buff;
     }
 
 }
@@ -161,21 +170,27 @@ class FormHelper extends Object {
             $buff .= '<div class="fieldWithErrors">';
             $errors= TRUE;
         }
+        
         $buff .= '<input type="checkbox" id="' . $id . '" name="' . $name . '" ';
+        
         foreach ($options as $key=>$value) {
             $buff .= $key . '="' . $value . '" ';
         }
-        if ((int)$object->$method > 0) {
-            $buff .= 'value="1" checked="checked"';
+
+        $value= $object->$method === NULL ? 0: $object->$method;
+        
+        if ( (int)$value > 0 ) {
+            $buff .= 'checked="checked"';// value="' . $value . '"';
         } else {
-            $buff .= 'value="0"';
+            // $buff .= 'value="0"';
         }
         $buff .= ' />';
         if ($errors) {
             $buff .= '</div>';
         }
-        $buff .= '<input name="' . $name . '" value="' . $object->$method . '" type="hidden" />';
         return $buff;
+        // . '<input name="' . $name . '" value="' . $value . '" type="hidden" />';
+        // return $buff;
     }
 }
 

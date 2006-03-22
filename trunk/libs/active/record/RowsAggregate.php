@@ -80,8 +80,13 @@ class RowsAggregate extends Object implements IteratorAggregate {
 
     /**
      * Magick php5 __call
+     *
+     * Resolved methods:
+     * <ul><li>size an alias for count</li></ul>
+     *
      */
     public function __call($method, $arguments) {
+        if ($method == 'size') return $this->count();
         trigger_error(sprintf('Call to undefined method: %s->%s(%s).', get_class($this), $method,$arguments), E_USER_ERROR);
     }
 }

@@ -14,50 +14,33 @@ class ProjectController extends ApplicationController {
     /** layout to use for this controller */
     protected $use_layout= 'eltodo';
 
-    /*
+    /** afiseaza formularul */
     public function edit() {
-      $project= Project::find($this->params['id']);
-      $project->name= $this->request->getParameter('name');
-      // try {
-      $project->save();
-      $this->render_text($project->name);
-      // }
-    }
-*/
-
-  /** afiseaza formularul */
-  public function edit() {
-    try {
-      $this->project= Project::find($this->request->getParameter('project'));
-    } catch (RecordNotFoundException $rnfEx) {
-        $this->redirect_to('all');
-    }
-  }
-
-  /** update */
-    public function update() {
-  
         try {
-            $this->project= Project::find($this->request->getParameter('id'));
-            if ($this->request->getParameter('name') != NULL) {
-                $changed= $this->project->name= $this->params['name'];
-            }
-            if ($this->request->getParameter('description') != NULL) {
-                $changed= $this->project->description= $this->params['description'];
-            }
-            // ->attributes($this->request->getParameter('project'));
+            $this->project= Project::find($this->request->getParameter('project'));
+        } catch (RecordNotFoundException $rnfEx) {
+            $this->redirect_to('all');
+        }
+    }
+
+    /** update */
+    public function update_name() {
+        try {
+            $this->project= Project::find($this->request->getParameter('project'));
+            $name= $this->project->name;
+            $this->project->name= $this->params['name'];
             if ( $this->project->save() === FALSE) {
-                // erori! se afiseaza din view cu ActiveRecordHelper::error_messages_for($project)
-                return $this->redirect_to('all');
+                // render the old name
+                $this->render_text($name);
             } else {
-                $this->render_text($changed);
+                // reder the new name
+                $this->render_text($this->project->name);
             }
         } catch (RecordNotFoundException $rnfEx) {
             $this->logger->warn($rnfEx->getMessage());
-            $this->flash('error', $rnfEx->getMessage());
-            $this->redirect_to('all');
+            $this->render_text($name);
         }
-  }
+    }
     
     /** Creates a new Project */
     public function create() {
