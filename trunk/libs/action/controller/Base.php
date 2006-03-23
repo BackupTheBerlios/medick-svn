@@ -315,7 +315,7 @@ class ActionController extends Object {
         $this->request  = $request;
         $this->response = $response;
         $this->session  = $request->getSession();
-        $this->session->start();
+        // $this->session->start();
         $this->params   = $request->getParameters();
 
         $this->logger   = Registry::get('__logger');
@@ -425,6 +425,7 @@ class ActionController extends Object {
             }
         }
         $this->params['action'] = strtolower($action_name);
+        $this->template->assign('__action', $this->params['action']);
         // $this->logger->debug('Action:: ' . strtolower($action_name));
         // quickly load the common magick method.
         if ($_common= $this->createMethod('__common')) {
@@ -516,4 +517,3 @@ class ActionController extends Object {
         }
     }
 }
-

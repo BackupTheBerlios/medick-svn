@@ -42,6 +42,7 @@ include_once('active/record/Validator.php');
 include_once('active/support/Inflector.php');
 // 3-rd party.
 include_once('creole/Creole.php');
+include_once('creole/CreoleTypes.php');
 
 /**
  * Main ActiveRecord Class
@@ -108,8 +109,8 @@ abstract class ActiveRecord extends Object {
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
 
-        $table_info   = ActiveRecord::$conn->getDatabaseInfo()->getTable($this->table_name);
-        $this->pk     = $table_info->getPrimaryKey()->getName();
+        $table_info = ActiveRecord::$conn->getDatabaseInfo()->getTable($this->table_name);
+        $this->pk   = $table_info->getPrimaryKey()->getName();
 
         $this->row = new DatabaseRow($this->table_name);
         foreach( $table_info->getColumns() as $col) {
@@ -131,11 +132,10 @@ abstract class ActiveRecord extends Object {
             }
             $this->row[] = $field;
         }
-        // $logger= Registry::get('__logger');
-        foreach ($params as $field_name => $field_value) {
-            // $logger->debug('['.__LINE__ . '] Name: ' . $field_name . ' Value: ' . $field_value);
+        // confused?
+        if(!empty($params)) { foreach ($params as $field_name => $field_value) {
             $this->$field_name = $field_value;
-        }
+        }}
     }
 
     // {{{ __magic functions
@@ -201,6 +201,7 @@ abstract class ActiveRecord extends Object {
      * @param array arguments
      * @throws ActiveRecordException
      */
+     
     public function __call($method, $arguments) {
         if ($method == 'destroy') return $this->delete();
         $know_methods = array('save', 'insert', 'update', 'delete');
@@ -214,11 +215,11 @@ abstract class ActiveRecord extends Object {
             $this->$method($arguments[0]);
         }
     }
-
+    
     /** returns a string representation of this object */
-    public function __toString() {
+    public function toString() {
         $string = '';
-        foreach ($this->fields->getAffectedFields() as $field) {
+        foreach ($this->row->getAffectedFields() as $field) {
             $string .= "[ " . $field->type . " ] " . $field->getName() . " : " . $field->getValue() . "\n";
         }
         return $string;
@@ -227,15 +228,16 @@ abstract class ActiveRecord extends Object {
     /** Prepare this Object for serialization */
     public function __sleep() {
         ActiveRecord::close_connection();
-        return array('row', 'pk', 'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
+        return array('row', 'table_name', 'class_name','has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
     }
 
-    /** restore the Object state after unserialize */
+    /** restore the Object state after unserialize  */
     public function __wakeup() {
         ActiveRecord::establish_connection();
-        for($it = $this->fields->getIterator(); $it->valid(); $it->next()) {
-            $field_name= $it->current()->getName();
-            $this->$field_name = $it->current()->getValue();
+        $it= $this->row->iterator();
+        while($it->hasNext()) {
+            $current= $it->next();
+            $this->__set($current->getName(), $current->getValue());
         }
     }
 
@@ -246,11 +248,11 @@ abstract class ActiveRecord extends Object {
      *
      * @return DatabaseRow
      */
-    public final function getRow() {
+    public function getRow() {
         return $this->row;
     }
 
-    public final function validates () {
+    protected function validates () {
         return new Validator($this->row);
     }
 
@@ -353,11 +355,7 @@ abstract class ActiveRecord extends Object {
             $logger->info('Object has Errors!');
             return false;
         }
-/*
-        if ( !$this->before_save() || count($this->row->collectErrors()) > 0) {
-            return FALSE;
-        }
-*/
+
         if ($this->row->getPrimaryKey()->isAffected) {
             return $this->update();
         } else {
@@ -391,11 +389,7 @@ abstract class ActiveRecord extends Object {
             $logger->info('Object has Errors!');
             return false;
         }
-/*
-        if (!$this->before_insert() || count($this->row->collectErrors()) > 0) {
-            return false;
-        }
-*/
+
         $af_rows = $this->performQuery($this->getInsertSql());
         $id = $this->getNextId();
         $this->after_insert();
@@ -461,16 +455,18 @@ abstract class ActiveRecord extends Object {
      */
     public final function delete() {
         if (!$this->before_delete() || count($this->row->collectErrors()) > 0) {
-            return FALSE;
+            return false;
         }
-        $whereClause = array();
-        foreach ($this->row->getAffectedFields() as $col) {
-            $whereClause[] = $col->getName() . ' = ? ';
+        
+        if ($this->row->getPrimaryKey() !== NULL && $this->row->getPrimaryKey()->getValue()===NULL) {
+            throw new ActiveRecordException('Refusing to delete everything from ' . $this->table_name . ', Primary Key was NULL');
         }
-        $sql = 'DELETE FROM ' . $this->table_name . ' WHERE ' . implode(' AND ', $whereClause);
-        $af= $this->performQuery($sql);
+        $sql= 'delete from ' . $this->table_name . ' where id=?';
+        $stmt= ActiveRecord::$conn->prepareStatement($sql);
+        $stmt->setInt(1, $this->row->getPrimaryKey()->getValue());
+        $af_rows= $stmt->executeUpdate();
         $this->after_delete();
-        return $af;
+        return $af_rows;
     }
     // }}}
 
@@ -487,7 +483,7 @@ abstract class ActiveRecord extends Object {
             $this->$_pk = $id;
             return $id;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
@@ -582,7 +578,6 @@ abstract class ActiveRecord extends Object {
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
         if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
-        Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);
         if ($builder->getType() == 'first') {
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
@@ -603,4 +598,3 @@ abstract class ActiveRecord extends Object {
         return $results;
     }
 }
-

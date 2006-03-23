@@ -1,5 +1,5 @@
 <?php
-
+/* $Id$ */
 function get_comment(Reflector $reflector) {
     $comments= explode("\n", $reflector->getDocComment());
     foreach ($comments as $line) {
