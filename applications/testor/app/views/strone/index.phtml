@@ -1,0 +1,32 @@
+<h5>ActiveRecord + Session</h5>
+
+<? if(isset($flash['notice'])):?>
+    <div class="flash_notice">
+        <div class="label">Note</div>
+        <div class="content"><?=$flash['notice'];?></div>
+    </div>
+<? endif;?>
+<? if(isset($flash['error'])):?>
+    <div class="flash_error">
+        <div class="label">Warning</div>
+        <div class="content"><?=$flash['error'];?></div>
+    </div>
+<? endif;?>
+
+<hr />
+
+``strone" Status: <em><?=$status;?></em>
+&nbsp;<a href="<?=URL::create('strone','reload');?>"><img style="border:0" src="images/reload.png" /></a>
+
+<br />
+
+Count:&nbsp;<?=$strone->inc;?>&nbsp;
+<a href="<?=URL::create('strone','decrease');?>"><img style="border:0" src="images/decrease.png" /></a>
+&nbsp;
+<a href="<?=URL::create('strone','increase');?>"><img style="border:0" src="images/increase.png" /></a>
+
+<br />
+
+
+
+

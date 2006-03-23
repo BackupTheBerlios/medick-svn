@@ -1,0 +1,112 @@
+.flash_error, .flash_notice {
+  border: solid black 1px;
+  margin: 1em 3em;
+  width:500px;
+}
+
+.flash_notice .label {
+  background: #369;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+}
+
+.flash_notice .content {
+  background: #F0F0FF;
+  color: black;
+  line-height: 120%;
+  font-size: 90%;
+  padding: 5px 10px;
+}
+
+.flash_error .content {
+  background: #FFF0F0;
+  color: black;
+  line-height: 120%;
+  font-size: 90%;
+  padding: 5px 10px;
+}
+
+.flash_error .label {
+  background: #C00;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+}
+
+.entry_on {
+  background: #a6f9cf;
+  /*color: white;*/
+  border-bottom: 1px solid black;
+  padding: 2px;
+  margin: 2px;
+}
+
+.entry_off {
+  background: #e3a6a6;
+  /*color: white;*/
+  border-bottom: 1px solid black;
+  padding: 2px;
+  margin:2px;
+}
+
+
+body {
+  font: .8em Verdana, Tahoma, Arial, Helvetica, sans-serif;
+  color:#333;
+}
+
+a:link, a:visited {
+  color: #30c;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:hover,a:active {
+  color: #c03;
+  background-color: transparent;
+}
+
+.btn { 
+  border: 1px solid #990000; 
+  color: #990000; 
+  font: bold 11px; 
+}
+a.btn {
+  color: #990000;
+  text-decoration: none;
+}
+
+fieldset {
+    border: 1px solid #26a;
+    margin: 1em 0em 1em 0em;
+    padding: 0em 1em 1em 1em;
+    line-height: 1.5em;
+    width: 500px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 0.5em;
+    font-size:115%;
+}
+
+label {
+    margin:0;
+    padding:2em;
+    margin-top:0.3em;
+    font-weight:bold;
+}
+
+fieldset>input.submit-button {
+    margin-left:5em;
+    margin-top:1em;
+    clear:both;
+}
+
+div.fieldWithErrors {
+    background-color: red;
+    display: table;
+    padding: 2px;
+}
+

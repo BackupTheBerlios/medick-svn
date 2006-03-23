@@ -1,0 +1,676 @@
+127.0.0.1 -- 23/03/2006 21:44:14 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:44:14 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:44:14 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:44:14 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:44:14 [ WARN ] >>> Cannot find a Route with this name: 512
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> {HTTPRequest}-->[controller=main][action=index]
+127.0.0.1 -- 23/03/2006 21:44:18 [ INFO ] >>> Method MainController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/main_controller.php
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/strone_controller.php
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/tone_controller.php
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/main_helper.php
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:44:18 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> {HTTPRequest}-->[controller=main][action=index]
+127.0.0.1 -- 23/03/2006 21:46:40 [ INFO ] >>> Method MainController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/main_controller.php
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/strone_controller.php
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/tone_controller.php
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/main_helper.php
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:46:40 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:46:47 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:46:47 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:46:47 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:46:47 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:46:47 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:46:47 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:46:47 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:46:47 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:46:47 [ WARN ] >>> mysqli extension not loaded [User Info: Array]
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:46:59 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> select * from strones where id=?
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:46:59 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:46:59 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=reload]
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:04 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:04 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> select * from strones where id=?
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:04 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:04 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:05 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 1
+127.0.0.1 -- 23/03/2006 21:47:05 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:06 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:06 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:06 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:07 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 2
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:07 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:07 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:07 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=decrease]
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:09 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 1
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:09 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:09 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:09 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:11 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 2
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:11 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:11 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:11 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 3
+127.0.0.1 -- 23/03/2006 21:47:11 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 4
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:12 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:12 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=reload]
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:13 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:13 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> select * from strones where id=?
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:13 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:13 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:15 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:15 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:15 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:15 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:15 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:16 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:16 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:16 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:16 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:16 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:16 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:16 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:16 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> {HTTPRequest}-->[controller=main][action=index]
+127.0.0.1 -- 23/03/2006 21:47:17 [ INFO ] >>> Method MainController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/main_controller.php
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/strone_controller.php
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/tone_controller.php
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/main_helper.php
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:17 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:35 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 5
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:35 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:35 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:35 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:37 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 6
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:37 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:37 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:37 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:38 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 7
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:38 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:38 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:38 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:39 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 8
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:47:39 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:47:39 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:47:39 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:48:29 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:48:29 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:48:29 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=reload]
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:48:32 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 21:48:32 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> select * from strones where id=?
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 21:48:32 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 21:48:32 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:00:10 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:00:10 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:00:10 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:07 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:07 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:07 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=reload]
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:12 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:12 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> select * from strones where id=?
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:12 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:12 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=reload]
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:14 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:14 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> select * from strones where id=?
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:14 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:14 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=reload]
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:15 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:15 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> select * from strones where id=?
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:15 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:15 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:17 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 9
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:17 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:17 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:17 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=decrease]
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:19 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 8
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:19 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:19 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:19 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:20 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 9
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:20 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:20 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:20 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=decrease]
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:22 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 8
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:22 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:22 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:22 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=increase]
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:23 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Query: UPDATE strones SET id = 1, inc = 9
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Redirecting to: http://localhost/testor/strone/index.html
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> {HTTPRequest}-->[controller=strone][action=index]
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/strone.php
+127.0.0.1 -- 23/03/2006 22:01:23 [ INFO ] >>> Method StroneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/strone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:23 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_strone Cannot load : `strone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/strone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:23 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> {HTTPRequest}-->[controller=main][action=index]
+127.0.0.1 -- 23/03/2006 22:01:32 [ INFO ] >>> Method MainController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/main_controller.php
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/strone_controller.php
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/tone_controller.php
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/main_helper.php
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:32 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> {HTTPRequest}-->[controller=tone][action=add]
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/tone.php
+127.0.0.1 -- 23/03/2006 22:01:57 [ INFO ] >>> Method ToneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/tone_helper.php
+127.0.0.1 -- 23/03/2006 22:01:57 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_tone Cannot load : `tone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/tone_helper.php`
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:01:57 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> {HTTPRequest}-->[tone=Array][submit=Submit][controller=tone][action=create]
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/tone.php
+127.0.0.1 -- 23/03/2006 22:02:01 [ INFO ] >>> Method ToneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> select name from tones where name=?
+127.0.0.1 -- 23/03/2006 22:02:01 [ INFO ] >>> Object has Errors!
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/tone_helper.php
+127.0.0.1 -- 23/03/2006 22:02:01 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_tone Cannot load : `tone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/tone_helper.php`
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:02:01 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:02:03 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:02:03 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:02:03 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:02:03 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:02:03 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:02:03 [ DEBUG ] >>> {HTTPRequest}-->[tone=Array][submit=Submit][controller=tone][action=create]
+127.0.0.1 -- 23/03/2006 22:02:03 [ DEBUG ] >>> Model: /wwwroot/medick/applications/testor/app/models/tone.php
+127.0.0.1 -- 23/03/2006 22:02:03 [ INFO ] >>> Method ToneController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:02:04 [ DEBUG ] >>> select name from tones where name=?
+127.0.0.1 -- 23/03/2006 22:02:04 [ INFO ] >>> Object has Errors!
+127.0.0.1 -- 23/03/2006 22:02:04 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/tone_helper.php
+127.0.0.1 -- 23/03/2006 22:02:04 [ INFO ] >>> skipping helper: /wwwroot/medick/applications/testor/app/helpers/_tone Cannot load : `tone_helper.php`. Searched in: `/wwwroot/medick/applications/testor/app/helpers/tone_helper.php`
+127.0.0.1 -- 23/03/2006 22:02:04 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:02:04 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:02:04 [ DEBUG ] >>> Action performed.
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Config File: /wwwroot/medick/applications/testor/conf/testor.xml
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> {app.name} -> testor
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> routes loaded from: /wwwroot/medick/applications/testor/conf/testor.routes.php
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Medick {0.2.2-svn} ready to dispatch.
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> {Route}-->Name: AUTO; List: :controller/:action/:id;
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> {HTTPRequest}-->[controller=main][action=index]
+127.0.0.1 -- 23/03/2006 22:02:05 [ INFO ] >>> Method MainController::__common() does not exist
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/main_controller.php
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/strone_controller.php
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Classes:/wwwroot/medick/applications/testor/app/controllers/tone_controller.php
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Helper: /wwwroot/medick/applications/testor/app/helpers/main_helper.php
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Layout: /wwwroot/medick/applications/testor/app/views/layouts/main.phtml
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> ...done.
+127.0.0.1 -- 23/03/2006 22:02:05 [ DEBUG ] >>> Action performed.

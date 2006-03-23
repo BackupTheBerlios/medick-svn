@@ -1,0 +1,9 @@
+/* stylesheet for testor project */
+/* $Id$ */
+
+body {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid black;
+    font-family:verdana, arial, helvetica, sans-serif;
+}

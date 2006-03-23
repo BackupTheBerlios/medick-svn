@@ -1,0 +1,31 @@
+
+<div><h5>Testor :: aplicatie ajutatoare pentru rezolvarea problemelor aparute in release 0.2.1 din medick</h5></div>
+
+<hr />
+<div>Available Controllers/Actions:</div>
+
+<? foreach ($ctrl as $controller):?>
+
+    <div style="margin:2px;padding:12px;">
+        <div style="background-color:#e2e2e2;border:1px solid black;">
+            <b>Controller: <?=get_controller($controller);?></b>
+            <br /><em>Defined in:</em><?=$controller->getFileName();?>
+            <br /><em>Description:</em><?=get_comment($controller);?>
+        </div>
+
+        <? foreach ($controller->getMethods() as $action):?>
+            <? if ($action->isPublic() 
+                    && !$action->isConstructor() 
+                    && !$action->isDestructor() 
+                    && $action->getDeclaringClass()->getName() == $controller->getName() ): ?>
+                <div style="background-color:#e2e;">
+                &nbsp;&nbsp;&nbsp;&nbsp;\__&nbsp;
+                <a href="<?=URL::create(get_controller($controller),$action->getName());?>" title="execute"><?=$action->getName();?></a>
+                :&nbsp;&nbsp;<?=get_comment($action);?>
+                </div>
+            <? endif;?>
+        <? endforeach;?>
+    </div>
+
+<? endforeach;?>
+

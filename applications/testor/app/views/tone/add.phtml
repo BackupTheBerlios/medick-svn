@@ -1,0 +1,13 @@
+<!-- <h3>ToneController#add</h3> -->
+
+<form action="<?=URL::create('tone','create');?>" method="post">
+  <fieldset>
+    <legend>Adauga un nou tone</legend>
+    
+    <?=$this->render_partial(NULL, 'form');?>
+  
+    <div><?=Form::submit('submit', 'Submit');?></div>
+
+  </fieldset>
+</form>
+

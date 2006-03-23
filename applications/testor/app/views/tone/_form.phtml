@@ -1,0 +1,12 @@
+    
+<div>
+      <label for="tone_name">Name:</label>
+      <?=ActiveRecordHelper::error_message_on($tone, 'name');?>
+      <?=FormHelper::text_field($tone, 'name', array('size'=>35));?>
+</div>
+    
+<div>
+      <label for="tone_status">Status:</label>
+      <?=FormHelper::check_box($tone,'status');?>
+</div>
+

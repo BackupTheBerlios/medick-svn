@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ ! $Id$
+ ! -->
+<application name="testor">
+    <!-- localhost environment -->
+    <environment name="localhost">
+        <!-- general properties -->
+        <properties>
+            <path>/wwwroot/medick/applications/testor</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://localhost:8091</server_name>
+            <document_root>/testor</document_root>
+            <rewrite>on</rewrite>
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="0">
+                    <property name="path" value="/wwwroot/medick/applications/testor/log/testor.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on testor" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "testor"
+                 username = "root"
+                 password = "sacosica" />
+        </database>
+    </environment>
+
+    <!-- a sample test environment -->
+    <environment name="gremlin">
+        <!-- general properties -->
+        <properties>
+            <path>/wwwroot/medick/applications/testor</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://localhost</server_name>
+            <document_root>/testor</document_root>
+            <rewrite>on</rewrite>
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="0">
+                    <property name="path" value="/wwwroot/medick/applications/testor/log/testor.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on Exemplu.com::testor" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                phptype  = "pgsql"
+                hostspec = "localhost"
+                username = "andro"
+                password = "su^lor*"
+                database = "testor" />
+        </database>
+    </environment>
+  
+</application>
+  
