@@ -35,7 +35,7 @@
 /**
  * Active Record Validator
  *
- * In medick, Validations is performed in ActiveRecord with the help
+ * In medick, validations is performed in ActiveRecord with the help
  * of before_* filters
  * <code>
  *  class Person extends ActiveRecord {
@@ -102,9 +102,9 @@ class Validator extends Object {
     private function isEmpty(Field $field) {
         if ($field->getValue() == '') {
             $field->addError('is empty');
-            return TRUE;
+            return true;
         } else {
-            return FALSE;
+            return false;
         }
     }
     
@@ -138,9 +138,9 @@ class Validator extends Object {
                 )
             ));
             $field->addError('is not unique');
-            return TRUE;
+            return true;
         } catch (RecordNotFoundException $rnfEx) {
-            return FALSE;
+            return false;
         }
     }
 

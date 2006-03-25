@@ -346,16 +346,9 @@ abstract class ActiveRecord extends Object {
      * </code>
      */
     public final function save() {
-        $logger= Registry::get('__logger');
-        if ( !$this->before_save() ) {
-            $logger->info('Before Save Failed!');
+        if ( !$this->before_save() or count($this->row->collectErrors()) > 0) {
             return false;
         }
-        if (count($this->row->collectErrors()) > 0) {
-            $logger->info('Object has Errors!');
-            return false;
-        }
-
         if ($this->row->getPrimaryKey()->isAffected) {
             return $this->update();
         } else {
@@ -380,16 +373,9 @@ abstract class ActiveRecord extends Object {
      * @throws SQLException
      */
     public final function insert() {
-        $logger= Registry::get('__logger');
-        if ( !$this->before_insert() ) {
-            $logger->info('Before Save Failed!');
+        if ( !$this->before_insert() or count($this->row->collectErrors()) > 0) {
             return false;
         }
-        if (count($this->row->collectErrors()) > 0) {
-            $logger->info('Object has Errors!');
-            return false;
-        }
-
         $af_rows = $this->performQuery($this->getInsertSql());
         $id = $this->getNextId();
         $this->after_insert();
@@ -414,13 +400,7 @@ abstract class ActiveRecord extends Object {
      * @throws SQLException
      */
     public final function update() {
-        $logger= Registry::get('__logger');
-        if ( !$this->before_update() ) {
-            $logger->info('Before Update Failed!');
-            return false;
-        }
-        if (count($this->row->collectErrors()) > 0) {
-            $logger->info('Object has Errors!');
+        if ( !$this->before_update() or count($this->row->collectErrors()) > 0) {
             return false;
         }
         $af= $this->performQuery($this->getUpdateSql());
@@ -457,7 +437,6 @@ abstract class ActiveRecord extends Object {
         if (!$this->before_delete() || count($this->row->collectErrors()) > 0) {
             return false;
         }
-        
         if ($this->row->getPrimaryKey() !== NULL && $this->row->getPrimaryKey()->getValue()===NULL) {
             throw new ActiveRecordException('Refusing to delete everything from ' . $this->table_name . ', Primary Key was NULL');
         }
@@ -525,7 +504,6 @@ abstract class ActiveRecord extends Object {
         foreach($this->row->getAffectedFields() as $field) {
             $sql .= $field->getName() . ' = ?, ';
         }
-
         return substr($sql, 0, -2) . $sqlSnippet;
     }
 
@@ -570,7 +548,6 @@ abstract class ActiveRecord extends Object {
             $class = new ReflectionClass($class_name);
         }
         ActiveRecord::establish_connection();
-        Registry::get('__logger')->debug($builder->compile()->getQueryString());
         $stmt = ActiveRecord::$conn->prepareStatement($builder->compile()->getQueryString());
         $i=1; foreach($builder->getBindings() as $binding) {
             $stmt->set($i++, $binding);
@@ -578,6 +555,7 @@ abstract class ActiveRecord extends Object {
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
         if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
         $rs = $stmt->executeQuery();
+        Registry::get('__logger')->debug('Query: ' . ActiveRecord::$conn->lastQuery);
         if ($builder->getType() == 'first') {
             if ($rs->getRecordCount() == 1) {
                 $rs->next();
