@@ -30,12 +30,8 @@ class ToneController extends ApplicationController {
      */
     public function create() {
         $this->tone= new Tone($this->request->getParameter('tone'));
-        // status is a check-box
-        if (!isset($this->params['tone']['status'])) {
-          $this->tone->status= 0;
-        } else {
-          $this->tone->status=1;
-        }
+        $this->set_status($this->tone);
+
         if ($this->tone->save() === FALSE) {
             $this->render('add');
         } else {
@@ -61,10 +57,8 @@ class ToneController extends ApplicationController {
      */
     public function update() {
         try {
-            $this->tone= Tone::find($this->request->getParameter('id'));
-            $this->tone->attributes($this->request->getParameter('tone'));
-            if (!isset($this->params['tone']['status'])) $this->tone->status=0;
-            $this->logger->debug($this->request->getParameter('tone'));
+            $this->tone= Tone::find($this->request->getParameter('id'))->attributes($this->request->getParameter('tone'));
+            $this->set_status($this->tone);
             if ($this->tone->save() === FALSE) {
                 $this->render('edit');
             } else {
@@ -78,6 +72,14 @@ class ToneController extends ApplicationController {
         }
     }
 
+    private function set_status($tone) {
+        if (!isset($this->params['tone']['status'])) {
+          $tone->status=0;
+        } else {
+          $tone->status=1;
+        }
+    }
+    
     /**
      * @desc: removes a <em>tone</em>
      */
@@ -85,7 +87,7 @@ class ToneController extends ApplicationController {
         try {
             $tone= Tone::find($this->request->getParameter('id'));
             $tone->delete();
-            $this->flash('notice', $tone->name . ' succesfully removed');
+            $this->flash('notice', '<em>' . $tone->name . '</em> succesfully removed');
             $this->redirect_to('index');
         } catch (ActiveRecordException $arEx) {
             $this->flash('error', $arEx->getMessage());

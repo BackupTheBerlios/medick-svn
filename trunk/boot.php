@@ -53,4 +53,3 @@ if (version_compare(PHP_VERSION, '5.1.0') > 0) {
 include_once('medick/Medick.php');
 set_error_handler(array(new ErrorHandler(), 'raiseError'));
 include_once('action/controller/Dispatcher.php');
-

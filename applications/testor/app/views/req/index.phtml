@@ -1,0 +1,12 @@
+ReqController#index
+
+<? if(isset($flash['notice'])): ?>
+    <div class="flash_notice">
+        <div class="label">Note</div>
+        <div class="content"><?=$flash['notice'];?></div>
+    </div>
+<? endif; ?>
+
+<br />
+Number: <?=$number;?>
+

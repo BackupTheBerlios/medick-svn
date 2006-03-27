@@ -227,7 +227,6 @@ abstract class ActiveRecord extends Object {
 
     /** Prepare this Object for serialization */
     public function __sleep() {
-        ActiveRecord::close_connection();
         return array('row', 'table_name', 'class_name','has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
     }
 
@@ -574,5 +573,6 @@ abstract class ActiveRecord extends Object {
         // release resources.
         $rs->close();$stmt->close();
         return $results;
-    }
+    } 
+    
 }

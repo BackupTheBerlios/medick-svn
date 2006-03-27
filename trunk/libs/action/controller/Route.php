@@ -116,7 +116,6 @@ class Component extends Object {
  *  $request->getParameter('id'); // => 12
  * </code>
  * @see Map, ActionControllerRouting, Component
- * @todo Route Requirements
  * @todo more docs
  * @package medick.action.controller
  * @subpackage routing
@@ -156,6 +155,10 @@ class Route extends Object {
         a list with default values */
     private $defaults;
 
+    /** @var array
+        a list with this route requirements */
+    private $requirements;
+    
     /** @var bool
         flag to indicate that this route is loaded.
         on initial phase, we will use this flag for knowing 
@@ -184,33 +187,15 @@ class Route extends Object {
      * @param array requirements the route requirements
      */
     public function Route($route_list, $name = '', /*Array*/ $defaults = array(), /*Array*/ $requirements = array()) {
-        $this->components = new Collection();
-        $this->route_list = $route_list;
-        $this->defaults   = $defaults;
-        $this->name       = $name==''?Route::AUTO:$name;
-        $this->isLoaded   = false;
+        $this->components   = new Collection();
+        $this->route_list   = $route_list;
+        $this->defaults     = $defaults;
+        $this->requirements = $requirements;
+        $this->name         = $name=='' ? Route::AUTO : $name;
+        $this->isLoaded     = false;
         $this->loadComponents();
     }
     
-    /**
-     * Helper Method for loading the Route Components
-     * 
-     * @return void
-     */ 
-    private function loadComponents() {
-        $parts= explode('/', trim($this->route_list, '/'));
-        foreach ($parts as $key=>$element) {
-            if (preg_match('/:[a-z0-9_\-]+/',$element, $match)) {
-                $c= new Component(substr(trim($match[0]), 1));
-                $c->setDynamic(true);
-            } else {
-                $c= new Component($element);
-                $c->setDynamic(false);
-            }
-            $this->components->add($c);
-        }
-    }
-
     /**
      * It gets the name of this Route.
      * 
@@ -247,6 +232,25 @@ class Route extends Object {
      */ 
     public function setDefault($name, $value) {
         $this->defaults[$name]= $value;
+    }
+    
+    /**
+     * Sets an array of route requirements
+     * 
+     * @param array the list of requirements
+     */
+    public function setRequirements(/*Array*/ $requirements= array()) {
+        foreach ($requirements as $name=>$value) $this->setRequirement($name, $value);
+    }
+
+    /**
+     * Sets a route requirement
+     * 
+     * @param string
+     * @param string
+     */
+    public function setRequirement($name, $value) {
+        $this->requirements[$name]=$value;
     }
     
     /**
@@ -301,6 +305,12 @@ class Route extends Object {
                 if (isset($parts[$it->key()])) {
                     if (!$component->isDynamic() && $component->getName() != $this->ignoreExtension($parts[$it->key()]) ) {
                         return false;
+                    } elseif (
+                        isset($this->requirements[$component->getName()]) 
+                            && 
+                        !preg_match($this->requirements[$component->getName()], $parts[$it->key()]) )
+                    {
+                        return false;
                     } else {
                         $this->merges[$component->getName()] = $this->ignoreExtension($parts[$it->key()]);
                     }
@@ -313,7 +323,35 @@ class Route extends Object {
         $this->load($request);
         return true;
     }
-
+    
+    /**
+     * Creates a Controller Instance
+     * 
+     * @throws RoutingException
+     * @return ActionControllerBase
+     */ 
+    public function createControllerInstance(Request $request) {
+        if (!$this->isLoaded) $this->load($request);
+        try {
+            Registry::get('__logger')->debug($this->toString());
+            return Registry::put(new Injector(), '__injector')->inject('controller', $request->getParameter('controller'));
+        } catch (FileNotFoundException $fnfEx) {
+            throw new RoutingException('Cannot create a controller instance, ' . $fnfEx->getMessage());
+        }
+    }
+    
+    /**
+     * A String representation of this Route
+     *
+     * @return string
+     */ 
+    public function toString() {
+        return sprintf('{%s}-->Name: %s; List: %s;', 
+                        $this->getClassName(), 
+                        $this->getNameToHuman(), 
+                        $this->route_list);
+    }
+    
     /**
      * Helper method, will remove everithing after . in parts
      * 
@@ -384,29 +422,22 @@ class Route extends Object {
     }
     
     /**
-     * Creates a Controller Instance
+     * Helper Method for loading the Route Components
      * 
-     * @throws RoutingException
-     * @return ActionControllerBase
+     * @return void
      */ 
-    public function createControllerInstance(Request $request) {
-        if (!$this->isLoaded) $this->load($request);
-        try {
-            Registry::get('__logger')->debug($this->toString());
-            return Registry::put(new Injector(), '__injector')->inject('controller', $request->getParameter('controller'));
-        } catch (FileNotFoundException $fnfEx) {
-            throw new RoutingException('Cannot create a controller instance, ' . $fnfEx->getMessage());
+    private function loadComponents() {
+        $parts= explode('/', trim($this->route_list, '/'));
+        foreach ($parts as $key=>$element) {
+            if (preg_match('/:[a-z0-9_\-]+/',$element, $match)) {
+                $c= new Component(substr(trim($match[0]), 1));
+                $c->setDynamic(true);
+            } else {
+                $c= new Component($element);
+                $c->setDynamic(false);
+            }
+            $this->components->add($c);
         }
     }
-    
-    /**
-     * A String representation of this Route
-     *
-     * @return string
-     */ 
-    public function toString() {
-        return sprintf("{%s}-->Name: %s; List: %s;", $this->getClassName(), $this->getNameToHuman(), $this->route_list);
-    }
-    
-}
 
+}

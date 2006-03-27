@@ -32,6 +32,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('action/controller/session/CreoleSessionContainer.php');
+
 /**
  * A wrapper around PHP session handling
  *
@@ -71,11 +73,20 @@ class Session extends Object {
         if ($this->isStarted) {
             throw new IllegalStateException('Session already Started!');
         }
+        
         // TODO: more settings
         // session_cache_limiter("nocache");
         // session_write_close();
+        // $container= new CreoleSessionContainer();
+   		// session_set_save_handler(array($container, 'open'),
+        //                     array($container, 'close'),
+        //                     array($container, 'read'),
+        //                     array($container, 'write'),
+        //                     array($container, 'destroy'),
+        //                     array($container, 'gc'));
+                
         session_start();
-        session_regenerate_id(TRUE);
+        //session_regenerate_id(TRUE);
         $this->isStarted= TRUE;
     }
 
@@ -164,4 +175,5 @@ class Session extends Object {
         }
         return TRUE;
     }
+      
 }

@@ -56,12 +56,14 @@ include_once('action/view/Base.php');
  * a method named <i>__common</i> is always invoked before the action itself. You can use this
  * method for assing template variables common to all your templates (like a menu with items from database).
  *
- * ActionController also defines some magic medick template variables. We will use <i>__</i> to mark them.
+ * ActionController also defines some magic medick template variables. We will use <b>__</b> to mark them.
  * Predefined medick variables available in templates:
  * <ul>
  *  <li>__base: the document root</li>
  *  <li>__server_name: this server name</li>
  *  <li>__controller: incoming controller</li>
+ *  <li>__action: curent action</li>
+ *  <li>__version: medick version</li>
  * </ul>
  * 
  * Other features:
@@ -315,7 +317,6 @@ class ActionController extends Object {
         $this->request  = $request;
         $this->response = $response;
         $this->session  = $request->getSession();
-        // $this->session->start();
         $this->params   = $request->getParameters();
 
         $this->logger   = Registry::get('__logger');
@@ -329,11 +330,11 @@ class ActionController extends Object {
         // predefined variables:
         // TODO: check if we have a / at the end, if not, add one
         
-        $this->template->assign('__base', $this->config->getWebContext()->document_root);
+        $this->template->assign('__base', (string)$this->config->getWebContext()->document_root);
         $this->template->assign('__server', (string)$this->config->getWebContext()->server_name);
-        
         $this->template->assign('__controller', $this->params['controller']);
         $this->template->assign('__version', Medick::getVersion());
+        
         $this->logger->debug($this->request->toString());
     }
 
@@ -367,19 +368,23 @@ class ActionController extends Object {
      * @param string controller defaults to NULL, the current controller
      * @param array params, additional parameters to pass with this redirect.
      */
-    protected function redirect_to($action, $controller= NULL, $params = array()) {
-        // get the curent controller, if NULL is passed.
-        if (is_null($controller)) {
+    protected function redirect_to($action, $controller= NULL, $params = array(), $ext='html') {
+        if ($controller === NULL) {
             $controller= $this->params['controller'];
         }
-        $redirect_to= $this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root . '/';
+        
         $rewrite = strtolower($this->config->getWebContext()->rewrite);
+        
+        $redirect_to= $this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root . '/';
+        
         if ($rewrite == 'false' || $rewrite == 'off' || $rewrite == '0') {
             $redirect_to .= 'index.php/';
         }
-        $redirect_to .= $controller . '/' . $action;
-        if (count($params)) $redirect_to .= '/' . implode('/', $params);
-        $redirect_to .= '.html';
+        $redirect_to .= $controller;
+        if ($action !== NULL) $redirect_to .= '/' . $action;
+        if (count($params))   $redirect_to .= '/' . implode('/', $params);
+        $redirect_to .= '.' . $ext;
+        
         $this->logger->debug('Redirecting to: ' . $redirect_to);
         $this->response->redirect($redirect_to);
         $this->action_performed = TRUE;

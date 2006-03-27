@@ -71,4 +71,3 @@ interface ISessionContainer {
      */
     public function gc($maxlifetime=300);
 }
-
