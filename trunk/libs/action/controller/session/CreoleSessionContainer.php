@@ -1,4 +1,4 @@
-lo<?php
+<?php
 // {{{ License
 //////////////////////////////////////////////////////////////////////////////////
 //
@@ -31,18 +31,18 @@ lo<?php
 //
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
-
+ 
 include_once('action/controller/session/ISessionContainer.php');
-
+ 
 /**
  * Creole Session Container.
  * 
  * It requires a Database table defined like this:
  * <code>
- * CREATE TABLE c_session (
- *	`session_id` VARCHAR (255) PRIMARY KEY,
- *	`session_data` TEXT,
- *	`session_lastmodified` DATETIME
+ * CREATE TABLE c_sessions (
+ *   `session_id`   VARCHAR (255) PRIMARY KEY,
+ *   `session_data` TEXT,
+ *   `session_lastmodified` DATETIME
  * );
  * </code>
  * 
@@ -53,135 +53,86 @@ include_once('action/controller/session/ISessionContainer.php');
  * @author Oancea Aurelian 
  */
 class CreoleSessionContainer extends Object implements ISessionContainer {
-
-	/** @var CreoleConnection */
-	protected $conn=null;
-	
-	/** @var Logger */
-	protected $logger= null;
-	
-	/**
-	 * Constructor
-	 */
-	public function CreoleSessionContainer() {
-		$this->conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
-		$this->logger= Registry::get('__logger');
-	}
-
-	public function open($save_path, $session_name) {
-		$this->gc();
-		return true;
-	}
-	
-	public function close() {
-	    $this->conn->close();
-		return true;
-	}
-
-	public function read($id) {
-        $timeout = time() - ini_get('session.gc_maxlifetime');
-		$stmt = $this->conn->prepareStatement('SELECT session_data FROM c_session   
-											   WHERE session_id = ? AND session_lastmodified > ' . $timeout);
-		$stmt->setString(1, $id);
-
-		try {
-			$rs = $stmt->executeQuery();
-			
-			if($rs->getRecordCount()==0) {
-				return '';
-			}
-			$rs->first();
-			return $rs->get('session_data');
-			
-		} catch (SQLException $sqlEx) {
-            $this->logger->debug($sqlEx->getMessage());
-			return false;
-		}
-	}
-
-
-	public function write($id,$session_data){
-		// 1. select
-		$stmt = $this->conn->prepareStatement('SELECT session_id FROM c_session WHERE session_id=?');
-		$stmt->setString(1,$id);
-		
-		try{
-			$rs = $stmt->executeQuery();
-			// 2. count results:
-			if($rs->getRecordCount()==1) {
-				// 3. update:
-				$stmt = $this->conn->prepareStatement('UPDATE c_session SET session_data=?,' . 
-													  ' session_lastmodified=now() WHERE session_id=?');
-				$stmt->setString(1,$session_data);
-				$stmt->setString(2,$id);
-
-				try{
-					$rs=$stmt->executeUpdate();
-					return true;
-				} catch (SQLException $sqlEx){
-					$this->logger->debug($sqlEx->getMessage());
-					return false;
-				}
-				
-			} else {
-				// 4. insert
-				$stmt = $this->conn->prepareStatement('INSERT INTO c_session (session_id,session_data,session_lastmodified) VALUES (?,?,now())');
-				$stmt->setString(1,$id);
-				$stmt->setString(2,$session_data);
-				try{
-					$rs = $stmt->executeUpdate();
-					return true;
-				} catch (SQLException $sqlEx){
-					$this->logger->debug($sqlEx->getMessage());
-					return false;
-				}
-			}
-		} catch (SQLException $sqlEx){
-			$this->logger->debug($sqlEx->getMessage());
-			return false;
-		}
-		
-
-	}
-
-	public function destroy($id) {
-        $stmt = $this->conn->prepareStatement('DELETE FROM c_session WHERE session_id = ?');
+ 
+    /** @var CreoleConnection */
+    protected $conn=null;
+ 
+    /** @var int
+        session default maxlifetime */
+    static private $lifetime;
+ 
+    /**
+     * Constructor
+     */
+    public function CreoleSessionContainer() {
+        $this->conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
+        CreoleSessionContainer::$lifetime= ini_get('session.gc_maxlifetime');
+    }
+ 
+    public function open($save_path, $session_name) {
+        $this->gc();
+        return true;
+    }
+ 
+    public function close() {
+        $this->conn->close();
+        return true;
+    }
+ 
+    public function read($id) {
+        $timeout = time() - self::$lifetime;
+        $stmt = $this->conn->prepareStatement('SELECT session_data FROM c_sessions   
+                                       WHERE session_id = ? AND session_lastmodified > ' . $timeout);
+        $stmt->setString(1, $id);
+        $rs = $stmt->executeQuery();
+        if($rs->getRecordCount() == 0) return '';
+        $rs->first();
+        return $rs->get('session_data');
+    }
+ 
+    public function write($id, $session_data) {
+        // 1. select
+        $stmt = $this->conn->prepareStatement('SELECT session_id FROM c_sessions WHERE session_id=?');
         $stmt->setString(1,$id);
-        try {
-			$rs = $stmt->executeUpdate();
-			return true;
-		} catch (SQLException $sqlEx) {
-            $this->logger->debug($sqlEx->getMessage());
-			return false;
-		}
-	}
-
-	/**
-	 * Garbage Collection
-	 *
-	 * @param maxlifetime, after that the session will expire
-	 * @return boolean
-	 */
-	public function gc($maxlifetime=300) {
-//		if($maxlifetime==''){
-//			$c = LocknetConfig::singleton();
-//			$maxlifetime = $c->getSessionProperty('sess_time');
-//			if(!$maxlifetime){
-//				$maxlifetime = 0;
-//			}
-//		}
-		
-        $stmt = $this->conn->prepareStatement(
-			'DELETE FROM c_session WHERE `session_lastmodified` < ?');
-		$stmt->setTimestamp(1,time()-$maxlifetime);
-        try {
-			$rs = $stmt->executeUpdate();
-			return true;
-		} catch (SQLException $sqlEx) {
-            $this->logger->debug($sqlEx->getMessage());
-			return false;
-		}
-	}
-	
-	
+        $rs = $stmt->executeQuery();
+        // 2. count results:
+        if($rs->getRecordCount()==1) {
+            // 3. update:
+            $stmt = $this->conn->prepareStatement('UPDATE c_sessions SET session_data=?,' . 
+                                                  ' session_lastmodified=now() WHERE session_id=?');
+            $stmt->setString(1,$session_data);
+            $stmt->setString(2,$id);
+            $stmt->executeUpdate();
+            return true;
+        } else {
+            // 4. insert
+            $stmt = $this->conn->prepareStatement('INSERT INTO c_sessions 
+                                    (session_id,session_data,session_lastmodified) VALUES (?,?,now())');
+            $stmt->setString(1,$id);
+            $stmt->setString(2,$session_data);
+            $rs = $stmt->executeUpdate();
+            return true;
+        }
+    }
+ 
+    public function destroy($id) {
+        $stmt = $this->conn->prepareStatement('DELETE FROM c_sessions WHERE session_id = ?');
+        $stmt->setString(1,$id);
+        $stmt->executeUpdate();
+        return true;
+    }
+ 
+    /**
+     * Garbage Collection, removes all the expired sessions
+     *
+     * @param int maxlifetime, after that the session will expire
+     * @return boolean
+     */
+    public function gc($maxlifetime=300) {
+        $stmt = $this->conn->prepareStatement('DELETE FROM c_sessions WHERE `session_lastmodified` < ?');
+        $stmt->setTimestamp(1,time()-$maxlifetime);
+        $stmt->executeUpdate();
+        return true;
+    }
 }
+ 

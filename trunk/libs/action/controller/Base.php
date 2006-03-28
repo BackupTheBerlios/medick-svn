@@ -202,7 +202,9 @@ class ActionController extends Object {
      * @return void
      */
     protected function render($template_name = NULL, $status = NULL) {
-        if (is_null($template_name)) $template_name = $this->params['action'];
+        if ($template_name === NULL) {
+            $template_name = $this->params['action'];
+        }
         $this->render_file($this->template_root . $template_name . '.phtml', $status);
     }
 
@@ -242,7 +244,7 @@ class ActionController extends Object {
                 return $this->render_without_layout($template_file, $status);
             } else {
                 $this->template->content_for_layout= $this->template->render_file($template_file);
-                $this->logger->debug('...done.');
+                // $this->logger->debug('...done.');
                 return $this->render_text($this->template->render_file($layout_file), $status);
             }
         } else {
@@ -250,11 +252,20 @@ class ActionController extends Object {
         }
     }
 
+    /**
+     * Renders a partial
+     *
+     * @param string
+     * @param string
+     * @param HTTPResponse::SC_*
+     */ 
     protected function render_partial($partial, $controller=NULL, $status=NULL) {
         $this->register_flash();
-        if (is_null($controller)) $location = $this->template_root;
-        else $location = $this->injector->getPath('views') . $controller . DIRECTORY_SEPARATOR;
-        // $this->logger->debug('Partial: ' . $location . '_' . $partial . '.phtml');
+        if ($controller === NULL) {
+            $location = $this->template_root;
+        } else {
+            $location = $this->injector->getPath('views') . $controller . DIRECTORY_SEPARATOR;
+        }
         return $this->render_without_layout($location . '_' . $partial . '.phtml', $status);
     }
 
@@ -352,7 +363,7 @@ class ActionController extends Object {
     // XXX: not-done!
     protected function sendFile($location, $options = array()) {
         if(!is_file($location)) {
-            throw new MedickException("File not found...");
+            throw new MedickException('File not found...');
         }
         // $options['length'] =   File::size($location);
         // $options['filename'] = File::basename($location);
@@ -381,8 +392,12 @@ class ActionController extends Object {
             $redirect_to .= 'index.php/';
         }
         $redirect_to .= $controller;
-        if ($action !== NULL) $redirect_to .= '/' . $action;
-        if (count($params))   $redirect_to .= '/' . implode('/', $params);
+        if ($action !== NULL) {
+            $redirect_to .= '/' . $action;
+        }
+        if (count($params)) {
+            $redirect_to .= '/' . implode('/', $params);
+        }
         $redirect_to .= '.' . $ext;
         
         $this->logger->debug('Redirecting to: ' . $redirect_to);
@@ -392,10 +407,14 @@ class ActionController extends Object {
 
     // XXX: not done.
     // redirects to a know path (eg. /images/pic.jpg)
-    protected function redirect_to_path($path) {   }
+    protected function redirect_to_path($path) {
+        throw new MedickException('Method: ' . __METHOD__ . ' not implemented!');
+    }
 
     // XXX: not done.
-    protected function redirect($url, $message = '', $timeout = 0, $template = NULL) {     }
+    protected function redirect($url, $message = '', $timeout = 0, $template = NULL) {
+        throw new MedickException('Method: ' . __METHOD__ . ' not implemented!');
+    }
 
     // }}}
 
@@ -483,7 +502,7 @@ class ActionController extends Object {
                     'Your filter,``'. $filter_name . '" is declared as a
                         public method of class ``' . $this->getClassName() .'" !');
             }
-            // can we use invoke?
+            // we cannot use invoke since the filter is not public
             $this->$filter_name();
         }
     }

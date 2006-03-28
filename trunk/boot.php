@@ -43,7 +43,7 @@ define( 'MEDICK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR );
 set_include_path( MEDICK_PATH . 'libs'   . DIRECTORY_SEPARATOR );
 
 // this should depend on environment
-error_reporting(E_ALL|E_STRICT);
+error_reporting( E_ALL | E_STRICT );
 // php 5.1 strict sdandards.
 if (version_compare(PHP_VERSION, '5.1.0') > 0) {
     date_default_timezone_set('Europe/Bucharest');
@@ -53,3 +53,4 @@ if (version_compare(PHP_VERSION, '5.1.0') > 0) {
 include_once('medick/Medick.php');
 set_error_handler(array(new ErrorHandler(), 'raiseError'));
 include_once('action/controller/Dispatcher.php');
+

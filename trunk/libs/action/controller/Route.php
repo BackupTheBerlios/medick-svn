@@ -346,6 +346,7 @@ class Route extends Object {
      * @return string
      */ 
     public function toString() {
+	return '';
         return sprintf('{%s}-->Name: %s; List: %s;', 
                         $this->getClassName(), 
                         $this->getNameToHuman(), 

@@ -53,7 +53,8 @@ interface ITemplateEngine {
 class ActionView extends Object {
 
     public static function factory($engine) {
-        return new PHPTemplateEngine();
+        $clazz= strtoupper($engine) . 'TemplateEngine';
+        return new $clazz;
     }
 
     /**
@@ -64,7 +65,8 @@ class ActionView extends Object {
      * @param mixed value, the value on witch we strip slashes.
      *                  It can be array/string or object.
      */
-    public static function stripslashes_deep($value) {
+     
+    /* public static function stripslashes_deep($value) {
         if (is_array($value)) {
             array_map(array('ActionView','stripslashes_deep'), $value);
         } elseif (is_object($value)) {
@@ -73,7 +75,7 @@ class ActionView extends Object {
             stripslashes($value);
         }
         return $value;
-     }
+     } */ 
 }
 
 /**
@@ -131,7 +133,7 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
             throw new FileNotFoundException ('Cannot Find Template: ' . $file);
         }
         if (!empty($this->vars)) {
-            if(!get_magic_quotes_gpc()) $this->vars = ActionView::stripslashes_deep($this->vars);
+            // if(!get_magic_quotes_gpc()) $this->vars = ActionView::stripslashes_deep($this->vars);
             extract($this->vars,EXTR_SKIP);
         }
         ob_start();

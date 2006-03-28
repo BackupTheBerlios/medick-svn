@@ -32,7 +32,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('action/controller/session/CreoleSessionContainer.php');
+// include_once('action/controller/session/CreoleSessionContainer.php');
 
 /**
  * A wrapper around PHP session handling

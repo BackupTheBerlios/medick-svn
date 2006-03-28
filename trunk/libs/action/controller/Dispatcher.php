@@ -64,7 +64,6 @@ class Dispatcher extends Object {
     public function dispatch() {
         $request  = new HTTPRequest();
         $response = new HTTPResponse();
-        
         try {
             $configurator= $this->manager->getConfigurator();
             Registry::put($configurator, '__configurator');
