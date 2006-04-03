@@ -75,28 +75,33 @@ class HTTPResponse extends Response {
     /**
      * Sets the header $name with $value
      *
-     * @param string, name the name of the header
-     * @param mixed, value, the value of this header
+     * @param string the name of the header
+     * @param mixed  the value of this header
      */
     public function setHeader($name,$value) {
         header($name . ": " . $value);
     }
 
     /**
-     * Sets the content type header
+     * Sets the content-type header
      *
-     * @param strign type, the content type
+     * @param string the content type
      */
     public function setContentType($type) {
-        return $this->setHeader('Content-type',$type);
+        return $this->setHeader('Content-type', $type);
     }
 
+
+    public function setCookie($cookie) {
+        $this->setHeader('Set-Cookie', $cookie);
+    }
+    
     /**
      * Sets the status of this response
      *
-     * @todo should choose between HTTP/1.1 and HTTP/1.0
-     * @todo more cases in the switch
-     * @param HTTPResponse::SC_*, status, the status of this response
+     * @todo should choose between HTTP/1.1 and HTTP/1.0?
+     * @todo add more cases in the switch
+     * @param HTTPResponse::SC_* the status of this response
      */
     public function setStatus($status) {
         switch($status){

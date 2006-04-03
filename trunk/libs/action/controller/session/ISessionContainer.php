@@ -33,7 +33,26 @@
 // }}}
 
 /**
+ * This interface defines methods for user session handler
  * 
+ * This container is added automatically in ActionController::instantiate() method
+ *
+ * You must declare this container application.xml file:
+ * <code>
+ * &lt;session&gt;
+ *  &lt;container&gt;action.controller.session.CreoleSessionContainer&lt;/container&gt;
+ * &lt;/session&gt;
+ * </code>
+ * If you add a container, <em>MyFileSessionContainer</em> 
+ * in <em>_your_application_/libs/session/MyFileSessionContainer.php</em>,
+ * your definition should be:
+ * <code>
+ *  session.MyFileSessionContainer
+ * </code>
+ * since the <em>_your_application_/libs</em> folder is under <em>include path</em>
+ * @see http://php.net/manual/en/function.session-set-save-handler.php
+ * @see Session
+ * @see ActionController
  * @package medick.action.controller
  * @subpackage session
  * @author Oancea Aurelian

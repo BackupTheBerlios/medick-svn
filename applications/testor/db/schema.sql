@@ -18,8 +18,9 @@ CREATE TABLE strones (
 
 INSERT INTO `strones` (`id`,`inc`) VALUES (1,0);
 
-CREATE TABLE c_session (
+CREATE TABLE c_sessions (
 	`session_id` VARCHAR (255) PRIMARY KEY,
 	`session_data` TEXT,
 	`session_lastmodified` DATETIME
 ) ENGINE=InnoDB;
+

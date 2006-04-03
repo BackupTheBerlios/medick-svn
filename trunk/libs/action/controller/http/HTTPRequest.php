@@ -54,18 +54,24 @@ class HTTPRequest extends Request {
         the list of headers associated with this HTTPRequest */
     private $headers= array();
 
+    /** @var array
+        cookies list */
+    private $cookies= array();
+    
     /**
      * Constructor.
      * It builds the HTTPRequest object
      *
      * @todo a URI Helper should be written.
-     * @todo $_COOKIES are not merged anymore!!!
+     * @todo a Cookie class should be written.
      */
     public function HTTPRequest() {
         foreach (array_merge($_GET,$_POST) as $key=>$value) {
             $this->setParameter($key, $value);
         }
-
+        
+        $this->cookies= $_COOKIE;
+        
         unset($_REQUEST); unset($_GET); unset($_POST);
 
         if (array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO']!='' ) {
@@ -74,7 +80,7 @@ class HTTPRequest extends Request {
         // TODO:
         //      -> this is for php as cgi, or where PATH_INFO is not available
         //      -> ORIG_PATH_INFO should also work
-        //      -> should substract the documnet root
+        //      -> should substract only the documnet root
         elseif (array_key_exists('REQUEST_URI', $_SERVER)) {
             $this->requestUri= substr($_SERVER['REQUEST_URI'],7);
         }
@@ -83,6 +89,18 @@ class HTTPRequest extends Request {
         $this->headers = HTTPRequest::getAllHeaders();
     }
 
+    public function getCookies() {
+        return $this->cookies;
+    }
+
+    public function hasCookie($name) {
+        return isset($this->cookies[$name]);
+    }
+
+    public function getCookie($name) {
+        return $this->hasCookie($name) ? $this->cookies[$name] : FALSE;
+    }
+    
     public function getHeaders() {
         return $this->headers;
     }

@@ -49,7 +49,7 @@ class Session extends Object {
 
     /** @var ISessionContainer
         the session container */
-    private $container;
+    private $container = NULL;
 
     /**
      * Constructor, creates a new session object
@@ -76,15 +76,15 @@ class Session extends Object {
         
         // TODO: more settings
         // session_cache_limiter("nocache");
-        // session_write_close();
-        // $container= new CreoleSessionContainer();
-   		// session_set_save_handler(array($container, 'open'),
-        //                     array($container, 'close'),
-        //                     array($container, 'read'),
-        //                     array($container, 'write'),
-        //                     array($container, 'destroy'),
-        //                     array($container, 'gc'));
-                
+        if ($this->container!==NULL) {
+            session_set_save_handler(
+                array($this->container, 'open'),
+                array($this->container, 'close'),
+                array($this->container, 'read'),
+                array($this->container, 'write'),
+                array($this->container, 'destroy'),
+                array($this->container, 'gc'));
+        }
         session_start();
         //session_regenerate_id(TRUE);
         $this->isStarted= TRUE;

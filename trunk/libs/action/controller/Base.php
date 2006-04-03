@@ -325,26 +325,42 @@ class ActionController extends Object {
      * @param Response response, the response
      */
     private function instantiate(Request $request, Response $response) {
+        // class memebers
         $this->request  = $request;
         $this->response = $response;
-        $this->session  = $request->getSession();
         $this->params   = $request->getParameters();
-
         $this->logger   = Registry::get('__logger');
         $this->injector = Registry::get('__injector');
         $this->config   = Registry::get('__configurator');
-
-        $this->app_path      = $this->injector->getPath('__base');
+        $this->session  = $request->getSession();
+        $this->app_path = $this->injector->getPath('__base');
         $this->template_root = $this->injector->getPath('views') . $this->params['controller'] . DIRECTORY_SEPARATOR;
-
         $this->template = ActionView::factory('php');
+         
+        // register session container if any
+        // TODO: this should be moved elsewhere
+        if ($this->config->getWebContext()->session !== NULL && 
+            $this->config->getWebContext()->session->container !== NULL
+        ) {
+            // container location.
+            $c_location= str_replace('.', DIRECTORY_SEPARATOR, 
+                  (string)$this->config->getWebContext()->session->container) . '.php';
+            include_once($c_location);
+            // container class name.
+            $e= explode('.',(string)$this->config->getWebContext()->session->container);
+            // reflect on container.
+            $container= new ReflectionClass(end($e));
+            if ($container->implementsInterface('ISessionContainer')) {
+                $this->session->setContainer($container->newInstance());
+            }
+        }
+       
         // predefined variables:
         // TODO: check if we have a / at the end, if not, add one
-        
-        $this->template->assign('__base', (string)$this->config->getWebContext()->document_root);
-        $this->template->assign('__server', (string)$this->config->getWebContext()->server_name);
+        $this->template->assign('__base',       (string)$this->config->getWebContext()->document_root);
+        $this->template->assign('__server',     (string)$this->config->getWebContext()->server_name);
         $this->template->assign('__controller', $this->params['controller']);
-        $this->template->assign('__version', Medick::getVersion());
+        $this->template->assign('__version',    Medick::getVersion());
         
         $this->logger->debug($this->request->toString());
     }
@@ -353,6 +369,9 @@ class ActionController extends Object {
      * Shortcut for template assigns
      */
     public function __set($name, $value) {
+        // if (in_array($name, array_keys(get_object_vars($this)))) {
+        //     throw new MedickException('Cannot set ' . $name . ' as template variable');
+        // }
         $this->template->assign($name, $value);
     }
 
@@ -360,11 +379,10 @@ class ActionController extends Object {
         return $this->template->$name;
     }
 
-    // XXX: not-done!
     protected function sendFile($location, $options = array()) {
-        if(!is_file($location)) {
-            throw new MedickException('File not found...');
-        }
+        // if(!is_file($location)) {
+            throw new MedickException('Method ' . __METHOD__ . ' Not Implemented!');
+        // }
         // $options['length'] =   File::size($location);
         // $options['filename'] = File::basename($location);
     }

@@ -14,6 +14,9 @@
             <server_name>http://localhost:8091</server_name>
             <document_root>/testor</document_root>
             <rewrite>on</rewrite>
+            <session>
+                <container>action.controller.session.CreoleSessionContainer</container>
+            </session>
         </web>
         <!-- logger system -->
         <logger>
@@ -71,8 +74,8 @@
             <dsn id = "one"
                 phptype  = "pgsql"
                 hostspec = "localhost"
-                username = "andro"
-                password = "su^lor*"
+                username = "albeit"
+                password = "pri$6g"
                 database = "testor" />
         </database>
     </environment>
