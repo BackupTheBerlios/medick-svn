@@ -73,7 +73,7 @@ class Object {
      * @return string 
      */ 
     public function toString() {
-        return $this->__toString();
+        return ucfirst($this->getClassName());
     }
     
     /**
@@ -86,7 +86,7 @@ class Object {
      * @return string
      */
     public function __toString() {
-        return ucfirst($this->getClassName());
+        return $this->toString();
     }
 
 }

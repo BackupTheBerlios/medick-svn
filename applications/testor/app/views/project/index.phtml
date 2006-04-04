@@ -1,0 +1,27 @@
+<h2>All Projects</h2>
+<table border="1">
+    <tr>
+        <td>&nbsp;</td>
+        <td>Project Name</td>
+        <td>Portfolio</td>
+        <td>Project Manager</td>
+        <td>Number of Milestones</td>
+        <td>Categories</td>
+        <td>Start Date</td>
+    </tr>
+    <? foreach($projects as $project): ?>
+        <tr>
+            <td><a href="<?= URL::create('project', 'show', array('id'=>$project->id));?>">View</a></td>
+            <td><?= $project->name ?></td>
+            <td><?= $project->portfolio->name ?></td>
+            <td><?= $project->manager->last_name ?>, <?= $project->manager->first_name ?></td>
+            <td><?= $project->milestones->count() ?></td>
+            <td>
+                <? foreach ($project->categories as $category): ?>
+                    <?= $category->name ?>,
+                <? endforeach; ?>
+            </td>
+            <td><?= $project->created_at ?></td>
+        </tr>
+    <? endforeach; ?>
+</table>

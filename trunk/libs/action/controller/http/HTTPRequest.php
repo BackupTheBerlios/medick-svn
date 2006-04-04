@@ -32,6 +32,7 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('action/controller/http/Cookie.php');
 include_once('action/controller/session/Session.php');
 
 /**
@@ -69,8 +70,10 @@ class HTTPRequest extends Request {
         foreach (array_merge($_GET,$_POST) as $key=>$value) {
             $this->setParameter($key, $value);
         }
-        
-        $this->cookies= $_COOKIE;
+
+        foreach ($_COOKIE as $cookie_name=>$cookie_value) {
+            $this->cookies[$cookie_name]= new Cookie($cookie_name, $cookie_value);
+        }
         
         unset($_REQUEST); unset($_GET); unset($_POST);
 

@@ -32,8 +32,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
 
-// include_once('action/controller/session/CreoleSessionContainer.php');
-
 /**
  * A wrapper around PHP session handling
  *
@@ -50,7 +48,11 @@ class Session extends Object {
     /** @var ISessionContainer
         the session container */
     private $container = NULL;
-
+  
+    /** @var string
+        Session name */
+    private $name = 'MSESSID';
+    
     /**
      * Constructor, creates a new session object
      *
@@ -76,6 +78,7 @@ class Session extends Object {
         
         // TODO: more settings
         // session_cache_limiter("nocache");
+        session_name($this->name);
         if ($this->container!==NULL) {
             session_set_save_handler(
                 array($this->container, 'open'),
@@ -90,6 +93,24 @@ class Session extends Object {
         $this->isStarted= TRUE;
     }
 
+    /**
+     * It sets the Session Name.
+     * 
+     * Medick uses MSESSID as a session name identifier, overwritting PHPSESSID
+     * @param string the session name
+     */
+    public function setName($name) {
+        $this->name = $name;
+    }
+    
+    /**
+     * It gets this Session name
+     *
+     * @return string the Session Name
+     */
+    public function getName() {
+        return $this->name;
+    }
     /**
      * Sets a session variable
      *

@@ -1,0 +1,30 @@
+<h2> Project <?= $project->name ?></h2><br>
+
+Portfolio: <?= $project->portfolio->name ?><br>
+
+Project Manager: <?= $project->manager->first_name ?>,
+            <?= $project->manager->last_name ?><br>
+
+<? if($project->milestones->count()): ?>
+    Milestones:<br>
+    <? foreach($project->milestones as $milestone): ?>
+        &nbsp;&nbsp;-<?= $milestone->title ?><br>
+    <? endforeach; ?>
+<? else: ?>
+    no Milestones found.
+<? endif; ?>
+
+<br>
+
+<? if(count($project->categories)): ?>
+    Currently in Categories:<br>
+    <? foreach($project->categories as $category): ?>
+        &nbsp;&nbsp;-<?= $category->name ?><br>
+    <? endforeach; ?>
+<? else: ?>
+    no Milestones found.
+<? endif; ?>
+
+<br>
+
+Start Date: <?= $project->created_at ?><br>

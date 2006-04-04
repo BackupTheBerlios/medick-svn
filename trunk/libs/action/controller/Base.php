@@ -336,7 +336,7 @@ class ActionController extends Object {
         $this->app_path = $this->injector->getPath('__base');
         $this->template_root = $this->injector->getPath('views') . $this->params['controller'] . DIRECTORY_SEPARATOR;
         $this->template = ActionView::factory('php');
-         
+        
         // register session container if any
         // TODO: this should be moved elsewhere
         if ($this->config->getWebContext()->session !== NULL && 

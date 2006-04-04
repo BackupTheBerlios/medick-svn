@@ -78,7 +78,7 @@ class HTTPResponse extends Response {
      * @param string the name of the header
      * @param mixed  the value of this header
      */
-    public function setHeader($name,$value) {
+    public function setHeader($name, $value) {
         header($name . ": " . $value);
     }
 
@@ -91,9 +91,8 @@ class HTTPResponse extends Response {
         return $this->setHeader('Content-type', $type);
     }
 
-
-    public function setCookie($cookie) {
-        $this->setHeader('Set-Cookie', $cookie);
+    public function setCookie(Cookie $cookie) {
+        $this->setHeader('Set-Cookie', $cookie->toString());
     }
     
     /**
