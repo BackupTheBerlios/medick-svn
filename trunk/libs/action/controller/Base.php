@@ -398,6 +398,7 @@ class ActionController extends Object {
      * @param array params, additional parameters to pass with this redirect.
      */
     protected function redirect_to($action, $controller= NULL, $params = array(), $ext='html') {
+        if ($this->action_performed) return;
         if ($controller === NULL) {
             $controller= $this->params['controller'];
         }

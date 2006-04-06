@@ -1,9 +1,9 @@
 <?php
-
 /**
  * This class is part of elproject, medick sample application
  * $Id$
  * @package elproject.controllers
+ * @desc: Tests ActiveRecord Associations.<br /><code>Project</code> model definition:<ul><li><code>$belongs_to=portfolio;</code></li><li><code>$has_one='manager'</code></li><li><code>$has_many='milestones'</code></li><li><code>$has_and_belongs_to_many='categories'</code></li></ul>
  */
 
 class ProjectController extends ApplicationController {
@@ -12,20 +12,21 @@ class ProjectController extends ApplicationController {
 
     protected $use_layout= 'main';
 
-    /** List all projects */
+    /**
+     * @desc: List all projects
+     */
     public function index() {
-        try {
-            $this->template->projects= Project::find();
-        } catch (RecordNotFoundException $rnfEx) {
-            $this->render_text($rnfEx->getMessage());
-        }
+        $this->template->assign('projects', Project::find());
     }
 
-    /** Show one project */
+    /**
+     * @desc: Shows a project
+     */
     public function show() {
         try {
-            $this->template->project= Project::find($this->params['id']);
+            $this->template->assign('project', Project::find($this->request->getParameter('id')));
         } catch (ActiveRecordException $rnfEx) {
+            $this->flash('error', $rnfEx->getMessage());
             $this->redirect_to('index');
         }
     }

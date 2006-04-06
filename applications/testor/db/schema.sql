@@ -11,11 +11,11 @@ USE `testor`;
 -- --------------------------------------------------------
 -- Table structure for table `tones`
 
-CREATE TABLE tones (
-  `id`      INT (11) PRIMARY KEY auto_increment,
-  `name`    VARCHAR (255),
-  `status`  INT(1)
-) ENGINE=InnoDB;
+-- CREATE TABLE tones (
+--  `id`      INT (11) PRIMARY KEY auto_increment,
+--  `name`    VARCHAR (255),
+--  `status`  INT(1)
+-- ) ENGINE=InnoDB;
 
 
 -- --------------------------------------------------------
@@ -75,6 +75,7 @@ CREATE TABLE milestones (
 CREATE TABLE portfolios (
   id        int(11)     NOT NULL auto_increment,
   `name`    varchar(40) default NULL,
+  `status`  int(1)      NOT NULL default 1,
   PRIMARY KEY  (id)
 ) Engine=InnoDB;
 
@@ -128,7 +129,7 @@ INSERT INTO `categories` ( `id` , `name` )
 INSERT INTO `portfolios` ( `id` , `name` )
     VALUES (NULL , 'locknet.ro');
 INSERT INTO `managers` ( `id` , `first_name` , `last_name` )
-    VALUES ( NULL , 'oancea', 'aurelian');
+    VALUES ( NULL , 'Oancea', 'Aurelian');
 INSERT INTO `projects` ( `id` , `portfolio_id` , `manager_id`,`name` , `created_at` )
     VALUES ( NULL , '1', '1', 'elproject', NOW());
 INSERT INTO `milestones` ( `id` , `project_id` , `title` , `description` )

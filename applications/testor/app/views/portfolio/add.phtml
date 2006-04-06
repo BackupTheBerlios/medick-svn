@@ -1,13 +1,9 @@
 <!-- $Id$ --> 
-
-<form action="<?=URL::create('tone','create');?>" method="post">
+<form action="<?=URL::create('portfolio','create');?>" method="post">
   <fieldset>
-    <legend>Adauga un nou tone</legend>
-    
+    <legend>Add portfolio</legend>
     <?=$this->render_partial(NULL, 'form');?>
-  
     <div><?=Form::submit('submit', 'Submit');?></div>
-
   </fieldset>
 </form>
 

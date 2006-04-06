@@ -1,0 +1,10 @@
+<!-- $Id$ --> 
+<form action="<?=URL::create('portfolio','update');?>" method="post">
+<input type="hidden" name="id" value="<?=$portfolio->id;?>" />
+  <fieldset>
+    <legend>Edit portfolio: <?=$portfolio->name;?></legend>
+    <?=$this->render_partial(NULL, 'form');?>
+    <div><?=Form::submit('submit', 'Edit');?></div>
+  </fieldset>
+</form>
+

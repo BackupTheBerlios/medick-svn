@@ -1,0 +1,12 @@
+<!-- $Id$ -->    
+<div>
+      <label for="portfolio_name">Name:</label>
+      <?=ActiveRecordHelper::error_message_on($portfolio, 'name');?>
+      <?=FormHelper::text_field($portfolio, 'name', array('size'=>35));?>
+</div>
+    
+<div>
+      <label for="portfolio_status">Status:</label>
+      <?=FormHelper::check_box($portfolio,'status');?>
+</div>
+

@@ -1,5 +1,20 @@
 <h5>All Projects</h5>
 <!-- $Id$ -->
+<? if(isset($flash['notice'])):?>
+    <div class="flash_notice">
+        <div class="label">Note</div>
+        <div class="content"><?=$flash['notice'];?></div>
+    </div>
+<? endif;?>
+<? if(isset($flash['error'])):?>
+    <div class="flash_error">
+        <div class="label">Warning</div>
+        <div class="content"><?=$flash['error'];?></div>
+    </div>
+<? endif;?>
+ 
+<hr />
+
 <table border="1">
     <tr>
         <td>&nbsp;</td>
@@ -26,3 +41,4 @@
         </tr>
     <? endforeach; ?>
 </table>
+
