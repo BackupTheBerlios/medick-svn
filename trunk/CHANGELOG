@@ -1,6 +1,19 @@
 $Id$
 (*) SVN version
 
+0.2.2(08.Apr.2006)
+    - Testor::Application more code samples for medick
+    - Implemented Route Requirements
+    - Fixed Cookies problems by adding a new class (Cookie) 
+      and methods to pull cookies for request or to add them to response
+    - Added CreoleSessionContainer a session handler for php on top of creole,
+      using a database as backend
+    - (fixed): FormHelper::check_box
+    - (fixed): ActiveRecordHelper::error_messages_on(Field)
+    - (fixed): Storing an ActiveRecord object in session
+    - (fixed): Rewrite on/off setting
+    - (fixed): Validates::uniqueness_of when updating  
+
 0.2.1(18.Mar.2006)
     - Added ``environment" concept
     - Added ActiveRecord::attributes() method
