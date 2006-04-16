@@ -133,6 +133,35 @@ class FormHelper extends Object {
         return $buff;
     }
 
+    public static function password_field(ActiveRecord $object, $method, $options = array()) {
+        if (!$field= $object->getRow()->getFieldByName($method)) {
+            return; // ex?
+        }
+        $id   = strtolower(get_class($object)) . '_'.$method;
+        $name = strtolower(get_class($object)).'['.$method.']';
+        $buff = '';
+        $errors= FALSE;
+        if($field->hasErrors()) {
+            $buff .= '<div class="fieldWithErrors">';
+            $errors= TRUE;
+        }
+
+        $buff .= '<input type="password" id="' . $id . '" ';
+        $buff .= 'name="'.$name . '" ';
+        $buff .= 'value="'.$object->$method.'" ';
+        foreach ($options as $key=>$value) {
+            $buff .= $key . '="'.$value.'" ';
+        }
+        $buff .= ' />';
+        if ($errors) {
+            $buff .= '</div>';
+        }
+        return $buff;
+    }
+
+
+    
+
     public static function text_area(ActiveRecord $object, $method, $options=array()) {
         if (!$field= $object->getRow()->getFieldByName($method)) {
             return; // ex?
