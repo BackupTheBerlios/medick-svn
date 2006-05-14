@@ -1,3 +1,0 @@
-<?php
-    // $Id$
-    class fakemodelone{     }
