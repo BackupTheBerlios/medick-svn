@@ -107,20 +107,18 @@ class ActiveRecordHelper extends Object {
  */
 class FormHelper extends Object {
 
-    public static function text_field(ActiveRecord $object, $method, $options = array()) {
-        if (!$field= $object->getRow()->getFieldByName($method)) {
+    public static function input_field(ActiveRecord $object, $method, $options= array(), $type='text') {
+        if (!$field= FormHelper::get_field($object, $method)) {
             return; // ex?
         }
-        $id   = strtolower(get_class($object)) . '_'.$method;
-        $name = strtolower(get_class($object)).'['.$method.']';
+        list($id, $name) = FormHelper::attributes($object, $method);
         $buff = '';
         $errors= FALSE;
         if($field->hasErrors()) {
             $buff .= '<div class="fieldWithErrors">';
             $errors= TRUE;
         }
-
-        $buff .= '<input type="text" id="' . $id . '" ';
+        $buff .= '<input type="' . $type . '" id="' . $id . '" ';
         $buff .= 'name="'.$name . '" ';
         $buff .= 'value="'.$object->$method.'" ';
         foreach ($options as $key=>$value) {
@@ -131,37 +129,34 @@ class FormHelper extends Object {
             $buff .= '</div>';
         }
         return $buff;
+    }
+    
+    public static function text_field(ActiveRecord $object, $method, $options = array()) {
+        return FormHelper::input_field($object, $method, $options);
     }
 
     public static function password_field(ActiveRecord $object, $method, $options = array()) {
-        if (!$field= $object->getRow()->getFieldByName($method)) {
-            return; // ex?
-        }
-        $id   = strtolower(get_class($object)) . '_'.$method;
-        $name = strtolower(get_class($object)).'['.$method.']';
-        $buff = '';
-        $errors= FALSE;
-        if($field->hasErrors()) {
-            $buff .= '<div class="fieldWithErrors">';
-            $errors= TRUE;
-        }
-
-        $buff .= '<input type="password" id="' . $id . '" ';
-        $buff .= 'name="'.$name . '" ';
-        $buff .= 'value="'.$object->$method.'" ';
-        foreach ($options as $key=>$value) {
-            $buff .= $key . '="'.$value.'" ';
-        }
-        $buff .= ' />';
-        if ($errors) {
-            $buff .= '</div>';
-        }
-        return $buff;
+        return FormHelper::input_field($object, $method, $options, 'password');
     }
 
-
+    /**
+     * @return medick.active.record.Field
+     */ 
+    protected static function get_field(ActiveRecord $object, $method) {
+        return $object->getRow()->getFieldByName($method);
+    }
     
-
+    /**
+     * Gets form element attributes
+     * 
+     * @return array
+     */ 
+    protected static function attributes(ActiveRecord $object, $method) {
+        $id   = strtolower($object->getClassName()) . '_'.$method;
+        $name = strtolower($object->getClassName()).'['.$method.']';
+        return array($id, $name);
+    }
+    
     public static function text_area(ActiveRecord $object, $method, $options=array()) {
         if (!$field= $object->getRow()->getFieldByName($method)) {
             return; // ex?

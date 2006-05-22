@@ -2,16 +2,21 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <!-- $Id$ -->
-    <head>
-        <title>Server Error!</title>
-        <style type="text/css" media="all">
-            body { margin: 3px; padding: 3px; border:1px solid red; font-size: .9em;
-            font-family: "Lucida Grande", Helvetica, Tahoma, sans-serif; }
-            h1 { text-align:center; }
-            #container { margin: 3px; padding: 3px; }
-        </style>
-    </head>
-    <body>
+  <head>
+    <title>Server Error!</title>
+    <style type="text/css" media="all">
+      html * { padding:0; margin:0; }
+      body * { padding:10px 20px; }
+      body * * { padding:0; }
+      body { font:small sans-serif; }
+      body>div { border-bottom:1px solid #ddd; }
+      h1 { font-weight:normal; }
+      h2 { margin-bottom:.8em; }
+      #container { background: #ffc; }
+      #container h2 { font-weight: normal; color: #666; }
+    </style>
+  </head>
+  <body>
        <div id="container">
        <h1>Cannot process your request!</h1>
            <h2><?=get_class($error);?></h2>
@@ -29,6 +34,8 @@
            Backtrace:<br />
            <pre><?=$error->getTraceAsString();?></pre>
            <hr />
+           <h2>Request Info:</h2>
+           <?=$request->toString();?>
         </div>
     </body>
 </html>

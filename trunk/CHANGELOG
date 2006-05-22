@@ -1,6 +1,17 @@
 $Id$
 (*) SVN version
 
+0.2.3(*)
+    - ActiveRecord: class open by removing some final declarations
+    - ActiveRecord: is not an abstract class anymore (awaiting php 5.2 changes on abstract static)  
+    - ActiveRecord: new methods ActiveRecord::isValid
+    - ActiveRecord: some API docs
+    - ActiveRecord::Field added toString and length methods
+    - HTTPRequest added new methods to get the current HTTPRequest method: getMethod, isPost, isGet
+    - ActionController ``beautiful"(TM) error template
+    - ActionController will throw a medick exception when trying to load an unexistent before_filter  
+    - FormHelper minor code clean-ups and added password_field method
+      
 0.2.2(08.Apr.2006)
     - Testor::Application more code samples for medick
     - Implemented Route Requirements

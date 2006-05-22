@@ -104,7 +104,7 @@ abstract class ActiveRecord extends Object {
      * @param array, params, parameters as pair of `field name` => `value`
      * @final because there is no reason to overwrite in parent classes, PHP Engine will call this constructor by default.
      */
-    public final function ActiveRecord($params = array()) {
+    public function ActiveRecord($params = array()) {
         ActiveRecord::establish_connection();
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
@@ -200,8 +200,6 @@ abstract class ActiveRecord extends Object {
      * @param string method name
      * @param array arguments
      * @throws ActiveRecordException
-     */
-     
     public function __call($method, $arguments) {
         if ($method == 'destroy') return $this->delete();
         $know_methods = array('save', 'insert', 'update', 'delete');
@@ -215,7 +213,8 @@ abstract class ActiveRecord extends Object {
             $this->$method($arguments[0]);
         }
     }
-    
+    */    
+
     /** returns a string representation of this object */
     public function toString() {
         $string = '';
@@ -249,6 +248,13 @@ abstract class ActiveRecord extends Object {
      */
     public function getRow() {
         return $this->row;
+    }
+
+    /**
+     * 
+     */ 
+    public function isValid() {
+        return count($this->row->collectErrors()) == 0;
     }
 
     protected function validates () {
@@ -344,8 +350,8 @@ abstract class ActiveRecord extends Object {
      *      $author->save(); // performs the update and returns the number of affected rows (1).
      * </code>
      */
-    public final function save() {
-        if ( !$this->before_save() or count($this->row->collectErrors()) > 0) {
+    public function save() {
+        if ( !$this->before_save() || !$this->isValid()) {
             return false;
         }
         if ($this->row->getPrimaryKey()->isAffected) {
@@ -371,7 +377,7 @@ abstract class ActiveRecord extends Object {
      * @return int next primary key id or, 1 (affected rows).
      * @throws SQLException
      */
-    public final function insert() {
+    public function insert() {
         if ( !$this->before_insert() or count($this->row->collectErrors()) > 0) {
             return false;
         }
@@ -398,7 +404,7 @@ abstract class ActiveRecord extends Object {
      * @return int affected rows.
      * @throws SQLException
      */
-    public final function update() {
+    public function update() {
         if ( !$this->before_update() or count($this->row->collectErrors()) > 0) {
             return false;
         }
@@ -406,8 +412,23 @@ abstract class ActiveRecord extends Object {
         $this->after_update();
         return $af;
     }
-
-    public final function attributes(/*Array*/ $params=array()) {
+    
+    /**
+     * Sets an array af attributes
+     *
+     * <code>
+     *   $author= Author::find(5); // select * from authors where id=5;
+     *   $author->attributes(array('name'=>'Jon'))->save(); // update authors set name='Jon' where id=5;
+     * </code>
+     * This method is also useful when receiving an array of parameters from HTTPRequest (form).
+     * <code>
+     *   // controller
+     *   $user= User::find($request->getParameter('id'))->attributes($request->getParameter('user'))->save();
+     * </code>
+     *
+     * @return ActiveRecord
+     */ 
+    public function attributes(/*Array*/ $params=array()) {
         foreach($params as $name=>$value) {
             $this->$name=$value;
         }
@@ -432,7 +453,7 @@ abstract class ActiveRecord extends Object {
      * @return int affected rows.
      * @throws SQLException
      */
-    public final function delete() {
+    public function delete() {
         if (!$this->before_delete() || count($this->row->collectErrors()) > 0) {
             return false;
         }
@@ -534,7 +555,13 @@ abstract class ActiveRecord extends Object {
     }
     // }}}
 
-    abstract static function find();
+    /**
+     * This method should be overwritten in child classes, 
+     * from php 5.2 you cannot declare a method as abstract and static
+     */
+    static function find() {
+        throw new MedickException('ActiveRecord::find() should be overwritten in child classes!');
+    }
 
     public static function build(QueryBuilder $builder) {
         $class_name= $builder->getOwner();

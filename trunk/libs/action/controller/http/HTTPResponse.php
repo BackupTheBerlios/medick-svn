@@ -68,9 +68,7 @@ class HTTPResponse extends Response {
     const SC_SERVICE_UNAVAILABLE = 503;
 
     /** Constructor */
-    public function HTTPResponse() {
-
-    }
+    public function HTTPResponse() {    }
     
     /**
      * Sets the header $name with $value

@@ -44,6 +44,8 @@ include_once('action/controller/session/Session.php');
  */
 class HTTPRequest extends Request {
 
+    private $method;
+    
     /** @var Session */
     private $session;
 
@@ -67,6 +69,7 @@ class HTTPRequest extends Request {
      * @todo a Cookie class should be written.
      */
     public function HTTPRequest() {
+        $this->method= isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
         foreach (array_merge($_GET,$_POST) as $key=>$value) {
             $this->setParameter($key, $value);
         }
@@ -92,6 +95,18 @@ class HTTPRequest extends Request {
         $this->headers = HTTPRequest::getAllHeaders();
     }
 
+    public function getMethod() {
+        return $this->method;
+    }
+    
+    public function isPost() {
+        return $this->method == 'POST';
+    }
+    
+    public function isGet() {
+        return $this->method == 'GET';
+    }
+    
     public function getCookies() {
         return $this->cookies;
     }

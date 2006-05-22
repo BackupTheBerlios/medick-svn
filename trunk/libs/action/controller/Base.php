@@ -156,11 +156,15 @@ class ActionController extends Object {
                                                    Request $request,
                                                    Response $response,
                                                    Exception $exception) {
+        $body = $response->getContent();
         if(ob_get_length()) {
             ob_end_clean();
         }
         $template = ActionView::factory('php');
-        $template->error= $exception;
+        $template->assign('error', $exception);
+        $template->assign('request', $request);
+        $template->assign('response', $response);
+        $template->assign('body', $body);
         $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
         $response->setStatus(HTTPResponse::SC_INTERNAL_SERVER_ERROR);
         $response->setContent($text);
@@ -506,14 +510,13 @@ class ActionController extends Object {
     private function add_before_filters() {
         if (!is_array($this->before_filter)) {
             throw new MedickException(
-                $this->getClassName() . '->\$before_filter should be an array
-                    of strings, each string representing a method name');
+                $this->getClassName() . '->$before_filter should be an array
+                    of strings, each string representing a protected method name');
         }
         foreach($this->before_filter as $filter_name) {
             if (!$filter= $this->createMethod($filter_name)) {
-                $this->logger->info(
-                    'Could not create filter: ``'.$filter_name.'", skipping...');
-                continue;
+                throw new MedickException('Cannot load filter: ' . $this->getClassName() . '::' . $filter_name . 
+                                    ' Call to undefined method: ' .$this->getClassName() . '::' . $filter_name);
             }
             // a filter should be declared as protected.
             if (!$filter->isProtected()) {

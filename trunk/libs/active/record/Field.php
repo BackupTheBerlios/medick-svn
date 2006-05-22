@@ -152,5 +152,14 @@ class Field extends Object {
     public function setValue($value) {
         $this->value = $value;
     }
+
+    public function toString() {
+        return $this->value;
+    }
+
+    public function length() {
+        return strlen($this->value);
+    }
+    
 }
 
