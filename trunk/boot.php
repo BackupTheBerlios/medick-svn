@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -34,10 +34,10 @@
 
 /**
  * It boots a medick application
- * @package locknet7.boot
+ * @package medick.boot
  */
 
-// medick path.
+// medick framework path.
 define( 'MEDICK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR );
 // rewrite system include path
 set_include_path( MEDICK_PATH . 'libs'   . DIRECTORY_SEPARATOR );
@@ -50,7 +50,7 @@ if (version_compare(PHP_VERSION, '5.1.0') > 0) {
 }
 
 // load core classes
-include_once('medick/Medick.php');
+require('medick/Medick.php');
 set_error_handler(array(new ErrorHandler(), 'raiseError'));
-include_once('action/controller/Dispatcher.php');
+require('action/controller/Dispatcher.php');
 

@@ -44,6 +44,16 @@ include_once('active/support/Inflector.php');
 include_once('creole/Creole.php');
 include_once('creole/CreoleTypes.php');
 
+class ActiveRecordTableInfo extends Object {
+    static $instance= NULL;
+    static function getInstance(Connection $conn, $table_name) {
+        if (self::$instance === NULL || !isset(self::$instance[$table_name])) {
+            self::$instance[$table_name]= $conn->getDatabaseInfo()->getTable($table_name);
+        }
+        return self::$instance[$table_name];
+    }
+}
+
 /**
  * Main ActiveRecord Class
  *
@@ -95,7 +105,7 @@ abstract class ActiveRecord extends Object {
      * Close the Database Connection
      */
     public static function close_connection() {
-        ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
+        ActiveRecord::$conn= Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
     }
 
     /**
@@ -108,8 +118,9 @@ abstract class ActiveRecord extends Object {
         ActiveRecord::establish_connection();
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
-
-        $table_info = ActiveRecord::$conn->getDatabaseInfo()->getTable($this->table_name);
+        
+        $table_info = ActiveRecordTableInfo::getInstance(ActiveRecord::$conn, $this->table_name);
+        // $table_info = ActiveRecord::$conn->getDatabaseInfo()->getTable($this->table_name);
         $this->pk   = $table_info->getPrimaryKey()->getName();
 
         $this->row = new DatabaseRow($this->table_name);
@@ -130,7 +141,7 @@ abstract class ActiveRecord extends Object {
             } else {
                 $field->isFK = false;
             }
-            $this->row[] = $field;
+            $this->row[]= $field;
         }
         // confused?
         if(!empty($params)) { foreach ($params as $field_name => $field_value) {
@@ -251,22 +262,31 @@ abstract class ActiveRecord extends Object {
     }
 
     /**
-     * 
+     * Check if this row is valid by counting the associated rows errors
+     *
+     * @return true if is valid
      */ 
     public function isValid() {
         return count($this->row->collectErrors()) == 0;
     }
 
+    /**
+     * Validates this row
+     *
+     * @return Validator
+     */ 
     protected function validates () {
         return new Validator($this->row);
     }
 
-    // {{{ filters:
+    // {{{ filters
     /**
      * Before Insert Filter.
      *
      * This filter is executed before running an sql insert.
      * You should overwrite this method in your models.
+     * Remember to return TRUE and check with === FALSE to get the error
+     * 
      * @return bool
      * @since Rev.272
      */
@@ -277,6 +297,8 @@ abstract class ActiveRecord extends Object {
      *
      * This filter is executed before running an sql update.
      * You should overwrite this method in your models.
+     * Remember to return TRUE and check with === FALSE to get the error
+     * 
      * @return bool
      * @since Rev.272
      */
@@ -287,6 +309,8 @@ abstract class ActiveRecord extends Object {
      *
      * This filter is executed before running an sql delete.
      * You should overwrite this method in your models.
+     * Remember to return TRUE and check with === FALSE to get the error
+     * 
      * @return bool
      * @since Rev.272
      */
@@ -297,6 +321,8 @@ abstract class ActiveRecord extends Object {
      *
      * This filter is executed before running an sql insert or update
      * You should overwrite this method in your models.
+     * Remember to return TRUE and check with === FALSE to get the error
+     * 
      * @return bool
      * @since Rev.342
      */
@@ -559,7 +585,7 @@ abstract class ActiveRecord extends Object {
      * This method should be overwritten in child classes, 
      * from php 5.2 you cannot declare a method as abstract and static
      */
-    static function find() {
+    public static function find() {
         throw new MedickException('ActiveRecord::find() should be overwritten in child classes!');
     }
 
@@ -593,13 +619,21 @@ abstract class ActiveRecord extends Object {
                     'Couldn\'t find a `' . $class_name . '` to match your query.');
             }
         }
-        $results = new RowsAggregate();
-        while ($rs->next()) {
-            $results->add($class->newInstance($rs->getRow()));
-        }
-        // release resources.
-        $rs->close();$stmt->close();
-        return $results;
+        $stmt->close();
+        return ActiveRecord::merge($rs, $class);
     } 
     
+    /**
+     * @return RowsAggregate
+     */ 
+    protected static function merge(ResultSet $rs, ReflectionClass $class) {
+        $results= new RowsAggregate();
+        while($rs->next()) {
+            $results->add($class->newInstance($rs->getRow()));
+        }
+        $rs->close();
+        return $results;
+    }
+    
 }
+

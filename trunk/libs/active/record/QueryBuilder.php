@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -142,19 +142,21 @@ class QueryBuilder extends Object {
      * Compile an SQLCommand from this query clauses.
      * 
      * Valid Clauses:
-     * <code>
-     *  'condition' => to insert a sql condition
-     *  'order by'  => to set an order by
-     *  'columns'   => specify only the columns you want to select (check if it work on aliases too?)
-     *  'limit'     => adjust the limit (this is not sended to the SQLCommand since is intended to be used with PreparedStatements)
-     *  'offset'    => adds an offset (this is not sended to the SQLCommand since is intended to be used with PreparedStatements)
-     *  'left join' => add a left join
-     * </code>
+     * <ul>
+     *  <li>'from'      => to add an additional from clause</li>
+     *  <li>'condition' => to insert a sql condition</li>
+     *  <li>'order by'  => to set an order by</li>
+     *  <li>'columns'   => specify only the columns you want to select (check if it work on aliases too?)</li>
+     *  <li>'limit'     => adjust the limit (this is not sended to the SQLCommand since is intended to be used with PreparedStatements)</li>
+     *  <li>'offset'    => adds an offset (this is not sended to the SQLCommand since is intended to be used with PreparedStatements)</li>
+     *  <li>'left join' => add a left join</li>
+     * </ul>
      *
      * @return SQLCommand
      */
     public function compile() {
         $command= SQLCommand::select()->from(Inflector::tabelize($this->owner));
+        if (isset($this->clauses['from']))       $command->from($this->clauses['from']);
         if (isset($this->clauses['condition']))  $command->where($this->clauses['condition']);
         if (isset($this->clauses['order by']))   $command->orderBy($this->clauses['order by']);
         if (isset($this->clauses['columns']))    $command->columns($this->clauses['columns']);

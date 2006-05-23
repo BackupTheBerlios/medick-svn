@@ -56,15 +56,14 @@ function generate_controller($name, $app_location) {
     }
 
     if (!file_exists($views.'layouts'.DIRECTORY_SEPARATOR.$name.'.phtml')) {
-    $layout =<<<LAYOUT
+      $layout =<<<LAYOUT
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-     <head>
-         <title>$name</title>
-         <base href="<?=\$__server;?><?=\$__base;?>/" />
-         <link rel="stylesheet" href="stylesheet/medick.css" />
-         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-     </head>
-     <body><?=\$content_for_layout;?></body>
+  <head><title>$name</title>
+    <base href="<?=\$__server;?><?=\$__base;?>/" />
+    <link rel="stylesheet" href="stylesheet/medick.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body><?=\$content_for_layout;?></body>
 </html>
 LAYOUT;
         file_put_contents($views.'layouts'.DIRECTORY_SEPARATOR.$name.'.phtml',$layout);
@@ -90,7 +89,7 @@ LAYOUT;
                  continue;
              }
              echo "\tadding method: $method \n";
-             $controller_class_text .= "\t\tpublic function $method() {    }\n\n";
+             $controller_class_text .= "\tpublic function $method() {    }\n\n";
              $view_location = $views.$name.DIRECTORY_SEPARATOR.$method.'.phtml';
              if (file_exists($view_location)) {
                  echo "\texists $view_location\n";
@@ -125,27 +124,25 @@ function generate_model($name, $app_location) {
     }
     $model_class_text =<<<EOCLASS
 <?php
-
- /**
-  * This class is part of ${app.name} project
-  *
-  * @package ${app.name}.models
-  * \$Id$
-  */
+/**
+ * This class is part of ${app.name} project
+ *
+ * @package ${app.name}.models
+ * \$Id$
+ */
 class $model_class_name extends ActiveRecord {
 
-     /**
-      * Finds a $model_class_name
-      *
-      * @see ActiveRecord::build()
-      * @return mixed
-      */
-     public static function find() {
-         \$args = func_get_args();
-         return ActiveRecord::build(new QueryBuilder(__CLASS__, \$args));
-     }
-
-  }
+    /**
+     * Finds a $model_class_name
+     *
+     * @see ActiveRecord::build()
+     * @return mixed
+     */
+    public static function find() {
+        \$args = func_get_args();
+        return ActiveRecord::build(new QueryBuilder(__CLASS__, \$args));
+    }
+}
 
 EOCLASS;
 

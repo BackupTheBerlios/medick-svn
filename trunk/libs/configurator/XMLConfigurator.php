@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005,2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005,2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -45,9 +45,13 @@ class XMLConfigurator extends Object implements IConfigurator {
 
     /** @var SimpleXML */
     protected $sxe;
-
+    
+    /** @var string
+        application name */
     protected $application_name;
     
+    /** @var string
+        configuration file */
     protected $config_file;
     
     /**
