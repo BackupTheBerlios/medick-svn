@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -153,12 +153,43 @@ class Field extends Object {
         $this->value = $value;
     }
 
+    /**
+     * Returns this field value
+     *
+     * @return mixed
+     */
     public function toString() {
         return $this->value;
     }
-
+  
+    /**
+     * Returns the number of chars for this Field
+     *
+     * It's a <tt>strlen</tt> of the Field value
+     *
+     * @return int
+     */
     public function length() {
         return strlen($this->value);
+    }
+    
+    /**
+     * Alias of htmlentities php function
+     * 
+     * <code>
+     *    $article= new Article();
+     *    $article->description= "A 'quote' is <b>bold</b>";
+     *    $article->description->h(); // outputs: A 'quote' is &lt;b&gt;bold&lt;/b&gt;
+     *    $article->description->h(ENT_QUOTES); // outputs: A &#039;quote&#039; is &lt;b&gt;bold&lt;/b&gt;
+     * </code>
+     *
+     * @param int quote_style defaults to ENT_COMPAT
+     * @param string charst defaults to ISO-8859-1
+     * @see http://php.net/htmlentities
+     * @return string 
+     */
+    public function h($quote_style=ENT_COMPAT, $charset='ISO-8859-1') {
+        return htmlentities($this->value, $quote_style, $charset);
     }
     
 }

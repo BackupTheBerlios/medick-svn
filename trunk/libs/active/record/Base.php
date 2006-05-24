@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -90,40 +90,18 @@ abstract class ActiveRecord extends Object {
     // }}}
 
     /**
-     * Establish A Database Connection
-     *
-     * @return Creole database connection
-     */
-    public static function establish_connection () {
-        if (ActiveRecord::$conn === NULL) {
-            ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
-        }
-        return ActiveRecord::$conn;
-    }
-
-    /**
-     * Close the Database Connection
-     */
-    public static function close_connection() {
-        ActiveRecord::$conn= Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
-    }
-
-    /**
      * Constructor
      *
      * @param array, params, parameters as pair of `field name` => `value`
      * @final because there is no reason to overwrite in parent classes, PHP Engine will call this constructor by default.
      */
-    public function ActiveRecord($params = array()) {
+    public function ActiveRecord($params= array()) {
         ActiveRecord::establish_connection();
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
-        
         $table_info = ActiveRecordTableInfo::getInstance(ActiveRecord::$conn, $this->table_name);
-        // $table_info = ActiveRecord::$conn->getDatabaseInfo()->getTable($this->table_name);
         $this->pk   = $table_info->getPrimaryKey()->getName();
-
-        $this->row = new DatabaseRow($this->table_name);
+        $this->row  = new DatabaseRow($this->table_name);
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
@@ -131,7 +109,7 @@ abstract class ActiveRecord extends Object {
             // set is_nullable
             // $field->isNullable = (bool)$col->isNullable;
             if ($this->pk == $col->getName() ) {
-                $field->isPk = TRUE;
+                $field->isPk = true;
             }
             // set the is_fk and fk_table
             $pattern = '/^(.*)_id$/';
@@ -196,35 +174,6 @@ abstract class ActiveRecord extends Object {
                 $anfEx->getMessage());
         }
     }
-
-    /**
-     * @todo This method is not working as expected!
-     *
-     * This method is run before any call to ActiveRecord public methods! (nope: php 5.1.2)
-     * Removes some duplicate code from the list with <tt>know_methods</tt>.
-     * ALso, it defines some methods aliases (eg: delete===distroy)
-     *
-     * Basically it checks before save, insert, update or delete calls that
-     * the current run has affected fields and throws an ActiveRecordException if not.
-     *
-     * @see http://php.net/manual/en/language.oop5.overloading.php
-     * @param string method name
-     * @param array arguments
-     * @throws ActiveRecordException
-    public function __call($method, $arguments) {
-        if ($method == 'destroy') return $this->delete();
-        $know_methods = array('save', 'insert', 'update', 'delete');
-        if (!in_array($method, $know_methods)) {
-            trigger_error(
-                sprintf(
-                    'Call to undefined method: %s::%s().', $this->getClassName(), $method), E_USER_ERROR);
-        } elseif(!$this->fields->hasAffected()) {
-            throw new ActiveRecordException('No field was set before ' . $method);
-        } else {
-            $this->$method($arguments[0]);
-        }
-    }
-    */    
 
     /** returns a string representation of this object */
     public function toString() {
@@ -363,8 +312,8 @@ abstract class ActiveRecord extends Object {
     // {{{ save
     /**
      * Save,
-     *    will do a SQL Insert and return the last_inserted_id or
-     * an Update returning the number of affected rows.
+     *    will do a SQL Insert and return the last_inserted_id 
+     *    or an Update returning the number of affected rows.
      * If the primary key is affected (changed) on this run we will do an update, otherwise an insert.
      * <code>
      *      $author = new Author();
@@ -562,7 +511,9 @@ abstract class ActiveRecord extends Object {
                . ' (' . implode(',', $this->row->getAffectedFieldsNames()) . ')'
                . ' VALUES (' . substr(str_repeat('?,', count($this->row->getAffectedFields())), 0, -1) . ')';
     }
-
+    // }}}
+    
+    // {{{ Static ActiveRecord
     /**
      * populates stmt values (?,?,?) on sql querys
      * @param PreparedStatement, stmt, the prepared statement.
@@ -579,54 +530,80 @@ abstract class ActiveRecord extends Object {
             }
         }
     }
-    // }}}
-
+  
     /**
      * This method should be overwritten in child classes, 
-     * from php 5.2 you cannot declare a method as abstract and static
+     * from php 5.2 you cannot declare a method as abstract and static, or can you?
+     *
+     * @see ActiveRecord::build
      */
     public static function find() {
         throw new MedickException('ActiveRecord::find() should be overwritten in child classes!');
     }
-
+       
+    /**
+     * @return ActiveRecord or a RowsAggregate (Collection of ActiveRecords)
+     */
     public static function build(QueryBuilder $builder) {
-        $class_name= $builder->getOwner();
-        try {
-            // prepare the class instance.
-            $class = new ReflectionClass($class_name);
-        } catch (ReflectionException $rEx) {
-            Registry::get('__injector')->inject('model', strtolower($class_name));
-            // retry:
-            $class = new ReflectionClass($class_name);
-        }
+        $class= ActiveRecord::reflect_class($builder->getOwner());
         ActiveRecord::establish_connection();
+        $rs= ActiveRecord::create_result_set($builder);
+        if ($builder->getType() == 'first') {
+            return ActiveRecord::fetch_one($rs, $class);
+        }
+        return ActiveRecord::fetch_all($rs, $class);
+    } 
+ 
+    /**
+     * It knows how to load a model class and how to reflect this class
+     *
+     * @return ReflectionClass
+     */
+    public static function reflect_class($class_name) {
+        Registry::get('__injector')->inject('model', strtolower($class_name));
+        return new ReflectionClass($class_name);
+    }
+    
+    /**
+     * Creates a ResultSet from a QueryBuilder
+     *
+     * @return ResultSet
+     */
+    public static function create_result_set(QueryBuilder $builder) {
         $stmt = ActiveRecord::$conn->prepareStatement($builder->compile()->getQueryString());
         $i=1; foreach($builder->getBindings() as $binding) {
             $stmt->set($i++, $binding);
         }
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
         if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
-        $rs = $stmt->executeQuery();
+        $rs= $stmt->executeQuery();
         Registry::get('__logger')->debug('Query: ' . ActiveRecord::$conn->lastQuery);
-        if ($builder->getType() == 'first') {
-            if ($rs->getRecordCount() == 1) {
-                $rs->next();
-                $result= $class->newInstance($rs->getRow());
-                $stmt->close();$rs->close();
-                return $result;
-            } else {
-                throw new RecordNotFoundException(
-                    'Couldn\'t find a `' . $class_name . '` to match your query.');
-            }
-        }
         $stmt->close();
-        return ActiveRecord::merge($rs, $class);
-    } 
-    
+        return $rs;
+    }
+ 
     /**
+     * Returns an ActiveRecord object
+     * @throws RecordNotFoundException 
+     * @return ActiveRecord
+     */
+    public static function fetch_one(ResultSet $rs, ReflectionClass $class) {
+        if($rs->getRecordCount() != 1) {
+            $rs->close();
+            throw new RecordNotFoundException('Couldn\'t find a `' . $class->getName() . '` to match your query.');
+        }
+        $rs->next();
+        $ar= $class->newInstance($rs->getRow());
+        $rs->close();
+        return $ar;
+
+    }
+
+    /**
+     * Merge ResultSet into RowsAggregate
      * @return RowsAggregate
      */ 
-    protected static function merge(ResultSet $rs, ReflectionClass $class) {
+    public static function fetch_all(ResultSet $rs, ReflectionClass $class) {
         $results= new RowsAggregate();
         while($rs->next()) {
             $results->add($class->newInstance($rs->getRow()));
@@ -634,6 +611,25 @@ abstract class ActiveRecord extends Object {
         $rs->close();
         return $results;
     }
-    
+
+    /**
+     * Establish A Database Connection
+     *
+     * @return Creole database connection
+     */
+    public static function establish_connection () {
+        if (ActiveRecord::$conn === NULL) {
+            ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
+        }
+        return ActiveRecord::$conn;
+    }
+
+    /**
+     * Close the Database Connection
+     */
+    public static function close_connection() {
+        ActiveRecord::$conn= Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
+    }
+    // }}}
 }
 
