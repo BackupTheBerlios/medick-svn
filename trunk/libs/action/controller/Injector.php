@@ -114,7 +114,7 @@ class Injector extends Object {
     public function injectInclude_path() {
         $top= $this->path['__base'] . '..' . DIRECTORY_SEPARATOR;
         if (is_dir($top . 'libs')) {
-            set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'libs');
+            set_include_path(get_include_path() . PATH_SEPARATOR . $top . 'libs' . PATH_SEPARATOR . $top . 'app');
         }
     }
 

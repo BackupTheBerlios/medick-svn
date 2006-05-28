@@ -1,17 +1,17 @@
 ================================================
-Medick :: One PHP Framework
+Medick :: PHP 5 Framework
 $Id$
 ================================================
 
 ABOUT:
 ------
-    Medick is a free software licensed under a BSD-style licence, see LICENSE file for details.
+    Medick is an open-source software licensed under a BSD-style licence, see LICENSE file for details.
 
 REQUIREMENTS:
 -------------
     1. php 5.0.3 or higher (http://php.net/downloads).
         The following PHP extensions are required: simplexml and spl.
-        Starting with php 5.1.2 Reflection is also needed.
+        Starting with php 5.1.2 reflection is also needed.
         This extensions are enbled by default on every php installation.
         
     2. for web application you will need, of course a web server, Apache 2 with mod_php is recommended.

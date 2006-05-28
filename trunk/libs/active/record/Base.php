@@ -72,7 +72,7 @@ abstract class ActiveRecord extends Object {
 
     /** @var CreoleConnection
         database connection */
-    static protected $conn= NULL;
+    static public $conn= NULL;
 
     /** @var DatabaseRow
         our database row. */
@@ -96,10 +96,9 @@ abstract class ActiveRecord extends Object {
      * @final because there is no reason to overwrite in parent classes, PHP Engine will call this constructor by default.
      */
     public function ActiveRecord($params= array()) {
-        ActiveRecord::establish_connection();
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
-        $table_info = ActiveRecordTableInfo::getInstance(ActiveRecord::$conn, $this->table_name);
+        $table_info = ActiveRecordTableInfo::getInstance(ActiveRecord::connection(), $this->table_name);
         $this->pk   = $table_info->getPrimaryKey()->getName();
         $this->row  = new DatabaseRow($this->table_name);
         foreach( $table_info->getColumns() as $col) {
@@ -191,7 +190,7 @@ abstract class ActiveRecord extends Object {
 
     /** restore the Object state after unserialize  */
     public function __wakeup() {
-        ActiveRecord::establish_connection();
+        ActiveRecord::connection();
         $it= $this->row->iterator();
         while($it->hasNext()) {
             $current= $it->next();
@@ -530,7 +529,13 @@ abstract class ActiveRecord extends Object {
             }
         }
     }
-  
+    
+    public static function execute($sql) {
+        $r= ActiveRecord::connection()->executeQuery($sql);
+        Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);
+        return $r;
+    }
+
     /**
      * This method should be overwritten in child classes, 
      * from php 5.2 you cannot declare a method as abstract and static, or can you?
@@ -546,11 +551,8 @@ abstract class ActiveRecord extends Object {
      */
     public static function build(QueryBuilder $builder) {
         $class= ActiveRecord::reflect_class($builder->getOwner());
-        ActiveRecord::establish_connection();
         $rs= ActiveRecord::create_result_set($builder);
-        if ($builder->getType() == 'first') {
-            return ActiveRecord::fetch_one($rs, $class);
-        }
+        if ($builder->getType() == 'first') return ActiveRecord::fetch_one($rs, $class);
         return ActiveRecord::fetch_all($rs, $class);
     } 
  
@@ -570,10 +572,8 @@ abstract class ActiveRecord extends Object {
      * @return ResultSet
      */
     public static function create_result_set(QueryBuilder $builder) {
-        $stmt = ActiveRecord::$conn->prepareStatement($builder->compile()->getQueryString());
-        $i=1; foreach($builder->getBindings() as $binding) {
-            $stmt->set($i++, $binding);
-        }
+        $stmt = ActiveRecord::connection()->prepareStatement($builder->compile()->getQueryString());
+        $i=1; foreach($builder->getBindings() as $binding) $stmt->set($i++, $binding);
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
         if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
         $rs= $stmt->executeQuery();
@@ -584,6 +584,7 @@ abstract class ActiveRecord extends Object {
  
     /**
      * Returns an ActiveRecord object
+     *
      * @throws RecordNotFoundException 
      * @return ActiveRecord
      */
@@ -616,8 +617,13 @@ abstract class ActiveRecord extends Object {
      * Establish A Database Connection
      *
      * @return Creole database connection
+     * @deprecate use ActiveRecord::connection, I want to use short names
      */
-    public static function establish_connection () {
+    public static function establish_connection() {
+        return ActiveRecord::connection();
+    }
+
+    public static function connection() {
         if (ActiveRecord::$conn === NULL) {
             ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }
