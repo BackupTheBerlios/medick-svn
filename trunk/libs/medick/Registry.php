@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -47,11 +47,13 @@ class Registry extends Object {
 
     // {{{ static
 
-    /** @var array registry database */
+    /** @var array 
+        registry database */
     private static $registry= array();
 
     /**
-     * put an Object into Registry database
+     * Put an Object into Registry database
+     * 
      * @param Object the Object instance to add into registry
      * @param string key
      * @return Object, the Object just added.
@@ -63,6 +65,7 @@ class Registry extends Object {
 
     /**
      * It gets an Object from the registry database
+     * 
      * @param string key, the object identifier
      * @return Object
      * @throws InvalidOffsetException
@@ -76,9 +79,9 @@ class Registry extends Object {
 
     /**
      * Removes an Object from the Registry Database
+     * 
      * @param string key, object identifier
      * @return Object, the object removed.
-     * @throws NullPointerException
      */
     public static function remove($key) {
         $obj= self::get($key);
@@ -91,17 +94,6 @@ class Registry extends Object {
      */
     public static function close() {
         return self::$registry= array();
-    }
-
-    /**
-     * It gets the Registry instance
-     * @return Registry
-     */
-    public static function getInstance() {
-        if (!isset(self::$registry['__registry'])) {
-            self::$registry['__registry']= new Registry();
-        }
-        return self::$registry['__registry'];
     }
     // }}}
 }
