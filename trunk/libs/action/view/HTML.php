@@ -46,15 +46,30 @@ class ActiveRecordHelper extends Object {
      * <code>
      *  <?=ActiveRecordHelper::error_messages_for($person);?>
      * </code>
-     * will show all the errors for the person object
+     * will show all the errors for the person object.
+     *
+     * Valid options:
+     * <ul>
+     *  <li>css_class [ default formErrors ] for: &lt;div id="" class="$css_class"&gt;</li>
+     *  <li>heading   [ default 2 1-->6    ] for: &lt;h$heading&gt;&lt2 errors prohibited this form from beeing saved;/h$heading&gt;
+     *  <li>singular  [ default error      ] for: 1 $singular prohibited this...</li>
+     *  <li>plural    [ default errors     ] for: 2 $plural prohibited this...</li>
+     *  <li>oname     [ default object name] for: the active record object name</li>
+     * </ul>
+     * 
      * @param ActiveRecord object the ActiveRecord object to check for errors
      * @param array options the options where we can cusomize the look and feel of the error message.
      *                      this includes: css_class and heading
      * @return string a HTML formatted string
      */
     public static function error_messages_for(ActiveRecord $object, $options=array()) {
+        
         $css_class= isset($options['css_class']) ? $options['css_class'] : 'formErrors';
         $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 2;
+        $singular = isset($options['singular']) ? $options['singular'] : 'error';
+        $plural   = isset($options['plural']) ? $options['plural'] : 'errors';
+        $oname    = isset($options['oname']) ? $options['oname'] : ucfirst($object->getClassName());
+
         $buffer= '<div id="medickFormErrors" class="' . $css_class . '">';
         $errors= 0;
         $part = '';
@@ -71,9 +86,9 @@ class ActiveRecordHelper extends Object {
             }
         }
         if ($errors > 0) {
-            $st= $errors == 1 ? 'error' : 'errors';
+            $st= $errors == 1 ? $singular : $plural;
             $buffer .= '<h'.$heading.'>'.$errors.' '.$st.' prohibited this ';
-            $buffer .= ucfirst(get_class($object)).' from being saved</h'.$heading.'>';
+            $buffer .= $oname.' from being saved</h'.$heading.'>';
             $buffer .= "\n<p>There were problems with the following fields:</p>\n";
             $buffer .= $part;
             return $buffer . '</div>';
@@ -233,7 +248,9 @@ class URL extends Object {
         if ($rewrite == 'false' or $rewrite == 'off' or $rewrite == '0') {
             $base .= '/index.php';
         }
-        $buff = $base . '/' . $controller . '/' . $action;
+        $buff= $base . '/';
+        if ($controller) $buff .= $controller . '/';
+        $buff .= $action;
         foreach ($params as $key=>$value) {
             $buff .= '/' . $value;
         }

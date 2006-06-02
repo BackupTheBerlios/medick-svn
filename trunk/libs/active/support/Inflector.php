@@ -131,7 +131,7 @@ class Inflector extends Object {
         return strtolower(preg_replace('/([a-z])([A-Z])/','\1_\2', $word));
     }
 
-   function humanize($lower_case_and_underscored_word) {
+   public static function humanize($lower_case_and_underscored_word) {
       return ucwords(str_replace("_"," ",$lower_case_and_underscored_word));
    }
 

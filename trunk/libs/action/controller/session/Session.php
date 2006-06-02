@@ -152,7 +152,8 @@ class Session extends Object {
      */
     public function removeValue($name) {
         $this->checkState();
-        unset($_SESSION[$name]);
+        // unset($_SESSION[$name]);
+        session_unregister($name);
     }
 
     /**
@@ -176,14 +177,24 @@ class Session extends Object {
     }
 
     /**
-     * It dumps the session contains
+     * It dumps the session
      *
      * @return array
      */
     public function dump() {
+        $this->checkState();
         return $_SESSION;
     }
 
+    /**
+     * Alias for Session::dump()
+     *
+     * @see Session::dump
+     */ 
+    public function getValues() {
+        return $this->dump();
+    }
+    
     /**
      * It checks the session state
      *
