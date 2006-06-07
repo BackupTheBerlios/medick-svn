@@ -530,6 +530,12 @@ abstract class ActiveRecord extends Object {
         }
     }
     
+    /**
+     * Executes a plain sql query
+     *
+     * @param string sql query to execute
+     * @return ResultSet
+     */ 
     public static function execute($sql) {
         $r= ActiveRecord::connection()->executeQuery($sql);
         Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);

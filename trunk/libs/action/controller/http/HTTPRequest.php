@@ -95,38 +95,87 @@ class HTTPRequest extends Request {
         $this->headers = HTTPRequest::getAllHeaders();
     }
 
+    /**
+     * Get the current request method
+     *
+     * @return string can be POST or GET
+     */ 
     public function getMethod() {
         return $this->method;
     }
     
+    /**
+     * Check if this request was made using POST
+     *
+     * @return bool true if it's a POST
+     */ 
     public function isPost() {
         return $this->method == 'POST';
     }
     
+    /**
+     * Check if this Request was made using GET
+     *
+     * @return bool true if it was GET
+     */ 
     public function isGet() {
         return $this->method == 'GET';
     }
     
+    /**
+     * Gets an array of Cookies
+     *
+     * @return array
+     */ 
     public function getCookies() {
         return $this->cookies;
     }
 
+    /**
+     * Check if it has a Cookie with the specfied name
+     *
+     * @param string the Cookie name
+     * @return bool true if it has
+     */ 
     public function hasCookie($name) {
         return isset($this->cookies[$name]);
     }
 
+    /**
+     * It gets a cookie by it's name
+     *
+     * @param string cookie name
+     * @return Cookie or FALSE if this Request don't have the requested cookie
+     */ 
     public function getCookie($name) {
         return $this->hasCookie($name) ? $this->cookies[$name] : FALSE;
     }
     
+    /**
+     * It gets an array of headers associated with this request
+     *
+     * @return array
+     */ 
     public function getHeaders() {
         return $this->headers;
     }
-
+    
+    /**
+     * It gets a header
+     * 
+     * @param strign name of the header to look for
+     * @return string header value or FALSE if it don't have the header
+     */ 
     public function getHeader($name) {
         return $this->hasHeader($name) ? $this->headers[ucfirst($name)] : FALSE;
     }
-
+    
+    /**
+     * Check if it has a specific header
+     *
+     * @param string name of the header to check for
+     * @return bool true if it has
+     */ 
     public function hasHeader($name) {
         return isset($this->headers[ucfirst($name)]);
     }
@@ -144,7 +193,7 @@ class HTTPRequest extends Request {
 
     /**
      * It gets a part of the path info associated with this request
-     * @param int, key, the part index
+     *
      * @return value of this part or NULL if this part is not defined
      */
     public function getRequestUri() {

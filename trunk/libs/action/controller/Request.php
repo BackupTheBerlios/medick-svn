@@ -47,11 +47,11 @@ class Request extends Object {
     /** @var array
         current request parameters */
     private $params = array();
-
+    
     /** 
      * Hidden Constructor 
      */
-    protected function Request() {  }
+     protected function Request() { }
 
     /**
      * It gets a Request Parameter
@@ -111,9 +111,23 @@ class Request extends Object {
      * @return string
      */ 
     public function toString() {
-        $buff = "{".$this->getClassName()."}-->";
+        $buff = "{".$this->getClassName()."}-->\n";
         foreach ($this->getParameters() as $name=>$value) {
-            $buff .= "[{$name}={$value}]";
+            $buff .= "[{$name}=";
+            if (is_array($value)) {
+                $buff .= "\n\t[Array:\n";
+                foreach ($value as $k=>$v) {
+                    $buff .= "\t\t[{$k}=";
+                    if (strlen($v)>75) {
+                        $buff .= substr(str_replace("","\n",$v),0,75) ." .....]\n";
+                    } else {
+                        $buff .= "$v]\n";
+                    }
+                }
+                $buff .= "]]\n";
+            } else {
+                $buff .= "{$value}]";
+            }
         }
         return $buff;
     }

@@ -9,7 +9,8 @@ $Id$
     - added Field::toString, Field::length and Field::h methods
     - HTTPRequest added new methods to get the current HTTPRequest method: getMethod, isPost, isGet
     - ActionController ``beautiful"(TM) error template
-    - ActionController will throw a medick exception when trying to load an unexistent before_filter  
+    - ActionController will throw a medick exception when trying to load an unexistent before_filter
+    - ActionController (fix) flash values are merged on the same run  
     - FormHelper minor code clean-ups and added password_field method
     - more API docs
     

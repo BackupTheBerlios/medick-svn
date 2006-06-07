@@ -83,7 +83,7 @@ class Validator extends Object {
                 } elseif ($method == "uniqueness_of" ) {
                     $has_errors = $this->isNotUnique($field);
                 } else {
-                    trigger_error('No such method validation method:' . $method, E_USER_ERROR);
+                    trigger_error('No such method validation method: ' . $method, E_USER_ERROR);
                 }
             } else {
                 // exception?

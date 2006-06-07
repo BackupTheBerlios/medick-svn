@@ -138,11 +138,11 @@ class ActionController extends Object {
 
     /** @var Configurator
         configurator instance */
-    private $config;
+    protected $config;
 
     /** @var Injector
         the injector. */
-    private $injector;
+    protected $injector;
 
     /**
      * Process this Request when an exception occured
@@ -233,10 +233,7 @@ class ActionController extends Object {
         try {
             $this->injector->inject('helper', $this->params['controller']);
         } catch (FileNotFoundException $fnfEx) {
-            $this->logger->info(
-                'skipping helper: '
-                . $this->injector->getPath('helpers')
-                . '_' . $this->params['controller'] . ' ' . $fnfEx->getMessage());
+            $this->logger->info('Skiped helper: ' . $this->params['controller'] . '_helper.php');
         }
         $this->register_flash();
         if ($this->use_layout) {
@@ -244,11 +241,9 @@ class ActionController extends Object {
             $layout_file= $this->injector->getPath('layouts') . $layout . '.phtml';
             $this->logger->debug('Layout: ' . $layout_file);
             if (!is_file($layout_file)) {
-                $this->logger->debug('...failed.');
                 return $this->render_without_layout($template_file, $status);
             } else {
                 $this->template->content_for_layout= $this->template->render_file($template_file);
-                // $this->logger->debug('...done.');
                 return $this->render_text($this->template->render_file($layout_file), $status);
             }
         } else {
@@ -319,7 +314,11 @@ class ActionController extends Object {
     }
 
     protected function flash($name, $value) {
-        $this->session->putValue('flash', array($name=>$value));
+        if ($this->session->hasValue('flash')) {
+            $this->session->putValue('flash', array_merge($this->session->getValue('flash'), array($name=>$value)));
+        } else {
+            $this->session->putValue('flash', array($name=>$value));
+        }
     }
 
     /**
@@ -365,7 +364,7 @@ class ActionController extends Object {
         $this->template->assign('__server',     (string)$this->config->getWebContext()->server_name);
         $this->template->assign('__controller', $this->params['controller']);
         $this->template->assign('__version',    Medick::getVersion());
-        
+        $this->template->assign('__self', $this->__base . $this->request->getRequestUri());
         $this->logger->debug($this->request->toString());
     }
 

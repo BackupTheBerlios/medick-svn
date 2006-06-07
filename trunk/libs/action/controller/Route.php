@@ -333,7 +333,7 @@ class Route extends Object {
     public function createControllerInstance(Request $request) {
         if (!$this->isLoaded) $this->load($request);
         try {
-            Registry::get('__logger')->debug($this->toString());
+            // Registry::get('__logger')->debug($this->toString());
             return Registry::put(new Injector(), '__injector')->inject('controller', $request->getParameter('controller'));
         } catch (FileNotFoundException $fnfEx) {
             throw new RoutingException('Cannot create a controller instance, ' . $fnfEx->getMessage());
@@ -346,7 +346,6 @@ class Route extends Object {
      * @return string
      */ 
     public function toString() {
-	return '';
         return sprintf('{%s}-->Name: %s; List: %s;', 
                         $this->getClassName(), 
                         $this->getNameToHuman(), 
@@ -374,12 +373,16 @@ class Route extends Object {
      * @param Request request, the request on witch we want to merge
      */ 
     private function doMerge(Request $request) {
+        // $l = Registry::get('__logger');
         foreach ($this->merges as $name=>$value) {
             if (isset(Route::$old_merges[$name])) unset(Route::$old_merges[$name]);
+            // $l->debug('+++++ ' . $name);
+            // $l->debug('+++++ ' . $value);
             $request->setParameter($name, $value);
         }
         // discard previously route parameters.
         foreach (Route::$old_merges as $name=>$value) {
+            // $l->debug('----- ' . $name);
             $request->setParameter($name, NULL);
         }
         // cache merged parameters  

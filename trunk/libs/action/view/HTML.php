@@ -219,17 +219,13 @@ class FormHelper extends Object {
         $value= $object->$method === NULL ? 0: $object->$method;
         
         if ( (int)$value > 0 ) {
-            $buff .= 'checked="checked"';// value="' . $value . '"';
-        } else {
-            // $buff .= 'value="0"';
+            $buff .= 'checked="checked"';
         }
         $buff .= ' />';
         if ($errors) {
             $buff .= '</div>';
         }
         return $buff;
-        // . '<input name="' . $name . '" value="' . $value . '" type="hidden" />';
-        // return $buff;
     }
 }
 
@@ -251,10 +247,13 @@ class URL extends Object {
         $buff= $base . '/';
         if ($controller) $buff .= $controller . '/';
         $buff .= $action;
+        
         foreach ($params as $key=>$value) {
             $buff .= '/' . $value;
         }
-        return $buff . '.' . $ext;
+        
+        if ($ext=='') return $buff;
+        else return $buff . '.' . $ext;
     }
 }
 

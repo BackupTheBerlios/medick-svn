@@ -43,10 +43,20 @@ class Map extends Collection {
 
     private static $instance= NULL;
 
+    /**
+     * Hidden constructor
+     *
+     * Use Map::getInstance to get an instance
+     */ 
     protected function Map() {
         parent::Collection();
     }
 
+    /**
+     * It gets this object instance
+     * 
+     * @return Map
+     */ 
     public static function getInstance() {
         if (Map::$instance===NULL) {
             Map::$instance= new Map();
@@ -54,6 +64,12 @@ class Map extends Collection {
         return Map::$instance;
     }
     
+    /**
+     * Match the incoming Request against defined Routes
+     *
+     * @param Request incoming request
+     * @throws RoutingException if we cannot resolve this request to a route
+     */ 
     public function match(Request $request) {
         foreach ($this->elements as $element) {
             if ($element->match($request)) return $element;
@@ -61,6 +77,12 @@ class Map extends Collection {
         throw new RoutingException('Cannot find a Route for this hash: ' . $request->getRequestURI());
     }
     
+    /**
+     * It gets a Route of this Map by the Route name
+     *
+     * @param string route name
+     * @throws RoutingException if we cannot find a Route by the givven name
+     */ 
     public function getRouteByName($name) {
         foreach ($this->elements as $element) {
             if ($element->getName() == $name) return $element;
