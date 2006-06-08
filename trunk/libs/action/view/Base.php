@@ -179,6 +179,18 @@ class PHPTemplateEngine extends Object implements ITemplateEngine {
         return array_key_exists($name,$this->vars) ?
                  $this->vars[$name] : trigger_error("Undefined Template Variable: " . $name, E_USER_ERROR);
     }
+    
+    public function dump($name='') {
+      echo '<div style="color:#000;background-color:#FFF;"><pre>';var_dump($name==''?$this->vars:$this->vars[$name]);echo '</pre></div>';
+    }
+    
+    public function defined_vars() {
+      echo '<div style="color:#000;background-color:#FFF;"><pre>';
+      foreach ($this->vars as $name=>$value) {
+        echo $name . "\n";
+      }
+      echo '</pre></div>';
+    }
 
 }
 
