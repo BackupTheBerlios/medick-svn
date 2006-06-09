@@ -536,7 +536,7 @@ abstract class ActiveRecord extends Object {
      * @param string sql query to execute
      * @return ResultSet
      */ 
-    public static function execute($sql) {
+    protected static function execute($sql) {
         $r= ActiveRecord::connection()->executeQuery($sql);
         Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);
         return $r;
@@ -567,9 +567,13 @@ abstract class ActiveRecord extends Object {
      *
      * @return ReflectionClass
      */
-    public static function reflect_class($class_name) {
-        Registry::get('__injector')->inject('model', strtolower($class_name));
-        return new ReflectionClass($class_name);
+    protected static function reflect_class($class_name, $r=0) {
+        try {
+            return new ReflectionClass($class_name);
+        } catch (ReflectionException $rEx) {
+            Registry::get('__injector')->inject('model', strtolower($class_name));
+            if($r==0) return ActiveRecord::reflect_class($class_name, 1);
+        }
     }
     
     /**
@@ -577,7 +581,7 @@ abstract class ActiveRecord extends Object {
      *
      * @return ResultSet
      */
-    public static function create_result_set(QueryBuilder $builder) {
+    protected static function create_result_set(QueryBuilder $builder) {
         $stmt = ActiveRecord::connection()->prepareStatement($builder->compile()->getQueryString());
         $i=1; foreach($builder->getBindings() as $binding) $stmt->set($i++, $binding);
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
@@ -594,7 +598,7 @@ abstract class ActiveRecord extends Object {
      * @throws RecordNotFoundException 
      * @return ActiveRecord
      */
-    public static function fetch_one(ResultSet $rs, ReflectionClass $class) {
+    protected static function fetch_one(ResultSet $rs, ReflectionClass $class) {
         if($rs->getRecordCount() != 1) {
             $rs->close();
             throw new RecordNotFoundException('Couldn\'t find a `' . $class->getName() . '` to match your query.');
@@ -610,7 +614,7 @@ abstract class ActiveRecord extends Object {
      * Merge ResultSet into RowsAggregate
      * @return RowsAggregate
      */ 
-    public static function fetch_all(ResultSet $rs, ReflectionClass $class) {
+    protected static function fetch_all(ResultSet $rs, ReflectionClass $class) {
         $results= new RowsAggregate();
         while($rs->next()) {
             $results->add($class->newInstance($rs->getRow()));
@@ -629,7 +633,7 @@ abstract class ActiveRecord extends Object {
         return ActiveRecord::connection();
     }
 
-    public static function connection() {
+    protected static function connection() {
         if (ActiveRecord::$conn === NULL) {
             ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
         }

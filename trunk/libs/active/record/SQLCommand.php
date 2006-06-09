@@ -55,6 +55,8 @@ class SQLCommand extends Object {
 
     private $tables= array();
 
+    private $joins= array();
+    
     private $wheres= array();
 
     private $orderBy;
@@ -90,7 +92,8 @@ class SQLCommand extends Object {
     }
     
     public function leftJoin($what) {
-        $this->tables[]=$what;
+        // $this->tables[]=$what;
+        $this->joins[]= $what;
         return $this;
     }
     
@@ -100,6 +103,7 @@ class SQLCommand extends Object {
         $query .= $this->appendColumns();
         // $query .= " from " . $this->from;
         $query .= $this->appendFrom();
+        $query .= $this->appendJoins();
         $query .= $this->appendWhere();
         $query .= $this->appendOrderBy();
         return $query;
@@ -119,6 +123,11 @@ class SQLCommand extends Object {
             }
         }
         return $q;
+    }
+    
+    private function appendJoins() {
+        if (count($this->joins)) return " " . implode(" ", $this->joins);
+        else return " ";
     }
     
     private function appendWhere() {
