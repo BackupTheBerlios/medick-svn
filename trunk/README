@@ -6,6 +6,9 @@ $Id$
 ABOUT:
 ------
     Medick is an open-source software licensed under a BSD-style licence, see LICENSE file for details.
+    Medick is a php 5 web framework.
+    Medick is alpha stage project, use it on your own risk. Function names or framework workflow might change without prior notice.
+    This is the README file for version 0.2.3 of medick released on 24.06.2006.
 
 REQUIREMENTS:
 -------------
@@ -28,10 +31,16 @@ INSTALL:
     Checkout Medick sources from svn:
     
         $ svn checkout svn://svn.berlios.de/medick medick
-
+        
+    See docs for details.
+    
 WHERE TO GET HELP:
 -----------------
+    Web Home     : http://medick.locknet.ro
     Documentation: http://medick.locknet.ro/documentation.html
+    API Docs     : http://medick.locknet.ro/api
+    Dev Blog     : http://www.locknet.ro/?c=medick
+    
     Subscribe to our internals email lists: http://lists.berlios.de/mailman/listinfo/medick-devel
     You can also read the archives: http://lists.berlios.de/pipermail/medick-devel
     

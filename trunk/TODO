@@ -3,21 +3,16 @@ $Id$
 Medick TODO list.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*Plan for 0.2 series*
-    # 1. obsolete DatabaseRow (0.2.3)
-    # 2. expandable validators (0.2.4)
-    # 3. customizable error messages on validation (0.2.4)
-    # 4. refactor && unit-test
-    
 *Plan for 0.3 series*
-    # 1. context like (obsolete app.xml)
-    # 2. cheap cache in ActiveRecord
-    # 3. creole moveup: RowsAggregate implements IteratorAggregate vs. ResultSet implement IteratorAggregate
-    # 4. write in associations
-    # 5. scaffolding generator
-    # 6. nice to have: RDBAC, i18n, l10n, caching
-    # 7. refactor && unit-test
 
-*To think about:*
-    # 1. php 5.1.4
-    
+    #  1. obsolete DatabaseRow (0.3.0)
+    #  2. expandable validators (0.3.0)
+    #  3. customizable error messages on validation (0.3.0)
+    #  4. context like (0.3.0)
+    #  5. cheap cache in ActiveRecord
+    #  6. creole moveup: RowsAggregate implements IteratorAggregate vs. ResultSet implement IteratorAggregate
+    #  7. write in associations
+    #  8. scaffolding generator
+    #  9. nice to have: RDBAC, i18n, l10n, caching
+    # 10. refactor && unit-test
+
