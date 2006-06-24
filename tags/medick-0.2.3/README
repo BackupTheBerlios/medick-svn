@@ -1,0 +1,51 @@
+================================================
+Medick :: PHP 5 Framework
+$Id$
+================================================
+
+ABOUT:
+------
+    Medick is an open-source software licensed under a BSD-style licence, see LICENSE file for details.
+    Medick is a php 5 web framework.
+    Medick is alpha stage project, use it on your own risk. Function names or framework workflow might change without prior notice.
+    This is the README file for version 0.2.3 of medick released on 24.06.2006.
+
+REQUIREMENTS:
+-------------
+    1. php 5.0.3 or higher (http://php.net/downloads).
+        The following PHP extensions are required: simplexml and spl.
+        Starting with php 5.1.2 reflection is also needed.
+        This extensions are enbled by default on every php installation.
+        
+    2. for web application you will need, of course a web server, Apache 2 with mod_php is recommended.
+            2.1 AllowOverride directive from httpd.conf must be set to All, to allow .htaccess files
+                and of course, mod_access must be turned on.
+            2.2 for nice URL`s mod_rewrite should be installed and turnded on.
+            Usualy, all Web Hosters provide this settings.
+            
+    3. to use a Database Engine you need to install one of the RDBMS suported by Creole:
+        - MySQL, SQLite, PostgreSQL or MS SQL Server
+
+INSTALL:
+--------
+    Checkout Medick sources from svn:
+    
+        $ svn checkout svn://svn.berlios.de/medick medick
+        
+    See docs for details.
+    
+WHERE TO GET HELP:
+-----------------
+    Web Home     : http://medick.locknet.ro
+    Documentation: http://medick.locknet.ro/documentation.html
+    API Docs     : http://medick.locknet.ro/api
+    Dev Blog     : http://www.locknet.ro/?c=medick
+    
+    Subscribe to our internals email lists: http://lists.berlios.de/mailman/listinfo/medick-devel
+    You can also read the archives: http://lists.berlios.de/pipermail/medick-devel
+    
+CONTACT:
+--------
+    aurelian [ AT ] locknet [ DOT ] ro
+    http://medick.locknet.ro
+
