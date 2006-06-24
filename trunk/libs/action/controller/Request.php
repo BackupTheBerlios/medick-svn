@@ -118,6 +118,10 @@ class Request extends Object {
                 $buff .= "\n\t[Array:\n";
                 foreach ($value as $k=>$v) {
                     $buff .= "\t\t[{$k}=";
+                    if (is_array($v)) {
+                        $buff .= "[Array]\n";
+                        continue;
+                    }
                     if (strlen($v)>75) {
                         $buff .= substr(str_replace("","\n",$v),0,75) ." .....]\n";
                     } else {
