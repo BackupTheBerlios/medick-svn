@@ -1,16 +1,17 @@
 $Id$
 (*) SVN version
 
-0.2.3(*)
-    - ActiveRecord: class open by removing some final declarations
-    - ActiveRecord::find is not declared as abstract, awaiting php 5.2 changes on abstract static syntax
+0.2.3(24.Jun.2006)
+    - ActiveRecord refactorings
+    - fix: Inflector::humanize to work with php 5.1.4
+    - fix: ActionController flash values are merged on the same run  
+    - fix: Removing a Session value is done via session_unregister
+    - fix: URL::create() when the controller is not given a / is added to URL  
     - added ActiveRecord::isValid()
-    - ActiveRecord::build() -> split this method in small pieces
-    - added Field::toString, Field::length and Field::h methods
+    - new debugging methods to ActionView::Base  
     - HTTPRequest added new methods to get the current HTTPRequest method: getMethod, isPost, isGet
     - ActionController ``beautiful"(TM) error template
     - ActionController will throw a medick exception when trying to load an unexistent before_filter
-    - ActionController (fix) flash values are merged on the same run  
     - FormHelper minor code clean-ups and added password_field method
     - more API docs
     
