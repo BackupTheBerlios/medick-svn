@@ -1,0 +1,7 @@
+$Id$
+
+medick/exp holds medick experiments
+
+Contents:
+    -> validator API (validator_api.php)
+
