@@ -33,11 +33,10 @@
 // }}}
 
 /**
- * Medick ActiveRecord Validation API
+ * Medick ActiveRecord Validation API (2)
  */
-
-error_reporting(E_STRICT|E_ALL);
-ini_set('display_errors', 1);
+ 
+error_reporting(E_STRICT | E_ALL);
 
 class MedickClass extends ReflectionClass { }
 
@@ -57,24 +56,6 @@ class Object {
 
     public function toString() {
         return $this->getClassName();
-    }
-
-}
-
-class FieldError extends Object {
-
-    private $message;
-
-    public function FieldError($message) {
-        $this->message= $message;
-    }
-
-    public function getMessage() {
-        return $this->message;
-    }
-
-    public function toString() {
-        return $this->message;
     }
 
 }
@@ -103,7 +84,7 @@ class Field extends Object {
         return $this->name;
     }
 
-    public function addError(FieldError $error) {
+    public function addError($error) {
         $this->errors[]= $error;
     }
 
@@ -146,13 +127,32 @@ abstract class Validator extends Object {
 
 }
 
+class FormatOfValidator extends Validator {
+
+    protected $message= '%s has invalid format!';
+
+    private $with= '';
+    
+    public function with($regex='') {
+        $this->with= $regex;
+        return $this;
+    }
+    
+    public function validate(Field $field) {
+        if ( $this->with === '' ||  !preg_match($this->with, $field->getValue())) {
+            $field->addError(sprintf($this->message, $field->getName()));
+        }
+    }
+
+}
+
 class PresenceOfValidator extends Validator {
 
-    protected $message= '%s is empty';
+    protected $message= '%s is empty!';
 
     public function validate(Field $field) {
         if ($field->getValue() == '') { 
-            $field->addError(new FieldError(sprintf($this->message, $field->getName())));
+            $field->addError(sprintf($this->message, $field->getName()));
         }
     }
 
@@ -165,7 +165,7 @@ class NumericalityOfValidator extends Validator {
     public function validate(Field $field) {
         $v=$field->getValue();
         if(!((is_numeric($v)) && (intval(0+$v)==$v))) { 
-            $field->addError(new FieldError(sprintf($this->message, $field->getName())));
+            $field->addError(sprintf($this->message, $field->getName()));
         }
     }
 
@@ -175,8 +175,8 @@ class LengthOfValidator extends Validator {
 
     protected $too_short= '%s is too short, min is %d';
     protected $too_long = '%s is too long, max is %d';
-    protected $min;
-    protected $max;
+    protected $min= 0;
+    protected $max= 1;
 
     public function in($min, $max) {
         if ( $max <= $min ) { 
@@ -210,9 +210,9 @@ class LengthOfValidator extends Validator {
     public function validate(Field $field) {
         $l= strlen($field->getValue());
         if ($l < $this->min) { 
-            return $field->addError(new FieldError(sprintf($this->too_short, $field->getName(), $this->min)));
+            return $field->addError(sprintf($this->too_short, $field->getName(), $this->min));
         } elseif ($l > $this->max) { 
-            return $field->addError(new FieldError(sprintf($this->too_long, $field->getName(), $this->max)));
+            return $field->addError(sprintf($this->too_long, $field->getName(), $this->max));
         }
     }
 
@@ -266,18 +266,23 @@ class ActiveRecord extends Object {
             if ($this->getClass()->hasMethod($method)) return $this->getClass()->getMethod($method)->invoke($this);
             return;
         }
+        trigger_error('Call to a undefined method: ' . $this->getClassName() . '::' . $method, E_USER_ERROR);
     }
 
     protected function collect_errors() {
-        foreach ($this->validators as $v) {
-            $v->validate_each($this);
-        }
+        $this->run_validators();
         foreach ($this->fields as $field) {
             if ($field->hasErrors()) return 1;
         }
         return 0;
     }
 
+    private function run_validators() {
+        foreach ($this->validators as $v) {
+            $v->validate_each($this);
+        }
+    }
+    
     public function save() {
         if ($this->before_save() && $this->collect_errors() === 0) {
             return true;
@@ -293,6 +298,7 @@ class Person extends ActiveRecord {
         $this->fields['name']    = new Field('name');
         $this->fields['address'] = new Field('address');
         $this->fields['phone']   = new Field('phone');
+        $this->fields['email']   = new Field('email');
     }
 
     protected function before_save() {
@@ -300,24 +306,30 @@ class Person extends ActiveRecord {
         $this->validates_length_of('name')->in(1,5)->too_short('Too short: %s [min: %d]')->too_long('Too long: %s, [max: %d]');
         $this->validates_length_of('address')->max(5)->too_long('%s is too long, maximum is %d charachters');
         $this->validates_numericality_of('phone');
+        $this->validates_format_of('email')->with('/^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i');
         return true;
     }
 
 }
 
-function error_messages_for(ActiveRecord $record) {
-    foreach ($record->getFields() as $field) {
-        foreach ($field->getErrors() as $error) {
-            echo $error->getMessage() . "\n";
+class ActiveRecordHelper extends Object {
+    
+    public static function error_messages_for(ActiveRecord $record) {
+        foreach ($record->getFields() as $field) {
+            foreach ($field->getErrors() as $error) {
+                echo $error . "\n";
+            }
         }
     }
+
 }
 
 $p= new Person();
+$p->email= 'F';
 $p->phone= 'a';
 $p->name= 'Marel';
 $p->address= 'Andro';
 var_dump($p->save());
 
-error_messages_for($p);
+ActiveRecordHelper::error_messages_for($p);
 
