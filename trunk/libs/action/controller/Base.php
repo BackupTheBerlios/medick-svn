@@ -430,7 +430,9 @@ class ActionController extends Object {
     // XXX: not done.
     // redirects to a know path (eg. /images/pic.jpg)
     protected function redirect_to_path($path) {
-        throw new MedickException('Method: ' . __METHOD__ . ' not implemented!');
+        $this->logger->debug('Redirecting to: ' . $path);
+        $this->response->redirect($this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root . '/' . $path);
+        $this->action_performed = TRUE;
     }
 
     // XXX: not done.

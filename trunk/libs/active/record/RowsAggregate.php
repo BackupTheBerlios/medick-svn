@@ -62,6 +62,10 @@ class RowsAggregate extends Object implements IteratorAggregate {
         return $row;
     }
 
+    public function first() {
+      return $this->container[0];
+    }
+
     /**
      * It gets the iterator
      * @return Iterator
