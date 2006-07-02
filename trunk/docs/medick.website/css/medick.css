@@ -9,7 +9,7 @@ body {
   margin: 0;
   padding: 0;
   font:80%/140% "Lucida Grande",Verdana, Helvetica,sans-serif;
-  background: url("/s/bg-main.gif") repeat-x;
+  background: url("http://medick.locknet.ro/s/bg-main.gif") repeat-x;
   background-color: #F5FEE8;
 }
 ul {
@@ -18,7 +18,7 @@ ul {
 }
 li {
   padding: 10px;
-  list-style: url("/s/bullet.gif") none;
+  list-style: url("http://medick.locknet.ro/s/bullet.gif") none;
 }
 a:link, a:visited {
   color: #30c;
@@ -118,7 +118,7 @@ pre {
 
 }
 #header {
-  background: url("/s/header.gif");
+  background: url("http://medick.locknet.ro/s/header.gif");
   background-repeat:no-repeat;
   width: 722px;
   height: 105px;
@@ -129,7 +129,7 @@ pre {
   font-style: italic;
 }
 #footer {
-  background: url("/s/footer.gif");
+  background: url("http://medick.locknet.ro/s/footer.gif");
   background-repeat: no-repeat;
   width: 722px;
   height: 91px;
