@@ -33,7 +33,8 @@
 // }}}
 
 // ActiveRecord dependencies.
-include_once('active/record/DatabaseRow.php');
+// include_once('active/record/DatabaseRow.php');
+include_once('active/record/Field.php');
 include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
 include_once('active/record/SQLCommand.php');
@@ -78,6 +79,8 @@ abstract class ActiveRecord extends Object {
         our database row. */
     protected $row;
 
+    protected $fields=array();
+    
     /** @var string
         primary key name */
     private $pk;
@@ -100,7 +103,7 @@ abstract class ActiveRecord extends Object {
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
         $table_info = ActiveRecordTableInfo::getInstance(ActiveRecord::connection(), $this->table_name);
         $this->pk   = $table_info->getPrimaryKey()->getName();
-        $this->row  = new DatabaseRow($this->table_name);
+        // $this->row  = new DatabaseRow($this->table_name);
         foreach( $table_info->getColumns() as $col) {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
@@ -118,7 +121,8 @@ abstract class ActiveRecord extends Object {
             } else {
                 $field->isFK = false;
             }
-            $this->row[]= $field;
+            $this->fields[$field->getName()]= $field;
+            // $this->row[]= $field;
         }
         // confused?
         if(!empty($params)) { foreach ($params as $field_name => $field_value) {
@@ -126,6 +130,22 @@ abstract class ActiveRecord extends Object {
         }}
     }
 
+    public function getTableName() {
+        return $this->table_name;
+    }
+    
+    public function hasField($name) {
+        return in_array($name, array_keys($this->fields));
+    }
+
+    public function getFields() {
+        return $this->fields;
+    }
+
+    public function getField($name) {
+        return $this->fields[$name];
+    }
+    
     // {{{ __magic functions
     /**
      * It sets the value of the field
@@ -135,14 +155,40 @@ abstract class ActiveRecord extends Object {
      * @param mixed, field_value, field value
      * @throws ActiveRecordException if the field is not found.
      */
-    public function __set($field_name, $field_value) {
+    public function __set($name, $value) {
+        if ($this->hasField($name)) $this->getField($name)->setValue($value);
+        else throw new ActiveRecordException('No such Filed: ' . $name);
+        /*
         if ($field= $this->row->getFieldByName($field_name)) {
             return $this->row->updateStatus($field, $field_value);
         }
         throw new ActiveRecordException (
             'Cannot Set the value of field: `' . $field_name . '`. No such field!');
+        */
     }
 
+
+    public function __call($method, $args) {
+        if (substr($method,0,10)== 'validates_') { 
+            $cname= str_replace(" ", "", ucwords(str_replace("_", " ", substr($method, 10)))) . "Validator";
+            $validator= new $cname;
+            $validator->fields($args);
+            $this->validators[]= $validator;
+            return $validator;
+        }
+        if (substr($method,0,7) == 'before_') {
+            if ($this->getClass()->hasMethod($method)) return $this->getClass()->getMethod($method)->invoke($this);
+            else return true;
+        }
+        if (substr($method,0,6) == 'after_') {
+            if ($this->getClass()->hasMethod($method)) return $this->getClass()->getMethod($method)->invoke($this);
+            return;
+        }
+        trigger_error('Call to a undefined method: ' . $this->getClassName() . '::' . $method, E_USER_ERROR);
+    }
+
+
+    
     /**
      * It gets the value of the field
      *
@@ -151,10 +197,13 @@ abstract class ActiveRecord extends Object {
      * @throws ActiveRecordException
      * @return field value
      */
-    public function __get($field_name) {
+    public function __get($name) {
+        if ($this->hasField($name)) return $this->getField($name)->getValue();
+        /*
         if ($field= $this->row->getFieldByName($field_name)) {
             return $field->isAffected ? $field->getValue() : NULL;
         }
+        */
         try {
             return Association::resolve(
                                 array(
@@ -163,15 +212,17 @@ abstract class ActiveRecord extends Object {
                                     'has_many'   => $this->has_many,
                                     'has_and_belongs_to_many' => $this->has_and_belongs_to_many
                                     ),
-                                $this->table_name,
-                                $field_name,
-                                $this->row
+                                $this,// ->table_name,
+                                $name // ,
+                                // $this->fields
+                                // $this->row
                                 )->execute();
         } catch (AssociationNotFoundException $anfEx) {
             throw new ActiveRecordException (
                 'Cannot Get the value of filed: `' . $field_name . '`. No such filed!',
                 $anfEx->getMessage());
         }
+        // throw new ActiveRecordException('No such Filed: ' . $name);
     }
 
     /** returns a string representation of this object */
@@ -185,17 +236,20 @@ abstract class ActiveRecord extends Object {
 
     /** Prepare this Object for serialization */
     public function __sleep() {
-        return array('row', 'table_name', 'class_name','has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
+        return array('fields', 'table_name', 'class_name','has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many');
     }
 
     /** restore the Object state after unserialize  */
     public function __wakeup() {
         ActiveRecord::connection();
-        $it= $this->row->iterator();
-        while($it->hasNext()) {
-            $current= $it->next();
-            $this->__set($current->getName(), $current->getValue());
+        foreach ($this->fields as $field) {
+            $this->__set($field->getName(), $field->getValue());
         }
+        // $it= $this->row->iterator();
+        // while($it->hasNext()) {
+        //     $current= $it->next();
+        //     $this->__set($current->getName(), $current->getValue());
+        // }
     }
 
     // }}}
@@ -205,27 +259,27 @@ abstract class ActiveRecord extends Object {
      *
      * @return DatabaseRow
      */
-    public function getRow() {
-        return $this->row;
-    }
+    // public function getRow() {
+    //     return $this->row;
+    // }
 
     /**
      * Check if this row is valid by counting the associated rows errors
      *
      * @return true if is valid
      */ 
-    public function isValid() {
-        return count($this->row->collectErrors()) == 0;
-    }
+    // public function isValid() {
+    //     return count($this->row->collectErrors()) == 0;
+    // }
 
     /**
      * Validates this row
      *
      * @return Validator
      */ 
-    protected function validates () {
-        return new Validator($this->row);
-    }
+    // protected function validates () {
+    //     return new Validator($this->row);
+    // }
 
     // {{{ filters
     /**
@@ -238,7 +292,7 @@ abstract class ActiveRecord extends Object {
      * @return bool
      * @since Rev.272
      */
-    protected function before_insert() { return TRUE; }
+    // protected function before_insert() { return TRUE; }
 
     /**
      * Before Update Filter.
@@ -250,7 +304,7 @@ abstract class ActiveRecord extends Object {
      * @return bool
      * @since Rev.272
      */
-    protected function before_update() { return TRUE; }
+    // protected function before_update() { return TRUE; }
 
     /**
      * Before Delete Filter.
@@ -262,7 +316,7 @@ abstract class ActiveRecord extends Object {
      * @return bool
      * @since Rev.272
      */
-    protected function before_delete() { return TRUE; }
+    // protected function before_delete() { return TRUE; }
 
     /**
      * Before Save Filter.
@@ -274,7 +328,7 @@ abstract class ActiveRecord extends Object {
      * @return bool
      * @since Rev.342
      */
-    protected function before_save() { return TRUE; }
+    // protected function before_save() { return TRUE; }
 
     /**
      * After Insert Filter.
@@ -284,7 +338,7 @@ abstract class ActiveRecord extends Object {
      * @return void
      * @since Rev.272
      */
-    protected function after_insert()  {    }
+    // protected function after_insert()  {    }
 
     /**
      * After Update Filter.
@@ -294,7 +348,7 @@ abstract class ActiveRecord extends Object {
      * @return void
      * @since Rev.272
      */
-    protected function after_update()  {    }
+    // protected function after_update()  {    }
 
     /**
      * After Delete Filter.
@@ -304,10 +358,16 @@ abstract class ActiveRecord extends Object {
      * @return void
      * @since Rev.272
      */
-    protected function after_delete()  {    }
+    // protected function after_delete()  {    }
 
     // }}}
 
+    public function getPrimaryKey() {
+        foreach($this->fields as $field) {
+            if ($field->isPk) return $field;
+        }
+    }
+    
     // {{{ save
     /**
      * Save,

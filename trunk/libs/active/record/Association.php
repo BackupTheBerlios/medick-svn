@@ -109,14 +109,14 @@ abstract class Association extends Object {
      *
      * Returns a new instance of the solved Association and it acts as a factory
      * @param array associations ActiveRecord defined associations
-     * @param string owner current ActiveRecord woner name
+     * @param string owner current ActiveRecord owner name
      * @param string class name of the object we want to return
      * @param DatabaseRow fields ActiveRecord fields
      * @return Association
      * @throws AssociationNotFoundException when we cannot resolve this Association
      * @since Rev. 272
      */
-    public static function resolve($associations, $owner, $class, $fields) {
+    public static function resolve(Array $associations, ActiveRecord $owner, $class) { //, $fields) {
         if ( is_string($associations['has_one']) && preg_match("/$class/", $associations['has_one']) ) {
             $type= 'HasOneAssociation';
         } elseif( is_array($associations['has_one']) && in_array($class, $associations['has_one']) ) {
@@ -144,8 +144,8 @@ abstract class Association extends Object {
         $association= new $type;
         $association->setOwner($owner);
         $association->setClass($class);
-        $association->setFields($fields);
-        $association->setPk($fields->getPrimaryKey()->getValue());
+        $association->setFields($owner->getFields());
+        $association->setPk($owner->getPrimaryKey()->getValue());
         return $association;
     }
 
@@ -171,7 +171,7 @@ class HasManyAssociation extends Association {
 
     /** @see Association::execute() */
     public function execute() {
-        $fk= Inflector::singularize($this->owner) . '_id';
+        $fk= Inflector::singularize($this->owner->getTableName()) . '_id';
         $arguments= array('all', array('condition'=>$fk.'=?'), array($this->pk));
         $builder= new QueryBuilder(Inflector::singularize($this->class), $arguments);
         return ActiveRecord::build($builder);
@@ -205,8 +205,9 @@ class HasOneAssociation extends Association {
      */
     public function execute() {
         $fk= $this->class.'_id'; // foreign key name: the class name+"_id" suffix"
-        if ($field= $this->fields->getFieldByName($fk)) {
-            $arguments= array('first', array('condition'=>'id=?'), array($field->getValue()));
+        // if ($field= $this->fields->getFieldByName($fk)) {
+        if ($this->owner->hasField($fk)) {
+            $arguments= array('first', array('condition'=>'id=?'), array($this->owner->getField($fk)->getValue()));
             return ActiveRecord::build(new QueryBuilder($this->class, $arguments));
         } else {
             throw new AssociationNotFoundException('Cannot execute Association ``has_one" on ' . $this->class);
@@ -243,17 +244,17 @@ class HasAndBelongsToManyAssociation extends Association {
 
     /** @see Association::execute() */
     public function execute() {
-        if ($this->class < $this->owner) {
-            $join_table= $this->class . '_' . Inflector::pluralize($this->owner);
+        if ($this->class < $this->owner->getTableName()) {
+            $join_table= $this->class . '_' . $this->owner->getTableName();
         } else {
-            $join_table= Inflector::pluralize($this->owner) . '_' . Inflector::pluralize($this->class);
+            $join_table= $this->owner->getTableName() . '_' . Inflector::pluralize($this->class);
         }
         $arguments=array();
         $arguments[]='all';
         $clauses= array();
         $clauses['columns']   = $this->class.'.*';
         $clauses['left join'] = $join_table . ' on ' . $this->class . '.id=' . $join_table . '.' . Inflector::singularize($this->class) . '_id';
-        $clauses['condition'] = $join_table . '.' . Inflector::singularize($this->owner) . '_id=?';
+        $clauses['condition'] = $join_table . '.' . Inflector::singularize($this->owner->getTableName()) . '_id=?';
         $arguments[]= $clauses;
         $arguments[]= array($this->pk);
         return ActiveRecord::build(new QueryBuilder(Inflector::singularize($this->class), $arguments));
