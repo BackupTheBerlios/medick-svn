@@ -62,44 +62,30 @@ class ActiveRecordHelper extends Object {
      *                      this includes: css_class and heading
      * @return string a HTML formatted string
      */
-    public static function error_messages_for(ActiveRecord $object, $options=array()) {
-        
+    public static function error_messages_for(ActiveRecord $record, $options=array()) {
+        if ($record->isValid()) return;
         $css_class= isset($options['css_class']) ? $options['css_class'] : 'formErrors';
         $heading  = isset($options['heading']) && (int)$options['heading'] > 0 && (int)$options['heading'] < 6 ? $options['heading'] : 2;
         $singular = isset($options['singular']) ? $options['singular'] : 'error';
         $plural   = isset($options['plural']) ? $options['plural'] : 'errors';
-        $oname    = isset($options['oname']) ? $options['oname'] : ucfirst($object->getClassName());
-
+        $oname    = isset($options['oname']) ? $options['oname'] : ucfirst($record->getClassName());
         $buffer= '<div id="medickFormErrors" class="' . $css_class . '">';
-        $errors= 0;
-        $part = '';
-        $it= $object->getRow()->iterator();
-        while ($it->hasNext()) {
-            $current= $it->next();
-            if ($current->hasErrors()) {
-                $part .= '<ul>';
-                foreach ($current->getErrors() as $error) {
-                    $part .= '<li>' . ucfirst($current->getName()) .' ' . $error . '</li>';
-                    $errors++;
-                }
-                $part .= '</ul>';
-            }
-        }
-        if ($errors > 0) {
-            $st= $errors == 1 ? $singular : $plural;
-            $buffer .= '<h'.$heading.'>'.$errors.' '.$st.' prohibited this ';
-            $buffer .= $oname.' from being saved</h'.$heading.'>';
-            $buffer .= "\n<p>There were problems with the following fields:</p>\n";
-            $buffer .= $part;
-            return $buffer . '</div>';
-        }
+        $part = '<ul>'; foreach ($record->getErrors() as $error) {
+            $part .= '<li>' . $error . '</li>';
+        } $part .= '</ul>';
+        $st= sizeof($record->getErrors()) == 1 ? $singular : $plural;
+        $buffer .= '<h'.$heading.'>'.sizeof($record->getErrors()).' '.$st.' prohibited this ';
+        $buffer .= $oname.' from being saved</h'.$heading.'>';
+        $buffer .= "\n<p>There were problems with the following fields:</p>\n";
+        $buffer .= $part;
+        return $buffer . '</div>';
     }
 
     public static function error_message_on(ActiveRecord $object, $method, $options=array()) {
         // $prepend_text = isset($options['prepend']) ? $options['prepend'] : "";
         // $append_text  = isset($options['append']) ? $options['append'] : "";
         // $css_class    = isset($options['css_class']) ? $options['css_class'] : "formError";
-        $field= $object->getRow()->getFieldByName($method);
+        $field= $object->getField($method);
         if (!$field or !$field->hasErrors()) {
             return;
         }
@@ -158,7 +144,8 @@ class FormHelper extends Object {
      * @return medick.active.record.Field
      */ 
     protected static function get_field(ActiveRecord $object, $method) {
-        return $object->getRow()->getFieldByName($method);
+        if (!$object->hasField($method)) return FALSE;
+        return $object->getField($method);
     }
     
     /**
@@ -173,9 +160,8 @@ class FormHelper extends Object {
     }
     
     public static function text_area(ActiveRecord $object, $method, $options=array()) {
-        if (!$field= $object->getRow()->getFieldByName($method)) {
-            return; // ex?
-        }
+        if (!$object->hasField($method)) return;
+        $field= $object->getField($method);
         $id   = strtolower(get_class($object)) . '_'.$method;
         $name = strtolower(get_class($object)).'['.$method.']';
         $buff = '';
@@ -198,9 +184,8 @@ class FormHelper extends Object {
     }
 
     public static function check_box(Object $object, $method, $options = array()) {
-        if (!$field= $object->getRow()->getFieldByName($method)) {
-            return; // ex?
-        }
+        if (!$object->hasField($method)) return;
+        $field= $object->getField($method);
         $id   = strtolower($object->getClassName()) . '_' .$method;
         $name = strtolower($object->getClassName()) . '[' . $method . ']';
         $buff = '';

@@ -151,6 +151,7 @@ class Field extends Object {
      */
     public function setValue($value) {
         $this->value = $value;
+        $this->isAffected= TRUE;
     }
 
     /**

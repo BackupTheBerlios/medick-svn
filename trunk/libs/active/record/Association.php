@@ -108,15 +108,14 @@ abstract class Association extends Object {
      * Resolves this Association
      *
      * Returns a new instance of the solved Association and it acts as a factory
-     * @param array associations ActiveRecord defined associations
-     * @param string owner current ActiveRecord owner name
+     * @param ActiveRecord current ActiveRecord
      * @param string class name of the object we want to return
-     * @param DatabaseRow fields ActiveRecord fields
      * @return Association
      * @throws AssociationNotFoundException when we cannot resolve this Association
      * @since Rev. 272
      */
-    public static function resolve(Array $associations, ActiveRecord $owner, $class) { //, $fields) {
+    public static function resolve(ActiveRecord $owner, $class) {
+        $associations= $owner->getAssociations();
         if ( is_string($associations['has_one']) && preg_match("/$class/", $associations['has_one']) ) {
             $type= 'HasOneAssociation';
         } elseif( is_array($associations['has_one']) && in_array($class, $associations['has_one']) ) {
