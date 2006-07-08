@@ -1,11 +1,10 @@
 <?php
-
- /**
-  * This class is part of testor project
-  *
-  * @package testor.models
-  * $Id$
-  */
+/**
+ * This class is part of testor project
+ *
+ * @package testor.models
+ * $Id$
+ */
 class Project extends ActiveRecord {
 
     protected $belongs_to= 'portfolio';

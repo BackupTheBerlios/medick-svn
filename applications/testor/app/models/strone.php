@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This class is part of testor project
  *
@@ -20,3 +19,4 @@ class Strone extends ActiveRecord {
 	}
 
 }
+

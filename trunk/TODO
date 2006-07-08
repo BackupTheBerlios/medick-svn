@@ -5,9 +5,9 @@ Medick TODO list.
 
 *Plan for 0.3 series*
 
-    #  1. obsolete DatabaseRow (0.3.0)
-    #  2. expandable validators (0.3.0)
-    #  3. customizable error messages on validation (0.3.0)
+    #  ~~ 1. obsolete DatabaseRow (0.3.0) ~~
+    #  ~~ 2. expandable validators (0.3.0) ~~
+    #  ~~ 3. customizable error messages on validation (0.3.0) ~~
     #  4. context like (0.3.0)
     #  5. cheap cache in ActiveRecord
     #  6. creole moveup: RowsAggregate implements IteratorAggregate vs. ResultSet implement IteratorAggregate

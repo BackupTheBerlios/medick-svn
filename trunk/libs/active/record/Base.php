@@ -109,8 +109,7 @@ abstract class ActiveRecord extends Object {
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
         $table_info = ActiveRecordTableInfo::getInstance(ActiveRecord::connection(), $this->table_name);
         $this->pk   = $table_info->getPrimaryKey()->getName();
-        // $this->row  = new DatabaseRow($this->table_name);
-        foreach( $table_info->getColumns() as $col) {
+        foreach( $table_info->getColumns() as $col ) {
             $field = new Field( $col->getName() );
             // $field->size = $col->getSize();
             $field->type = CreoleTypes::getCreoleName( $col->getType() ) ;
@@ -128,7 +127,6 @@ abstract class ActiveRecord extends Object {
                 $field->isFK = false;
             }
             $this->fields[$field->getName()]= $field;
-            // $this->row[]= $field;
         }
         // confused?
         if(!empty($params)) { foreach ($params as $field_name => $field_value) {
@@ -166,6 +164,45 @@ abstract class ActiveRecord extends Object {
         }
     }
     
+    /**
+     * Implements magick medick methods
+     * 
+     * <b>Available methods:</b><br />
+     * <ul>
+     *  <li>
+     *    <i>validates_</i>it loads a Validator, eg. validates_presence_of will load PresenceOfValidator<br />
+     *    @see Validator
+     *  </li>
+     *  <li>
+     *    <i>before_</i>, if not defined, a call to a before filter will return true
+     *  </li>
+     *  <li>
+     *    <i>after_</i>, if not defined this will return
+     *  </li>
+     *  <li>
+     *    <i>get</i>, if not defined will try to return a Field, eg.: assuming Person is an ActiveRecord class:<br />
+     *    <code>
+     *      $p= Person::find(1);
+     *      $p->getName(); // returns a Field object
+     *      $p->name; // returns the Field value
+     *      $p->getName()->getValue(); // the same as the above call
+     *      $p->hasField('name') && $p->getField('name')->getValue(); // the same
+     *    </code>
+     *  </li>
+     *  <li>
+     *    <i>set</i>, if not defined will try to set the value of a Field, eg.: assuming Person is an ActiveRecord class:<br />
+     *    <code>
+     *      $p= new Person();
+     *      $p->name= 'Andy'; // sets the person name to Andy
+     *      $p->setName('Andy'); // same as above
+     *    </code>
+     *  </li>
+     * </ul>
+     * 
+     * @TODO: more checks on before_ / after_ filters
+     *
+     * @throws MedickException if the called method is not defined (similar with php error)
+     */ 
     public function __call($method, $args) {
         if (substr($method,0,10)== 'validates_') { 
             $cname= str_replace(" ", "", ucwords(str_replace("_", " ", substr($method, 10)))) . "Validator";
@@ -175,15 +212,15 @@ abstract class ActiveRecord extends Object {
             $this->validators[]= $validator;
             return $validator;
         }
-        if (substr($method,0,7) == 'before_') {
-            if ($this->getClass()->hasMethod($method)) return $this->getClass()->getMethod($method)->invoke($this);
-            else return true;
+        if (substr($method,0,7) == 'before_') return true; 
+        if (substr($method,0,6) == 'after_')  return;
+        if (substr($method,0,3) == 'get' && $this->hasField(strtolower(substr($method, 3)))) {
+            return $this->getField(strtolower(substr($method, 3)));
         }
-        if (substr($method,0,6) == 'after_') {
-            if ($this->getClass()->hasMethod($method)) return $this->getClass()->getMethod($method)->invoke($this);
-            return;
+        if (substr($method,0,3) == 'set' && $this->hasField(strtolower(substr($method, 3)))) {
+            return $this->getField(strtolower(substr($method,3)))->setValue($args[0]);
         }
-        trigger_error('Call to a undefined method: ' . $this->getClassName() . '::' . $method, E_USER_ERROR);
+        throw new MedickException('Call to a undefined method: ' . $this->getClassName() . '::' . $method);
     }
        
     /** 
@@ -192,11 +229,9 @@ abstract class ActiveRecord extends Object {
      * @return string
      */
     public function toString() {
-        $string = '';
-        foreach ($this->row->getAffectedFields() as $field) {
+        $string = ''; foreach ($this->getAffectedFields() as $field) {
             $string .= "[ " . $field->type . " ] " . $field->getName() . " : " . $field->getValue() . "\n";
-        }
-        return $string;
+        } return $string;
     }
 
     /** 

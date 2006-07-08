@@ -9,8 +9,8 @@ class Tone extends ActiveRecord {
 
     protected function before_save() {
         $this->name= htmlentities($this->name);
-        $this->validates()->presence_of('name');
-        $this->validates()->uniqueness_of('name');
+        $this->validates_presence_of('name');
+        $this->validates_uniqueness_of('name');
         return TRUE;
     }
     

@@ -1,11 +1,9 @@
 <?php
-
 /**
  * This class is part of eltodo, medick sample application
  * $Id$
  * @package eltodo.models
  */
-
 class Project extends ActiveRecord {
 
     public function before_insert() {
@@ -15,8 +13,8 @@ class Project extends ActiveRecord {
 
 
     public function before_save() {
-        $this->validates()->uniqueness_of('name');
-        $this->validates()->presence_of('name', 'description');
+        $this->validates_uniqueness_of('name');
+        $this->validates_presence_of('name', 'description');
         return TRUE;
     }
 

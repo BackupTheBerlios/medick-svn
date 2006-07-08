@@ -1,13 +1,17 @@
 $Id$
 (*) SVN version
 
+0.3.0pre1 (08.Jul.2006)
+    - Implemented a new validation API
+    - (fixed): Request::toString for multiple level array 
+
 0.2.3(24.Jun.2006)
     - ActiveRecord refactorings
-    - fix: Inflector::humanize to work with php 5.1.4
-    - fix: ActionController flash values are merged on the same run  
-    - fix: Removing a Session value is done via session_unregister
-    - fix: URL::create() when the controller is not given a / is added to URL  
-    - added ActiveRecord::isValid()
+    - (fixed): Inflector::humanize to work with php 5.1.4
+    - (fixed): ActionController flash values are merged on the same run  
+    - (fixed): Removing a Session value is done via session_unregister
+    - (fixed): URL::create() when the controller is not given a / is added to URL  
+    - (added): ActiveRecord::isValid()
     - new debugging methods to ActionView::Base  
     - HTTPRequest added new methods to get the current HTTPRequest method: getMethod, isPost, isGet
     - ActionController ``beautiful"(TM) error template

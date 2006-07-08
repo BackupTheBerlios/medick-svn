@@ -9,16 +9,6 @@ CREATE DATABASE `testor`;
 USE `testor`;
 
 -- --------------------------------------------------------
--- Table structure for table `tones`
-
--- CREATE TABLE tones (
---  `id`      INT (11) PRIMARY KEY auto_increment,
---  `name`    VARCHAR (255),
---  `status`  INT(1)
--- ) ENGINE=InnoDB;
-
-
--- --------------------------------------------------------
 -- Table structure for table `strones`
 
 CREATE TABLE strones (
