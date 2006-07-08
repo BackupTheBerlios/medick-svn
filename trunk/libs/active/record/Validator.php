@@ -165,7 +165,7 @@ abstract class Validator extends Object {
  * </code>
  * 
  * @see Validator, ActiveRecord, Field, preg_match
- * @package active.record
+ * @package medick.active.record
  * @subpackage validator
  * @author Oancea Aurelian
  */
@@ -219,7 +219,7 @@ class FormatOfValidator extends Validator {
  * </code>
  * 
  * @see Validator, ActiveRecord, Field
- * @package active.record
+ * @package medick.active.record
  * @subpackage validator
  * @author Oancea Aurelian
  */ 
@@ -258,7 +258,7 @@ class PresenceOfValidator extends Validator {
  * @TODO: test this with float values
  * 
  * @see Validator, ActiveRecord, Field, is_numeric, intvalue
- * @package active.record
+ * @package medick.active.record
  * @subpackage validator
  * @author Oancea Aurelian
  */ 
@@ -295,7 +295,7 @@ class NumericalityOfValidator extends Validator {
  * </code>
  * 
  * @see Validator, ActiveRecord, Field
- * @package active.record
+ * @package medick.active.record
  * @subpackage validator
  * @author Oancea Aurelian
  */ 
@@ -350,7 +350,7 @@ class UniquenessOfValidator extends Validator {
  * </code>
  * 
  * @see Validator, ActiveRecord, Field
- * @package active.record
+ * @package medick.active.record
  * @subpackage validator
  * @author Oancea Aurelian
  */ 
@@ -450,4 +450,4 @@ class LengthOfValidator extends Validator {
     }
 
 }
- 
+
