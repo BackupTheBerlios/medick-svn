@@ -170,37 +170,32 @@ abstract class ActiveRecord extends Object {
      * <b>Available methods:</b><br />
      * <ul>
      *  <li>
-     *    <i>validates_</i>it loads a Validator, eg. validates_presence_of will load PresenceOfValidator<br />
-     *    @see Validator
+     *    <i>validates_</i>*, it loads a Validator, eg. validates_presence_of will load PresenceOfValidator<br />
      *  </li>
      *  <li>
-     *    <i>before_</i>, if not defined, a call to a before filter will return true
+     *    <i>before_</i>* , if not defined, a call to a before filter will return true
      *  </li>
      *  <li>
-     *    <i>after_</i>, if not defined this will return
+     *    <i>after_</i>* , if not defined this will return
      *  </li>
      *  <li>
-     *    <i>get</i>, if not defined will try to return a Field, eg.: assuming Person is an ActiveRecord class:<br />
-     *    <code>
-     *      $p= Person::find(1);
-     *      $p->getName(); // returns a Field object
-     *      $p->name; // returns the Field value
-     *      $p->getName()->getValue(); // the same as the above call
-     *      $p->hasField('name') && $p->getField('name')->getValue(); // the same
-     *    </code>
+     *    <i>get</i>* , if not defined will try to return a Field, eg.: assuming Person is an ActiveRecord class:<br />
+     *    <code>$p= Person::find(1);
+     * $p->getName(); // returns a Field object
+     * $p->name; // returns the Field value
+     * $p->getName()->getValue(); // the same as the above call
+     * $p->hasField('name') && $p->getField('name')->getValue(); // the same</code>
      *  </li>
      *  <li>
-     *    <i>set</i>, if not defined will try to set the value of a Field, eg.: assuming Person is an ActiveRecord class:<br />
-     *    <code>
-     *      $p= new Person();
-     *      $p->name= 'Andy'; // sets the person name to Andy
-     *      $p->setName('Andy'); // same as above
-     *    </code>
+     *    <i>set</i>* , if not defined will try to set the value of a Field, eg.: assuming Person is an ActiveRecord class:<br />
+     *    <code>$p= new Person();
+     * $p->name= 'Andy'; // sets the person name to Andy
+     * $p->setName('Andy'); // same as above</code>
      *  </li>
      * </ul>
      * 
      * @TODO: more checks on before_ / after_ filters
-     *
+     * @see Validator, Fields
      * @throws MedickException if the called method is not defined (similar with php error)
      */ 
     public function __call($method, $args) {
