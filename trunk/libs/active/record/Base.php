@@ -195,7 +195,7 @@ abstract class ActiveRecord extends Object {
      * </ul>
      * 
      * @TODO: more checks on before_ / after_ filters
-     * @see Validator, Fields
+     * @see Validator, Field
      * @throws MedickException if the called method is not defined (similar with php error)
      */ 
     public function __call($method, $args) {
