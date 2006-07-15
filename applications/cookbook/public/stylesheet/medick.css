@@ -1,0 +1,9 @@
+/* stylesheet for cookbook project */
+/* $Id: medick.php 379 2006-03-18 17:36:03Z aurelian $ */
+
+body {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid black;
+    font-family:verdana, arial, helvetica, sans-serif;
+}

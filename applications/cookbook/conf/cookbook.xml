@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ ! $Id: application.xml 388 2006-04-03 18:28:25Z aurelian $
+ ! -->
+<application name="cookbook">
+    <!-- localhost environment -->
+    <environment name="localhost">
+        <!-- general properties -->
+        <properties>
+            <path>/wwwroot/medick/applications/cookbook</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://localhost</server_name>
+            <document_root>/cookbook</document_root>
+            <rewrite>on</rewrite>
+            <!-- Session Container
+            Only CreoleSessionContainer is available.
+            It needs a database table:
+            === start ===
+            create table c_sessions (
+                `session_id`   VARCHAR (255) PRIMARY KEY,
+                `session_data` TEXT,
+                `session_lastmodified` DATETIME
+            );
+            ===  end  ===
+            NOTE: this was tested only on mysql driver
+            NOTE: to implement your own session container (handler), see ISessionContainer inteface
+            === end comment here ===
+            <session>
+                <container>action.controller.session.CreoleSessionContainer</container>
+            </session>
+            -->
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="3">
+                    <property name="path" value="/wwwroot/medick/applications/cookbook/log/cookbook.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on cookbook" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "cookbook"
+                 username = "root"
+                 password = "virus" />
+        </database>
+    </environment>
+
+    <!-- a sample test environment -->
+    <environment name="test">
+        <!-- general properties -->
+        <properties>
+            <path>/wwwroot/medick/applications/cookbook</path>
+        </properties>
+        <!-- web context -->
+        <web>
+            <server_name>http://exemplu.com</server_name>
+            <document_root>/cookbook</document_root>
+            <rewrite>on</rewrite>
+        </web>
+        <!-- logger system -->
+        <logger>
+            <formatter>simple</formatter>
+            <outputters>
+                <outputter name="file" level="0">
+                    <property name="path" value="/wwwroot/medick/applications/cookbook/log/cookbook.log" />
+                </outputter>
+                <!-- <outputter name="stdout" level="0" /> -->
+                <outputter name="mail" level="3">
+                    <property name="subject" value="Fatality on Exemplu.com::cookbook" />
+                    <property name="address" value="user@example.com" />
+                </outputter>
+            </outputters>
+        </logger>
+        <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "sqlite"
+                 database = "/wwwroot/medick/applications/cookbook/db/cookbook-sqlite.db" />
+        </database>
+    </environment>
+  
+</application>
+  

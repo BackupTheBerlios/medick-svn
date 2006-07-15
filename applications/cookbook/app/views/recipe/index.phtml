@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>All Recipes</title>
+</head>
+<body>
+
+<h1>Online Cookbook - All Recipes</h1>
+<table border="1">
+ <tr>
+  <td width="60%"><p align="center"><i><b>Recipe</b></i></td>
+  <td width="20%"><p align="center"><i><b>Category</b></i></td>
+  <td width="20%"><p align="center"><i><b>Date</b></i></td>
+ </tr>
+
+ <?foreach ($recipes as $recipe): ?>
+  <tr>
+   <td><a href="<?= URL::create('recipe', 'show', array('id'=>$recipe->id));?>"><?=$recipe->title;?></a></td>
+   <td><?= $recipe->category->name;?></td>
+   <td><?= $recipe->date;?></td>
+  </tr>
+ <? endforeach;?>
+</table>
+<p><a href="<?=URL::create('recipe', 'create');?>">Create new recipe</a></p>
+<p><?=microtime();?></p>
+
+</body>
+</html>
+
