@@ -37,6 +37,8 @@ include_once('configurator/IConfigurator.php');
 /**
  * XML file-based Configurator
  * 
+ * From medick 0.3.0 this class will be removed due to the new way of configurating a medick application!
+ *
  * @package medick.configurator
  * @author Oancea Aurelian
  */
@@ -53,6 +55,8 @@ class XMLConfigurator extends Object implements IConfigurator {
     /** @var string
         configuration file */
     protected $config_file;
+    
+    protected $environment;
     
     /**
      * Constructor
@@ -74,22 +78,13 @@ class XMLConfigurator extends Object implements IConfigurator {
         }
         $this->application_name= $xmlelement['name'];
         $this->config_file = $stream;
-        /*
-        if (file_exists($xml)) {
-            if (is_readable($xml)) {
-                $this->sxe = simplexml_load_file($xml, 'SimpleXMLIterator');
-            } else {
-                throw new IOException("Cannot read: " . $xml . " Permission deny");
-            }
-        } else {
-            $this->sxe = @simplexml_load_string($xml, 'SimpleXMLIterator');
-        }
-        if ($this->sxe === false) {
-            throw new ConfiguratorException("Cannot read: " . $xml . " Bad Format!");
-        }
-        */
+        $this->environment = $env;
     }
 
+    public function getEnvName() {
+        return $this->environment;
+    }
+    
     public function getApplicationName() {
         return $this->application_name;
     }
@@ -106,42 +101,6 @@ class XMLConfigurator extends Object implements IConfigurator {
         return $this->config_file;
     }
     
-    /**
-     * Configuration Example:
-     * <code>
-     *   <database default="foo">
-     *     <dsn id="one"
-     *          phptype  = "mysql"
-     *          hostspec = "localhost"
-     *          database = "baz"
-     *          username = "root"
-     *          password = "zzz" />
-     *     <dsn id = "foo"
-     *          phptype  = "pgsql"
-     *          hostspec = "192.18.1.1"
-     *          database ="test"
-     *          username ="antonescu"
-     *          password ="x-creeme" />
-     *   </database>
-     * </code>
-     * @see IConfigurator::getDatabaseDsn()
-     */
-    public function getDatabaseDsn($id = FALSE) {
-        if (!$id) $id = $this->sxe->database['default'];
-        foreach( $this->sxe->database->dsn as  $dsn ) {
-            if($dsn['id']==$id){
-                return array (
-                    'phptype'  => (string)trim($dsn['phptype']),
-                    'hostspec' => (string)trim($dsn['hostspec']),
-                    'username' => (string)trim($dsn['username']),
-                    'password' => (string)trim($dsn['password']),
-                    'database' => (string)trim($dsn['database'])
-                );
-            }
-        }
-        throw new ConfiguratorException('Database Id ' . $id . 'not found!');
-    }
-
     /**
      * Configuration example:
      * <code>

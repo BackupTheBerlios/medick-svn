@@ -29,15 +29,6 @@
                 </outputter>
             </outputters>
         </logger>
-        <!-- database(s) settings -->
-        <database default="one">
-            <dsn id = "one"
-                 phptype  = "mysql"
-                 hostspec = "localhost"
-                 database = "eltodo"
-                 username = "root"
-                 password = "virus" />
-        </database>
     </environment>
 
     <!-- a sample test environment -->
@@ -66,12 +57,6 @@
                 </outputter>
             </outputters>
         </logger>
-        <!-- database(s) settings -->
-        <database default="one">
-            <dsn id = "one"
-                 phptype  = "sqlite"
-                 database = "/wwwroot/medick/applications/eltodo/db/eltodo-sqlite.db" />
-        </database>
     </environment>
   
 </application>

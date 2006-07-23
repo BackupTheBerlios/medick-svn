@@ -108,12 +108,21 @@ $files= array(
                               => 'scripts'. DIRECTORY_SEPARATOR . 'generator.php',
   'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'application.xml'
                               => 'conf'   . DIRECTORY_SEPARATOR . $short_name.'.xml',
+  'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'database.ini'
+                              => 'conf'   . DIRECTORY_SEPARATOR . 'database.ini',
+  'skel' . DIRECTORY_SEPARATOR . 'db'     . DIRECTORY_SEPARATOR . 'schema.sql'
+                              => 'db'     . DIRECTORY_SEPARATOR . 'schema.sql',
+  'skel' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.html'
+                              => 'public' . DIRECTORY_SEPARATOR . 'index.html',
+  'skel' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'stylesheet' . DIRECTORY_SEPARATOR . 'medick.css'
+                              => 'public' . DIRECTORY_SEPARATOR . 'stylesheet' . DIRECTORY_SEPARATOR . $short_name . '.css',
+  'skel' . DIRECTORY_SEPARATOR . 'app'    . DIRECTORY_SEPARATOR . 'app_controller.php'
+                              => 'app'    . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . 'application.php',
   'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'application.routes.php'
                               => 'conf'   . DIRECTORY_SEPARATOR . $short_name.'.routes.php'
 );
 
 $search= array(
-            // '${LOG}',
             '${medick.core}',
             '${app.path}',
             '${app.name}',
@@ -123,7 +132,6 @@ $search= array(
           );
 
 $replace= array(
-            // $app_location.DIRECTORY_SEPARATOR.$folders['log'].DIRECTORY_SEPARATOR.$short_name.'.log',
             $medick_core,
             $app_location,
             $short_name,
@@ -138,74 +146,8 @@ foreach ($files as $from=>$file) {
     write_file($contents, $app_location.DIRECTORY_SEPARATOR.$folders[$to].DIRECTORY_SEPARATOR.$orig);
 }
 
-// plain files.
+// plain file
 write_file(' ',$app_location.DIRECTORY_SEPARATOR.$folders['log'].DIRECTORY_SEPARATOR.$short_name.'.log',0777);
-
-$schema_sql=<<<EOSQL
--- \$Id$
--- Database Schema for $short_name project
-
-EOSQL;
-
-$css=<<<EOCSS
-/* stylesheet for $short_name project */
-/* \$Id$ */
-
-body {
-    margin: 20px;
-    padding: 20px;
-    border: 1px solid black;
-    font-family:verdana, arial, helvetica, sans-serif;
-}
-EOCSS;
-
-$index_html=<<<EOHTML
-<html>
-  <head>
-    <!-- \$Id$ -->
-    <title>Welcome to Medick!</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style>
-      body { margin: 20px; padding: 20px; border: 1px solid black; font-family:verdana, arial, helvetica, sans-serif; }
-    </style>
-  </head>
-  <body>
-    <h3><center>Welcome To Medick</center></h3>
-    <p><b>Application:</b> $short_name</p>
-    <p><b>Develop $short_name on: </b>$app_location</p>
-    <p>Setup the WELCOME route in
-        <i>$app_location/config/$short_name.routes.php</i>, <br />
-        and remove this file ($app_location/public/index.html).
-    </p>
-    <p>Ask for support on medick <a href="https://lists.berlios.de/mailman/listinfo/medick-devel">development list</a>.</p>
-  </body>
-</html>
-
-EOHTML;
-
-$application_controller=<<<EOCLASS
-<?php
-
-  /**
-   * This class is part of $short_name project
-   *
-   * Methods added here will be available in all your controllers.
-   * \$Id$
-   * @package $app_name.controllers
-   */
-  class ApplicationController extends ActionController {
-
-  }
-
-EOCLASS;
-
-write_file($index_html, $app_location.DIRECTORY_SEPARATOR.$folders['public'].DIRECTORY_SEPARATOR.'index.html');
-
-write_file($application_controller, $app_location.DIRECTORY_SEPARATOR.$folders['controllers'].DIRECTORY_SEPARATOR.'application.php');
-
-write_file($css, $app_location.DIRECTORY_SEPARATOR.$folders['css'].DIRECTORY_SEPARATOR.'medick.css');
-
-write_file($schema_sql,$app_location.DIRECTORY_SEPARATOR.$folders['db'].DIRECTORY_SEPARATOR.'schema.sql');
 
 echo "\nMedick (\$v: $medick_version) [ DONE ].\n";
 

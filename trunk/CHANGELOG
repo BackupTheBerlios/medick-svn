@@ -1,6 +1,10 @@
 $Id$
 (*) SVN version
 
+0.3.0pre2-svn (*)
+    - refactored bin/medick.php
+    - moved database configuration settings from xml configuration file to database.ini  
+
 0.3.0pre1 (08.Jul.2006)
     - Implemented a new validation API
     - (fixed): Request::toString for multiple level array 

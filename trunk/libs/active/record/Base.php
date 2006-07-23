@@ -33,7 +33,6 @@
 // }}}
 
 // ActiveRecord dependencies.
-// include_once('active/record/DatabaseRow.php');
 include_once('active/record/Field.php');
 include_once('active/record/RowsAggregate.php');
 include_once('active/record/QueryBuilder.php');
@@ -45,6 +44,13 @@ include_once('active/support/Inflector.php');
 include_once('creole/Creole.php');
 include_once('creole/CreoleTypes.php');
 
+
+/**
+ * Cached Database table information
+ * 
+ * @package medick.active.record
+ * @author Oancea Aurelian
+ */ 
 class ActiveRecordTableInfo extends Object {
     static $instance= NULL;
     static function getInstance(Connection $conn, $table_name) {
@@ -312,6 +318,11 @@ abstract class ActiveRecord extends Object {
                );
     }
     
+    /**
+     * Check if this object has errors
+     *
+     * @return bool TRUE if it has
+     */ 
     public function hasErrors() {
         return sizeof($this->errors) > 0;
     }
@@ -321,7 +332,6 @@ abstract class ActiveRecord extends Object {
     }
     
     public function isValid($force= FALSE) {
-        // return $this->collect_errors() === 0;
         if ($this->collected) return !$this->hasErrors();
         else return $this->collect_errors($force) === 0;
     }
@@ -667,6 +677,7 @@ abstract class ActiveRecord extends Object {
 
     /**
      * Merge ResultSet into RowsAggregate
+     *
      * @return RowsAggregate
      */ 
     protected static function fetch_all(ResultSet $rs, ReflectionClass $class) {
@@ -679,18 +690,13 @@ abstract class ActiveRecord extends Object {
     }
 
     /**
-     * Establish A Database Connection
+     * It gets a Creole Database Connection
      *
-     * @return Creole database connection
-     * @deprecate use ActiveRecord::connection, I want to use short names
-     */
-    public static function establish_connection() {
-        return ActiveRecord::connection();
-    }
-
+     * @return Connection 
+     */ 
     protected static function connection() {
         if (ActiveRecord::$conn === NULL) {
-            ActiveRecord::$conn = Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn());
+            ActiveRecord::$conn = Creole::getConnection(ActiveRecord::parse_dsn());
         }
         return ActiveRecord::$conn;
     }
@@ -699,7 +705,21 @@ abstract class ActiveRecord extends Object {
      * Close the Database Connection
      */
     public static function close_connection() {
-        ActiveRecord::$conn= Creole::getConnection(Registry::get('__configurator')->getDatabaseDsn())->close();
+        ActiveRecord::$conn= Creole::getConnection(ActiveRecord::parse_dsn())->close();
+    }
+    
+    /**
+     * Parse database.ini file to get a proper dsn
+     * 
+     * @return array
+     */ 
+    private static function parse_dsn() {
+        $ini_file= Registry::get('__configurator')->getApplicationPath() . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'database.ini';
+        if (!is_file($ini_file)) {
+            throw new ActiveRecordException('Cannot load database settings from: ' . $ini_file . ' No such file or directory!');
+        }
+        $settings= parse_ini_file($ini_file, true);
+        return $settings[Registry::get('__configurator')->getEnvName()];
     }
     // }}}
 }

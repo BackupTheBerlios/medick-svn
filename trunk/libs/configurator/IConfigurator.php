@@ -48,6 +48,8 @@
  * From medick 0.2, the options will be splitted based on context, and we will
  * provide web specific configuration section as well as logger and database contextes.
  * 
+ * From medick 0.3.0 this class and the old configuration methods will be removed
+ * 
  * @package medick.configurator
  * @see XMLConfigurator
  * @see LoggerConfigurator
@@ -69,31 +71,4 @@ interface IConfigurator {
      */
     function getLoggerFormatter();
 
-    /**
-     * Propery parser
-     *
-     * @param string the property name
-     * @return string, the property value
-     * @throws ConfiguratorException if the property is not found
-     */
-    // function getProperty($name);
-
-    /**
-     * Based on id we return the dsn array
-     *
-     * <code>
-     *   // for Creole this dsn format will do the job:
-     *   $dsn = array(
-     *           'phptype'=>'mysql',
-     *           'hostspec'=>'localhost',
-     *           'username'=>'root',
-     *           'password'=>'',
-     *           'database'=>'test');
-     * </code>
-     * @param string the dsn id, if none is specified, we will use the default
-     * @return array a dsn ready to use with Creole
-     * @throws ConfiguratorException if the id is not found
-     */
-    function getDatabaseDsn($id = FALSE);
 }
-

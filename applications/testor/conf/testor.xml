@@ -32,15 +32,6 @@
                 </outputter>
             </outputters>
         </logger>
-        <!-- database(s) settings -->
-        <database default="one">
-            <dsn id = "one"
-                 phptype  = "mysql"
-                 hostspec = "localhost"
-                 database = "testor"
-                 username = "root"
-                 password = "sacosica" />
-        </database>
     </environment>
 
     <!-- a sample test environment -->
@@ -69,15 +60,6 @@
                 </outputter>
             </outputters>
         </logger>
-        <!-- database(s) settings -->
-        <database default="one">
-            <dsn id = "one"
-                phptype  = "pgsql"
-                hostspec = "localhost"
-                username = "albeit"
-                password = "pri$6g"
-                database = "testor" />
-        </database>
     </environment>
   
 </application>

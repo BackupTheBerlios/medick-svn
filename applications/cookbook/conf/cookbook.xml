@@ -47,14 +47,6 @@
             </outputters>
         </logger>
         <!-- database(s) settings -->
-        <database default="one">
-            <dsn id = "one"
-                 phptype  = "mysql"
-                 hostspec = "localhost"
-                 database = "cookbook"
-                 username = "root"
-                 password = "virus" />
-        </database>
     </environment>
 
     <!-- a sample test environment -->
@@ -83,12 +75,6 @@
                 </outputter>
             </outputters>
         </logger>
-        <!-- database(s) settings -->
-        <database default="one">
-            <dsn id = "one"
-                 phptype  = "sqlite"
-                 database = "/wwwroot/medick/applications/cookbook/db/cookbook-sqlite.db" />
-        </database>
     </environment>
   
 </application>
