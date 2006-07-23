@@ -20,6 +20,15 @@ function mk_dir($dir) {
 function write_file($contents, $to, $mode= FALSE) {
     if (file_exists($to)) {
         echo "\texists {$to}\n";
+        echo "Overwrite [Y/N]: ";
+        $answer= trim(fgets(STDIN));
+        if (in_array(strtoupper($answer), array('Y','YES'))) {
+            if(@file_put_contents($to, $contents)) {
+                echo "\toverwrote {$to}\n";
+            } else {
+                exit("Cannot overwrite {$to}, permissions?\n");
+            }
+        }
     } else {
         if(@file_put_contents($to, $contents)) {
             echo "\tcreate {$to}\n";
@@ -61,6 +70,14 @@ function copy_files($from_folder, $to_folder) {
     }
 }
 
+
+$app_name= isset($argv[1]) ? $argv[1] : exit("No Application Location Specified.\n");
+$x = explode(DIRECTORY_SEPARATOR,$app_name); $short_name = end($x);
+$app_location= getcwd() . DIRECTORY_SEPARATOR . $app_name;
+echo "Creating application: $short_name\n";
+echo "Location: $app_location\n\n";
+mk_dir($app_location);
+
 $folders= array(
     'app'         =>'app',
     'models'      =>'app' . DIRECTORY_SEPARATOR . 'models',
@@ -80,17 +97,6 @@ $folders= array(
     'img'         =>'public' . DIRECTORY_SEPARATOR . 'images'
   );
 
-$app_name= isset($argv[1]) ? $argv[1] : exit("No Application Location Specified.\n");
-
-$x = explode(DIRECTORY_SEPARATOR,$app_name); $short_name = end($x);
-
-$app_location= getcwd() . DIRECTORY_SEPARATOR . $app_name;
-
-echo "Creating application: $short_name\n";
-echo "Location:\n\t$app_location\n\n";
-
-mk_dir($app_location);
-
 foreach ($folders as $folder) {
     mk_dir($app_location . DIRECTORY_SEPARATOR . $folder);
 }
@@ -98,7 +104,7 @@ foreach ($folders as $folder) {
 copy_files($medick_core. DIRECTORY_SEPARATOR .
             'skel'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'javascript'.DIRECTORY_SEPARATOR,
             $app_location.DIRECTORY_SEPARATOR.$folders['js']);
-
+            
 $files= array(
   'skel' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php'
                               => 'public' . DIRECTORY_SEPARATOR . 'index.php',

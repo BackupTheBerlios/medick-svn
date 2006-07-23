@@ -1,9 +1,9 @@
 $Id$
 (*) SVN version
 
-0.3.0pre2-svn (*)
-    - refactored bin/medick.php
+0.3.0pre2-svn (23.Jul.2006)
     - moved database configuration settings from xml configuration file to database.ini  
+    - refactored bin/medick.php, now it also includes a overwrite feature
 
 0.3.0pre1 (08.Jul.2006)
     - Implemented a new validation API
