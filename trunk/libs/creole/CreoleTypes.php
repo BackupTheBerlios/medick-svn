@@ -121,7 +121,9 @@ abstract class CreoleTypes {
          * @param string $nativeType DB native type (e.g. 'TEXT', 'byetea', etc.).
          * @return int Creole native type (e.g. Types::LONGVARCHAR, Types::BINARY, etc.).
          */
-        abstract static function getType($nativeType);
+        static function getType($nativeType) {
+            throw new Exception(__METHOD__ . " should be implemented in child classes!");
+        }
         
         /**
          * This method will return a native type that corresponds to the specified
@@ -130,7 +132,9 @@ abstract class CreoleTypes {
          * native type will be returned.
          * @return string Native type string.
          */
-        abstract static function getNativeType($creoleType);
+        static function getNativeType($creoleType) {
+            throw new Exception(__METHOD__ . " should be implemented in child classes!");
+        }
         
         /**
          * Gets the "affix" to use for ResultSet::get*() and PreparedStatement::set*() methods.
