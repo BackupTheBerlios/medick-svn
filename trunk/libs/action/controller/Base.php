@@ -273,6 +273,12 @@ class ActionController extends Object {
         return $this->render_text($this->template->render_file($template_file), $status);
     }
 
+    protected function render_json($text, $status = NULL) {
+        include_once('action/view/JSON.php');
+        $this->response->setHeader('X-JSON', '('.JSON::encode($text).')');
+        $this->render_text('', $status);
+    }
+
     /**
      * Will render some text.
      * 
@@ -302,6 +308,7 @@ class ActionController extends Object {
             $this->session->removeValue('flash');
         }
     }
+
 
     // }}}
 
