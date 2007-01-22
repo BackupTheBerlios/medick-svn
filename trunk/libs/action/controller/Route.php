@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -373,16 +373,12 @@ class Route extends Object {
      * @param Request request, the request on witch we want to merge
      */ 
     private function doMerge(Request $request) {
-        // $l = Registry::get('__logger');
         foreach ($this->merges as $name=>$value) {
             if (isset(Route::$old_merges[$name])) unset(Route::$old_merges[$name]);
-            // $l->debug('+++++ ' . $name);
-            // $l->debug('+++++ ' . $value);
             $request->setParameter($name, $value);
         }
         // discard previously route parameters.
         foreach (Route::$old_merges as $name=>$value) {
-            // $l->debug('----- ' . $name);
             $request->setParameter($name, NULL);
         }
         // cache merged parameters  

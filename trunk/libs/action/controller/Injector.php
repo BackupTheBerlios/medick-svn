@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
+// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@ include_once('active/record/Base.php');
 
 /**
  * Solves dependencys, by including application specific files
- * controllers, models, layout files.
+ * controllers, models or layout files.
  * Aditional using php reflection api, it validates the user classes
  *
  * @package medick.action.controller
@@ -105,7 +105,6 @@ class Injector extends Object {
     public function getPath($type=NULL) {
         return isset($this->path[$type]) && (!is_null($type)) ? $this->path[$type] : $this->path;
     }
-
 
     /**
      * Adds user 3-rd party libs folder under include_path
@@ -229,4 +228,3 @@ class Injector extends Object {
         }
     }
 }
-

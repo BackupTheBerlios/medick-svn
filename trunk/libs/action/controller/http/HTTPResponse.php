@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian[at]locknet[dot]ro>
+// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,8 @@
 // }}}
 
 /**
- * 
+ * HTTP Response Object 
+ *
  * @package medick.action.controller
  * @subpackage http
  * @author Oancea Aurelian
@@ -130,4 +131,3 @@ class HTTPResponse extends Response {
         $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
     }
 }
-

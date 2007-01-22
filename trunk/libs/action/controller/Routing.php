@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005 - 2006 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -35,6 +35,7 @@
 include_once('action/controller/Injector.php');
 
 /**
+ * It knows how to create a Controller from the URL
  * 
  * @package medick.action.controller
  * @subpackage routing
@@ -43,8 +44,10 @@ include_once('action/controller/Injector.php');
 class ActionControllerRouting extends Object {
 
     /**
+     * Finds the Route on this Map using the Request
      * 
-     * @return Route.
+     * @param request Request
+     * @return Route
      * @throws RoutingException
      */ 
     private function findRoute(Request $request) {
@@ -75,4 +78,3 @@ class ActionControllerRouting extends Object {
         }
     }
 }
-

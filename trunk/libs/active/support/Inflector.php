@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005, 2006 Oancea Aurelian <aurelian@locknet.ro>
+// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -131,9 +131,9 @@ class Inflector extends Object {
         return strtolower(preg_replace('/([a-z])([A-Z])/','\1_\2', $word));
     }
 
-   public static function humanize($lower_case_and_underscored_word) {
-      return ucwords(str_replace("_"," ",$lower_case_and_underscored_word));
-   }
+    public static function humanize($lower_case_and_underscored_word) {
+        return ucwords(str_replace("_"," ",$lower_case_and_underscored_word));
+    }
 
     // }}}
 
@@ -157,4 +157,3 @@ class Inflector extends Object {
         return $word;
     }
 }
-
