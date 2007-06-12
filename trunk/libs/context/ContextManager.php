@@ -32,9 +32,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
 
+include_once('configurator/XMLConfigurator.php');
+
 /**
  * 
  * @package medick.context
+ * @author Aurelian Oancea
  */
 class ContextManager extends Object {
 
@@ -49,7 +52,6 @@ class ContextManager extends Object {
     }
 
     private function ContextManager($stream, $environment) {
-        include_once('configurator/XMLConfigurator.php');
         $this->configurator= new XMLConfigurator($stream, $environment);
     }
 

@@ -42,7 +42,7 @@ include_once('medick/Registry.php');
 /**
  * 
  * @package medick.core
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Medick extends Object {
 

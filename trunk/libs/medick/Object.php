@@ -36,7 +36,7 @@
  * Base Framework Object
  * 
  * @package medick.core
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Object {
 
@@ -99,10 +99,6 @@ class MedickClass extends ReflectionClass {
     
 }
 
-class MedickMethod extends ReflectionMethod {
+class MedickMethod extends ReflectionMethod {}
 
-}
-
-class MedickProperty extends ReflectionProperty {
-
-}
+class MedickProperty extends ReflectionProperty {}

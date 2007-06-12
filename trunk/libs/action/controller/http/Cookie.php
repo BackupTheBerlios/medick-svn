@@ -33,9 +33,11 @@
 // }}}
 
 /**
- * 
+ * It's a HTTPCookie 
+ *
  * @package medick.action.controller
  * @subpackage http
+ * @author Aurelian Oancea
  */
 
 class Cookie extends Object {

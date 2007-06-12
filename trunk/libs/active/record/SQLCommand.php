@@ -46,7 +46,7 @@
  * More methods will be added later-on, API will be provided on request.
  * 
  * @package medick.active.record
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  * @since Rev. 343
  */
 class SQLCommand extends Object {

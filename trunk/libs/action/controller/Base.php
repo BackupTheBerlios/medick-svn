@@ -35,26 +35,165 @@
 include_once('action/view/Base.php');
 
 /**
- * Base Class For Our Application Controllers
+ * Base Class For User Application Controllers
  *
- * Controller Sample
+ * <h3>Controllers Basics</h3>
+ *
+ * Sample1:
+ *
  * <code>
  *  class ProjectController extends ApplicationController {
+ *     
  *    public function index() {
  *      $this->render_text("Hello Index!");
  *    }
+ *
+ *    public function hello() {
+ *      $this->date= date('%Y-%m-%d');
+ *      // similar with this:
+ *      // $this->template->assign('date', date('%Y-%m-%d'));
+ *    }
+ *
  *  }
  * </code>
- * Valid Controllers will be keept inside the folder app/controllers and will extend
- * ApplicationController or ActionController.
+ * 
+ * The class <em>ProjectController</em> is a Controller for your application.
  *
- * Incoming actions should be declared as public methods inside the ActionController.
- * Keep your helper methods as protected or private since one could somehow find 
- * the URL to invoke them.
+ * To hava a valid Controller you need to:
  *
- * Inside ApplicationController (usualy is the base class for your application controllers)
- * a method named <i>__common</i> is always invoked before the action itself. You can use this
- * method for assing template variables common to all your templates (like a menu with items from database).
+ * 1. name your Controller class with <em>${Name}Controller</em>, eg: ProjectController, UserController, MainController
+ *
+ * 2. extend ApplicationController or ActionController
+ *
+ * 3. save the Controller class file as <em>${name}_controller.php</em> 
+ * inside <em>app/controllers</em> folder, eg: app/controllers/project_controller.php
+ *
+ * Each application can have a base ApplicationController defined in <em>app/controllers/application.php</em>.
+ * Using inheritance other Controllers can use methods defined in ApplicationController.
+ *
+ * In the above sample, <em>index</em> and <em>hello</em> methods represents an Action.
+ * Using the medick Routing system, incoming requests are mapped to an action. 
+ * In fact, every public method inside your Controllers are Actions that can be executed 
+ * invoking the proper URL in the browser.
+ *
+ * To protect your data and to avoid strange behaviors in your application, keep any other method
+ * that do not represents an Action as protected or private.
+ *
+ * Back to Sample1, the method <em>index</em> inside <em>ProjectController</em> class 
+ * is mapped to a Request with this form:
+ *
+ * <pre>
+ *  /project/index
+ *  /project/index.html
+ *  /project.html
+ * </pre>
+ *
+ * while the <em>hello</em> action will be invoked when the Request URL is:
+ *
+ * <pre>
+ *   /project/hello.html
+ *   /project/hello
+ * </pre>
+ *
+ * <h3>Building a Response, the View</h3>
+ *
+ * After the Action is executed, medick will build a Response object that later on will be 
+ * passed to the user agent. This object is build using the rendering system.
+ * 
+ * By default, medick will try to load and parse - using a template engine system - 
+ * a View located inside the folder app/views/CONTROLLER/ACTION.phtml.
+ *
+ * A View is the place where you should write client-side code or the place 
+ * where you should use variables defined in the Controller.
+ *
+ * The default template engine system is a pure PHP implementation, this way you can use PHP syntax
+ * for whatever operations you need without learning or debuging code that you are not familiar with it.
+ * On medick users request, other systems could be integrated into the framework. 
+ * And I'm thinking about Smarty or PHPTAL.
+ *
+ * Inside of an Action, the user can define <em>template variables</em>. A template variable is a
+ * PHP variable that will be available in the Views.
+ * To define such a variable, you can access <em>assign</em> method on the template object 
+ * - witch is the recommended way to do it - or, you can use the PHP magick (already implemented):
+ *
+ * <code>
+ *  $this->template->assing('variable_name', 'variable_value');
+ * </code>
+ * or:
+ * <code>
+ *  $this->variable_name = variable_value;
+ * </code>
+ * 
+ * Later on, in the View, you can access the <em>variable_name</em> using <em>$variable_name</em> syntax.
+ *
+ * <h3>Anatomy of a medick Request</h3>
+ *
+ * Order of the invoked methods:
+ * [Medick Framework]: instantiate --> load_models --> 
+ * [User Controller]: __common --> before_filters --> action --> after_filters
+ * 
+ * <h4>Loading Models</h4>
+ *
+ * A Controller is the place where we indicate what Models we need. 
+ * We do this by defining a <em>models</em> instance variable.
+ *
+ * Sample2:
+ * <code>
+ * class ProjectController extends ApplicationController {
+ *      protected $models= array('project', 'user');
+ *     // same as:
+ *     // protected $models = 'project, user';
+ *
+ *     // lists available projects
+ *     public function show() {
+ *          $this->template->assign('projects', Project::find());
+ *     }
+ *
+ * }
+ * </code>
+ *
+ * The framework will know how to include the requested models and how to perform basic checks on them.
+ *
+ * <h4>Need a constructor?</h4>
+ *
+ * Since you might need some sort of contructor for your Controller, but defining one might lead to
+ * confusions on the system, medick introduced a magick method: <em>__common</em> 
+ * that it's invoked after the Controller is ready.
+ * Not a real constructor, but the <em>__common</em> method can be used to perform all kind of initializations that
+ * one needs.
+ *
+ * Sample3:
+ * <code>
+ * class ProjectController extends ApplicationController {
+ *     private $base_project;
+ *     protected $models = 'project, user';
+ *
+ *     protected function __common() {
+ *          $this->base_project= Project::find('first');
+ *     }
+ *
+ *     public function sub_projects() {
+ *          $p= Project::find('all', array('conditions'=>"parent_id=" . $this->base_project->id));
+ *          $this->template->assign('projects', $p);
+ *     }
+ * }
+ * </code>
+ *
+ * <h4>ActionController filters</h4>
+ * 
+ * <h3>Available Objects</h3>
+ * 
+ * <h4>Accessing the Request parameters</h4>
+ *
+ * <h4>Session</h4>
+ *
+ * <h4>Respose tunning</h4>
+ *
+ * <h4>Using Logger</h4>
+ *
+ * <h4>Accessing custom confguration</h4>
+ *
+ * <h3>Pre-defined template variables</h3>
  *
  * ActionController also defines some magic medick template variables. We will use <b>__</b> to mark them.
  * Predefined medick variables available in templates:
@@ -62,21 +201,29 @@ include_once('action/view/Base.php');
  *  <li>__base: the document root</li>
  *  <li>__server_name: this server name</li>
  *  <li>__controller: incoming controller</li>
- *  <li>__action: curent action</li>
+ *  <li>__action: current action</li>
  *  <li>__version: medick version</li>
  * </ul>
  * 
- * Other features:
- * <ul>
- *  <li>flash() method can keep anything in session for the next controller, after that the flash container is discarded</li>
- *  <li>unified look and feel for your application by using layouts</li>
- *  <li>straight access to ActionView</li>
- *  <li>filters (this is still a work in progress)</li>
- *  <li>logging capabilities</li>
- * </ul>
+ * <h3>Other features</h3>
+ *
+ * <h4>flash!</h4> 
+ *  
+ * method can keep anything in session for the next controller, after that the flash container is discarded
+ * 
+ * <h4>layouts</h4>
+ * 
+ * unified look and feel for your application using layouts
+ *
+ * <h4>redirects</h4>
+ *
+ * <h3>Missing features</h3>
+ *
+ * 
+ *
  * 
  * @package medick.action.controller
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class ActionController extends Object {
 
@@ -126,7 +273,11 @@ class ActionController extends Object {
 
     /** @var array
         before_filters array */
-    protected $before_filter= array();
+    protected $before_filters= array();
+
+    /** @var array
+        after_filters array */
+    protected $after_filters= array();    
 
     /** @var array
         list of models */
@@ -178,13 +329,19 @@ class ActionController extends Object {
      * @param Response response, the response
      * @return Response
      */
-    public function process(Request $request, Response $response) {
+    public final function process(Request $request, Response $response) {
         $this->instantiate($request, $response);
-        $this->add_models();
-        $this->add_before_filters();
-        $this->perform_action($request->getParameter('action'));
+        $this->load_models();
+        $this->__common();
+        $this->execute_before_filters();
+        $this->perform_action( $request->getParameter('action') );
+        $this->execute_after_filters();
         return $response;
     }
+
+    // {{{ callbacks
+    protected function __common() {  }
+    // }}}
 
     // {{{ renders.
 
@@ -483,12 +640,11 @@ class ActionController extends Object {
         $this->template->assign('__action', $this->params['action']);
         // $this->logger->debug('Action:: ' . strtolower($action_name));
         // quickly load the common magick method.
-        if ($_common= $this->createMethod('__common')) {
-            $_common->invoke($this);
-        }
+        // if ($_common= $this->createMethod('__common')) {
+        //     $_common->invoke($this);
+        // }
         // invoke the action.
         $action->invoke($this);
-
         if ($this->action_performed) return;
         $this->render();
     }
@@ -503,7 +659,7 @@ class ActionController extends Object {
      *    protected before_filter = array('authenticate');
      *    // an action
      *    public function index() {
-     *      return News::find_all();
+     *      $this->news= News::find_all();
      *    }
      *    // Notes: 1) use protected for internal filters
      *    // 2) a filter must return void, in case of a failure,
@@ -515,32 +671,40 @@ class ActionController extends Object {
      * </code>
      * @throws MedickException if the definition of the before filter is wrong
      */
-    private function add_before_filters() {
-        if (!is_array($this->before_filter)) {
-            throw new MedickException(
-                $this->getClassName() . '->$before_filter should be an array
-                    of strings, each string representing a protected method name');
-        }
-        foreach($this->before_filter as $filter_name) {
-            if (!$filter= $this->createMethod($filter_name)) {
-                throw new MedickException('Cannot load filter: ' . $this->getClassName() . '::' . $filter_name . 
-                                    ' Call to undefined method: ' .$this->getClassName() . '::' . $filter_name);
+    private function execute_before_filters() {
+        $this->execute_filters( $this->before_filters );
+    }
+    
+    private function execute_after_filters() {
+        $this->execute_filters( $this->after_filters );
+    }
+
+    private function execute_filters( $filters ) {
+        if(!is_array($filters)) $filters = explode(',', $filters);
+        foreach($filters as $name) {
+            $name= trim($name);
+            // try to create the method
+            if(!$filter= $this->createMethod( $name )) {
+                $this->logger->warn(sprintf('[Medick] >> Cannot laod filter %s::%s, call to undefined method.',
+                    $this->getClassName(),$name));
+                continue;                
             }
             // a filter should be declared as protected.
             if (!$filter->isProtected()) {
-                throw new MedickException(
-                    'Your filter,``'. $filter_name . '" is declared as a
-                        public method of class ``' . $this->getClassName() .'" !');
+                $this->logger->warn('[Medick] >> Your filter, '. $name . ' is not declared as a
+                    protected method for class ' . $this->getClassName() .', so it cannot be executed.');
+                continue;
             }
-            // we cannot use invoke since the filter is not public
-            $this->$filter_name();
+            $this->logger->debug('[Medick] >> Executing filter ' . $name. '.');
+            $this->$name();
+            // $this->logger->debug('[Medick] >> Filter ' . $name . ' executed.');
         }
     }
 
     /**
      * Injects model names into ActiveRecordBase by using the ModelInjector.
      */
-    private function add_models() {
+    private function load_models() {
         if (!is_array($this->models)) {
             $this->models= explode(',',$this->models);
         }
@@ -566,7 +730,7 @@ class ActionController extends Object {
         try {
             return new ReflectionMethod($this, strtolower($method_name));
         } catch (ReflectionException $rEx) {
-            $this->logger->info($rEx->getMessage());
+            // $this->logger->info($rEx->getMessage());
             return FALSE;
         }
     }

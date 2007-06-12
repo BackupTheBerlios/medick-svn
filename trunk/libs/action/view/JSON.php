@@ -36,44 +36,51 @@
  *
  * @package medick.action.view
  * @subpackage Json
+ * @author Aurelian Oancea
  */
 class JSON extends Object {
 
   public static function encode($value) {
-    if (is_array($value)) return JSON::array_encode($value);
-    else return JSON::scalar_encode($value);
+      if(function_exists('json_encode')) return json_encode($value);
+      if (is_array($value)) return JSON::array_encode($value);
+      else return JSON::scalar_encode($value);
+  }
+  
+  public static function decode($value) {
+      if(function_exists('json_decode')) return json_decode($value);
+      throw new MedickException('JSON::decode(string $value) method is not implemented.')
   }
 
   public static function array_encode(Array $value) {
-    $tmp= array();
+      $tmp= array();
 
-    if ( array_keys($value) !== range(0, sizeof($value) - 1) ) {
-      foreach ($value as $k=>$v) {
-        $tmp[]= JSON::string_encode((string)$k) . ' : ' . JSON::encode($v);
+      if ( array_keys($value) !== range(0, sizeof($value) - 1) ) {
+          foreach ($value as $k=>$v) {
+              $tmp[]= JSON::string_encode((string)$k) . ' : ' . JSON::encode($v);
+          }
+          return '{' . join(', ', $tmp) . '}';
       }
-      return '{' . join(', ', $tmp) . '}';
-    }
 
-    for ($i= 0; $i < sizeof($value); $i++) {
-      $tmp[]= JSON::encode($value[$i]);
-    }
-    return '['. join(', ', $tmp) . ']';
+      for ($i= 0; $i < sizeof($value); $i++) {
+          $tmp[]= JSON::encode($value[$i]);
+      }
+      return '['. join(', ', $tmp) . ']';
   }
 
   public static function scalar_encode($value) {
-    if     (is_numeric($value)) return (string)$value;
-    elseif (is_string($value))  return JSON::string_encode($value);
-    elseif (is_bool($value))    return $value ? 'true' : 'false';
-    elseif (is_null($value))    return 'null';
-    else throw new MedickException($value . ' is not a scalar!');
+      if     (is_numeric($value)) return (string)$value;
+      elseif (is_string($value))  return JSON::string_encode($value);
+      elseif (is_bool($value))    return $value ? 'true' : 'false';
+      elseif (is_null($value))    return 'null';
+      else throw new MedickException($value . ' is not a scalar!');
   }
 
   public static function string_encode($string) {
-    $search  = array('\\', "\n", "\t", "\r", "\b", "\f", '"');
-    $replace = array('\\\\', '\\n', '\\t', '\\r', '\\b', '\\f', '\"');
-    $string  = str_replace($search, $replace, $string);
-    $string = str_replace(array(chr(0x08), chr(0x0C)), array('\b', '\f'), $string);
-    return '"' . $string . '"';
+      $search  = array('\\', "\n", "\t", "\r", "\b", "\f", '"');
+      $replace = array('\\\\', '\\n', '\\t', '\\r', '\\b', '\\f', '\"');
+      $string  = str_replace($search, $replace, $string);
+      $string = str_replace(array(chr(0x08), chr(0x0C)), array('\b', '\f'), $string);
+      return '"' . $string . '"';
   }
 
 }

@@ -40,7 +40,7 @@ include_once('configurator/IConfigurator.php');
  * From medick 0.3.0 this class will be removed due to the new way of configurating a medick application!
  *
  * @package medick.configurator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 
 class XMLConfigurator extends Object implements IConfigurator {

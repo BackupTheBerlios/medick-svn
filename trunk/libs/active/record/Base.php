@@ -49,7 +49,7 @@ include_once('creole/CreoleTypes.php');
  * Cached Database table information
  * 
  * @package medick.active.record
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */ 
 class ActiveRecordTableInfo extends Object {
     static $instance= NULL;
@@ -65,7 +65,7 @@ class ActiveRecordTableInfo extends Object {
  * Main ActiveRecord Class
  *
  * @package medick.active.record
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 abstract class ActiveRecord extends Object {
 
@@ -166,7 +166,8 @@ abstract class ActiveRecord extends Object {
         try {
             return Association::resolve($this, $name)->execute();
         } catch (AssociationNotFoundException $anfEx) {
-            throw new ActiveRecordException ('Cannot Get the value of filed: `' . $name . '`. No such filed!', $anfEx->getMessage());
+            throw new ActiveRecordException(
+                'Cannot Get the value of filed: `' . $name . '`. No such filed!', $anfEx->getMessage() );
         }
     }
     

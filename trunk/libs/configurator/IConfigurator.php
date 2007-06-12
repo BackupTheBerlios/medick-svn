@@ -53,7 +53,7 @@
  * @package medick.configurator
  * @see XMLConfigurator
  * @see LoggerConfigurator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 interface IConfigurator {
 

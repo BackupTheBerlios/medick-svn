@@ -40,7 +40,7 @@ include_once('action/controller/session/Session.php');
  *
  * @package medick.action.controller
  * @subpackage http
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class HTTPRequest extends Request {
 
@@ -121,6 +121,15 @@ class HTTPRequest extends Request {
     public function isGet() {
         return $this->method == 'GET';
     }
+    
+    /**
+     * Check if this Request was made with an AJAX call (Xhr)
+     *
+     * @return bool true if it was Xhr
+     */ 
+    public function isXhr() {
+      return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
+    }    
     
     /**
      * Gets an array of Cookies

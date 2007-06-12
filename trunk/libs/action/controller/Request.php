@@ -40,7 +40,7 @@ include_once('action/controller/http/HTTPRequest.php');
  * Contains various informations about the Request Parameters
  * @see HTTPRequest, Dispatcher, Route
  * @package medick.action.controller
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Request extends Object {
 

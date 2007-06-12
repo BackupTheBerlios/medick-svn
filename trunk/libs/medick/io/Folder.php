@@ -38,10 +38,13 @@
  * This is used only when collecting test cases.
  * @package medick.core
  * @subpackage io
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Folder extends Object {
-
+    
+    /**
+     * based on a method from ez-components
+     */
     public static function recursiveFindRelative( $baseDir, $subDir, $suffix ) {
         $returnFiles = array();
         $dir = $baseDir;

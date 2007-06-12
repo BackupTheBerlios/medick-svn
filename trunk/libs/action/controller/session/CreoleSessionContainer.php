@@ -50,7 +50,7 @@ include_once('action/controller/session/ISessionContainer.php');
  *  
  * @package medick.action.controller
  * @subpackage session
- * @author Oancea Aurelian 
+ * @author Aurelian Oancea
  */
 class CreoleSessionContainer extends Object implements ISessionContainer {
  

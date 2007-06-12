@@ -38,7 +38,7 @@
  * Registry is an object witch holds instances of other objects
  * 
  * @package medick.core
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Registry extends Object {
 

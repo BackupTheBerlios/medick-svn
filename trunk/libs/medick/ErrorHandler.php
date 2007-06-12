@@ -36,7 +36,7 @@
  * The Medick Error Handler.
  *
  * @package medick.core
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class ErrorHandler extends Object {
 

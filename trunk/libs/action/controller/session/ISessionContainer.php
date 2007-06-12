@@ -50,12 +50,13 @@
  *  session.MyFileSessionContainer
  * </code>
  * since the <em>_your_application_/libs</em> folder is under <em>include path</em>
+ *
  * @see http://php.net/manual/en/function.session-set-save-handler.php
  * @see Session
  * @see ActionController
  * @package medick.action.controller
  * @subpackage session
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 interface ISessionContainer {
 

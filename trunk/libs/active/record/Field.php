@@ -36,7 +36,7 @@
  * It represents a field from DB
  *
  * @package medick.active.record
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Field extends Object {
 

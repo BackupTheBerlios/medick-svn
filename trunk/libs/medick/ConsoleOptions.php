@@ -52,7 +52,7 @@
  * @see http://www.php.net/manual/en/features.commandline.php
  * @package medick.core
  * @subpackage console
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class ConsoleOptions extends Object {
     /** @var array

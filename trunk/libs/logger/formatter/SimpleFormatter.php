@@ -37,7 +37,7 @@
  * 
  * @package medick.logger
  * @subpackage formatter
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class SimpleFormatter extends Formatter {
     /** @see medick.logger.formatter.Formatter::format(medick.logger.LoggingEvent event) */
@@ -46,4 +46,3 @@ class SimpleFormatter extends Formatter {
             " [ {$event->level} ] >>> {$this->extractMessage($event->message)}";
     }
 }
-

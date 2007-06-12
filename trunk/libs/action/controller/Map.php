@@ -37,7 +37,7 @@
  * 
  * @package medick.action.controller
  * @subpackage routing
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Map extends Collection {
 

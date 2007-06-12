@@ -36,7 +36,7 @@
  * Outputters interface
  * 
  * @package medick.logger
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 interface ILogger {
 

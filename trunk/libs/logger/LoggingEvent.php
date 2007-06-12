@@ -36,7 +36,7 @@
  * A logged event object
  * 
  * @package medick.logger
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class LoggingEvent extends Object {
 

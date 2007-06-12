@@ -40,6 +40,7 @@ include_once('active/record/Base.php');
  * Aditional using php reflection api, it validates the user classes
  *
  * @package medick.action.controller
+ * @author Aurelian Oancea
  */
 class Injector extends Object {
 
@@ -126,14 +127,17 @@ class Injector extends Object {
      * @return void
      * @access protected
      */
-    protected function injectModel($name) {
+    protected function injectModel( $name ) {
         $location= $this->path['models'] . $name . '.php';
-        $this->logger->debug('Model: ' . $location);
+        
+        $this->logger->debug( '[Medick] >> Loading Model ' . ucfirst( $name ) . ' from ' . 
+            str_replace( $this->config->getApplicationPath(), '${'. $this->config->getApplicationName() .'}', $location) );
+
         $this->includeFile($location, ucfirst($name));
         $model_class_name= Inflector::camelize($name);
         try {
             $model_object = new ReflectionClass($model_class_name);
-
+            // XXX @USE
             if (@$model_object->getParentClass()->name != 'ActiveRecord') {
                 throw new InjectorException (
                     'Wrong Definition of user Model, `' . $model_class_name . '`, it must extend ActiveRecord object!');
@@ -144,7 +148,8 @@ class Injector extends Object {
             $method= $model_object->getMethod('find');
             if (!$method->isStatic() && !$method->isPublic()) {
                 throw new InjectorException (
-                    'Class method: ' . $model_class_name . '::find([mixed arguments]) should be declared as static and public!');
+                    'Class method: ' . $model_class_name . '::find([mixed arguments]) 
+                        should be declared as static and public!');
             }
         } catch (ReflectionException $rEx) {
             throw new InjectorException (
@@ -176,6 +181,7 @@ class Injector extends Object {
 
         try {
             $controller_class = new ReflectionClass($clazz);
+            // XXX @USE
             if (
                 ($controller_class->isInstantiable())
                 &&
@@ -206,10 +212,11 @@ class Injector extends Object {
      * @return void
      * @access private
      */
-    protected function injectHelper($location) {
-        $helper_file= $this->path['helpers'] . $location . '_helper.php';
-        $this->logger->debug('Helper: ' . $helper_file);
-        return $this->includeFile($helper_file, $location . '_helper.php');
+    protected function injectHelper($name) {
+        $helper_file= $this->path['helpers'] . $name . '_helper.php';
+        $this->logger->debug('[Medick] >> Lading Helper ' . $name . ' from ' .
+            str_replace( $this->config->getApplicationPath(), '${'. $this->config->getApplicationName() .'}', $helper_file) );
+        return $this->includeFile($helper_file, $name . '_helper.php');
     }
 
     /**
@@ -221,6 +228,7 @@ class Injector extends Object {
      * @access private
      */
     private function includeFile($location, $failure_message) {
+        // XXX @USE
         if(!@file_exists($location) ) {
             throw new FileNotFoundException('Cannot load : `' . $failure_message .'`. Searched in: `' . $location . '`');
         } else {

@@ -37,7 +37,7 @@
  * 
  * @package medick.logger
  * @subpackage formatter
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class DefaultFormatter extends Formatter {
     /** @see medick.logger.formatter.Formatter::format(medick.logger.LoggingEvent event) */

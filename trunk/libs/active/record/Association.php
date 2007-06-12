@@ -41,7 +41,7 @@
  * 
  * @package medick.active.record
  * @subpackage association
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 abstract class Association extends Object {
 
@@ -163,7 +163,7 @@ abstract class Association extends Object {
  *
  * @package medick.active.record
  * @subpackage association
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  * @since Rev. 272
  */
 class HasManyAssociation extends Association {
@@ -191,7 +191,7 @@ class HasManyAssociation extends Association {
  *
  * @package medick.active.record
  * @subpackage association
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  * @since Rev. 272
  */
 class HasOneAssociation extends Association {
@@ -227,7 +227,7 @@ class HasOneAssociation extends Association {
  *
  * @package medick.active.record
  * @subpackage association
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  * @since Rev. 272
  */
 class BelongsToAssociation extends HasOneAssociation {    }
@@ -237,7 +237,7 @@ class BelongsToAssociation extends HasOneAssociation {    }
  * 
  * @package medick.active.record
  * @subpackage association
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class HasAndBelongsToManyAssociation extends Association {
 

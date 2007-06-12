@@ -41,7 +41,7 @@
  *
  * @package medick.core
  * @subpackage util
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 interface ICollection extends ArrayAccess {
 
@@ -95,7 +95,7 @@ interface ICollection extends ArrayAccess {
  * An Iterator over a Collection
  * @package medick.core
  * @subpackage util
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 interface IIterator {
 
@@ -157,7 +157,7 @@ interface IIterator {
  *
  * @package medick.core
  * @subpackage util
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Collection extends Object implements ICollection {
 
@@ -368,7 +368,7 @@ class Collection extends Object implements ICollection {
  *
  * @package medick.core
  * @subpackage util
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class CollectionIterator extends Object implements IIterator {
 

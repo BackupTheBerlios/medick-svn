@@ -33,9 +33,10 @@
 // }}}
 
 /**
+ *
  * @package medick.action.view
  * @subpackage helpers
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class ActiveRecordHelper extends Object {
 
@@ -104,7 +105,7 @@ class ActiveRecordHelper extends Object {
  * @package medick.action.view
  * @subpackage helpers
  * @see http://api.rubyonrails.com/classes/ActionView/Helpers/FormHelper.html
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class FormHelper extends Object {
 
@@ -218,7 +219,7 @@ class FormHelper extends Object {
  *
  * @package medick.action.view
  * @subpackage helpers
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class URL extends Object {
 
@@ -247,7 +248,7 @@ class URL extends Object {
  * @package medick.action.view
  * @subpackage helpers
  * @deprecated use FormHelper since it provides more features
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Form extends Object {
 

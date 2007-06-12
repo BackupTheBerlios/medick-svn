@@ -39,7 +39,7 @@ include_once('action/controller/Injector.php');
  * 
  * @package medick.action.controller
  * @subpackage routing
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class ActionControllerRouting extends Object {
 

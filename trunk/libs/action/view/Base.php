@@ -37,7 +37,7 @@ include_once('action/view/HTML.php');
 /**
  *
  * @package medick.action.view
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 interface ITemplateEngine {
     public function render_partial($controller, $partial);
@@ -48,34 +48,15 @@ interface ITemplateEngine {
 /**
  *
  * @package medick.action.view
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class ActionView extends Object {
 
-    public static function factory($engine) {
+    public static function factory( $engine ) {
         $clazz= strtoupper($engine) . 'TemplateEngine';
         return new $clazz;
     }
-
-    /**
-     * Strips slashes, method called recursive
-     *
-     * @todo Move this OUT of this class, or, in __set.
-     * @todo What if $value is Object?
-     * @param mixed value, the value on witch we strip slashes.
-     *                  It can be array/string or object.
-     */
-     
-    /* public static function stripslashes_deep($value) {
-        if (is_array($value)) {
-            array_map(array('ActionView','stripslashes_deep'), $value);
-        } elseif (is_object($value)) {
-
-        } else {
-            stripslashes($value);
-        }
-        return $value;
-     } */ 
+    
 }
 
 /**
@@ -85,7 +66,7 @@ class ActionView extends Object {
  * may share the same name and behavior
  *
  * @package medick.action.view
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class PHPTemplateEngine extends Object implements ITemplateEngine {
 

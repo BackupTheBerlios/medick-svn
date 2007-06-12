@@ -38,7 +38,7 @@
  * @see Route
  * @package medick.action.controller
  * @subpackage routing
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Component extends Object {
 
@@ -115,6 +115,7 @@ class Component extends Object {
  *  $request->getParameter('action'); // => view
  *  $request->getParameter('id'); // => 12
  * </code>
+ *
  * @see Map, ActionControllerRouting, Component
  * @todo more docs
  * @package medick.action.controller
@@ -333,7 +334,7 @@ class Route extends Object {
     public function createControllerInstance(Request $request) {
         if (!$this->isLoaded) $this->load($request);
         try {
-            // Registry::get('__logger')->debug($this->toString());
+            // Registry::get('__logger')->debug('[Medick] >> found ' . $this->toString());
             return Registry::put(new Injector(), '__injector')->inject('controller', $request->getParameter('controller'));
         } catch (FileNotFoundException $fnfEx) {
             throw new RoutingException('Cannot create a controller instance, ' . $fnfEx->getMessage());

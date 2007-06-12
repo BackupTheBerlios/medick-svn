@@ -36,6 +36,7 @@
  * Convenient methods to work on english words 
  * Based on: http://dev.rubyonrails.com/file/trunk/activesupport/lib/active_support/inflections.rb
  * @package medick.active.support
+ * @author Aurelian Oancea
  */
 
 class Inflector extends Object {

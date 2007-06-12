@@ -40,7 +40,7 @@ include_once('action/controller/http/HTTPResponse.php');
  * A Dispatcher will know how to dump the buffer of this response back to the user.
  * 
  * @package medick.action.controller
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Response extends Object {
     

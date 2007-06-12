@@ -84,7 +84,7 @@
  * @see ActiveRecord, Field, UniquenessOfValidator, FormatOfValidator, LengthOfValidator, PresenceOfValidator
  * @package medick.active.record
  * @subpackage validator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */ 
 abstract class Validator extends Object {
     
@@ -167,7 +167,7 @@ abstract class Validator extends Object {
  * @see Validator, ActiveRecord, Field, preg_match
  * @package medick.active.record
  * @subpackage validator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class FormatOfValidator extends Validator {
     
@@ -221,7 +221,7 @@ class FormatOfValidator extends Validator {
  * @see Validator, ActiveRecord, Field
  * @package medick.active.record
  * @subpackage validator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */ 
 class PresenceOfValidator extends Validator {
     
@@ -260,7 +260,7 @@ class PresenceOfValidator extends Validator {
  * @see Validator, ActiveRecord, Field, is_numeric, intvalue
  * @package medick.active.record
  * @subpackage validator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */ 
 class NumericalityOfValidator extends Validator {
     
@@ -297,7 +297,7 @@ class NumericalityOfValidator extends Validator {
  * @see Validator, ActiveRecord, Field
  * @package medick.active.record
  * @subpackage validator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */ 
 class UniquenessOfValidator extends Validator {
     
@@ -352,7 +352,7 @@ class UniquenessOfValidator extends Validator {
  * @see Validator, ActiveRecord, Field
  * @package medick.active.record
  * @subpackage validator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */ 
 
 class LengthOfValidator extends Validator {
@@ -450,4 +450,3 @@ class LengthOfValidator extends Validator {
     }
 
 }
-

@@ -39,7 +39,7 @@ include_once('configurator/IConfigurator.php');
  * 
  * @deprecated this class is deprecated, use medick.configurator.XMLConfigurator
  * @package medick.configurator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class INIConfigurator extends Object implements IConfigurator {
 

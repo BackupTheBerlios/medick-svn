@@ -36,7 +36,7 @@
  * Container for DatabaseRow Objects
  * 
  * @package medick.active.record
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class RowsAggregate extends Object implements IteratorAggregate {
 

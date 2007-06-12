@@ -44,10 +44,10 @@ include_once('logger/Logger.php');
 /**
  * It knows how to dispatch a request
  * 
- * The role of this class will increase in the next versions.
+ * It reads the configuration file and loads the application routes
  *
  * @package medick.action.controller
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Dispatcher extends Object {
 
@@ -69,14 +69,14 @@ class Dispatcher extends Object {
             $configurator= $this->manager->getConfigurator();
             Registry::put($configurator, '__configurator');
             Registry::put($logger= new Logger($configurator), '__logger');
-            $logger->debug('Config File: ' . $configurator->getConfigFile());
-            $ap= $configurator->getApplicationPath();
-            $an= $configurator->getApplicationName();
-            $logger->debug("{app.name} -> $an");
+            $ap= $configurator->getApplicationPath(); // application path
+            $an= $configurator->getApplicationName(); // application name
+            $logger->debug('[Medick] >> version: ' . Medick::getVersion() . ' ready for ' . $an);
+            $logger->debug('[Medick] >> Application path ' . $ap);
             $routes_path= $ap . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . $an . '.routes.php';
-            include_once($routes_path);
-            $logger->debug("routes loaded from: $routes_path");
-            $logger->debug("Medick {" . Medick::getVersion() . "} ready to dispatch.");
+            include_once($routes_path); // load routes
+            $logger->debug('[Medick] >> Config File: ' . str_replace($ap, '${'.$an.'}', $configurator->getConfigFile()) );
+            $logger->debug('[Medick] >> Routes loaded from: '. str_replace($ap, '${'.$an.'}', $routes_path));
             ActionControllerRouting::recognize($request)->process($request, $response)->dump();
         } catch (Exception $ex) {
             ActionController::process_with_exception($request, $response, $ex)->dump();

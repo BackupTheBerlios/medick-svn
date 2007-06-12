@@ -37,7 +37,7 @@
  *
  * @package medick.action.controller
  * @subpackage http
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class HTTPResponse extends Response {
 

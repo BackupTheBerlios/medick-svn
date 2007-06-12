@@ -41,7 +41,7 @@ include_once('logger/formatter/Formatter.php');
 /**
  * 
  * @package medick.logger
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Logger extends Object implements ILogger {
 

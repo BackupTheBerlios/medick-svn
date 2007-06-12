@@ -38,7 +38,7 @@ include_once('configurator/IConfigurator.php');
  * A plain Application Configurator
  * 
  * @package medick.configurator
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */ 
 class LoggerConfigurator extends Object implements IConfigurator {
     /** @see medick.configurator.IConfigurator::getLoggerOutputters() */

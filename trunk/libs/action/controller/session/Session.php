@@ -37,7 +37,7 @@
  *
  * @package medick.action.controller
  * @subpackage session
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class Session extends Object {
 

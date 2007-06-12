@@ -36,7 +36,7 @@
  * It knows how to create a SQLCommand from an array
  *
  * @package medick.active.record
- * @author Oancea Aurelian
+ * @author Aurelian Oancea
  */
 class QueryBuilder extends Object {
 
