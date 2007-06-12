@@ -1,7 +1,14 @@
 $Id$
 (*) SVN version
 
-0.3.0pre2-svn (23.Jul.2006)
+0.4 (*)
+    - added HTTPRequest::is_xhr() method
+    - added JSON decode / encode
+    - added after filters for ActionController
+    - changed before_filter to before_filters for ActionController
+    - skeleton for docs in ActionController
+
+0.3.0pre2 (23.Jul.2006)
     - moved database configuration settings from xml configuration file to database.ini  
     - refactored bin/medick.php, now it also includes a overwrite feature
 

@@ -3,16 +3,15 @@ $Id$
 Medick TODO list.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*Plan for 0.3 series*
+refactor && unit-test && documentation
 
     #  ~~ 1. obsolete DatabaseRow (0.3.0) ~~
     #  ~~ 2. expandable validators (0.3.0) ~~
     #  ~~ 3. customizable error messages on validation (0.3.0) ~~
-    #  4. context like (0.3.0)
-    #  5. cheap cache in ActiveRecord
-    #  6. creole moveup: RowsAggregate implements IteratorAggregate vs. ResultSet implement IteratorAggregate
-    #  7. write in associations
-    #  8. scaffolding generator
-    #  9. nice to have: RDBAC, i18n, l10n, caching
-    # 10. refactor && unit-test
-
+    #  4. configurations refactorings (0.4)
+    #  5. cheap cache in ActiveRecord (0.4.1)
+    #  6. PDO common interface to replace Creole later on (0.5)
+    #  7. refactorings: RowsAggregate implements IteratorAggregate vs. ResultSet implement IteratorAggregate (0.5)
+    #  8. write in active record associations (0.6)
+    #  9. nice to have: scaffolding generator (0.5)
+    # 10. nice to have: RDBAC, i18n, l10n, caching (0.7)
