@@ -715,12 +715,15 @@ abstract class ActiveRecord extends Object {
      * @return array
      */ 
     private static function parse_dsn() {
+        return Registry::get('__configurator')->getDatabaseDsn();
+        /*
         $ini_file= Registry::get('__configurator')->getApplicationPath() . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'database.ini';
         if (!is_file($ini_file)) {
             throw new ActiveRecordException('Cannot load database settings from: ' . $ini_file . ' No such file or directory!');
         }
         $settings= parse_ini_file($ini_file, true);
         return $settings[Registry::get('__configurator')->getEnvName()];
+        */
     }
     // }}}
 }

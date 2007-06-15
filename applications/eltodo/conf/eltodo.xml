@@ -29,6 +29,14 @@
                 </outputter>
             </outputters>
         </logger>
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "eltodo"
+                 username = "root"
+                 password = "" />
+        </database>        
     </environment>
 
     <!-- a sample test environment -->
@@ -57,6 +65,14 @@
                 </outputter>
             </outputters>
         </logger>
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "eltodo"
+                 username = "root"
+                 password = "" />
+        </database>        
     </environment>
   
 </application>

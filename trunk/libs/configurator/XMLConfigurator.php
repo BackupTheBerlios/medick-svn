@@ -37,8 +37,6 @@ include_once('configurator/IConfigurator.php');
 /**
  * XML file-based Configurator
  * 
- * From medick 0.3.0 this class will be removed due to the new way of configurating a medick application!
- *
  * @package medick.configurator
  * @author Aurelian Oancea
  */
@@ -100,6 +98,42 @@ class XMLConfigurator extends Object implements IConfigurator {
     public function getConfigFile() {
         return $this->config_file;
     }
+    
+    /**
+     * Configuration Example:
+     * <code>
+     *   <database default="foo">
+     *     <dsn id="one"
+     *          phptype  = "mysql"
+     *          hostspec = "localhost"
+     *          database = "baz"
+     *          username = "root"
+     *          password = "zzz" />
+     *     <dsn id = "foo"
+     *          phptype  = "pgsql"
+     *          hostspec = "192.18.1.1"
+     *          database ="test"
+     *          username ="antonescu"
+     *          password ="x-creeme" />
+     *   </database>
+     * </code>
+     * @see IConfigurator::getDatabaseDsn()
+     */
+    public function getDatabaseDsn($id = FALSE) {
+        if (!$id) $id = $this->sxe->database['default'];
+        foreach( $this->sxe->database->dsn as  $dsn ) {
+            if($dsn['id']==$id){
+                return array (
+                    'phptype'  => (string)trim($dsn['phptype']),
+                    'hostspec' => (string)trim($dsn['hostspec']),
+                    'username' => (string)trim($dsn['username']),
+                    'password' => (string)trim($dsn['password']),
+                    'database' => (string)trim($dsn['database'])
+                );
+            }
+        }
+        throw new ConfiguratorException('Database Id ' . $id . 'not found!');
+    }    
     
     /**
      * Configuration example:

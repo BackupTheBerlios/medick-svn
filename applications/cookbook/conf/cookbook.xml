@@ -47,6 +47,14 @@
             </outputters>
         </logger>
         <!-- database(s) settings -->
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "cookbook"
+                 username = "root"
+                 password = "" />
+        </database>        
     </environment>
 
     <!-- a sample test environment -->
@@ -57,7 +65,7 @@
         </properties>
         <!-- web context -->
         <web>
-            <server_name>http://exemplu.com</server_name>
+            <server_name>http://exemple.com</server_name>
             <document_root>/cookbook</document_root>
             <rewrite>on</rewrite>
         </web>
@@ -75,6 +83,14 @@
                 </outputter>
             </outputters>
         </logger>
+        <database default="one">
+            <dsn id = "one"
+                 phptype  = "mysql"
+                 hostspec = "localhost"
+                 database = "cookbook"
+                 username = "root"
+                 password = "" />
+        </database>        
     </environment>
   
 </application>
