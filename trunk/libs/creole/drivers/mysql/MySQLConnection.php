@@ -187,7 +187,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
     function executeQuery($sql, $fetchmode = null)
     {
         $this->lastQuery = $sql;
-        if ($this->database) {
+        if (!$this->database) {
             if (!@mysql_select_db($this->database, $this->dblink)) {
                 throw new SQLException('No database selected', mysql_error($this->dblink));
             }
@@ -206,7 +206,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
     {    
         $this->lastQuery = $sql;
 
-        if ($this->database) {
+        if (!$this->database) {
             if (!@mysql_select_db($this->database, $this->dblink)) {
                     throw new SQLException('No database selected', mysql_error($this->dblink));
             }
@@ -240,7 +240,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
      */
     protected function commitTrans()
     {
-        if ($this->database) {
+        if (!$this->database) {
             if (!@mysql_select_db($this->database, $this->dblink)) {
                  throw new SQLException('No database selected', mysql_error($this->dblink));
             }
@@ -259,7 +259,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
      */
     protected function rollbackTrans()
     {
-        if ($this->database) {
+        if (!$this->database) {
             if (!@mysql_select_db($this->database, $this->dblink)) {
                 throw new SQLException('No database selected', mysql_error($this->dblink));
             }

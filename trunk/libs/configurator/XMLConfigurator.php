@@ -122,17 +122,17 @@ class XMLConfigurator extends Object implements IConfigurator {
     public function getDatabaseDsn($id = FALSE) {
         if (!$id) $id = $this->sxe->database['default'];
         foreach( $this->sxe->database->dsn as  $dsn ) {
-            if($dsn['id']==$id){
+            if( trim($dsn['id']) == trim($id) ){
                 return array (
-                    'phptype'  => (string)trim($dsn['phptype']),
-                    'hostspec' => (string)trim($dsn['hostspec']),
-                    'username' => (string)trim($dsn['username']),
-                    'password' => (string)trim($dsn['password']),
-                    'database' => (string)trim($dsn['database'])
+                        'phptype'  => (string)trim($dsn['phptype']),
+                        'hostspec' => (string)trim($dsn['hostspec']),
+                        'username' => (string)trim($dsn['username']),
+                        'password' => (string)trim($dsn['password']),
+                        'database' => (string)trim($dsn['database'])
                 );
             }
         }
-        throw new ConfiguratorException('Database Id ' . $id . 'not found!');
+        throw new ConfiguratorException('Database Id ' . $id . ' not found!');
     }    
     
     /**
