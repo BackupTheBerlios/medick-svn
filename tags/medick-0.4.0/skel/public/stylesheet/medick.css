@@ -1,0 +1,13 @@
+/*
+ * $Id$
+ * 
+ * stylesheet for ${app.name} project
+ */
+
+body {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid black;
+  font-family:verdana, arial, helvetica, sans-serif;
+}
+
