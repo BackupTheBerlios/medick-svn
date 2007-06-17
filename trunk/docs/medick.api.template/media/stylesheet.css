@@ -9,6 +9,8 @@ body, table { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10p
 
 a img { border: 0px; }
 
+li { margin:0px; padding:0px; }
+
 /* Page layout/boxes */
 
 .info-box {  }
