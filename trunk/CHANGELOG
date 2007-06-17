@@ -1,11 +1,13 @@
 $Id$
-(*) SVN version
 
-0.4 (*)
+0.4.1-svn
+
+0.4.0 (17.Jun.2007)
     - added HTTPRequest::is_xhr() method
     - added JSON decode / encode
     - added after filters for ActionController
     - changed before_filter to before_filters for ActionController
+    - reverted database settings to XML config file
     - skeleton for docs in ActionController
 
 0.3.0pre2 (23.Jul.2006)
