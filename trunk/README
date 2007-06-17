@@ -5,10 +5,10 @@ $Id$
 
 ABOUT:
 ------
-    This is the README file for version 0.3.0pre2 of Medick released on 23.July.2006.
+    This is the README file for version 0.4.0 of Medick released on 17.June.2007.
     Medick is an open-source software licensed under a BSD-style licence, see LICENSE file for details.
     Medick is a PHP 5 web framework, not a collection of PHP classes.
-    Medick is alpha stage project, use it on your own risk. 
+    Medick is alpha stage project, use it on your own risk: 
     Function names or framework workflow might change without prior notice.
 
 REQUIREMENTS:
@@ -49,4 +49,3 @@ CONTACT:
 --------
     aurelian [ AT ] locknet [ DOT ] ro
     http://medick.locknet.ro
-
