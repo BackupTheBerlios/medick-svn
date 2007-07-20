@@ -4,7 +4,7 @@
 <div id="project_name" style="font-weight:bold;font-size:1.8em"><?=$project->name;?></div>
 
 <script language="JavaScript">
-    new Ajax.InPlaceEditor('project_name', '/eltodo/project/update_name',
+    new Ajax.InPlaceEditor('project_name','<?=URL::create('project','update_name')?>',
     { callback: function(form, value) { return 'id=<?=$project->id;?>&name=' + value }});
 </script>
 
