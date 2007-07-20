@@ -114,8 +114,8 @@ $files= array(
                               => 'scripts'. DIRECTORY_SEPARATOR . 'generator.php',
   'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'application.xml'
                               => 'conf'   . DIRECTORY_SEPARATOR . $short_name.'.xml',
-  'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'database.ini'
-                              => 'conf'   . DIRECTORY_SEPARATOR . 'database.ini',
+  // 'skel' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'database.ini'
+  //                               => 'conf'   . DIRECTORY_SEPARATOR . 'database.ini',
   'skel' . DIRECTORY_SEPARATOR . 'db'     . DIRECTORY_SEPARATOR . 'schema.sql'
                               => 'db'     . DIRECTORY_SEPARATOR . 'schema.sql',
   'skel' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.html'
