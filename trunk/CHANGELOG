@@ -1,7 +1,15 @@
 $Id$
 
 0.4.1-svn
-
+    - (bug) fixed URL::create when rewrite is off (still needs more testing)
+    - (bug) fixed a syntax error in JSON
+    - moved configurator to context
+    - start to work on ETag
+    - start to unify logger messages
+    - added methods to allow more control of HTTPResponse headers
+    - some docs on HTTPResponse
+    - using ORIG_PATH_INFO in HTTPRequest so it can work with lighttpd
+    
 0.4.0 (17.Jun.2007)
     - added HTTPRequest::is_xhr() method
     - added JSON decode / encode

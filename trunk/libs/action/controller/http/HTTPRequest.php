@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
+// Copyright (c) 2005 - 2007 Aurelian Oancea < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   * Neither the name of Aurelian Oancea nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -38,12 +38,23 @@ include_once('action/controller/session/Session.php');
 /**
  * A HTTPRequest
  *
+ * This is known to work with PHP installed as mod_php with apache, 
+ * for other types of installation please contact me at aurelian [ at ] locknet [ 
+ * dot ] ro if you need advice!
+ *
+ * @todo unified Headers list (eg, convert all the headers to small caps)
+ * @todo use getHeader in isXhr method
+ * @todo maybe we need a URI Helper class?
+ * @todo test with php as cgi and with php with lighttpd
+ *
  * @package medick.action.controller
  * @subpackage http
  * @author Aurelian Oancea
  */
 class HTTPRequest extends Request {
 
+    /** @var string
+        request method */
     private $method;
     
     /** @var Session */
@@ -62,11 +73,7 @@ class HTTPRequest extends Request {
     private $cookies= array();
     
     /**
-     * Constructor.
      * It builds the HTTPRequest object
-     *
-     * @todo a URI Helper should be written.
-     * @todo a Cookie class should be written.
      */
     public function HTTPRequest() {
         $this->method= isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
@@ -77,18 +84,22 @@ class HTTPRequest extends Request {
         foreach ($_COOKIE as $cookie_name=>$cookie_value) {
             $this->cookies[$cookie_name]= new Cookie($cookie_name, $cookie_value);
         }
-        
         unset($_REQUEST); unset($_GET); unset($_POST);
 
-        if (array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO']!='' ) {
+        // setup requestUri
+        if (array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO'] != '' ) {
             $this->requestUri= $_SERVER['PATH_INFO'];
         }
-        // TODO:
-        //      -> this is for php as cgi, or where PATH_INFO is not available
-        //      -> ORIG_PATH_INFO should also work
-        //      -> should substract only the documnet root
-        elseif (array_key_exists('REQUEST_URI', $_SERVER)) {
-            $this->requestUri= substr($_SERVER['REQUEST_URI'],7);
+        // this is for php as cgi where PATH_INFO is not available
+        elseif (array_key_exists('ORIG_PATH_INFO', $_SERVER)) {
+            // todo: it should be also tested for non root locations eg:
+            // http://www.example.com/foo/medick/myapplication/project/create.html 
+            // should substract only /project/create.html!
+            // even if we don't use rewrite mode (rewrite=off in config file) this should work.
+            $this->requestUri= $_SERVER['ORIG_PATH_INFO']; 
+        } else {
+          // fallback to REQUEST_URI
+          $this->requestUri= substr($_SERVER['REQUEST_URI'],7);
         }
 
         $this->session = new Session();
@@ -98,7 +109,7 @@ class HTTPRequest extends Request {
     /**
      * Get the current request method
      *
-     * @return string can be POST or GET
+     * @return string the method of this request (POST/GET/HEAD/DELETE/PUT)
      */ 
     public function getMethod() {
         return $this->method;
@@ -208,7 +219,12 @@ class HTTPRequest extends Request {
     public function getRequestUri() {
         return $this->requestUri;
     }
-
+    
+    /**
+     * Split the RequestURI by forward slash
+     *
+     * @return array with URI Parts
+     */  
     public function getUriParts() {
         if (is_null($this->requestUri)) return array();
         return explode('/', trim($this->requestUri,'/'));
@@ -223,9 +239,8 @@ class HTTPRequest extends Request {
     }
 
     // {{{ todos.
-    public function getIP() {  }
-    // public function getRequestURI() {  }
-    public function getProtocol() {  }
+    public function getIP() { throw new MedickException('Method Not Implemented!'); }
+    public function getProtocol() { throw new MedickException('Method Not Implemented!'); }
     // }}}
 
     /**
@@ -237,7 +252,7 @@ class HTTPRequest extends Request {
     protected static function getAllHeaders() {
         $headers= array();
         if (function_exists('getallheaders')) {
-            // this will work only for mod_php
+            // this will work only for mod_php!
             $headers= getallheaders();
         } else {
             foreach($_SERVER as $header=>$value) {

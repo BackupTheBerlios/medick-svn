@@ -32,7 +32,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('configurator/XMLConfigurator.php');
+include_once('context/configurator/XMLConfigurator.php');
 
 /**
  * 
@@ -44,7 +44,6 @@ class ContextManager extends Object {
     static protected $instance= NULL;
 
     static public function load($stream, $environment) {
-
         if (ContextManager::$instance === NULL) {
             ContextManager::$instance= new ContextManager($stream, $environment);
         }
@@ -57,6 +56,18 @@ class ContextManager extends Object {
 
     public function getConfigurator() {
         return $this->configurator;
+    }
+    
+    public function getWebContext() {
+        
+    }
+    
+    public function getApplicationContext() {
+        
+    }
+    
+    public function getDatabaseContext() {
+        
     }
     
 }

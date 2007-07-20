@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
+// Copyright (c) 2005 - 2007 Aurelian Oancea < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   * Neither the name of Aurelian Oancea nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -130,7 +130,7 @@ class Injector extends Object {
     protected function injectModel( $name ) {
         $location= $this->path['models'] . $name . '.php';
         
-        $this->logger->debug( '[Medick] >> Loading Model ' . ucfirst( $name ) . ' from ' . 
+        $this->logger->debug( '[Medick] >> Loading Model `' . ucfirst( $name ) . '` from ' . 
             str_replace( $this->config->getApplicationPath(), '${'. $this->config->getApplicationName() .'}', $location) );
 
         $this->includeFile($location, ucfirst($name));
@@ -175,7 +175,7 @@ class Injector extends Object {
         }
 
         $file= $this->path['controllers'] . strtolower($name) . '_controller.php';
-        $clazz= ucfirst($name)    . 'Controller';
+        $clazz= ucfirst($name) . 'Controller';
 
         $this->includeFile($file, $clazz);
 
@@ -214,7 +214,7 @@ class Injector extends Object {
      */
     protected function injectHelper($name) {
         $helper_file= $this->path['helpers'] . $name . '_helper.php';
-        $this->logger->debug('[Medick] >> Lading Helper ' . $name . ' from ' .
+        $this->logger->debug('[Medick] >> Loading Helper `' . $name . '` from ' .
             str_replace( $this->config->getApplicationPath(), '${'. $this->config->getApplicationName() .'}', $helper_file) );
         return $this->includeFile($helper_file, $name . '_helper.php');
     }
@@ -236,3 +236,4 @@ class Injector extends Object {
         }
     }
 }
+

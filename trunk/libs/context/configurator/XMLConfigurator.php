@@ -32,7 +32,7 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('configurator/IConfigurator.php');
+include_once('context/configurator/IConfigurator.php');
 
 /**
  * XML file-based Configurator
@@ -54,6 +54,8 @@ class XMLConfigurator extends Object implements IConfigurator {
         configuration file */
     protected $config_file;
     
+    /** @var string
+        environment */
     protected $environment;
     
     /**
@@ -70,7 +72,6 @@ class XMLConfigurator extends Object implements IConfigurator {
                 break;
             }
         }
-
         if ($this->sxe === NULL) {
             throw new ConfiguratorException('Cannot find environment: ' . $env . ' in ' . $stream);
         }
@@ -186,7 +187,6 @@ class XMLConfigurator extends Object implements IConfigurator {
      *   $config->setProperty('application_path', 'C:\\Fast\\www\\medick\\app');
      * </code>
      *
-     * Note: This method is used only in unittests.
      * @param string, name, the name of the property.
      * @param string, value, the value of the property.
      * @throws ConfiguratorException if the property that we want to set don't exists in the xml file/string

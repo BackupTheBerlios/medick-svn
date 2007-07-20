@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
+// Copyright (c) 2005 - 2007 Aurelian Oancea < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   * Neither the name of Aurelian Oancea nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -303,10 +303,7 @@ class ActionController extends Object {
      * @param Exception $exception
      * @return Response
      */
-    public static function process_with_exception(
-                                                   Request $request,
-                                                   Response $response,
-                                                   Exception $exception) {
+    public static function process_with_exception( Request $request, Response $response, Exception $exception ) {
         $body = $response->getContent();
         if(ob_get_length()) {
             ob_end_clean();
@@ -396,7 +393,8 @@ class ActionController extends Object {
         if ($this->use_layout) {
             $layout= $this->use_layout === TRUE ? $this->params['controller'] : $this->use_layout;
             $layout_file= $this->injector->getPath('layouts') . $layout . '.phtml';
-            $this->logger->debug('Layout: ' . $layout_file);
+            $this->logger->debug('[Medick] >> Using layout: ' . 
+                str_replace( $this->config->getApplicationPath(), '${'.$this->config->getApplicationName().'}', $layout_file));
             if (!is_file($layout_file)) {
                 return $this->render_without_layout($template_file, $status);
             } else {
@@ -456,8 +454,20 @@ class ActionController extends Object {
             return;
         }
         $status = $status === NULL ? HTTPResponse::SC_OK : $status;
-        $this->response->setStatus($status);
-        $this->response->setContent($text);
+        // add ETag header
+        // if( $status == HTTPResponse::SC_OK && strlen($text) > 0 ) { 
+        //   $this->response->setHeader('ETag', md5($text));
+        //   if( $this->request->getHeader('HTTP_IF_NONE_MATCH') == md5($text) ) {
+        //     $this->response->setStatus(HTTPResponse::SC_NOT_MODIFIED);
+        //     $this->response->setContent('');
+        //   } else {
+            $this->response->setStatus($status);
+            $this->response->setContent($text);
+        //   }
+        // } else {
+        //   $this->response->setStatus($status);
+        //   $this->response->setContent($text);
+        // }
         $this->action_performed = TRUE;
         $this->logger->debug('Action performed.');
 
@@ -465,7 +475,6 @@ class ActionController extends Object {
             $this->session->removeValue('flash');
         }
     }
-
 
     // }}}
 
@@ -586,7 +595,7 @@ class ActionController extends Object {
         }
         $redirect_to .= '.' . $ext;
         
-        $this->logger->debug('Redirecting to: ' . $redirect_to);
+        $this->logger->debug('[Medick] >> Redirecting to: ' . $redirect_to);
         $this->response->redirect($redirect_to);
         $this->action_performed = TRUE;
     }
@@ -594,7 +603,7 @@ class ActionController extends Object {
     // XXX: not done.
     // redirects to a know path (eg. /images/pic.jpg)
     protected function redirect_to_path($path) {
-        $this->logger->debug('Redirecting to: ' . $path);
+        $this->logger->debug('[Medick] >> Redirecting to: ' . $path);
         $this->response->redirect($this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root . '/' . $path);
         $this->action_performed = TRUE;
     }
@@ -608,8 +617,6 @@ class ActionController extends Object {
 
     /**
      * Performs the action
-     *
-     * The magic __common method is also invoked just before the action to perform
      * 
      * @param string, action_name, the action to perform
      * @todo still to refactor.
@@ -618,7 +625,6 @@ class ActionController extends Object {
      */
     private function perform_action($action_name) {
         $forbidden_actions = array('process', '__construct', '__destruct', '__common');
-
         $action= $this->createMethod($action_name);
 
         if (
@@ -630,19 +636,12 @@ class ActionController extends Object {
             $action_name = 'index';
             $action= $this->createMethod($action_name);
             if (!$action || $action->isStatic()) {
-                throw new RoutingException(
-                    'Cannot invoke default action, ``index" for this Route!',
-                    'Method named ``index" is not defined in class: ' . $this->getClassName()
-                );
+                throw new RoutingException('Cannot invoke default action, `index` for this Route!',
+                    'Method named `index` is not defined in class: `' . $this->getClassName() . '`');
             }
         }
         $this->params['action'] = strtolower($action_name);
         $this->template->assign('__action', $this->params['action']);
-        // $this->logger->debug('Action:: ' . strtolower($action_name));
-        // quickly load the common magick method.
-        // if ($_common= $this->createMethod('__common')) {
-        //     $_common->invoke($this);
-        // }
         // invoke the action.
         $action->invoke($this);
         if ($this->action_performed) return;
@@ -685,17 +684,17 @@ class ActionController extends Object {
             $name= trim($name);
             // try to create the method
             if(!$filter= $this->createMethod( $name )) {
-                $this->logger->warn(sprintf('[Medick] >> Cannot laod filter %s::%s, call to undefined method.',
-                    $this->getClassName(),$name));
+                $this->logger->warn(sprintf('[Medick] >> Cannot laod filter `%s::%s`, call to undefined method.',
+                    $this->getClassName(), $name));
                 continue;                
             }
             // a filter should be declared as protected.
             if (!$filter->isProtected()) {
-                $this->logger->warn('[Medick] >> Your filter, '. $name . ' is not declared as a
-                    protected method for class ' . $this->getClassName() .', so it cannot be executed.');
+                $this->logger->warn('[Medick] >> Your filter, `'. $name . '` is not declared as a
+                    protected method for class `' . $this->getClassName() .'`, so it cannot be executed.');
                 continue;
             }
-            $this->logger->debug('[Medick] >> Executing filter ' . $name. '.');
+            $this->logger->debug('[Medick] >> Executing filter: `' . $name. '`.');
             $this->$name();
             // $this->logger->debug('[Medick] >> Filter ' . $name . ' executed.');
         }
