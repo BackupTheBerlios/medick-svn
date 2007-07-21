@@ -33,6 +33,7 @@
 // }}}
 
 include_once('action/view/Base.php');
+include_once('action/view/JSON.php');
 
 /**
  * Base Class For User Application Controllers
@@ -429,9 +430,10 @@ class ActionController extends Object {
     }
 
     protected function render_json($text, $status = NULL) {
-        include_once('action/view/JSON.php');
-        $this->response->setHeader('X-JSON', '('.JSON::encode($text).')');
-        $this->render_text('', $status);
+        $this->response->setContentType('application/json');
+        $text= JSON::encode($text);
+        $this->response->setHeader('X-JSON', '('.$text.')');
+        $this->render_text($text, $status);
     }
 
     /**

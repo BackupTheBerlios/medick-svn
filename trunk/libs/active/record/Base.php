@@ -2,7 +2,7 @@
 // {{{ License
 // ///////////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005 - 2007 Oancea Aurelian < aurelian [ at ] locknet [ dot ] ro >
+// Copyright (c) 2005 - 2007 Aurelian Oancea < aurelian [ at ] locknet [ dot ] ro >
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -12,7 +12,7 @@
 //   * Redistributions in binary form must reproduce the above copyright notice,
 //   this list of conditions and the following disclaimer in the documentation
 //   and/or other materials provided with the distribution.
-//   * Neither the name of Oancea Aurelian nor the names of his contributors may
+//   * Neither the name of Aurelian Oancea nor the names of his contributors may
 //   be used to endorse or promote products derived from this software without
 //   specific prior written permission.
 //
@@ -167,7 +167,7 @@ abstract class ActiveRecord extends Object {
             return Association::resolve($this, $name)->execute();
         } catch (AssociationNotFoundException $anfEx) {
             throw new ActiveRecordException(
-                'Cannot Get the value of filed: `' . $name . '`. No such filed!', $anfEx->getMessage() );
+                'Cannot Get the value of field: `' . $name . '`. No such field!', $anfEx->getMessage() );
         }
     }
     
@@ -267,9 +267,9 @@ abstract class ActiveRecord extends Object {
     }
     
     /**
-     * Check if it has a Filed with the given name
+     * Check if it has a Field with the given name
      *
-     * @param string Filed name
+     * @param string Field name
      * @return bool
      */ 
     public function hasField($name) {
@@ -296,7 +296,7 @@ abstract class ActiveRecord extends Object {
     }
     
     /**
-     * It gets the Filed that is Primary Key on this table
+     * It gets the Field that is Primary Key on this table
      *
      * @return Field
      */ 
@@ -343,6 +343,7 @@ abstract class ActiveRecord extends Object {
         foreach ($this->fields as $field) {
             if ($field->hasErrors()) {
                 foreach($field->getErrors() as $error) {
+                    // $this->errors[$field->getName()][] = $error;
                     $this->errors[] = $error;
                 }
                 // $this->errors= $field->getErrors();
@@ -523,7 +524,7 @@ abstract class ActiveRecord extends Object {
         ActiveRecord::populateStmtValues($stmt, $this->getAffectedFields());
         $af_rows = $stmt->executeUpdate();
         $stmt->close();
-        Registry::get('__logger')->debug('Query: ' . ActiveRecord::$conn->lastQuery);
+        Registry::get('__logger')->debug(sprintf("[Medick] >> SQLQuery\n\t%s", ActiveRecord::$conn->lastQuery));
         // $this->_reset();
         return $af_rows;
     }
@@ -604,7 +605,7 @@ abstract class ActiveRecord extends Object {
      */ 
     protected static function execute($sql) {
         $r= ActiveRecord::connection()->executeQuery($sql);
-        Registry::get('__logger')->debug(ActiveRecord::$conn->lastQuery);
+        Registry::get('__logger')->debug( ActiveRecord::$conn->lastQuery );
         return $r;
     }
 
@@ -653,7 +654,7 @@ abstract class ActiveRecord extends Object {
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
         if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
         $rs= $stmt->executeQuery();
-        Registry::get('__logger')->debug('Query: ' . ActiveRecord::$conn->lastQuery);
+        Registry::get('__logger')->debug(sprintf("[Medick] >> SQLQuery\n\t%s", ActiveRecord::$conn->lastQuery));
         $stmt->close();
         return $rs;
     }

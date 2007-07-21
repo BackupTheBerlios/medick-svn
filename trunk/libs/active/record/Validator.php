@@ -316,7 +316,8 @@ class UniquenessOfValidator extends Validator {
      * @see Validator::validates
      */ 
     public function validate(Field $field) {
-        $supp= $this->record->getPrimaryKey()->getValue()===NULL ? '' : ' and ' . $this->record->getPrimaryKey()->getName() . '!=?';
+        $supp= $this->record->getPrimaryKey()->getValue()===NULL ? '' : 
+                ' and ' . $this->record->getPrimaryKey()->getName() . '!=?';
         try {
             ActiveRecord::build(
                 new QueryBuilder($this->record->getClassName(), 
