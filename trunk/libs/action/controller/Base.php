@@ -380,17 +380,14 @@ class ActionController extends Object {
      * @return void
      */
     protected function render_file($template_file, $status = NULL) {
-
         if (!is_file($template_file)) {
             throw new FileNotFoundException ('Cannot render unexistent template file:' . $template_file);
         }
-
-        try {
-            $this->injector->inject('helper', $this->params['controller']);
-        } catch (FileNotFoundException $fnfEx) {
-            $this->logger->info('Skiped helper: ' . $this->params['controller'] . '_helper.php');
-        }
+        // load helper
+        $this->injector->inject('helper', $this->params['controller']);
+        // register flash
         $this->register_flash();
+        
         if ($this->use_layout) {
             $layout= $this->use_layout === TRUE ? $this->params['controller'] : $this->use_layout;
             $layout_file= $this->injector->getPath('layouts') . $layout . '.phtml';

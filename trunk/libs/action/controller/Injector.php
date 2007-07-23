@@ -216,7 +216,11 @@ class Injector extends Object {
         $helper_file= $this->path['helpers'] . $name . '_helper.php';
         $this->logger->debug('[Medick] >> Loading Helper `' . $name . '` from ' .
             str_replace( $this->config->getApplicationPath(), '${'. $this->config->getApplicationName() .'}', $helper_file) );
-        return $this->includeFile($helper_file, $name . '_helper.php');
+        try {    
+          return $this->includeFile( $helper_file, $name . '_helper.php' );
+        } catch (FileNotFoundException $fnfEx) {
+          $this->logger->info( sprintf('[Medick] >> Skipped missing helper %s', $name) );
+        }
     }
 
     /**
@@ -236,4 +240,3 @@ class Injector extends Object {
         }
     }
 }
-
