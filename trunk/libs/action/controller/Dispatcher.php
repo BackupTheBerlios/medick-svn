@@ -63,6 +63,10 @@ class Dispatcher extends Object {
      * @return void.
      */
     public function dispatch() {
+      
+        include_once('action/controller/http/HTTPResponse.php');
+        include_once('action/controller/http/HTTPRequest.php');
+      
         $request  = new HTTPRequest();
         $response = new HTTPResponse();
         try {
