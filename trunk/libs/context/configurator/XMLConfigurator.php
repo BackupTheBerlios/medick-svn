@@ -93,7 +93,7 @@ class XMLConfigurator extends Object implements IConfigurator {
     }
     
     public function getWebContext() {
-        return trim((string)$this->sxe->web);
+        return $this->sxe->web;
     }
     
     public function getConfigFile() {
