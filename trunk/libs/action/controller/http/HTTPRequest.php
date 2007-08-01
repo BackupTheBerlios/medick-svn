@@ -256,8 +256,14 @@ class HTTPRequest extends Request {
             $headers= getallheaders();
         } else {
             foreach($_SERVER as $header=>$value) {
-                if(ereg('HTTP_(.+)',$header,$hp)) {
-                    $headers[ucfirst(strtolower($hp[1]))] = $value;
+              if(preg_match('/HTTP_(.+)/',$header,$hp)) {
+                  $h= preg_replace_callback(
+                    '/(^|_)(.)/', 
+                    create_function(  
+                        '$matches', 
+                        'return $matches[1] ? "-".ucfirst( $matches[2] ) : ucfirst( $matches[2] );'), 
+                    strtolower($hp[1]));
+                  $headers[$h] = $value;
                 }
             }
         }

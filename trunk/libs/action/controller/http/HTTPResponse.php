@@ -77,7 +77,7 @@ class HTTPResponse extends Response {
     const SC_SERVICE_UNAVAILABLE = 503;
 
     /** Constructor */
-    public function HTTPResponse() {    }
+    public function HTTPResponse() {  }
     
     /**
      * Sets the header $name with $value
@@ -189,7 +189,7 @@ class HTTPResponse extends Response {
      */
     public function redirect( $location ) {
         $this->setHeader('Location', $location);
-        $this->content = "<html><body>You are being <a href=\"$location\">redirected</a>.</body></html>";
+        $this->content = '<html><body>You are being <a href="'.$location.'">redirected</a>.</body></html>';
     }
 }
 

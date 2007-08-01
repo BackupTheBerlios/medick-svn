@@ -4,8 +4,9 @@ $Id$
     - (bug) fixed URL::create when rewrite is off (still needs more testing)
     - (bug) fixed a syntax error in JSON
     - moved configurator to context
-    - start to work on ETag
-    - start to unify logger messages
+    - added support for ETag
+    - unifyed logger messages
+    - unifyed HTTPReqest Headers (If-None-Match for Apache was If_None_March on non Apache Web servers)
     - added methods to allow more control of HTTPResponse headers
     - some docs on HTTPResponse
     - using ORIG_PATH_INFO in HTTPRequest so it can work with lighttpd

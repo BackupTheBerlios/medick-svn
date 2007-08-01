@@ -268,6 +268,10 @@ class ActionController extends Object {
         the layout to use */
     protected $use_layout= TRUE;
 
+    /** @var bool  
+        etag flag, set to true to use the Etag caching, false to disable-it */
+    protected $use_etag= TRUE;
+
     /** @var ActiveViewBase
         Template Engine */
     protected $template;
@@ -449,30 +453,46 @@ class ActionController extends Object {
      */
     protected function render_text($text = '', $status = NULL) {
         if ($this->action_performed) {
-            $this->logger->info('Action already performed...');
+            $this->logger->warn('[Medick] >> Action already performed...');
             return;
         }
+        
         $status = $status === NULL ? HTTPResponse::SC_OK : $status;
+
         // add ETag header
-        // if( $status == HTTPResponse::SC_OK && strlen($text) > 0 ) { 
-        //   $this->response->setHeader('ETag', md5($text));
-        //   if( $this->request->getHeader('HTTP_IF_NONE_MATCH') == md5($text) ) {
-        //     $this->response->setStatus(HTTPResponse::SC_NOT_MODIFIED);
-        //     $this->response->setContent('');
-        //   } else {
-            $this->response->setStatus($status);
-            $this->response->setContent($text);
-        //   }
-        // } else {
-        //   $this->response->setStatus($status);
-        //   $this->response->setContent($text);
-        // }
-        $this->action_performed = TRUE;
-        $this->logger->debug('Action performed.');
+        if( $this->use_etag && $status == HTTPResponse::SC_OK && strlen($text) > 0 ) {
+            $this->set_etag_headers( $text );
+            if( $this->request->getHeader('If-None-Match') == md5($text) ) {
+                $this->logger->debug( '[Medick] >> Got response from browser cache (code=304, body="").' );
+                $this->_perform( HTTPResponse::SC_NOT_MODIFIED, '' );
+            } else {
+                $this->_perform($status, $text);
+            }
+        }  else {
+            $this->_perform($status, $text);
+        }
+
+        $this->action_performed= TRUE;
+        $this->logger->debug( '[Medick] >> Action performed.' );
 
         if ($this->session->hasValue('flash')) {
             $this->session->removeValue('flash');
         }
+    }
+  
+    // move to response
+    private function _perform($status, $text) {
+      $this->response->setStatus($status);
+      $this->response->setContent($text);
+    }
+
+    private function set_etag_headers( $text ) {
+      $this->response->setHeader('ETag', md5($text));
+      $this->logger->debug( sprintf('[Medick] >> ETag set to %s.', md5($text)) );
+      // get around PHP session
+      $this->response->setHeader('Cache-Control', null, false);
+      $this->response->setHeader('Expires', null, false);
+      $this->response->setHeader('Pragma', null, false);
     }
 
     // }}}
