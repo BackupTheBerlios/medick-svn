@@ -71,27 +71,31 @@ abstract class ActiveRecord extends Object {
 
     /** @var string
         class name: Person */
-    protected $class_name = NULL;
+    protected $class_name  = null;
 
     /** @var string
-        table mane: persons */
-    protected $table_name = NULL;
+        table name: persons */
+    protected $table_name  = null;
 
     /** @var CreoleConnection
         database connection */
-    static protected $conn= NULL;
-
-    /** @var DatabaseRow
-        our database row. */
-    // protected $row;
-
-    protected $fields=array();
+    static protected $conn = null;
     
-    private $validators= array();
-    
-    private $errors= array();
+    /** @var array
+        this Object fields */
+    protected $fields   = array();
 
-    private $collected= FALSE;
+    /** @var array
+        an array of validators attached to this object */
+    private $validators = array();
+
+    /** @var array
+        an array of errors associated with this object */
+    private $errors     = array();
+    
+    /** @var bool
+        flag that indicates if the errors where collected or not */
+    private $collected  = false;
     
     /** @var string
         primary key name */
@@ -108,9 +112,8 @@ abstract class ActiveRecord extends Object {
      * Constructor
      *
      * @param array, params, parameters as pair of `field name` => `value`
-     * @final because there is no reason to overwrite in parent classes, PHP Engine will call this constructor by default.
      */
-    public function ActiveRecord($params= array()) {
+    public function ActiveRecord( Array $params= array() ) {
         $this->class_name = $this->getClassName();
         $this->table_name = Inflector::pluralize(strtolower(Inflector::underscore($this->class_name)));
         $table_info = ActiveRecordTableInfo::getInstance(ActiveRecord::connection(), $this->table_name);
@@ -134,11 +137,13 @@ abstract class ActiveRecord extends Object {
             }
             $this->fields[$field->getName()]= $field;
         }
-        // confused?
+        // confused? this sets the field values
         if(!empty($params)) { foreach ($params as $field_name => $field_value) {
             $this->$field_name = $field_value;
         }}
     }
+    
+    // private $inc=null;
 
     /**
      * It sets the value of the field
@@ -149,8 +154,25 @@ abstract class ActiveRecord extends Object {
      * @throws ActiveRecordException if the field is not found.
      */
     public function __set($name, $value) {
-        if ($this->hasField($name)) $this->getField($name)->setValue($value);
-        else throw new ActiveRecordException('No such Filed: ' . $name);
+
+        /*$tmp = explode(".", $name);
+
+        if( sizeof($tmp) > 1 ) {
+          if( $tmp[0] == $this->table_name ) {
+            $name= $tmp[1];
+          } else {
+            if( !$this->inc ) {
+              $this->inc= ActiveRecord::reflect_class( Inflector::singularize( $tmp[0] ) )->newInstance();
+            }
+            return $this->inc->getField($tmp[1])->setValue($value);
+          }
+        }*/
+
+        if ( $this->hasField( $name ) ) return $this->getField( $name )->setValue( $value );
+        if ( $value instanceof ActiveRecord && $this->belongs_to( $value->getClassName() ) ) {
+            return $this->getField( $name.'_id' )->setValue($value->id);
+        }
+        throw new ActiveRecordException('No such Field: ' . $name);
     }
 
     /**
@@ -162,13 +184,15 @@ abstract class ActiveRecord extends Object {
      * @return field value
      */
     public function __get($name) {
-        if ($this->hasField($name)) return $this->getField($name)->getValue();
+        if ( $this->hasField($name) ) return $this->getField( $name )->getValue();
+        // if ( $this->inc && $this->inc->getClassName()==ucfirst($name) ) return $this->inc;//->getField( $name )->getValue();
         try {
-            return Association::resolve($this, $name)->execute();
+            return Association::resolve( $this, $name )->execute();
         } catch (AssociationNotFoundException $anfEx) {
             throw new ActiveRecordException(
                 'Cannot Get the value of field: `' . $name . '`. No such field!', $anfEx->getMessage() );
         }
+
     }
     
     /**
@@ -178,12 +202,6 @@ abstract class ActiveRecord extends Object {
      * <ul>
      *  <li>
      *    <i>validates_</i>*, it loads a Validator, eg. validates_presence_of will load PresenceOfValidator<br />
-     *  </li>
-     *  <li>
-     *    <i>before_</i>* , if not defined, a call to a before filter will return true
-     *  </li>
-     *  <li>
-     *    <i>after_</i>* , if not defined this will return
      *  </li>
      *  <li>
      *    <i>get</i>* , if not defined will try to return a Field, eg.: assuming Person is an ActiveRecord class:<br />
@@ -214,8 +232,8 @@ abstract class ActiveRecord extends Object {
             $this->validators[]= $validator;
             return $validator;
         }
-        if (substr($method,0,7) == 'before_') return true; 
-        if (substr($method,0,6) == 'after_')  return;
+        // if (substr($method,0,7) == 'before_')return true; 
+        // if (substr($method,0,6) == 'after_')  return;
         if (substr($method,0,3) == 'get' && $this->hasField(strtolower(substr($method, 3)))) {
             return $this->getField(strtolower(substr($method, 3)));
         }
@@ -265,7 +283,7 @@ abstract class ActiveRecord extends Object {
     public function getTableName() {
         return $this->table_name;
     }
-    
+
     /**
      * Check if it has a Field with the given name
      *
@@ -279,7 +297,7 @@ abstract class ActiveRecord extends Object {
     /**
      * It gets all the Fields of this Object
      *
-     * @return Array
+     * @return Array of Field
      */ 
     public function getFields() {
         return $this->fields;
@@ -301,6 +319,7 @@ abstract class ActiveRecord extends Object {
      * @return Field
      */ 
     public function getPrimaryKey() {
+        if($this->hasField('id')) return $this->getField('id');
         foreach($this->fields as $field) {
             if ($field->isPk) return $field;
         }
@@ -320,25 +339,63 @@ abstract class ActiveRecord extends Object {
     }
     
     /**
+     * Checks if this Object has declared a has_one association
+     *
+     * @return bool
+     */ 
+    public function has_one( $thing ) {
+        return in_array( strtolower($thing), $this->has_one );
+    }
+
+    /**
+     * Checks if this Object has declared a belongs_to association
+     *
+     * @return bool 
+     */  
+    public function belongs_to( $thing ) {
+        return ( in_array( strtolower($thing), $this->belongs_to ) && $this->hasField(strtolower($thing).'_id') );
+    }
+    
+    /**
      * Check if this object has errors
      *
-     * @return bool TRUE if it has
+     * @return bool true if it has
      */ 
     public function hasErrors() {
         return sizeof($this->errors) > 0;
     }
-
+    
+    /**
+     * Gets the Object Errors
+     *
+     * @return array
+     */ 
     public function getErrors() {
         return $this->errors;
     }
-    
-    public function isValid($force= FALSE) {
-        if ($this->collected) return !$this->hasErrors();
+
+    /**
+     * Check if this Object is Valid
+     * 
+     * Note: You have to perform an action on the object before checking it's 
+     * validity, otherwise it will return true
+     *
+     * @return @bool
+     */
+    public function isValid( $force= false ) {
+        if ( $this->collected ) return !$this->hasErrors();
         else return $this->collect_errors($force) === 0;
     }
-
-    private function collect_errors($force= FALSE) {
-        if ($this->collected && !$force) return sizeof($this->errors);
+    
+    /**
+     * Collects the errors associated with this object
+     * 
+     * It also builds the errors array
+     *
+     * @return int number of errors
+     */ 
+    private function collect_errors( $force= false ) {
+        if ($this->collected && !$force) return sizeof( $this->errors );
         $this->run_validators();
         foreach ($this->fields as $field) {
             if ($field->hasErrors()) {
@@ -349,16 +406,32 @@ abstract class ActiveRecord extends Object {
                 // $this->errors= $field->getErrors();
             }
         }
-        $this->collected= TRUE;
+        $this->collected= true;
         return sizeof($this->errors);
     }
-    
+
+    /**
+     * Runs each validator
+     *
+     * @return void
+     */ 
     private function run_validators() {
         foreach ($this->validators as $v) {
             $v->validate_each();
         }
     }
-    
+
+    // {{{ filters
+    protected function before_insert() { return true; }
+    protected function after_insert() { }
+    protected function before_update() { return true; }
+    protected function after_update() { }
+    protected function before_save() {   return true; }
+    protected function after_save() { }
+    protected function before_delete() { return true; }
+    protected function after_delete() { }
+    // }}}
+
     // {{{ save
     /**
      * Save,
@@ -366,24 +439,21 @@ abstract class ActiveRecord extends Object {
      *    or an Update returning the number of affected rows.
      * If the primary key is affected (changed) on this run we will do an update, otherwise an insert.
      * <code>
-     *      $author = new Author();
-     *      $author->name = 'Mihai';
-     *      $author->firstName = 'Eminescu';
-     *      $author->save(); // will do the insert, returning the ID of the last field inserted.
-     *      // a mistake, let`s update.
-     *      $author->firstName = 'Sadoveanu';
-     *      $author->save(); // performs the update and returns the number of affected rows (1).
+     *  $author = new Author();
+     *  $author->name = 'Mihai';
+     *  $author->firstName = 'Eminescu';
+     *  $author->save(); // will do the insert, returning the ID of the last field inserted.
+     *  // a mistake, let`s update.
+     *  $author->firstName = 'Sadoveanu';
+     *  $author->save(); // performs the update and returns the number of affected rows (1).
      * </code>
      */
     public function save() {
-        if ( !$this->before_save() || !$this->isValid()) {
-            return false;
-        }
-        if ($this->getPrimaryKey()->isAffected) {
-            return $this->update();
-        } else {
-            return $this->insert();
-        }
+        if ( !$this->before_save() || !$this->isValid()) return false;
+        if ( $this->getPrimaryKey()->isAffected ) $af= $this->update();
+        else $af= $this->insert();
+        $this->after_save();
+        return $af;
     }
     // }}}
 
@@ -392,11 +462,9 @@ abstract class ActiveRecord extends Object {
      * Executes an SQL insert
      *
      * <code>
-     *     $author = new Author();
-     *     $author->name= 'Mihai';
-     *     $author->insert();
-     *     // is translated into:
-     *     // INSERT INTO authors (name) VALUES ('Mihai');
+     *  $author = new Author();
+     *  $author->name= 'Mihai';
+     *  $author->insert(); // INSERT INTO authors (name) VALUES ('Mihai');
      * </code>
      *
      * @return int next primary key id or, 1 (affected rows).
@@ -418,22 +486,24 @@ abstract class ActiveRecord extends Object {
      * Executes a SQL update
      *
      * <code>
-     *     $author = new Author(array('id'=>5));
-     *     // or: $author= new Author(); $author->id = 5;
-     *     $author->name= 'Mihai';
-     *     $author->update();
-     *     // is translated into:
-     *     // UPDATE authors set name='Mihai' WHERE id=5;
+     *  $author = new Author( array('id'=>5) );
+     *  // or: $author= new Author(); $author->id = 5;
+     *  $author->name= 'Mihai';
+     *  $author->update(); // UPDATE authors set name='Mihai' WHERE id=5;
      * </code>
      *
      * @return int affected rows.
      * @throws SQLException
      */
     public function update() {
-        if ( !$this->before_update() || !$this->isValid()) {
-            return false;
-        }
-        $af= $this->performQuery($this->getUpdateSql());
+        $this->before_update();
+        if( !$this->isValid() ) return false;
+        
+        // if ( !$this->before_update() || !$this->isValid()) {
+        //     return false;
+        // }
+
+        $af= $this->performQuery( $this->getUpdateSql() );
         $this->after_update();
         return $af;
     }
@@ -445,15 +515,16 @@ abstract class ActiveRecord extends Object {
      *   $author= Author::find(5); // select * from authors where id=5;
      *   $author->attributes(array('name'=>'Jon'))->save(); // update authors set name='Jon' where id=5;
      * </code>
-     * This method is also useful when receiving an array of parameters from HTTPRequest (form).
+     *
+     * This method is also useful when receiving an array of parameters from HTTPRequest (form):
      * <code>
      *   // controller
-     *   $user= User::find($request->getParameter('id'))->attributes($request->getParameter('user'))->save();
+     *   $user= User::find( $request->getParameter('id') )->attributes($request->getParameter('user'))->save();
      * </code>
      *
      * @return ActiveRecord
      */ 
-    public function attributes(/*Array*/ $params=array()) {
+    public function attributes( Array $params=array() ) {
         foreach($params as $name=>$value) {
             $this->$name=$value;
         }
@@ -467,12 +538,8 @@ abstract class ActiveRecord extends Object {
      * Performs an SQL delete.
      *
      * <code>
-     *     $affected_rows= new Author(array('id'=>5, 'name'=>'Mihai'))->delete();
-     *     // translated into:
-     *     // DELETE FROM authors WHERE id=5 and name='Mihai';
-     *     $affected_rows = new Author(array('name'=>'Mihai'))->delete();
-     *     // is translated to:
-     *     // DELETE FROM authors WHERE name='Mihai'
+     *  $author= Author::find(5);
+     *  $author->delete(); // delete from authors where id=5
      * </code>
      *
      * @return int affected rows.
@@ -485,10 +552,13 @@ abstract class ActiveRecord extends Object {
         if ($this->getPrimaryKey() !== NULL && $this->getPrimaryKey()->getValue()===NULL) {
             throw new ActiveRecordException('Refusing to delete everything from ' . $this->table_name . ', Primary Key was NULL');
         }
+        $timer= new MTimer();
         $sql= 'delete from ' . $this->table_name . ' where id=?';
-        $stmt= ActiveRecord::$conn->prepareStatement($sql);
+        $stmt= ActiveRecord::$conn->prepareStatement( $sql );
         $stmt->setInt(1, $this->getPrimaryKey()->getValue());
         $af_rows= $stmt->executeUpdate();
+        $stmt->close();
+        ActiveRecord::log( $timer, $af_rows );
         $this->after_delete();
         return $af_rows;
     }
@@ -519,18 +589,25 @@ abstract class ActiveRecord extends Object {
      * @return int affected rows
      * @throws SQLException
      */
-    private function performQuery($sql) {
+    private function performQuery( $sql ) {
+        $timer= new MTimer();
         $stmt = ActiveRecord::$conn->prepareStatement($sql);
         ActiveRecord::populateStmtValues($stmt, $this->getAffectedFields());
         $af_rows = $stmt->executeUpdate();
         $stmt->close();
-        Registry::get('__logger')->debug(sprintf("[Medick] >> SQLQuery\n\t%s", ActiveRecord::$conn->lastQuery));
-        // $this->_reset();
+        ActiveRecord::log($timer, $af_rows);
         return $af_rows;
     }
 
+    protected static function log( $timer=null, $rows=null ) {
+      Registry::get('__logger')->debug(
+        sprintf("[Medick] >> SQLQuery ( %s %.3f sec. )\n\t%s", $rows!==null ? $rows==1 ? $rows.' row.':$rows.' rows.' :'', $timer->stop(), ActiveRecord::$conn->lastQuery)
+      );
+      unset($timer);
+    }
+
     /**
-     * It gets the sql snippet that will be  used to execute an update
+     * It gets the sql snippet that will be used to execute an update
      *
      * FIXME:
      * <tt>UPDATE __TABLE__ SET foo='12' WHERE bar='ee';</tt>
@@ -546,14 +623,16 @@ abstract class ActiveRecord extends Object {
         $sql  = 'UPDATE ' . $this->table_name . ' SET ';
         // $sql .= implode(' = ?, ', $this->row->getAffectedFieldsNames());
 
-        foreach($this->getAffectedFields() as $field) {
-            $sql .= $field->getName() . ' = ?, ';
+        // foreach($this->getAffectedFields() as $field) {
+        foreach($this->fields as $field) {
+            if($field->isAffected()) $sql .= $field->getName() . ' = ?, ';
         }
         return substr($sql, 0, -2) . $sqlSnippet;
     }
 
     /**
      * It gets the sql snippet to use for an insert
+     *
      * @return string
      */
     private function getInsertSql() {
@@ -603,9 +682,10 @@ abstract class ActiveRecord extends Object {
      * @param string sql query to execute
      * @return ResultSet
      */ 
-    protected static function execute($sql) {
-        $r= ActiveRecord::connection()->executeQuery($sql);
-        Registry::get('__logger')->debug( ActiveRecord::$conn->lastQuery );
+    protected static function execute( $sql ) {
+        $timer = new MTimer();
+        $r= ActiveRecord::connection()->executeQuery( $sql );
+        ActiveRecord::log( $timer );
         return $r;
     }
 
@@ -620,11 +700,13 @@ abstract class ActiveRecord extends Object {
     }
        
     /**
+     *
      * @return ActiveRecord or a RowsAggregate (Collection of ActiveRecords)
      */
     public static function build(QueryBuilder $builder) {
-        $class= ActiveRecord::reflect_class($builder->getOwner());
-        $rs= ActiveRecord::create_result_set($builder);
+        // $class= ActiveRecord::reflect_class( $builder->getOwner() );
+        $class= $builder->getOwnerClass();
+        $rs= ActiveRecord::create_result_set( $builder );
         if ($builder->getType() == 'first') return ActiveRecord::fetch_one($rs, $class);
         return ActiveRecord::fetch_all($rs, $class);
     } 
@@ -634,7 +716,7 @@ abstract class ActiveRecord extends Object {
      *
      * @return ReflectionClass
      */
-    protected static function reflect_class($class_name, $r=0) {
+    public static function reflect_class( $class_name, $r=0 ) {
         try {
             return new ReflectionClass($class_name);
         } catch (ReflectionException $rEx) {
@@ -649,12 +731,13 @@ abstract class ActiveRecord extends Object {
      * @return ResultSet
      */
     protected static function create_result_set(QueryBuilder $builder) {
+        $timer = new MTimer();
         $stmt = ActiveRecord::connection()->prepareStatement($builder->compile()->getQueryString());
         $i=1; foreach($builder->getBindings() as $binding) $stmt->set($i++, $binding);
         if ($limit  = $builder->getLimit())  $stmt->setLimit($limit);
         if ($offset = $builder->getOffset()) $stmt->setOffset($offset);
         $rs= $stmt->executeQuery();
-        Registry::get('__logger')->debug(sprintf("[Medick] >> SQLQuery\n\t%s", ActiveRecord::$conn->lastQuery));
+        ActiveRecord::log( $timer );
         $stmt->close();
         return $rs;
     }
@@ -698,7 +781,7 @@ abstract class ActiveRecord extends Object {
      */ 
     protected static function connection() {
         if (ActiveRecord::$conn === NULL) {
-            ActiveRecord::$conn = Creole::getConnection(ActiveRecord::parse_dsn());
+            ActiveRecord::$conn = Creole::getConnection( ActiveRecord::parse_dsn() );
         }
         return ActiveRecord::$conn;
     }
@@ -717,14 +800,6 @@ abstract class ActiveRecord extends Object {
      */ 
     private static function parse_dsn() {
         return Registry::get('__configurator')->getDatabaseDsn();
-        /*
-        $ini_file= Registry::get('__configurator')->getApplicationPath() . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'database.ini';
-        if (!is_file($ini_file)) {
-            throw new ActiveRecordException('Cannot load database settings from: ' . $ini_file . ' No such file or directory!');
-        }
-        $settings= parse_ini_file($ini_file, true);
-        return $settings[Registry::get('__configurator')->getEnvName()];
-        */
     }
     // }}}
 }

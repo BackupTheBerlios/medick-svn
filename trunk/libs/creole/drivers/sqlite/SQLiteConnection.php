@@ -178,18 +178,20 @@ class SQLiteConnection extends ConnectionCommon implements Connection {
         require_once 'creole/drivers/sqlite/SQLiteResultSet.php';
         return new SQLiteResultSet($this, $result, $fetchmode);    
     }    
-    
+
+   
+
     /**
      * @see Connection::executeUpdate()
      */
-    function executeUpdate($sql)
-    {
-        $this->lastQuery = $sql;
-        $result = @sqlite_query($this->dblink, $this->lastQuery);
-        if (!$result) {            
-            throw new SQLException('Could not execute update', $php_errormsg, $this->lastQuery); //sqlite_error_string(sqlite_last_error($this->dblink))
+    function executeUpdate($sql) {
+        $this->lastQuery= $sql;
+        try {
+          sqlite_query( $this->dblink, $this->lastQuery );
+        } catch(Error $err) {
+          throw new SQLException('Could not execute update', $this->formatErrorMessage(), $this->lastQuery);
         }
-        return (int) @sqlite_changes($this->dblink);
+        return $this->getUpdateCount();
     }
     
     /**
@@ -232,14 +234,16 @@ class SQLiteConnection extends ConnectionCommon implements Connection {
     }
 
     /**
-     * Gets the number of rows affected by the data manipulation
-     * query.
+     * Gets the number of rows affected by the data manipulation query.
      *
      * @return int Number of rows affected by the last query.
      */
-    function getUpdateCount()
-    {
+    function getUpdateCount() {
         return (int) @sqlite_changes($this->dblink);
     }
-    
+
+    protected function formatErrorMessage() {
+      return sqlite_error_string( sqlite_last_error($this->dblink) );
+    }
+
 }

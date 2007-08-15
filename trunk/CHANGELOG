@@ -1,15 +1,17 @@
 $Id$
 
-0.4.1-svn
-    - (bug) fixed URL::create when rewrite is off (still needs more testing)
-    - (bug) fixed a syntax error in JSON
+0.4.1 (15.Aug.2007)
+    - (fixed) URL::create when rewrite is off (still needs more testing)
+    - (fixed) syntax error in HTML.JSON
+    - added MTimer for timing code execution
     - moved configurator to context
-    - added support for ETag
+    - added support for ETag (disabled by default)
     - unifyed logger messages
     - unifyed HTTPReqest Headers (If-None-Match for Apache was If_None_March on non Apache Web servers)
     - added methods to allow more control of HTTPResponse headers
     - some docs on HTTPResponse
     - using ORIG_PATH_INFO in HTTPRequest so it can work with lighttpd
+    - small refactorings to ActiveRecord and Creole SQLiteConnection
     
 0.4.0 (17.Jun.2007)
     - added HTTPRequest::is_xhr() method

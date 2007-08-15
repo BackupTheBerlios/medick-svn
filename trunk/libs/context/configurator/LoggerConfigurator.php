@@ -32,7 +32,7 @@
 // ///////////////////////////////////////////////////////////////////////////////
 // }}}
 
-include_once('configurator/IConfigurator.php');
+include_once('context/configurator/IConfigurator.php');
 
 /**
  * A plain Application Configurator

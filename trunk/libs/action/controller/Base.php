@@ -266,11 +266,11 @@ class ActionController extends Object {
 
     /** @var string
         the layout to use */
-    protected $use_layout= TRUE;
+    protected $use_layout= true;
 
     /** @var bool  
         etag flag, set to true to use the Etag caching, false to disable-it */
-    protected $use_etag= TRUE;
+    protected $use_etag= false;
 
     /** @var ActiveViewBase
         Template Engine */

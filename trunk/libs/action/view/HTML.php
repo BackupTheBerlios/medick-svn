@@ -223,23 +223,19 @@ class FormHelper extends Object {
  */
 class URL extends Object {
 
-    public static function create($controller, $action='index', $params=array(), $ext='html') {
+    public static function create( $controller, $action='index', $params=array(), $ext='html' ) {
         $config = Registry::get('__configurator');
-        $base   = (string)$config->getWebContext()->document_root;
+        $base   = (string)$config->getWebContext()->server_name . (string)$config->getWebContext()->document_root;
         $rewrite= (string)strtolower($config->getWebContext()->rewrite);
         if ($rewrite == 'false' || $rewrite == 'off' || $rewrite == '0') {
-            $base .= 'index.php';
+            $base .= 'index.php/';
         }
-        $buff= $base . '/';
-        if ($controller) $buff .= $controller . '/';
-        $buff .= $action;
-        
+        if ($controller) $base .= $controller . '/';
+        $base .= $action;
         foreach ($params as $key=>$value) {
-            $buff .= '/' . $value;
+            $base .= '/' . $value;
         }
-        
-        if ($ext=='') return $buff;
-        else return $buff . '.' . $ext;
+        return $ext == '' ? $base : $base . '.' . $ext;
     }
 }
 
