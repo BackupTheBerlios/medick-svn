@@ -3,5 +3,6 @@ $Id$
 medick/exp holds medick experiments
 
 Contents:
-    -> validator API (validator_api.php)
+    -> ActiveRecord5 (ar5/README) started 16.08.2007
+    -> validator API (validator_api.php) merged to trunk
 
