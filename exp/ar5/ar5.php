@@ -1,15 +1,20 @@
 <?php
 // $Id$
 
+set_include_path('libs');
+
 include_once('ar5_base.php');
-include_once('libs/active/record/drivers/abstract/SQLConnection.php');
-include_once('libs/active/record/drivers/abstract/SQLPreparedStatement.php');
+
+include_once('context/configurator/XMLConfigurator.php');
+
+include_once('active/record/drivers/abstract/SQLConnection.php');
+include_once('active/record/drivers/abstract/SQLPreparedStatement.php');
 
 include_once('ar5_sql.php');
 
-include_once('libs/active/record/drivers/sqlite/sqlite.php');
+include_once('active/record/drivers/sqlite/sqlite.php');
 
-include_once('libs/active/support/Inflector.php');
+include_once('active/support/Inflector.php');
 
 class ActiveRecordException extends MedickException { }
 
@@ -67,7 +72,6 @@ class ActiveRecord extends Object {
     return $r;
   }
 
- 
   public function getPrimaryKey() {
     return $this->__primary_key;
   }
