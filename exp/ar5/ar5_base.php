@@ -43,7 +43,6 @@ class ErrorHandler extends Object {
     throw new Error( $errstr, $errno, $errfile, $errline, $trace );
   }
 }
+
 set_error_handler( array(new ErrorHandler(), 'raise') );
-
-
 

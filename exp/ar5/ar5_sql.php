@@ -3,43 +3,49 @@
 
 class SQLException extends MedickException {  }
 
-class Field extends Object {
+// xxx.
+class SQLType extends Object {
 
-  private $name, $value, $pk, $type;
-
-  public function Field($name, $pk=0, $type='int', $value=null) {
-    $this->name= $name;
-    $this->value=$value;
-    $this->pk= $pk;
-    $this->type=$type;
+  // sql type to php type
+  public static function getPhpType( $type ) {
+    if( $type == 'integer' || $type == 'int') return 'Integer';
+    else return 'String';
+    // elseif( $type == 'varchar' || $type == 'string' || $type == 'text') return 'String';
+    // elseif( $type == 'timestamp' || $type == 'time' || $type == 'date') return 'Time';
+    // else throw new SQLException('Unknow type: "' . $type . '"');
   }
-
-  public function getName() { return $this->name; }
-  public function getValue() { return $this->value; }
-  public function isPk() { return (bool)$this->pk; }
-  public function getType() { return $this->type; }
 
 }
 
-abstract class SQLConnection extends Object {
+class Field extends Object {
 
-  protected $resource, $database, $lastQuery;
+  private $name, $value, $pk, $type, $size, $affected;
 
-  public function getDatabase() { return $this->database; }
-  public function setDatabase( $database ) { $this->database=$database;}
-  public function getResource() { return $this->resource; }
-  public function setResource( $resource ) { $this->resource= $resource; }
-  public function getLastQuery() { return $this->lastQuery; }
+  public function Field($name, $pk=false, $type='int', $size=0, $value= null, $affected=false) {
+    $this->name=  $name;
+    $this->value= $value;
+    $this->pk= (bool)$pk;
+    $this->size= (int)$size;
+    $this->type= SQLType::getPhpType( strtolower($type) );
+    $this->affected= (bool)$affected;
+  }
 
-  abstract public function connect();
+  public function getName() { return $this->name; }
 
-  abstract public function close(); 
+  public function getValue() { return $this->value; }
+  public function setValue($value) { $this->value= $value;}
 
-  abstract public function execute($sql);
+  public function setAffected($val) { $this->affected= (bool)$val; }
+  public function isAffected() { return (bool)$this->affected; }
 
-  abstract protected function getLastErrorMessage();
+  public function isPk() { return (bool)$this->pk; }
 
-  abstract public function getTableInfo($name);
+  public function getType() { return $this->type; }
+
+  public function alter( $value ) {
+    $this->value    = $value;
+    $this->affected = true;
+  }
 
 }
 
@@ -64,18 +70,10 @@ abstract class SQLResultSet extends Object {
 
 }
 
-class SQLiteResultSet extends SQLResultSet {
-
-  public function next() {
-    $this->row= sqlite_fetch_array( $this->result );
-    return $this->row ? true : false;
-  }
-
-}
-
 abstract class SQLTableInfo extends Object {
 
-  protected $fields, $name, $connection;
+  protected $name, $connection;
+  private $fields;
 
   public function SQLTableInfo($name, SQLConnection $connection) {
     $this->name= $name;
@@ -83,64 +81,13 @@ abstract class SQLTableInfo extends Object {
     $this->fields= array();
   }
 
+  public function add(Field $field) {
+    $this->fields[$field->getName()]= $field;
+  }
+
   public function getFields() { return $this->fields; }
 
   abstract public function initFields( );
 
 }
-
-class SQLiteTableInfo extends SQLTableInfo {
-
-  public function initFields() {
-    $sql= 'PRAGMA table_info('.$this->name.')';
-    $rs= $this->connection->execute( $sql );
-    while( $rs->next() ) {
-      // xxx: type.
-      $f= new Field( $rs->name, $rs->pk, $rs->type );
-    }
-  }
-
-}
-
-class SQLiteConnection extends SQLConnection {
-
-  public function SQLiteConnection() {
-    $this->database= 'db/aymo.sqlite';
-  }
-
-  public function connect() {
-    try {
-      $this->resource= sqlite_open( $this->database );
-    } catch (Error $err) {
-      throw new SQLException( $err->getMessage() );
-    }
-  }
-
-  public function execute($sql) {
-    $this->lasQuery= $sql;
-    try {
-      $result= sqlite_query( $this->resource, $sql, SQLITE_ASSOC );
-    } catch (Error $err) {
-      throw new SQLException( $err->getMessage() );
-    }
-    return new SQLiteResultSet($result, $this);
-  }
-
-  public function close() {
-    sqlite_close( $this->resource );
-  }
-
-  public function getLastErrorMessage() {
-    return sqlite_error_string( sqlite_last_error($this->resource) );
-  }
-  
-  // xxx. cache.
-  public function getTableInfo( $name ) {
-    $table_info= new SQLiteTableInfo( $name, $this );
-    $table_info->initFields();
-  }
-
-}
-
-
 
