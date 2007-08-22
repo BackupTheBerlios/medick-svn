@@ -17,39 +17,7 @@ class SQLType extends Object {
 
 }
 
-class Field extends Object {
-
-  private $name, $value, $pk, $type, $size, $affected;
-
-  public function Field($name, $pk=false, $type='int', $size=0, $value= null, $affected=false) {
-    $this->name=  $name;
-    $this->value= $value;
-    $this->pk= (bool)$pk;
-    $this->size= (int)$size;
-    $this->type= SQLType::getPhpType( strtolower($type) );
-    $this->affected= (bool)$affected;
-  }
-
-  public function getName() { return $this->name; }
-
-  public function getValue() { return $this->value; }
-  public function setValue($value) { $this->value= $value;}
-
-  public function setAffected($val) { $this->affected= (bool)$val; }
-  public function isAffected() { return (bool)$this->affected; }
-
-  public function isPk() { return (bool)$this->pk; }
-
-  public function getType() { return $this->type; }
-
-  public function alter( $value ) {
-    $this->value    = $value;
-    $this->affected = true;
-  }
-
-}
-
-abstract class SQLResultSet extends Object {
+abstract class SQLResultSet extends Object implements ArrayAccess {
 
   protected $result, $connection;
   protected $row= array();
@@ -59,35 +27,33 @@ abstract class SQLResultSet extends Object {
     $this->connection  = $connection;
   }
 
-  public abstract function next();
+  public function offsetExists($offset) {
+    return isset( $this->row[$offset] );
+  }
 
-  public function getRow() { return $this->row; }
+  public function offsetGet($offset) {
+    return $this->row[$offset];
+  }
+
+  public function offsetSet($offset, $value) {
+    throw new MedickError("A ResultSet is read-only!");
+  }
+
+  public function offsetUnset($offset) {
+    throw new MedickError("A ResultSet is read-only!");
+  }
+
+  public function getRow() { 
+    return $this->row;
+  }
 
   public function __get($name) {
     if(isset($this->row[$name])) return $this->row[$name];
     throw new SQLException('Cannot get the value of "' . $name . '" no such field!');
   }
 
-}
-
-abstract class SQLTableInfo extends Object {
-
-  protected $name, $connection;
-  private $fields;
-
-  public function SQLTableInfo($name, SQLConnection $connection) {
-    $this->name= $name;
-    $this->connection= $connection;
-    $this->fields= array();
-  }
-
-  public function add(Field $field) {
-    $this->fields[$field->getName()]= $field;
-  }
-
-  public function getFields() { return $this->fields; }
-
-  abstract public function initFields( );
+  abstract public function next();
 
 }
+
 

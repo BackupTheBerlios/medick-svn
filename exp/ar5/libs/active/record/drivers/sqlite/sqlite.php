@@ -1,12 +1,49 @@
 <?php
 // $Id$
 
+class SQLiteRecordsIterator extends Object implements Iterator {
+
+  private $result;
+
+  private $class;
+
+  public function SQLiteRecordsIterator( $result, ReflectionClass $class ) {
+    $this->class= $class;
+    $this->result= $result;
+  }
+
+  // Rewind the Iterator to the first element.
+  public function rewind() {
+    return sqlite_rewind( $this->result );
+  }
+
+  // Returns the current element
+  public function current() {
+    return $this->class->newInstance( sqlite_current( $this->result ) );
+  }
+
+  // Return the key of the current element.
+  public function key() {
+    return sqlite_key( $this->result );
+  }
+
+  // Moves the cursor to the next element.
+  public function next() {
+    return sqlite_next( $this->result );
+  }
+
+  // Check if there is a current element after calls to rewind() or next().
+  public function valid() {
+    return sqlite_valid( $this->result );
+  }
+
+}
+
 class SQLiteResultSet extends SQLResultSet {
 
   public function next() {
     $this->row= sqlite_fetch_array( $this->result );
     return (bool)$this->row;
-    // return $this->row ? true : false;
   }
 
 }
@@ -14,11 +51,12 @@ class SQLiteResultSet extends SQLResultSet {
 class SQLiteTableInfo extends SQLTableInfo {
 
   public function initFields() {
+    echo ".";
     $sql= 'PRAGMA table_info('.$this->name.')';
     $rs= $this->connection->execute( $sql );
     while( $rs->next() ) {
       // xxx: type.
-      $fulltype= $rs->type; // varchar(255);
+      $fulltype= $rs['type']; // varchar(255);
       $size=0;
       if (preg_match('/^([^\(]+)\(\s*(\d+)\s*,\s*(\d+)\s*\)$/', $fulltype, $matches)) {
         $type = $matches[1];
@@ -31,7 +69,7 @@ class SQLiteTableInfo extends SQLTableInfo {
         $type = $fulltype;
       }
       // add field
-      $this->add( new Field( $rs->name, $rs->pk, $type, $size ) );
+      $this->add( new SQLField( $rs['name'], $rs['pk'], $type, $size ) );
     }
   }
 
@@ -41,6 +79,10 @@ class SQLitePreparedStatement extends SQLPreparedStatement {
 
   protected function escape( $value ) {
     return sqlite_escape_string( $value );
+  }
+
+  public function getRecordsIterator( $result, ReflectionClass $class ) {
+    return new SQLiteRecordsIterator( $result, $class );
   }
 
 }
@@ -87,12 +129,15 @@ class SQLiteConnection extends SQLConnection {
   public function getLastErrorMessage() {
     return sqlite_error_string( sqlite_last_error($this->resource) );
   }
-  
-  // xxx. cache.
-  public function getTableInfo( $name ) {
-    $table_info= new SQLiteTableInfo( $name, $this );
-    $table_info->initFields();
-    return $table_info;
+
+  private static $__table_info_storage;
+
+  public function getTableInfo( $name, $force= false ) {
+    if( $force || !isset(self::$__table_info_storage[$name]) ) {
+      self::$__table_info_storage[$name]= new SQLiteTableInfo( $name, $this );
+      self::$__table_info_storage[$name]->initFields();
+    }
+    return self::$__table_info_storage[$name];
   }
 
   public function prepare( $sql ) {

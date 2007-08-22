@@ -109,22 +109,49 @@ abstract class SQLPreparedStatement extends Object {
     $this->boundInVars[$idx]= (int)$value;
   }
 
+  // todo
+  public function set($idx, $value) {
+    var_dump(gettype($value));
+  }
+
   public function populateValues(Array $fields) {
     $i=1; foreach($fields as $field) {
-      if(!$field instanceof Field) throw new SQLException('Wrong argument Type, it should be an instance of "Field"');
+      if(!$field instanceof SQLField) throw new SQLException('Wrong argument Type, it should be an instance of "Field"');
       call_user_func( array($this, 'set'.ucfirst($field->getType())), $i++, $field->getValue() );
     }
   }
 
+  public function executeQuery(Array $params= array()) {
+    $this->setupParams($params);
+    return $this->conn->execute( $this->replaceParams() );
+  }
+
+  public function getAllRecords(Array $params=array(), ReflectionClass $record) {
+    $this->setupParams( $params );
+    $result= $this->conn->exec( $this->replaceParams() );
+    return $this->getRecordsIterator( $result, $record );
+
+  }
+
   public function executeUpdate() {
-    $sql= $this->replaceParams();
-    return $this->conn->executeUpdate( $sql );
+    return $this->conn->executeUpdate( $this->replaceParams() );
   }
 
   public function close() {
+
   }
 
-  abstract protected function escape($value);
+  private function setupParams(Array $params=array()) {
+    if ($params) {
+			for($i=0,$cnt=count($params); $i < $cnt; $i++) {
+				$this->set($i+1, $params[$i]);
+			}
+    }
+  }
+
+  abstract protected function escape( $value );
+
+  abstract protected function getRecordsIterator( $results, ReflectionClass $class );
 
 }
 

@@ -22,7 +22,7 @@ abstract class SQLConnection extends Object {
   abstract protected function getLastErrorMessage();
 
   // return TableInfo
-  abstract public function getTableInfo($name);
+  abstract public function getTableInfo( $name, $force=false );
   
   // return PreparedStatement
   abstract public function prepare( $sql );
@@ -38,7 +38,7 @@ abstract class SQLConnection extends Object {
   
   // return int
   public function executeUpdate( $sql ) {
-    return $this->getUpdateCount( $this->exec($sql) );
+    return $this->getUpdateCount( $this->exec( $sql ) );
   }
 
 }
