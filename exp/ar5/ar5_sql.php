@@ -3,6 +3,8 @@
 
 class SQLException extends MedickException {  }
 
+class ActiveRecordException extends MedickException { }
+
 // xxx.
 class SQLType extends Object {
 
@@ -16,44 +18,4 @@ class SQLType extends Object {
   }
 
 }
-
-abstract class SQLResultSet extends Object implements ArrayAccess {
-
-  protected $result, $connection;
-  protected $row= array();
-
-  public function SQLResultSet($result, SQLConnection $connection) {
-    $this->result= $result;
-    $this->connection  = $connection;
-  }
-
-  public function offsetExists($offset) {
-    return isset( $this->row[$offset] );
-  }
-
-  public function offsetGet($offset) {
-    return $this->row[$offset];
-  }
-
-  public function offsetSet($offset, $value) {
-    throw new MedickError("A ResultSet is read-only!");
-  }
-
-  public function offsetUnset($offset) {
-    throw new MedickError("A ResultSet is read-only!");
-  }
-
-  public function getRow() { 
-    return $this->row;
-  }
-
-  public function __get($name) {
-    if(isset($this->row[$name])) return $this->row[$name];
-    throw new SQLException('Cannot get the value of "' . $name . '" no such field!');
-  }
-
-  abstract public function next();
-
-}
-
 

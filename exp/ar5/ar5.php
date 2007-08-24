@@ -3,26 +3,25 @@
 
 set_include_path('libs');
 
+// medick base stuff
 include_once('ar5_base.php');
-
-// include_once('context/configurator/XMLConfigurator.php');
-
+// not yet ported classes
+include_once('ar5_sql.php');
+// medick trunk ported classes
+include_once('context/configurator/XMLConfigurator.php');
+include_once('active/support/Inflector.php');
+// active record helpers
 include_once('active/record/SQLField.php');
 include_once('active/record/SQLBuilder.php');
 include_once('active/record/SQLCommand.php');
-
+// abstract hooks
 include_once('active/record/drivers/abstract/SQLConnection.php');
 include_once('active/record/drivers/abstract/SQLPreparedStatement.php');
+include_once('active/record/drivers/abstract/SQLResultSet.php');
 include_once('active/record/drivers/abstract/SQLTableInfo.php');
-
-include_once('ar5_sql.php');
-
+// specific driver
 include_once('active/record/drivers/sqlite/sqlite.php');
 
-include_once('active/support/Inflector.php');
-// include_once('active/support/Reflector.php');
-
-class ActiveRecordException extends MedickException { }
 
 class ActiveRecord extends Object {
 
@@ -41,6 +40,9 @@ class ActiveRecord extends Object {
     }
   }
 
+  // ----------
+  // magick
+  // ----------
   public function __set($name, $value) {
     if( isset($this->__fields[$name]) ) return $this->__fields[$name]->alter( $value );
     throw new ActiveRecordException('No such field "' . $name . '"');
@@ -51,10 +53,16 @@ class ActiveRecord extends Object {
     throw new ActiveRecordException('No such field "' . $name . '"');
   }
 
+  // ----------
+  // convenient public methods
+  // ----------
   public function getPrimaryKey() {
     return $this->__primary_key;
   }
 
+  // ----------
+  // alter data
+  // ----------
   public function save() {
     return $this->__primary_key->isAffected() ? $this->update() : $this->insert();
   }
@@ -77,6 +85,9 @@ class ActiveRecord extends Object {
     $this->performQuery($sql, $fields);
   }
 
+  // ----------
+  // internal helpers
+  // ----------
   private function performQuery( $sql, $fields ) {
     $stmt= self::connection()->prepare( $sql );
     $stmt->populateValues( $fields );
@@ -93,6 +104,10 @@ class ActiveRecord extends Object {
   private function reset() {
     return array_walk( $this->__fields, array($this,'__notAffected'));
   }
+
+  // ---------
+  // internal callbacks
+  // ---------
 
   // callback for array_filter
   private function __affectedField( SQLField $field ) {
@@ -111,15 +126,26 @@ class ActiveRecord extends Object {
   // -----------
   // static
   // -----------
-  protected static $__table_info = null;
-  protected static $__connection = null;
+  private static $__connection     = null;
+  private static $__connection_dsn = array();
+  private static $__connection_key = '';
+
+  protected static $__connection_dsn_id = null;
+
+  public static function setConnectionDsn( IConfigurator $config ) {
+    self::$__connection_dsn= $config->getDatabaseDsn( self::$__connection_dsn_id );
+    ksort(self::$__connection_dsn);
+    self::$__connection_key= crc32(serialize( self::$__connection_dsn ));
+  }
 
   public static function connection() {
-    if(self::$__connection===null) {
-      self::$__connection= new SQLiteConnection();
-      self::$__connection->connect();
+    if( !isset( self::$__connection[self::$__connection_key] ) ) {
+      // todo: load driver connection implementation.
+      $class = new ReflectionClass( SQLConnection::$__drivers[self::$__connection_dsn['phptype']] . 'Connection' );
+      self::$__connection[self::$__connection_key] = $class->newInstance();
+      self::$__connection[self::$__connection_key]->connect( self::$__connection_dsn );
     }
-    return self::$__connection;
+    return self::$__connection[self::$__connection_key];
   }
 
   public static function find() {
@@ -132,6 +158,11 @@ class ActiveRecord extends Object {
 
 }
 
+
+// ----------
+// tests :)
+// ----------
+
 class User extends ActiveRecord { 
 
   public static function find() {
@@ -141,6 +172,8 @@ class User extends ActiveRecord {
 
 }
 
+$config= new XMLConfigurator('conf/aymo.xml', 'test');
+ActiveRecord::setConnectionDsn( $config );
 
 $u = new User();
 $u->firstname= 'aurelian2';

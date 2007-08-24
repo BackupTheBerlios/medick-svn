@@ -42,7 +42,7 @@ class SQLiteRecordsIterator extends Object implements Iterator {
 class SQLiteResultSet extends SQLResultSet {
 
   public function next() {
-    $this->row= sqlite_fetch_array( $this->result );
+    $this->row= sqlite_fetch_array( $this->result, SQLITE_ASSOC );
     return (bool)$this->row;
   }
 
@@ -89,12 +89,9 @@ class SQLitePreparedStatement extends SQLPreparedStatement {
 
 class SQLiteConnection extends SQLConnection {
 
-  public function SQLiteConnection() {
-    $this->database= 'db/aymo.sqlite';
-  }
-
-  public function connect() {
+  public function connect( Array $dsn = array() ) {
     try {
+      $this->database= $dsn['database'];
       $this->resource= sqlite_open( $this->database );
     } catch (Error $err) {
       throw new SQLException( $err->getMessage() );
@@ -104,14 +101,15 @@ class SQLiteConnection extends SQLConnection {
   public function exec( $sql ) {
    $this->lastQuery= $sql;
     try {
-      return sqlite_query( $this->resource, $sql, SQLITE_ASSOC );
+      return sqlite_query( $this->resource, $this->lastQuery, SQLITE_ASSOC );
     } catch (Error $err) {
       throw new SQLException( $err->getMessage() );
     }
   }
 
   public function execute( $sql ) {
-    return new SQLiteResultSet( $this->exec( $sql ), $this );
+    $this->lastQuery= $sql;
+    return new SQLiteResultSet( $this->exec( $this->lastQuery ), $this );
   }
 
   public function getUpdateCount( $rs=null ) {

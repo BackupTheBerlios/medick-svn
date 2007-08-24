@@ -3,15 +3,38 @@
 
 abstract class SQLConnection extends Object {
 
-  protected $resource, $database, $lastQuery;
+  /** @var array 
+   */
+  public static $__drivers= array('sqlite'=>'SQLite');
 
-  public function getDatabase() { return $this->database; }
-  public function setDatabase( $database ) { $this->database=$database;}
-  public function getResource() { return $this->resource; }
-  public function setResource( $resource ) { $this->resource= $resource; }
-  public function getLastQuery() { return $this->lastQuery; }
+  protected $resource; 
+  
+  protected $database;
+  
+  protected $lastQuery;
 
-  abstract public function connect();
+  // return int
+  public function executeUpdate( $sql ) {
+    return $this->getUpdateCount( $this->exec( $sql ) );
+  }
+
+  public function getDatabase() { 
+    return $this->database;
+  }
+  
+  public function setDatabase( $database ) { 
+    $this->database=$database;
+  }
+
+  public function getResource() { 
+    return $this->resource;
+  }
+
+  public function getLastQuery() { 
+    return $this->lastQuery;
+  }
+
+  abstract public function connect( Array $dsn= array() );
 
   abstract public function close(); 
 
@@ -36,11 +59,6 @@ abstract class SQLConnection extends Object {
   // return int
   abstract public function getUpdateCount( $rs=null );
   
-  // return int
-  public function executeUpdate( $sql ) {
-    return $this->getUpdateCount( $this->exec( $sql ) );
-  }
-
 }
 
 
