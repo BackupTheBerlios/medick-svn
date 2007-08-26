@@ -1,5 +1,6 @@
 <?php
 // $Id$
+// This file is part of ActiveRecord5, a Medick (http://medick.locknet.ro) Experiment
 
 error_reporting(E_ALL);
 
@@ -21,6 +22,10 @@ class Object {
 
 class MedickException extends Exception { }
 
+class SQLException extends MedickException {  }
+
+class ActiveRecordException extends MedickException { }
+
 class Error extends MedickException {
 
   public function __construct($message, $code, $file, $line, $trace) {
@@ -31,6 +36,7 @@ class Error extends MedickException {
     $this->trace = $trace;
   }
 }
+
 class ErrorHandler extends Object {
   public function ErrorHandler() {  }
   public function raise($errno, $errstr, $errfile, $errline) {
@@ -45,4 +51,3 @@ class ErrorHandler extends Object {
 }
 
 set_error_handler( array(new ErrorHandler(), 'raise') );
-

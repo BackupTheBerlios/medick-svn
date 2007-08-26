@@ -70,5 +70,7 @@ interface IConfigurator {
      * @return string, Logger formatter name eg. FooFormatter.
      */
     function getLoggerFormatter();
+    
+    function getDatabaseDsn($id=false);
 
 }

@@ -1,5 +1,12 @@
 <?php
 // $Id$
+// This file is part of ActiveRecord5, a Medick (http://medick.locknet.ro) Experiment
+
+// abstract hooks
+include_once('active/record/drivers/abstract/SQLConnection.php');
+include_once('active/record/drivers/abstract/SQLPreparedStatement.php');
+include_once('active/record/drivers/abstract/SQLResultSet.php');
+include_once('active/record/drivers/abstract/SQLTableInfo.php');
 
 class SQLiteRecordsIterator extends Object implements Iterator {
 

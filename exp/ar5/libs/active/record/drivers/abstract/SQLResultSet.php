@@ -1,6 +1,6 @@
 <?php
-
 // $Id$
+// This file is part of ActiveRecord5, a Medick (http://medick.locknet.ro) Experiment
 
 abstract class SQLResultSet extends Object implements ArrayAccess {
 

@@ -120,7 +120,7 @@ class XMLConfigurator extends Object implements IConfigurator {
      * </code>
      * @see IConfigurator::getDatabaseDsn()
      */
-    public function getDatabaseDsn($id = FALSE) {
+    public function getDatabaseDsn($id = false) {
         if (!$id) $id = $this->sxe->database['default'];
         foreach( $this->sxe->database->dsn as  $dsn ) {
             if( trim($dsn['id']) == trim($id) ){

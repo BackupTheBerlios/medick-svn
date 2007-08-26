@@ -1,11 +1,7 @@
 <?php
 // $Id$
+// This file is part of ActiveRecord5, a Medick (http://medick.locknet.ro) Experiment
 
-class SQLException extends MedickException {  }
-
-class ActiveRecordException extends MedickException { }
-
-// xxx.
 class SQLType extends Object {
 
   // sql type to php type

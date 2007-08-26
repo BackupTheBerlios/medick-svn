@@ -87,7 +87,7 @@
         <database default="one">
             <dsn id = "one"
                  phptype  = "sqlite"
-                 database = "/W/medick/applications/aymo/db/aymo.sqlite" />
+                 database = "db/aymo.sqlite" />
         </database>
     </environment>
   
