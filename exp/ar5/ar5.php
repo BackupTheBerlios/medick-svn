@@ -4,16 +4,13 @@
 
 set_include_path('libs');
 
-// medick base stuff
+// Medick base stuff
 include_once('ar5_base.php');
-// not yet ported classes
-include_once('ar5_sql.php');
-// medick trunk ported classes
+// Medick trunk ported classes
 include_once('context/configurator/XMLConfigurator.php');
-
-// driver
+// Driver
 include_once('active/record/drivers/sqlite/sqlite.php');
-
+// ActiveRecord
 include_once('active/record/Base.php');
 
 // ----------
@@ -24,7 +21,7 @@ class User extends ActiveRecord {
 
   public static function find() {
     $args= func_get_args();
-    return ActiveRecord::build(new SQLBuilder(__CLASS__, $args));
+    return ActiveRecord::build( new SQLBuilder( __CLASS__, $args ) );
   }
 
 }
