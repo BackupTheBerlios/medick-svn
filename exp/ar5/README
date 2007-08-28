@@ -5,7 +5,7 @@ It will also replace Creole from Medick.
 
 This Medick experiment is licensed under BSD Licence, see LICENSE for details.
 
-Status:
+Done:
   -> removed Creole
   -> SQLConnection -> database connection class
   -> SQLTableInfo -> metadata for database tables
@@ -21,8 +21,14 @@ Status:
   -> ActiveRecord: base find
 
 Todo:
+  -> port Logger
+  -> add MTimer to logs
+  -> SQL Limit/Offset
+  -> ActiveRecord: advanced find(see SQLBuilder comments)
   -> ActiveRecord: filters
   -> ActiveRecord: validators
+  -> ActiveRecord: find with array --> User::find( array(1,2,3,4), $clauses, $bindings )
+  -> SQL Transactions
   -> Driver: MySQL
   -> Driver: MySQLi
   -> Driver: PostgreSQL
@@ -31,5 +37,6 @@ Todo:
 Unit Tests:
   -> setup simpletest, a runner
   -> setup mocks for accessing data
+  -> test1. sqlbuilder with mock-sql
   -> active record tests.
 
