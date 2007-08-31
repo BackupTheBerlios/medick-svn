@@ -45,12 +45,14 @@ $user->email= 'oancea@yahoo.com';
 $user->password= md5('bau-bau');
 $user->save();
 
-
 $users= User::find();
 
 foreach($users as $user) {
   // var_dump($user);
   echo '[ ' . $user->id . ' ]> ' . $user->firstname . "\n";
 }
+
+$user= User::find(155);
+echo 'User: ' . $user->id . ' ' . $user->firstname . " " . $user->created_at . "\n";
 
 ?>

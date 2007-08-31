@@ -2,6 +2,13 @@
 // $Id$
 // This file is part of ActiveRecord5, a Medick (http://medick.locknet.ro) Experiment
 
+/**
+ * Drivers Authors notes:
+ *  -> remember to set lastQuery in exec
+ *
+ */
+
+
 abstract class SQLConnection extends Object {
 
   // @var array known drivers
@@ -10,7 +17,7 @@ abstract class SQLConnection extends Object {
   // @var resource
   protected $resource; 
 
-  // @var string the database
+  // @var string the database name
   protected $database;
 
   // @var string the last executed query
@@ -21,7 +28,7 @@ abstract class SQLConnection extends Object {
    *
    * @param string the sql string to execute
    *
-   * @return int
+   * @return int number of affected rows
    */ 
   public function executeUpdate( $sql ) {
     return $this->getUpdateCount( $this->exec( $sql ) );
@@ -46,16 +53,28 @@ abstract class SQLConnection extends Object {
     $this->database=$database;
   }
 
+  /**
+   * It gets the resource
+   *
+   * @return resource the PHP resource type
+   */ 
   public function getResource() { 
     return $this->resource;
   }
 
+  /**
+   * Gets the last *executed* sql query
+   *
+   * @return string
+   */ 
   public function getLastQuery() { 
     return $this->lastQuery;
   }
 
+  // return self
   abstract public function connect( Array $dsn= array() );
-
+  
+  // return void
   abstract public function close(); 
 
   // return int
@@ -78,6 +97,8 @@ abstract class SQLConnection extends Object {
   
   // return int
   abstract public function getUpdateCount( $rs=null );
-  
+
+  // retrun void
+  abstract public function applyLimit(&$sql, $limit, $offset);
 }
 

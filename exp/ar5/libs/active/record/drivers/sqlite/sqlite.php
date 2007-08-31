@@ -50,7 +50,7 @@ class SQLiteResultSet extends SQLResultSet {
 
   public function next() {
     $this->row= sqlite_fetch_array( $this->result, SQLITE_ASSOC );
-    return (bool)$this->row;
+    return $this->row ? $this : false;
   }
 
 }
@@ -84,7 +84,7 @@ class SQLiteTableInfo extends SQLTableInfo {
 
 class SQLitePreparedStatement extends SQLPreparedStatement {
 
-  protected function escape( $value ) {
+  public function escape( $value ) {
     return sqlite_escape_string( $value );
   }
 
@@ -103,10 +103,12 @@ class SQLiteConnection extends SQLConnection {
     } catch (Error $err) {
       throw new SQLException( $err->getMessage() );
     }
+    return $this;
   }
 
   public function exec( $sql ) {
-   $this->lastQuery= $sql;
+    $this->lastQuery= $sql;
+    echo "query: " . $sql . "\n";
     try {
       return sqlite_query( $this->resource, $this->lastQuery, SQLITE_ASSOC );
     } catch (Error $err) {
@@ -147,6 +149,14 @@ class SQLiteConnection extends SQLConnection {
 
   public function prepare( $sql ) {
     return new SQLitePreparedStatement($this, $sql);
+  }
+
+  public function applyLimit(&$sql, $limit, $offset) {
+    if ( $limit > 0 ) {
+      $sql .= " limit " . $limit . ($offset > 0 ? " offset " . $offset : "");
+    } elseif ( $offset > 0 ) {
+            $sql .= " limit -1 offset " . $offset;
+    }
   }
 
 }

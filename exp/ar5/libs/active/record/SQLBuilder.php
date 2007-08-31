@@ -5,16 +5,16 @@
 /**
  * It knows how to create an SQLCommand from an array
  *
- *
  * Arguments:
  *
  *  1. Simple, no argument:
- *    1.1 User::find(); // select * from users; // => RowsAggregate
+ *    1.1 User::find(); // select * from users; // => Rows
  *
  *  2. Simple, one Argument
- *    2.1. User::find( 'all' ); // => select * from users; // => RowsAggregate
+ *    2.1. User::find( 'all' ); // => select * from users; // => Rows
  *    2.2. User::find( 'first' ); // => select * from users limit 1; // => ActiveRecord
- *    2.3. User::find( 1 ); // => select * fro users where id=1; // => ActiveRecord
+ *    2.3. User::find( 155 ); // => select * from users where id=155; // => ActiveRecord
+ *    2.4. User::find( array(1,2,5) ); // => select * from users where id in (1,2,5) // => Rows
  *
  *  3. Clauses, one simple argument (see 2) and an array as the second one
  *    3.1. User::find( 'all', array( 'condition' => "name='Peter'" )); 
@@ -93,6 +93,9 @@ class SQLBuilder extends Object {
         if (isset($arguments[0]) && is_numeric($arguments[0])) {
             $this->clauses['condition']='id=?';
             $this->bindings[]=$arguments[0];
+            // $this->type= 'first';
+            // $this->limit= -1;
+            // $this->offset= -1;
         }
         if (isset($arguments[1])) {
             $this->clauses= $arguments[1];
@@ -184,9 +187,18 @@ class SQLBuilder extends Object {
 
     public function execute() {
       // 1. create a statement
-      $stmt= ActiveRecord::connection()->prepare( $this->compile()->getQueryString() );
-      // 2. one or more?
-      return $stmt->getAllRecords( $this->bindings, new ReflectionClass( $this->owner ) );
+      $stmt= ActiveRecord::connection()->prepare( $this->compile()->toSQL() );
+      $stmt->setLimit( $this->limit );
+      $stmt->setOffset( $this->offset );
+
+      // 2. reflect on owner
+      $clazz = new ReflectionClass( $this->owner );
+      // 3. return stuff.
+      if($this->type=='all') {
+        return $stmt->getAllRecords( $this->bindings, $clazz );
+      } else {
+        return $clazz->newInstance( $stmt->executeQuery( $this->bindings )->next()->getRow() );
+      }
     }
 
 }

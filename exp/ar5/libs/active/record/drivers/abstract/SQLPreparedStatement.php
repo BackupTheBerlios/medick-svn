@@ -6,6 +6,10 @@ abstract class SQLPreparedStatement extends Object {
 
   protected $conn, $sql;
 
+  protected $limit= -1;
+
+  protected $offset= -1;
+
   protected $positions=0;
   protected $positionsCount=0;
   protected $sql_cache='';
@@ -74,7 +78,8 @@ abstract class SQLPreparedStatement extends Object {
    * @return string New SQL statement with parameters replaced.
    * @throws SQLException - if param not bound.
    */
-  protected function replaceParams() {
+  protected function replaceParams(Array $params= array()) {
+    $this->setupParams($params);
     // early out if we still have the same query ready
     if ( $this->sql_cache_valid === true ) return $this->sql_cache;
     // Default behavior for this function is to behave in 'emulated' mode.    
@@ -111,8 +116,14 @@ abstract class SQLPreparedStatement extends Object {
   }
 
   // todo
-  public function set($idx, $value) {
-    var_dump(gettype($value));
+  public function set( $idx, $value ) {
+    $t= gettype($value);
+    switch($t) {
+      case "integer":
+        return $this->setInteger($idx, $value);
+      default:
+        throw new MedickException(__METHOD__ . " not implemented for type: ".$t." !");
+    }
   }
 
   public function populateValues(Array $fields) {
@@ -122,14 +133,24 @@ abstract class SQLPreparedStatement extends Object {
     }
   }
 
+  public function setLimit($limit) {
+    $this->limit= $limit;
+  }
+
+  public function setOffset($offset) {
+    $this->offset= $offset;
+  }
+
   public function executeQuery(Array $params= array()) {
-    $this->setupParams($params);
-    return $this->conn->execute( $this->replaceParams() );
+    $sql= $this->replaceParams($params);
+    if ($this->limit > 0 || $this->offset > 0) {
+      $this->conn->applyLimit($sql, $this->limit, $this->offset);
+    }
+    return $this->conn->execute( $sql );
   }
 
   public function getAllRecords(Array $params=array(), ReflectionClass $record) {
-    $this->setupParams( $params );
-    $result= $this->conn->exec( $this->replaceParams() );
+    $result= $this->conn->exec( $this->replaceParams($params) );
     return $this->getRecordsIterator( $result, $record );
 
   }
@@ -138,8 +159,7 @@ abstract class SQLPreparedStatement extends Object {
     return $this->conn->executeUpdate( $this->replaceParams() );
   }
 
-  public function close() {
-
+  public function close() {  
   }
 
   private function setupParams(Array $params=array()) {
@@ -150,7 +170,7 @@ abstract class SQLPreparedStatement extends Object {
     }
   }
 
-  abstract protected function escape( $value );
+  abstract public function escape( $value );
 
   abstract protected function getRecordsIterator( $results, ReflectionClass $class );
 

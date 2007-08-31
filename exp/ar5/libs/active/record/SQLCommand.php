@@ -9,7 +9,7 @@
  * <code>
  *  $command= SQLCommand::select()->from('news')->where('state=?')->orderBy('created_at');
  * // later, you can use a PreparedStatement to bind parameters.
- *  $stmt= $conn->prepareStatement($command->getQueryString());
+ *  $stmt= $conn->prepareStatement($command->toSQL());
  *  $stmt->setInt(1, News::PUBLISHED);
  *  $rs= $stmt->executeQuery();
  * </code>
@@ -67,7 +67,7 @@ class SQLCommand extends Object {
         return $this;
     }
     
-    public function getQueryString() {
+    public function toSQL() {
         $query= $this->command . " ";
         // if ($this->distinct) $query .= "distinct ";
         $query .= $this->appendColumns();
