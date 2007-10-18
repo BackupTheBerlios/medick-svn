@@ -231,7 +231,7 @@ class Creole {
 
         // may need to make this more complex if we add support
         // for 'dbsyntax'
-        $clazz = self::import(self::$driverMap[$type]);
+        $clazz = self::_import(self::$driverMap[$type]);
         $obj = new $clazz();
 
         if (!($obj instanceof Connection)) {
@@ -347,7 +347,7 @@ class Creole {
      * @throws SQLException - if class does not exist and cannot load file
      *                      - if after loading file class still does not exist
      */
-    public static function import($class) {
+    public static function _import($class) {
         if (!class_exists($class, false)) {
             $path = strtr($class, '.', DIRECTORY_SEPARATOR) . '.php';
             $ret = include_once($path);
