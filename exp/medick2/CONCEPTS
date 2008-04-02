@@ -1,0 +1,39 @@
+h2. Definitions
+  
+  MEDICK_PATH -> path to Medick Framework.
+  APP_PATH    -> path to boot.php file
+ 
+h2. TODOs
+
+  Create a Context Object with config and logger, inject this one then (25.03)
+
+h2. Structure
+
+APP_PATH
+  boot.php
+  app/
+  config/
+  log/
+  tmp/
+  script/
+  vendor/medick (MEDICK_PATH)
+  vendor/plugins
+
+h2. Medick Initialization
+
+  index.php 
+  | boot.php
+  |   Medick.prepare_application()
+  |     error_handler
+  |     load_frameworks
+  |       context
+  |       logger
+  |       plugins
+  |       action_controller
+  | $d= new Dispatcher (IConfigurator)
+  |   setup_logger
+  |   load_plugins
+  |
+  | $d->dispatch()
+  |   route_recognision
+
