@@ -625,7 +625,7 @@ abstract class ActiveRecord extends Object {
 
         // foreach($this->getAffectedFields() as $field) {
         foreach($this->fields as $field) {
-            if($field->isAffected()) $sql .= $field->getName() . ' = ?, ';
+            if($field->isAffected) $sql .= $field->getName() . ' = ?, ';
         }
         return substr($sql, 0, -2) . $sqlSnippet;
     }
