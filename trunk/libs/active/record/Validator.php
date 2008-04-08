@@ -207,6 +207,64 @@ class FormatOfValidator extends Validator {
 }
 
 /**
+ * Validates the inclusion of a given ActiveRecord Field in a given array
+ *
+ * Validation is done with php function in_array<br />
+ * Default error message is <b>%s not in [%s]!</b><br />
+ * Use Validator::message method to provide you custom error message<br />
+ *
+ * <code>
+ * $this->validates_inclusion_of('type')->in( array('sale', 'rent') );
+ * </code>
+ *
+ * Note:<br />
+ *
+ * In the above example, the value of type should be 1 or 0 in order to pass the validation, so array_keys are used<br />
+ * This type of validation works best with HTML select form elements.
+ * 
+ * @see Validator, ActiveRecord, Field, preg_match
+ * @package medick.active.record
+ * @subpackage validator
+ * @author Aurelian Oancea
+ */
+
+class InclusionOfValidator extends Validator {
+
+    /** @var string
+        default error message */
+    protected $message = '%s not in [%s]';
+    
+    /** @var array
+        the inclusion array */
+    private $in = array();
+
+    /**
+     * Assigns the array
+     *
+     * @param array
+     * @return InclusionOfValidator
+     */ 
+    public function in(Array $arr= array()) {
+      $this->in= $arr;
+      return $this;
+    }
+
+    /**
+     * Performs the validation
+     *
+     * Note: the array_keys of the inclusion array is used!
+     * @see Vlaidator::validates
+     * @return void
+     */ 
+    public function validate(Field $field) {
+      if(!in_array($field->getValue(), array_keys($this->in))) {
+        $field->addError(sprintf($this->message, $field->getFormattedName(), join($this->in, ',')));
+      }
+    }
+
+}
+
+/**
  * Validates the presence of a given ActiveRecord Field
  *
  * Validation is done by comparing Field value with empty string<br />
