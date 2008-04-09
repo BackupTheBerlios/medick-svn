@@ -129,12 +129,10 @@ class Injector extends Object {
      */
     protected function injectModel( $name ) {
         $location= $this->path['models'] . $name . '.php';
-        
-        $this->logger->debug( '[Medick] >> Loading Model `' . ucfirst( $name ) . '` from ' . 
-            str_replace( $this->config->getApplicationPath(), '${'. $this->config->getApplicationName() .'}', $location) );
-
-        $this->includeFile($location, ucfirst($name));
         $model_class_name= Inflector::camelize($name);
+        $this->logger->debug( '[Medick] >> Loading Model `' . $model_class_name . '` from ' . 
+            str_replace( $this->config->getApplicationPath(), '${'. $this->config->getApplicationName() .'}', $location) );
+        $this->includeFile($location, $model_class_name);
         try {
             $model_object = new ReflectionClass($model_class_name);
             // XXX @USE

@@ -118,8 +118,7 @@ class Inflector extends Object {
     }
 
     public static function tabelize($class) {
-        $s= strtolower(Inflector::pluralize($class));
-        return $s;
+        return Inflector::pluralize(strtolower(Inflector::underscore($class)));
     }
     
     // {{{ based on cake.
