@@ -127,7 +127,7 @@ class Inflector extends Object {
     }
 
     public static function underscore($word) {
-        $word = preg_replace('/([A-Z]+)([A-Z])/','\1_\2', $word);
+        $word = preg_replace('/([A-Z]+)([A-Z])/','\1_\2', self::camelize($word));
         return strtolower(preg_replace('/([a-z])([A-Z])/','\1_\2', $word));
     }
 

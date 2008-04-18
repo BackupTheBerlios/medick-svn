@@ -232,8 +232,6 @@ abstract class ActiveRecord extends Object {
             $this->validators[]= $validator;
             return $validator;
         }
-        // if (substr($method,0,7) == 'before_')return true; 
-        // if (substr($method,0,6) == 'after_')  return;
         if (substr($method,0,3) == 'get' && $this->hasField(strtolower(substr($method, 3)))) {
             return $this->getField(strtolower(substr($method, 3)));
         }
@@ -249,9 +247,17 @@ abstract class ActiveRecord extends Object {
      * @return string
      */
     public function toString() {
-        $string = ''; foreach ($this->getAffectedFields() as $field) {
-            $string .= "[ " . $field->type . " ] " . $field->getName() . " : " . $field->getValue() . "\n";
-        } return $string;
+      $string = sprintf("{\n%s [%s]-->\n", $this->getClassName(), $this->new_record()? "new":$this->id);
+      foreach ($this->getFields() as $field) {
+        $string .= sprintf( "\t %s --> (%s) %s%s affected? %s\n",
+            $field->getName(),
+            strtolower($field->type),
+            substr($field->getValue(), 0, 45),
+            strlen($field->getValue())>45?'...':'',
+            $field->isAffected? "true" : "false"
+          );
+      }
+      return $string . "}";
     }
 
     /** 
@@ -397,10 +403,12 @@ abstract class ActiveRecord extends Object {
     private function collect_errors( $force= false ) {
         if ($this->collected && !$force) return sizeof( $this->errors );
         $this->run_validators();
+        $l= Registry::get('__logger');
         foreach ($this->fields as $field) {
             if ($field->hasErrors()) {
                 foreach($field->getErrors() as $error) {
                     // $this->errors[$field->getName()][] = $error;
+                    $l->info( sprintf('err on `%s`: %s', $field->getName(), $error) );
                     $this->errors[] = $error;
                 }
                 // $this->errors= $field->getErrors();
@@ -432,6 +440,10 @@ abstract class ActiveRecord extends Object {
     protected function after_delete() { }
     // }}}
 
+    public function new_record() {
+      return $this->getPrimaryKey()->isAffected === false;
+    }
+
     // {{{ save
     /**
      * Save,
@@ -449,9 +461,9 @@ abstract class ActiveRecord extends Object {
      * </code>
      */
     public function save() {
+        Registry::get('__logger')->debug( $this->toString() );
         if ( !$this->before_save() || !$this->isValid()) return false;
-        if ( $this->getPrimaryKey()->isAffected ) $af= $this->update();
-        else $af= $this->insert();
+        $af = $this->new_record()? $this->insert() : $this->update();
         $this->after_save();
         return $af;
     }

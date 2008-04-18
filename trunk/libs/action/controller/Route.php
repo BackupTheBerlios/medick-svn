@@ -313,7 +313,10 @@ class Route extends Object {
                     {
                         return false;
                     } else {
-                        $this->merges[$component->getName()] = $this->ignoreExtension($parts[$it->key()]);
+                        // Registry::get('__logger')->debug( sprintf("Adding %s to merges", $component->getName()) );
+                        if($component->isDynamic()) {
+                           $this->merges[$component->getName()] = $this->ignoreExtension($parts[$it->key()]);
+                        }
                     }
                 }
             }
@@ -374,8 +377,10 @@ class Route extends Object {
      * @param Request request, the request on witch we want to merge
      */ 
     private function doMerge(Request $request) {
+        // $l= Registry::get('__logger');
         foreach ($this->merges as $name=>$value) {
             if (isset(Route::$old_merges[$name])) unset(Route::$old_merges[$name]);
+            // $l->debug( sprintf("Name: [%s]=[%s]", $name, $value) );
             $request->setParameter($name, $value);
         }
         // discard previously route parameters.

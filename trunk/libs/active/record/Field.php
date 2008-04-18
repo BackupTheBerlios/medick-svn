@@ -61,15 +61,15 @@ class Field extends Object {
 
     /** @var bool
         is primary key flag */
-    public $isPk = FALSE;
+    public $isPk = false;
 
     /** @var bool
         is foreign key flag */
-    public $isFk = FALSE;
+    public $isFk = false;
 
     /** @var bool
         if this field was affected by the current run */
-    public $isAffected = FALSE;
+    public $isAffected = false;
 
     /** @var string
         the foreign key table */
@@ -149,9 +149,17 @@ class Field extends Object {
      *
      * @param mixed value
      */
-    public function setValue($value) {
+    public function setValue( $value ) {
+
+        // if($this->value=="" && !$this->isPk) {
+        //   $this->isAffected= false;
+        // } else {
+        //   $this->isAffected= true;
+        // }
+        // $this->value= $value;
+
         $this->value = $value;
-        $this->isAffected= TRUE;
+        $this->isAffected= true;
     }
 
     /**

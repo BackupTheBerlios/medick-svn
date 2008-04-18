@@ -313,12 +313,17 @@ class ActionController extends Object {
         if(ob_get_length()) {
             ob_end_clean();
         }
-        $template = ActionView::factory('php');
-        $template->assign('error', $exception);
-        $template->assign('request', $request);
-        $template->assign('response', $response);
-        $template->assign('body', $body);
-        $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
+        if($request->isXhr()) {
+          $x=$exception->getTrace();
+          $text= sprintf("Got %s\nat line %d in %s\n%s", get_class($exception), @$x[0]['line'], @$x[0]['file'], $exception->getMessage());
+        } else {
+          $template = ActionView::factory('php');
+          $template->assign('error', $exception);
+          $template->assign('request', $request);
+          $template->assign('response', $response);
+          $template->assign('body', $body);
+          $text= $template->render_file(MEDICK_PATH . '/libs/action/controller/templates/error.phtml');
+        }
         $response->setStatus(HTTPResponse::SC_INTERNAL_SERVER_ERROR);
         $response->setContent($text);
         return $response;
@@ -600,7 +605,7 @@ class ActionController extends Object {
         
         $rewrite = strtolower($this->config->getWebContext()->rewrite);
         
-        $redirect_to= $this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root . '/';
+        $redirect_to= $this->config->getWebContext()->server_name . $this->config->getWebContext()->document_root;
         
         if ($rewrite == 'false' || $rewrite == 'off' || $rewrite == '0') {
             $redirect_to .= 'index.php/';
