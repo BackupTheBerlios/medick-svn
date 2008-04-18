@@ -1,5 +1,13 @@
 $Id$
 
+0.4.2 (18.Apr.2008)
+    - (fixed) underscore in table name
+    - (fixed) update records call to undefinied method isAffected
+    - added InclusionOfValidator
+    - added ActiveRecord::new_record method
+    - ActionController will render inline text on errors/exceptios if the request was mede with XHR
+    - Route will merge a parameter only if it's dynamic
+    
 0.4.1 (15.Aug.2007)
     - (fixed) URL::create when rewrite is off (still needs more testing)
     - (fixed) syntax error in HTML.JSON
