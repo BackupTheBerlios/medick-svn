@@ -2,20 +2,24 @@
 
 class FooPlugin extends Object implements IPlugin {
 
-  //
-  // array(
-  //    'name'   => $name,
-  //    'author' => $author,
-  //    'version'=> $version,
-  //    'url'    => $url
-  //  )
+  public $metadata;
 
-  public function __construct( IConfigurator $config, ILogger $logger ) {
-    // $logger->debugf( "%s loaded", $this->name() );
+  public function __construct( ContextManager $context ) {
+    $this->metadata= array(
+      'name'   => $this->class_name(),
+      'author' => 'Joe Doe',
+      'version'=> 0.1,
+      'url'    => 'http://example.com/foo_plugin'
+    );
+    $context->logger()->debugf( "[frw.plugin] Plugin %s loaded", $this->name() );
+  }
+ 
+  public function metadata() {
+    return $this->metadata;
   }
 
   public function name() {
-    return "FooPlugin";
+    return $this->metadata['name'];
   }
 
 }

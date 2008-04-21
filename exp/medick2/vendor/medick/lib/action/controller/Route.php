@@ -60,15 +60,28 @@ class Route extends Object {
   }
 
   private function merge(Request $request) {
-    $request->parameter('foo');
     foreach($this->merges as $name => $value) {
-      $request->parameter($name, $value);
+      $request->parameter( $name, $value );
     }
+  }
+
+  public function merges() {
+    return $this->merges;
+  }
+
+  private function defaults(Request $request) {
+
+  }
+
+  private function validate(Request $request) {
+
   }
 
   public function match( Request $request ) {
     $parts= $request->uri();
+    // no. of parts
     $p_size= count($parts);
+    // no. of segments
     $s_size= count($this->segments);
     // if we have more parameters passed, as expected.
     if ( $p_size > $s_size ) {
@@ -97,12 +110,12 @@ class Route extends Object {
     $this->merge( $request );
 
     // load default values
-    $this->defaults( $request );
+    // $this->defaults( $request );
 
     // validate 
-    $this->validate( $request );
+    // $this->validate( $request );
 
-    Medick::dump('huh?');
+    // Medick::dump('huh?');
     return true;
   }
 

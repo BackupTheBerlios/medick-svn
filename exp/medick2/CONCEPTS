@@ -16,7 +16,7 @@ APP_PATH
   log/
   tmp/
   script/
-  vendor/medick (MEDICK_PATH)
+  vendor/medick ( MEDICK_PATH )
   vendor/plugins
 
 h2. Medick Initialization
@@ -30,7 +30,7 @@ h2. Medick Initialization
   |       logger
   |       plugins
   |       action_controller
-  | $d= new Dispatcher (IConfigurator)
+  | $d= new Dispatcher ( IConfigurator )
   |   setup_logger
   |   load_plugins
   |

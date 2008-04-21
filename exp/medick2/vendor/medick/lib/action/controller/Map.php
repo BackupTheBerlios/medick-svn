@@ -1,16 +1,27 @@
 <?php
 
+/*
+ * A Map holds Route[]
+ */ 
 class Map extends Object {
 
-  private $config;
+  // current context
+  private $context;
 
+  // routes collection
   private $routes;
 
-  public function __construct( IConfigurator $config ) {
-    $this->config= $config;
+  /*
+   * Context is needed since routes are defined on it
+   */ 
+  public function __construct( ContextManager $context ) {
+    $this->context= $context;
     $this->routes= array();
   }
 
+  /*
+   * Finds a Route
+   */
   public function find_route(Request $request) {
     if(empty($this->routes)) $this->load_routes();
     foreach($this->routes as $route) {
@@ -20,11 +31,11 @@ class Map extends Object {
   }
 
   /*
-   * Collects routes from Configurator and then from plugins
+   * Collects routes from Context->Configurator and then from plugins
    */ 
   private function load_routes() {
     // 1. config.xml routes
-    foreach($this->config->routes() as $r) {
+    foreach($this->context->config()->routes() as $r) {
       $this->routes[]= new Route( (string)trim($r['value']) );
     }
     // 2. plugins routes

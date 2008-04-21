@@ -2,7 +2,7 @@
 
 class Object {
 
-  public function getClassName() {
+  public function class_name() {
     return get_class($this);
   }
 
