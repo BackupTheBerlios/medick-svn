@@ -3,6 +3,9 @@ $Id$
 medick/exp holds medick experiments
 
 Contents:
-    -> ActiveRecord5 (ar5/README) started 16.08.2007
+    -> medick2 a complete rewrite of the framework, see medick2/README, started 03.2008
+    -> ActiveRecord5 (ar5/README) started 16.08.2007, should be merged into medick2
+
+Past Experiments:
     -> validator API (validator_api.php) merged to trunk
 
