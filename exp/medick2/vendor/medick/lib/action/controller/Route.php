@@ -39,12 +39,13 @@ class Route extends Object {
     $this->definition   = $definition;
     $this->requirements = $requirements;
     $this->defaults     = $defaults;
-
     // internal structures
     $this->segments     = array();
     $this->merges       = array();
+  }
 
-    $this->load_segments();
+  public function toString() {
+    return $this->definition;
   }
 
   private function load_segments() {
@@ -60,9 +61,7 @@ class Route extends Object {
   }
 
   private function merge(Request $request) {
-    foreach($this->merges as $name => $value) {
-      $request->parameter( $name, $value );
-    }
+    $request->parameters( $this->merges );
   }
 
   public function merges() {
@@ -78,9 +77,11 @@ class Route extends Object {
   }
 
   public function match( Request $request ) {
-    $parts= $request->uri();
+    $parts = ($request->uri === null)? array(): explode('/', trim($request->uri,'/'));
     // no. of parts
     $p_size= count($parts);
+    // load segments,
+    $this->load_segments();
     // no. of segments
     $s_size= count($this->segments);
     // if we have more parameters passed, as expected.
@@ -133,8 +134,5 @@ class Route extends Object {
     return $part;
   }
 
-  public function create_controller() {
-
-  }
-
 }
+

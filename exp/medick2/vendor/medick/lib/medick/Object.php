@@ -7,7 +7,7 @@ class Object {
   }
 
   public function toString() {
-    
+    return $this->class_name();   
   }
 
   public function __toString() {

@@ -22,57 +22,14 @@ class Request extends Object {
      */
      protected function Request() { }
 
-    /**
-     * It gets a Request Parameter
-     * 
-     * @param mixed, param, the paremeter name
-     * @return the param value of NULL if this param was not passed with this Resuest
-     */
-    public function getParameter($param) {
-      die('DEPRECATED!!!!');
-        return $this->hasParameter($param) ? $this->params[$param] : null;
-    }
-
     public function parameter($name) {
-      $args= func_get_args();
-      if( sizeof($args) == 1 ) {
-        return isset($this->params[$name]) ? $this->params[$name] : null;
-      } else {
-        $this->params[$name]= $args[1];
-      }
-    }
-
-    /**
-     * Check if the current Request has the parameter with the specified name
-     * 
-     * @param string param_name the parameter name
-     * @return bool TRUE if the parameter_name is included in this request, FALSE otherwise
-     */
-    public function hasParameter($param_name) {
-      die('DEPRECATED!!!');
-        return isset($this->params[$param_name]);
-    }
-
-    /**
-     * It gets all the parameters of this Request
-     * 
-     * @return array this request parameters.
-     */
-    public function getParameters() {
-      die(__METHOD__ . " --> DEPRECATED!!!");
-        return $this->params;
-    }
-
-    /**
-     * It sets a Request Parameter
-     *
-     * @param string, name, the name of the param to set
-     * @param mixed, value, value of the param
-     * @return void
-     */
-    public function setParameter($name, $value) {
-      die(__METHOD__ . " --> DEPRECATED!!!");
-        $this->params[$name] = $value;
+      return isset($this->params[$name]) ? $this->params[$name] : null;
+      // $args= func_get_args();
+      // if( sizeof($args) == 1 ) {
+      //   return isset($this->params[$name]) ? $this->params[$name] : null;
+      // } else {
+      //   $this->params[$name]= $args[1];
+      // }
     }
 
     /**
@@ -83,7 +40,7 @@ class Request extends Object {
      */ 
     public function parameters( Array $parameters=array() ) {
         foreach ($parameters as $name=>$value) {
-            $this->parameter($name, $value);
+            $this->params[$name]= $value;
         }
     }
     

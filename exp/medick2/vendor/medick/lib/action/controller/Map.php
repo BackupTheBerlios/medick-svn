@@ -23,9 +23,13 @@ class Map extends Object {
    * Finds a Route
    */
   public function find_route(Request $request) {
+    $this->context->logger()->debug( '[frw.action_controller] Processing Request ' . $request );
     if(empty($this->routes)) $this->load_routes();
     foreach($this->routes as $route) {
-      if($route->match($request)) return $route;
+      if($route->match($request)) {
+        $this->context->logger()->debug( '[frw.action_controller] Matched to Route ' . $route );
+        return $route;
+      }
     }
     throw new Exception( "Couldn't find a route to match your request." );
   }

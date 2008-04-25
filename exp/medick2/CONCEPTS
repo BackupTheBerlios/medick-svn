@@ -1,3 +1,9 @@
+h2. Style
+
+* no more get/set: use a public property if needed!
+* no camelCase but under_score
+
+
 h2. Definitions
   
   MEDICK_PATH -> path to Medick Framework.
