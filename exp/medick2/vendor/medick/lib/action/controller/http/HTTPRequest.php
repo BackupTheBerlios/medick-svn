@@ -27,7 +27,7 @@ class HTTPRequest extends Request {
 
   /** @var string
       path_info, /foo/bar.html */
-  public $uri= null;
+  public $uri= '/';
 
   /** @var array
       the list of headers associated with this HTTPRequest */
@@ -63,9 +63,10 @@ class HTTPRequest extends Request {
       $this->uri= $_SERVER['ORIG_PATH_INFO']; 
     } else {
       // fallback to REQUEST_URI
-      $this->uri= substr($_SERVER['REQUEST_URI'],7);
+      $this->uri= $_SERVER['REQUEST_URI'];
+      // $this->uri= substr($_SERVER['REQUEST_URI'],7);
     }
-
+    // setup session and headers
     $this->session = new HTTPSession();
     $this->headers = HTTPRequest::getAllHeaders();
   }

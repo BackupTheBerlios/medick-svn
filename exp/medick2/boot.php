@@ -23,7 +23,7 @@ error_reporting( E_ALL | E_STRICT | E_RECOVERABLE_ERROR );
 
 // php 5.1 strict sdandards.
 if (version_compare(PHP_VERSION, '5.1.0') > 0) {
-    date_default_timezone_set('Europe/Bucharest');
+    date_default_timezone_set('Europe/Madrid');
 }
 
 // load core classes

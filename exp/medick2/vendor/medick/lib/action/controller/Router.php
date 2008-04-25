@@ -1,5 +1,7 @@
 <?php
 
+// $Id: $
+
 class Router extends Object {
 
   // current Route
@@ -24,8 +26,12 @@ class Router extends Object {
    * Should return a controller instance
    */ 
   public static function recognize(Request $request, ContextManager $context ) {
-    $map= new Map( $context );
-    $router= new Router( $map->find_route( $request ), $context);
+    // create a Map of loaded Routes
+    // $map= new Map( $context );
+    // save it to the current context
+    // $context->map( $map );
+
+    $router= new Router( $context->map()->find_route( $request ), $context);
     return $router->create_controller( $request );
     
     // $route= $map->find_route( $request );

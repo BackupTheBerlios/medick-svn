@@ -1,5 +1,7 @@
 <?php
 
+// $Id: $
+
 class FooPlugin extends Object implements IPlugin {
 
   public $metadata;
@@ -11,7 +13,7 @@ class FooPlugin extends Object implements IPlugin {
       'version'=> 0.1,
       'url'    => 'http://example.com/foo_plugin'
     );
-    $context->logger()->debugf( "[frw.plugin] Plugin %s loaded", $this->name() );
+    $context->logger()->debugf( "Plugin %s loaded", $this->name() );
   }
  
   public function metadata() {

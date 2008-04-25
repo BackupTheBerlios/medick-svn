@@ -33,7 +33,7 @@ class Medick extends Object {
   }
 
   public static function version() {
-    return '2.0.4';
+    return '2.0.5';
   }
 
   public static function dump($o) {

@@ -4,9 +4,6 @@
 // $Id: $
 //
 
-/*
- * 
- */ 
 class Dispatcher extends Object {
 
   private $context;
@@ -19,17 +16,18 @@ class Dispatcher extends Object {
     // context
     $this->context= $context;
 
-    // ready to log stuff
-    $this->context->logger()->debugf( '[frw.action_controller] Medick v.$%s ready to dispatch!', Medick::version() );
-
     // plugins
     $this->plugins= Plugins::discover( $this->context );
 
   }
 
   public function dispatch() {
-    $request = new HTTPRequest();
+    $request = (php_sapi_name()=='cli')? new CLIRequest() : new HTTPRequest();
     $response= new HTTPResponse();
+
+    $this->context->logger()->debug( 
+      sprintf('medick v.$%s ready to dispatch (took %.3f sec. to boot)', Medick::version(), $this->context->timer()->tick()));
+
     try {
       Router::recognize( $request, $this->context );
       // ->process( $request, $response )->dump();

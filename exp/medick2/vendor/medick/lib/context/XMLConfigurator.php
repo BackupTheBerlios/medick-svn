@@ -17,7 +17,7 @@ class XMLConfigurator extends AbstractConfigurator {
     $this->sxe= simplexml_load_file($file);
     // find env in doc.
     foreach($this->sxe->environments->environment as $e) {
-      if($e->name == $e) {
+      if($e['name'] == $environment) {
         $this->env= $e;
         break;
       }
@@ -74,9 +74,20 @@ class XMLConfigurator extends AbstractConfigurator {
     else return $value;
   }
 
-
   public function routes() {
     return $this->sxe->routes->route;
+  }
+
+  // here, route is a xml node
+  //
+  // should return array('segment_name'=>'segment_value', 'segment_name'=>'segment_value')
+  //
+  public function route_defaults($route) {
+    $defaults= array();
+    foreach($route->default as $def) {
+      $defaults[(string)trim($def['name'])]= (string)trim($def['value']);
+    }
+    return $defaults;
   }
 
   // referes to a env. logger outputters

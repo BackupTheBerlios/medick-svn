@@ -32,20 +32,34 @@ class Route extends Object {
 
   private $merges;
 
-  private static $old_merges   = array();
-  private static $old_defaults = array();
+  private $id;
 
-  public function __construct( $definition, Array $requirements= array(), Array $defaults= array() ) {
+  private $name;
+
+  // private static $old_merges   = array();
+  // private static $old_defaults = array();
+
+  // $name -> route name
+  // $definition -> route signature :controller/foo/:id.html
+  // $defaults -> default values
+  // $requirements -> a route requirement
+  public function __construct( $name, $definition, Array $defaults= array(), Array $requirements= array() ) {
+    $this->name = $name;
     $this->definition   = $definition;
     $this->requirements = $requirements;
     $this->defaults     = $defaults;
+    $this->id           = md5($this->definition);
     // internal structures
     $this->segments     = array();
     $this->merges       = array();
   }
 
+  public function name() {
+    return $this->name;
+  }
+
   public function toString() {
-    return $this->definition;
+    return sprintf('(%s:%s)-> %s', $this->name, $this->id, $this->definition);
   }
 
   private function load_segments() {
@@ -69,11 +83,13 @@ class Route extends Object {
   }
 
   private function defaults(Request $request) {
-
+    $request->parameters($this->defaults);
   }
 
-  private function validate(Request $request) {
-
+  // a Route is valid if it has a controller/action + all the requirements are meet
+  // xxx. add requirements
+  private function validate( Request $request ) {
+    return !($request->parameter('controller') === null) || !($request->parameter('action') === null);
   }
 
   public function match( Request $request ) {
@@ -111,13 +127,10 @@ class Route extends Object {
     $this->merge( $request );
 
     // load default values
-    // $this->defaults( $request );
+    $this->defaults( $request );
 
     // validate 
-    // $this->validate( $request );
-
-    // Medick::dump('huh?');
-    return true;
+    return $this->validate( $request );
   }
 
   //

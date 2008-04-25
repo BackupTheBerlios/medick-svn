@@ -1,5 +1,7 @@
 <?php
 
+// $Id: $
+
 class Plugins extends Object {
 
   static private $registry= array();
@@ -38,8 +40,7 @@ class Plugins extends Object {
       if( $plugin_path->isDir() && is_file($plugin_load_file) && require($plugin_load_file)) {
         $class= Plugins::plugin_class_name($plugin_path);
         Plugins::add( new $class($context) );
-        $context->logger()->debugf( 
-          "[frw.plugin] %s --> %s", str_replace(MEDICK_PATH, '${'.$context->config()->application_name().'}', $plugin_load_file), $class );
+        $context->logger()->debugf('%s --> %s', str_replace(MEDICK_PATH, '${'.$context->config()->application_name().'}', $plugin_load_file), $class );
       }
     }
 

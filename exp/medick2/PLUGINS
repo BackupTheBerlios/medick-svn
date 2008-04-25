@@ -10,7 +10,7 @@ h3. Plugin Framework
 
 * A plugin is a folder with php files and other resources located in:
   -> vendor/plugins
-  -> user specified locations in config.xml file
+  -> user specified location in config.xml file
 
 * Eg. Foo is a Medick plugin if the folder foo exists and in has a init.php file on it.
 
@@ -20,9 +20,7 @@ h3. init.php file
 * one can use a init.php similar to ones provided by medick frameworks
 * one can use and alter include_path settings
 * one can require/include all the files
-* available objects/variables:
-  -> $logger, current Logger instance
-  -> $config, current Configurator instance
+* $context is available in init.php
 
 h3. Options
 

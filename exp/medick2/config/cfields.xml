@@ -16,23 +16,37 @@
   </plugins>
 
   <routes>
+    <route name="__root"    value="/">
+      <default name="controller" value="foo" />
+      <default name="action"     value="bar" />
+    </route>
     <route name="__default" value=":controller/:action/:id" />
   </routes>
 
   <environments>
     <environment name="localhost">
-      
       <logger>
         <formatter>default</formatter>
         <outputters>
           <!-- <outputter name="stdout" level="0" /> -->
           <outputter name="file" level="0">
-            <property name="path" value="/W/Devel/medick/exp/medick2/log/localhost.log" />
+            <property name="path" value="/home/aurelian/Code/medick/exp/medick2/log/localhost.log" />
           </outputter>
         </outputters>
       </logger> <!-- /logger -->
-
     </environment>
+
+    <environment name="test">
+      <logger>
+        <formatter>default</formatter>
+        <outputters>
+          <outputter name="stdout" level="0" />
+          <!-- <outputter name="file" level="0">
+            <property name="path" value="/home/aurelian/Code/medick/exp/medick2/log/test.log" />
+          </outputter>-->
+        </outputters>
+      </logger> <!-- /logger -->
+    </environment> <!-- / test env. -->
   </environments>
 
 </application>

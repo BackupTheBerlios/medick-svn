@@ -23,15 +23,16 @@ class Map extends Object {
    * Finds a Route
    */
   public function find_route(Request $request) {
-    $this->context->logger()->debug( '[frw.action_controller] Processing Request ' . $request );
+    $this->context->logger()->debug( 'processing Request ' . $request );
     if(empty($this->routes)) $this->load_routes();
+
     foreach($this->routes as $route) {
       if($route->match($request)) {
-        $this->context->logger()->debug( '[frw.action_controller] Matched to Route ' . $route );
+        $this->context->logger()->debug( 'matched to Route ' . $route );
         return $route;
       }
     }
-    throw new Exception( "Couldn't find a route to match your request." );
+    throw new Exception(sprintf('Couldn\'t find a route to match your request: %s', $request));
   }
 
   /*
@@ -39,13 +40,14 @@ class Map extends Object {
    */ 
   private function load_routes() {
     // 1. config.xml routes
-    foreach($this->context->config()->routes() as $r) {
-      $this->routes[]= new Route( (string)trim($r['value']) );
+    $config_routes= $this->context->config()->routes();
+    foreach( $config_routes as $r ) {
+      // xxx. requirements
+      $this->routes[]= new Route( (string)trim($r['name']), (string)trim($r['value']), $this->context->config()->route_defaults($r) );
     }
     // 2. plugins routes
 
-    // XXX:
-    //  throw exception if 0 routes? or load the __default always?
+    // xxx: throw exception if 0 routes
   }
 
 }
