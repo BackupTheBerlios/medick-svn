@@ -75,7 +75,7 @@ class Route extends Object {
   }
 
   private function merge(Request $request) {
-    $request->parameters( $this->merges );
+    if( sizeof($this->merges) > 0 ) $request->parameters( $this->merges );
   }
 
   public function merges() {
@@ -83,7 +83,7 @@ class Route extends Object {
   }
 
   private function defaults(Request $request) {
-    $request->parameters($this->defaults);
+    if( sizeof($this->defaults) > 0 ) $request->parameters($this->defaults);
   }
 
   // a Route is valid if it has a controller/action + all the requirements are meet
@@ -118,8 +118,9 @@ class Route extends Object {
         elseif( isset( $this->requirements[$segment->name()] )  &&
           !preg_match( $this->requirements[$segment->name()], $part )
         ) return false;
-        // ready to merge then
-        else $this->merges[$segment->name()] = $this->strip_ext($part);
+        // ready to merge then, but only if segment is not empty, xxx. identify from where we got an empty segment eg. /
+        elseif(trim($segment->name())!='') $this->merges[$segment->name()] = $this->strip_ext($part);
+        // nothing more
       }
     }
     
