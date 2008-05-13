@@ -43,11 +43,15 @@ class Map extends Object {
     $config_routes= $this->context->config()->routes();
     foreach( $config_routes as $r ) {
       // xxx. requirements
-      $this->routes[]= new Route( (string)trim($r['name']), (string)trim($r['value']), $this->context->config()->route_defaults($r) );
+      $this->routes[]= new Route( 
+        (string)trim($r['name']),  // name
+        (string)trim($r['value']), // definition
+        $this->context->config()->route_defaults($r) // array with defaults
+      );
     }
     // 2. plugins routes
 
-    // xxx: throw exception if 0 routes
+    // xxx: throw exception if 0 routes?
   }
 
 }

@@ -23,4 +23,12 @@ abstract class AbstractConfigurator extends Object implements IConfigurator {
     $this->environment= $environment;
   }
 
+  public function file() {
+    return $this->file;
+  }
+
+  public function environment() {
+    return $this->environment;
+  }
+
 }

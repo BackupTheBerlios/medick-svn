@@ -25,7 +25,7 @@ RewriteEngine on
 #RewriteRule   ^([^i][^n][^d][^e][^x].*)$  index.php/$1/ [NS,L]
 
 # Set 2.
-RewriteBase /medick2
+RewriteBase /
 
 # Send requests without parameters to index.php
 # -- disabled since we want to show index.html

@@ -25,9 +25,11 @@ class Plugins extends Object {
 
   // should return IPlugin[]
   public static function discover( ContextManager $context ) {
-
-    if($context->config()->property( 'plugin.autodiscovery') === false) return;
     
+    if($context->config()->property( 'plugin.autodiscovery' ) === false) return;
+
+    $context->logger()->debug( strtolower(__METHOD__) . ' [hint: set `plugin.autodiscovery` to false to disable plugins]');
+
     //
     // XXX.
     // -> plugin.path

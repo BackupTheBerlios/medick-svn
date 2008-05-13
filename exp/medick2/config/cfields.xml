@@ -4,10 +4,8 @@
 
   <properties>
     <property name="load.paths" value="" />
-
     <property name="plugin.autodiscovery" value="true" />
     <property name="plugin.path"          value="vendor/plugins" />
-
   </properties>
 
   <plugins>

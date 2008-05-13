@@ -29,18 +29,21 @@ class ContextManager extends Object {
   // the config parser/loaded, to have access to configuration options
   private $config;
 
-  // a Map, you get access to Routes like this
+  // a Map, you get access to Routes using this
   private $map;
 
   private $timer;
 
-  public function __construct( Iconfigurator $config ) {
+  private function __construct( Iconfigurator $config ) {
     $this->config= $config;
     // configure the logger
     $this->logger= new Logger();
     $this->logger->setFormatter( Logger::formatter($this->config) );
     $this->logger->attachOutputters( Logger::outputters($this->config) );
-    // create a Map
+    // ready?
+    $this->logger->debug("\t[".time() . "] `" . $this->config->environment() . "` env. from " . 
+      str_replace(APP_PATH, '${'.$this->config->application_name().'}/', $this->config->file()) . " loaded for \${ip}");
+    // create a Map for routes.
     $this->map= new Map( $this );
   }
 

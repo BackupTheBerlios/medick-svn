@@ -29,8 +29,8 @@ class Dispatcher extends Object {
       sprintf('medick v.$%s ready to dispatch (took %.3f sec. to boot)', Medick::version(), $this->context->timer()->tick()));
 
     try {
-      Router::recognize( $request, $this->context );
-      // ->process( $request, $response )->dump();
+      Router::recognize( $request, $this->context )->process( $request, $response );
+      // ->dump();
     } catch(Exception $ex) {
       echo sprintf('Exception: %s with message: %s', get_class($ex), $ex->getMessage());
     }

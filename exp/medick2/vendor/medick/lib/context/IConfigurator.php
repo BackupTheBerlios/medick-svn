@@ -4,6 +4,10 @@ interface IConfigurator {
 
   public function __construct($file, $environment);
 
+  public function environment();
+
+  public function file();
+
   // return Array
   public function logger_outputters();
 

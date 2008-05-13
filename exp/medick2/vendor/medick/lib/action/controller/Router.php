@@ -18,7 +18,37 @@ class Router extends Object {
   // should return a Controller Instance
   public function create_controller( $request ) {
 
-    Medick::dump( $request );
+    // xxx: should call plugins special __before_controller methods?
+
+    // XXX: should load additional paths from plugins?
+
+    // 1. class name -> request->parameter('controller') . 'Controller'
+    // 2. file name  -> request->parameter('controller') . '_controller.php'
+
+    $path= APP_PATH; // -> this is going to be a list of paths
+
+    $controller_file = $path . '/app/controllers/' . $request->parameter('controller') . '_controller.php';
+    $controller_class= ucfirst($request->parameter('controller')) . 'Controller';
+
+    if( false === file_exists($controller_file) ) {
+      throw new Exception('Cannot load `'.$controller_file.'`, no such file or directory!'); // -> this is going to be replaced with continue in loop
+    }
+
+    require( $controller_file );
+
+    if( false === class_exists($controller_class) ) {
+      throw new Exception('Cannot use `'.$controller_class.'`, no such class!'); // -> this is going to be replaced with continue in loop
+    }
+
+    $rclass= new ReflectionClass($controller_class);
+
+    if( false === ($rclass->getParentClass() || $rclass->getParentClass() == 'ApplicationController' || $rclass->getParentClass() == 'ActionController')) {
+      throw new Exception('Wrong defintion of class: ' . $controller_class);
+    }
+
+    $this->context->logger()->debug(str_replace(APP_PATH, '${'.$this->context->config()->application_name().'}', $controller_file) . ' --> ' . $controller_class);
+
+    return $rclass->newInstance( $this->context );
 
   }
 
