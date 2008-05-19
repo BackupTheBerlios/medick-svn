@@ -1,13 +1,9 @@
 <?php
 
+// $Id: $
+
+// load the framework
 include_once('boot.php');
-
-// complete path to cFields.xml
-// and environment to load
-$d= new Dispatcher(
-          ContextManager::load(
-            '/home/aurelian/Code/medick/exp/medick2/config/cfields.xml',
-            'test')
-        );
+// dispatch with complete path to cFields.xml and the environment to load
+$d= new Dispatcher( ContextManager::load('config/cfields.xml','test') );
 $d->dispatch();
-

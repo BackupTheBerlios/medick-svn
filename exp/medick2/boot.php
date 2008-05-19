@@ -26,7 +26,7 @@ if (version_compare(PHP_VERSION, '5.1.0') > 0) {
     date_default_timezone_set('Europe/Madrid');
 }
 
-// load core classes
+// load core
 require 'medick/Medick.php';
 
 Medick::prepare_application();

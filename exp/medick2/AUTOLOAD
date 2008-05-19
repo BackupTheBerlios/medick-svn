@@ -2,7 +2,7 @@ h2. Autoload
 
 h3. About
 
-* Mecanism nou de "incarcare" a claselor in Medick 0.5.
+* Mecanism nou de "incarcare" a claselor in Medick 2.
 * Se realizeaza prin divizarea Medick in framework-uri.
 * Fiecare Framework contine un fisier init.php prin care se adauga o functie __autoload pentru descoperirea automata a claselor necesare.
 
@@ -40,5 +40,7 @@ h4. core classes:
 h4. frameworks:
 * context
 * logger
+* plugin
 * action_controller
+* action_view
 
