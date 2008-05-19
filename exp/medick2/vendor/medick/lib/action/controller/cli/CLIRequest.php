@@ -1,6 +1,14 @@
 <?php
 
-// $Id: $
+// $Id$
+
+class CLISession extends Object {
+  
+  public function start() {
+
+  }
+
+}
 
 //
 // xxx. should be able to handle:
@@ -13,8 +21,16 @@ class CLIRequest extends Request {
 
   public $uri= "";
 
+  private $session= null;
+
   public function __construct() {
     $this->uri= '/' . join('/', array_slice($_SERVER['argv'], 1, $_SERVER['argc']));
+
+    $this->session= new CLISession();
+  }
+
+  public function session() {
+    return $this->session;
   }
 
   public function toString() {

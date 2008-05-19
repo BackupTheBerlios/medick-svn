@@ -1,6 +1,6 @@
 <?php
 
-// $Id: $
+// $Id$
 
 class Plugins extends Object {
 
@@ -14,29 +14,14 @@ class Plugins extends Object {
     Plugins::$registry[$plugin->name()]= $plugin;
   }
 
-  //
-  // XXX: 
-  // -> foo_bar should be FooBar
-  //
-  private static function plugin_class_name(DirectoryIterator $plugin_path) {
-    $plugin_name= $plugin_path->getFilename();
-    return  ucfirst($plugin_name) . 'Plugin';
-  }
-
   // should return IPlugin[]
   public static function discover( ContextManager $context ) {
-    
+    // XXX: try to load plugins from <plugins> section
     if($context->config()->property( 'plugin.autodiscovery' ) === false) return;
 
     $context->logger()->debug( strtolower(__METHOD__) . ' [hint: set `plugin.autodiscovery` to false to disable plugins]');
 
-    //
-    // XXX.
-    // -> plugin.path
-    // -> multiple paths?
-    // -> <plugin> section
-    //
-
+    // XXX: plugins.path then fail to default
     foreach(new DirectoryIterator( MEDICK_PATH . '/../../vendor/plugins' ) as $plugin_path) {
       $plugin_load_file = $plugin_path->getPathname() . DIRECTORY_SEPARATOR . 'init.php';
       if( $plugin_path->isDir() && is_file($plugin_load_file) && require($plugin_load_file)) {
@@ -46,6 +31,12 @@ class Plugins extends Object {
       }
     }
 
+  }
+
+  // XXX: foo_bar should be FooBar
+  private static function plugin_class_name(DirectoryIterator $plugin_path) {
+    $plugin_name= $plugin_path->getFilename();
+    return ucfirst($plugin_name) . 'Plugin';
   }
 
 }

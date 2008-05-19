@@ -65,6 +65,10 @@ class XMLConfigurator extends AbstractConfigurator {
     foreach($this->sxe->properties->property as $prop) {
       $this->properties['__global_env'][(string)trim($prop['name'])]= $this->parse_prop_value($prop['value']);
     }
+    if( 0 == sizeof($this->env->properties) ) return;
+    foreach($this->env->properties->property as $prop) {
+      $this->properties[(string)$this->env['name']][(string)trim($prop['name'])]= $this->parse_prop_value($prop['value']);
+    }
   }
 
   private function parse_prop_value($val) {

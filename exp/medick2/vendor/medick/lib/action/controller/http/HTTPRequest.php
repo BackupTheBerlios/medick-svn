@@ -50,10 +50,14 @@ class HTTPRequest extends Request {
     }
     // do the undoable
     unset($_REQUEST); unset($_GET); unset($_POST);
+
     // setup requestUri
     if (array_key_exists('PATH_INFO', $_SERVER) && $_SERVER['PATH_INFO'] != '' ) {
       $this->uri= $_SERVER['PATH_INFO'];
+    } else {
+      $this->uri= '/';
     }
+    /*
     // this is for php as cgi where PATH_INFO is not available
     elseif (array_key_exists('ORIG_PATH_INFO', $_SERVER)) {
       // todo: it should be also tested for non root locations eg:
@@ -64,11 +68,12 @@ class HTTPRequest extends Request {
     } else {
       // fallback to REQUEST_URI
       $this->uri= $_SERVER['REQUEST_URI'];
-      // $this->uri= substr($_SERVER['REQUEST_URI'],7);
+      // $this->uri= substr($_SERVER['REQUEST_URI'], 8);
     }
+    */
     // setup session and headers
     $this->session = new HTTPSession();
-    $this->headers = HTTPRequest::getAllHeaders();
+    $this->headers = getallheaders();
   }
 
   public function toString() {
@@ -163,8 +168,8 @@ class HTTPRequest extends Request {
    *
    * @return array
    */
-  protected static function getAllHeaders() {
-    return getallheaders();
-  }
+  // protected static function getAllHeaders() {
+  //   return getallheaders();
+  // }
 }
 

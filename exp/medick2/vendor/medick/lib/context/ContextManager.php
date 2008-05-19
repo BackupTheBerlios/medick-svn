@@ -1,18 +1,20 @@
 <?php
 
 class Timer extends Object {
-  
+
+  private $init;
   private $start;
   private $end;
 
-  public function __construct($start) {
+  public function __construct( $start ) {
+    $this->init = $start;
     $this->start= $start;
     $this->end= null;
   }
 
-  public function tick() {
+  public function tick($from_init= false) {
     $this->end= microtime(true);
-    $r= (float)$this->end - (float)$this->start;
+    $r= $from_init? (float)$this->end-(float)$this->init : (float)$this->end - (float)$this->start;
     $this->start= $this->end;
     return $r;
   }
@@ -29,20 +31,22 @@ class ContextManager extends Object {
   // the config parser/loaded, to have access to configuration options
   private $config;
 
-  // a Map, you get access to Routes using this
+  // a Map, you get access to Routes using this!
   private $map;
-
+  
+  // a Timer to benchmark critical points
   private $timer;
 
-  private function __construct( Iconfigurator $config ) {
+  private function __construct( IConfigurator $config ) {
     $this->config= $config;
     // configure the logger
     $this->logger= new Logger();
     $this->logger->setFormatter( Logger::formatter($this->config) );
     $this->logger->attachOutputters( Logger::outputters($this->config) );
     // ready?
+    $ip= (array_key_exists('REMOTE_ADDR',$_SERVER))? $_SERVER['REMOTE_ADDR']: '0.0.0.0';
     $this->logger->debug("\t[".time() . "] `" . $this->config->environment() . "` env. from " . 
-      str_replace(APP_PATH, '${'.$this->config->application_name().'}/', $this->config->file()) . " loaded for \${ip}");
+      str_replace(APP_PATH, '${'.$this->config->application_name().'}/', $this->config->file()) . " loaded for `${ip}`");
     // create a Map for routes.
     $this->map= new Map( $this );
   }
