@@ -1,9 +1,5 @@
 <?php
 
-class ApplicationController extends ActionController {
-
-}
-
 class FooController extends ApplicationController {
 
   public function bar($arg1, $arg2, $arg3='bar') {
