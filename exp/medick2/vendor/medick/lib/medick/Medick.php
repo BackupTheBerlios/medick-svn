@@ -21,9 +21,7 @@ class Medick extends Object {
     Medick::load_framework('plugin');
     Medick::load_framework('action_controller');
     Medick::load_framework('action_view');
-
-    // Medick::load_framework('active_record');
-
+    Medick::load_framework('active_record');
   }
 
   //
@@ -49,27 +47,12 @@ class Medick extends Object {
     Medick::$frameworks[]= $name;
   }
 
-  // XXX: to be removed
-  public static function reload_framework($name) {
-    if(self::framework_loaded($name))
-      spl_autoload_register('__'.$name.'_autoload');
-    else
-      self::load_framework($name);
-  }
-
-  // XXX: to be removed
-  public static function unload_framework($name) {
-    if(self::framework_loaded($name)) 
-      spl_autoload_unregister('__'.$name.'_autoload');
-  }
-
-  // XXX: to be removed
   public static function framework_loaded($name) {
     return isset(Medick::$frameworks[$name]);
   }
 
   public static function version() {
-    return '2.0.11';
+    return '2.0.12';
   }
 
   public static function dump($o) {

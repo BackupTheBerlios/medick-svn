@@ -9,12 +9,7 @@ class Dispatcher extends Object {
   private $plugins;
 
   public function __construct(ContextManager $context) {
-    // context
     $this->context= $context;
-
-    // plugins
-    // $this->plugins= Plugins::discover( $this->context );
-
   }
 
   public function dispatch() {

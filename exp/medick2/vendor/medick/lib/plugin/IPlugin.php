@@ -1,5 +1,7 @@
 <?php
 
+// $Id$
+
 interface IPlugin {
 
   public function __construct( ContextManager $context );

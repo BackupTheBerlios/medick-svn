@@ -61,9 +61,10 @@ class Router extends Object {
     ) {
       throw new Exception('Expected `' . $controller_class . '` to extend ApplicationController(recommended) or ActionControler');
     }
-
-    $this->context->logger()->debug(str_replace(APP_PATH, 
-      '${'.$this->context->config()->application_name().'}', $controller_file) . ' --> ' . $controller_class
+    
+    // XXX: the $path
+    $this->context->logger()->debug(str_replace($path, 
+      '${'.$this->context->config()->application_name().'}/', $controller_file) . ' --> ' . $controller_class
     );
 
     return $rclass->newInstance( $this->context );

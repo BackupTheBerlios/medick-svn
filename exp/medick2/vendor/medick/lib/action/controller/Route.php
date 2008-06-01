@@ -1,6 +1,6 @@
 <?php
 
-// $Id: $
+// $Id$
 
 // XXX: Route Segment
 class __Segment extends Object {
@@ -58,6 +58,10 @@ class Route extends Object {
 
   public function name() {
     return $this->name;
+  }
+
+  public function definition() {
+    return $this->definition;
   }
 
   public function toString() {

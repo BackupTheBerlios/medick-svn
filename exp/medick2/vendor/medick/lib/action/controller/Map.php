@@ -19,6 +19,10 @@ class Map extends Object {
     $this->routes= array();
   }
 
+  public function routes() {
+    return $this->routes;
+  }
+
   /*
    * Finds a Route
    */

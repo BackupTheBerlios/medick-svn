@@ -1,6 +1,6 @@
 <?php
 
-// $Id: $
+// $Id$
 
 class ChainError extends Exception {  }
 
@@ -89,9 +89,11 @@ class ActionController extends Object {
   // ---
 
   protected function render($template_location= null, $status= null) {
+
     if(null === $template_location) {
       $template_location= $this->request->parameter('controller') . DIRECTORY_SEPARATOR . $this->request->parameter('action') . '.phtml';
     }
+
     return $this->render_file( $template_location, $status );
   }
 
@@ -100,25 +102,44 @@ class ActionController extends Object {
     // XXX: register flash
 
     if($this->use_layout) {
-      // XXX: check view paths
-      $layout= APP_PATH . 'app/views/layouts/' . $this->request->parameter('controller') . '.phtml';
-      if(false === file_exists($layout)) {
-        $this->logger->debug('will render without layout since cannot load `'.$layout.'`, no such file!');
-        return $this->render_without_layout($template_file, $status);
-      } else {
-        // parse the template file first and create content_for_layout variable
-        $this->template->assign('content_for_layout', $this->template->render( APP_PATH . 'app/views/' . $template_file));
-        // continue to render the layout
-        return $this->render_text($this->template->render($layout), $status);
-      }
+      $this->render_with_layout( $template_file, $status);
     } else {
       $this->logger->debug('rendering without layout.');
       return $this->render_without_layout($template_file, $status);
     }
   }
 
+  protected function render_with_layout( $template_file, $status ) {
+
+    if(is_string($this->use_layout)) {
+      $layout= 'app/views/layouts/'.$this->use_layout.'.phtml';
+      foreach($this->context->load_paths() as $path) {
+        if(file_exists($path.$layout)) {
+          // parse the template file first and create content_for_layout variable
+          $this->template->assign('content_for_layout', $this->template->render( $template_file ));
+          return $this->render_text( $this->template->render_template_file($path.$layout), $status);
+        }
+      }
+    }
+
+    $layout= 'app/views/layouts/'.$this->controller.'.phtml';
+    foreach($this->context->load_paths() as $path) {
+      if(file_exists($path.$layout)) {
+        // parse the template file first and create content_for_layout variable
+        $this->template->assign('content_for_layout', $this->template->render( $template_file ));
+        return $this->render_text( $this->template->render_template_file($path.$layout), $status);
+      }
+    }
+
+    // XXX: maybe layouts/application.phtml?
+
+    // fallback and render without layout
+    $this->logger->debug('will render without layout');
+    return $this->render_without_layout($template_file, $status);
+  }
+
   protected function render_without_layout($file, $status) {
-    return $this->render_text( $this->template->render( APP_PATH . 'app/views/' . $file), $status);
+    return $this->render_text( $this->template->render($file), $status);
   }
 
   protected function render_text( $text, $status= null) {
@@ -149,11 +170,13 @@ class ActionController extends Object {
     // do we need to register and start a session?
     $this->__register_session();
 
+    $this->controller= $this->request->parameter('controller');
+
     // create the template now.
     $this->template= ActionView::load( $this->context, $this );
 
     // assign basic template variables.
-    $this->template->assign('__controller', $this->request->parameter('controller'));
+    $this->template->assign('__controller', $this->controller);
     $this->template->assign('__action', $this->request->parameter('action'));
     return true;
   }
