@@ -1,11 +1,13 @@
 <?php
 
+// $Id$
+
 class XMLConfigurator extends AbstractConfigurator {
 
   // SimpleXML
   private $sxe;
   
-  // Environment as SimpleXML
+  // Environment, as SimpleXML
   private $env = null;
 
   private $properties = array();
@@ -71,6 +73,9 @@ class XMLConfigurator extends AbstractConfigurator {
     }
   }
 
+  //
+  // transforms "true", "on" or "1" to (bool)true, "false", "off" or "0" to (bool)false
+  //
   private function parse_prop_value($val) {
     $value= (string)trim($val);
     if(in_array($value, array('true', 'on', '1'))) return true;
@@ -78,6 +83,9 @@ class XMLConfigurator extends AbstractConfigurator {
     else return $value;
   }
 
+  //
+  // gets the routes as SXE objects
+  //
   public function routes() {
     return $this->sxe->routes->route;
   }

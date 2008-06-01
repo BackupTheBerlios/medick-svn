@@ -21,7 +21,7 @@ class Timer extends Object {
 
 }
 
-// $Id: $
+// $Id$
 
 class ContextManager extends Object {
 
@@ -36,6 +36,12 @@ class ContextManager extends Object {
   
   // a Timer to benchmark critical points
   private $timer;
+  
+  // IPlugin[]
+  private $plugins;
+
+  // load_paths[]
+  private $load_paths= array();
 
   private function __construct( IConfigurator $config ) {
     $this->config= $config;
@@ -47,8 +53,26 @@ class ContextManager extends Object {
     $ip= (array_key_exists('REMOTE_ADDR',$_SERVER))? $_SERVER['REMOTE_ADDR']: '0.0.0.0';
     $this->logger->debug("\t[".time() . "] `" . $this->config->environment() . "` env. from " . 
       str_replace(APP_PATH, '${'.$this->config->application_name().'}/', $this->config->file()) . " loaded for `${ip}`");
+    
     // create a Map for routes.
     $this->map= new Map( $this );
+
+    // load plugins
+    $this->plugins = Plugins::discover( $this );
+  }
+
+  public function load_paths() {
+    if(sizeof($this->load_paths) == 0) {
+      foreach( $this->plugins as $plugin ) {
+        if($plugin->is_type('ILoadPathPlugin')) $this->load_paths[]= $plugin->load_path();
+      }
+      $this->load_paths[]= APP_PATH;
+    }
+    return $this->load_paths;
+  }
+
+  public function plugins() {
+    return $this->plugins;
   }
 
   public function logger() {

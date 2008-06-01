@@ -1,6 +1,6 @@
 <?php
 
-// $Id: $
+// $Id$
 
 class Dispatcher extends Object {
 
@@ -13,7 +13,7 @@ class Dispatcher extends Object {
     $this->context= $context;
 
     // plugins
-    $this->plugins= Plugins::discover( $this->context );
+    // $this->plugins= Plugins::discover( $this->context );
 
   }
 

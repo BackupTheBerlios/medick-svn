@@ -2,9 +2,6 @@
 
 interface IPlugin {
 
-  /*
-   * Should create a new Instance
-   */ 
   public function __construct( ContextManager $context );
 
   /*
@@ -12,9 +9,9 @@ interface IPlugin {
    */
   public function metadata();
 
-  /**
-   * Should return the plugin name from metadata array
-   */ 
   public function name();
 
+  public function is_type($name);
+
 }
+

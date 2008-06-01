@@ -15,36 +15,56 @@ class Router extends Object {
     $this->context= $context;
   }
 
+  private function load_controller($controller, $path) {
+    $controller_file = $path . 'app/controllers/' . $controller . '_controller.php';
+    $controller_class= ucfirst($controller) . 'Controller';
+    if(file_exists($controller_file)) {
+      return array($controller_file, $controller_class);
+    } else {
+      return false;
+    }
+  }
+
   // should return a Controller Instance
   public function create_controller( $request ) {
+    $loaded= false;
+    foreach($this->context->load_paths() as $path) {
+      if(list($controller_file, $controller_class)= $this->load_controller($request->parameter('controller'), $path)) {
+        $loaded= true;
+        break;
+      }
+    }
 
-    // xxx: should call plugins special __before_controller methods?
+    if($loaded === false) {
+      throw new Exception('Cannot load controller `' . $request->parameter('controller') . 
+        '`, searched in `'.join(', ', $this->context->load_paths()).'`');
+    }
 
-    // 1. class name -> request->parameter('controller') . 'Controller'
-    // 2. file name  -> request->parameter('controller') . '_controller.php'
-
-    $path= APP_PATH; // -> this is going to be a list of paths
-
-    $controller_file = $path . 'app/controllers/' . $request->parameter('controller') . '_controller.php';
-    $controller_class= ucfirst($request->parameter('controller')) . 'Controller';
-
-    if( false === file_exists($controller_file) ) {
-      throw new Exception('Cannot load `' . $controller_file . '`, no such file or directory!'); // -> this is going to be replaced with continue in loop
+    // load ApplicationController if any.
+    foreach($this->context->load_paths() as $load_path) {
+      if(file_exists($load_path.'app/controllers/application.php')) {
+        require $load_path.'app/controllers/application.php';
+        if(class_exists('ApplicationController')) break;
+      }
     }
 
     require( $controller_file );
 
     if( false === class_exists($controller_class) ) {
-      throw new Exception('Expected `' . $controller_file . '` to define `'.$controller_class.'`'); // -> this is going to be replaced with continue in loop
+      throw new Exception('Expected `' . $controller_file . '` to define `'.$controller_class.'`');
     }
 
     $rclass= new ReflectionClass($controller_class);
 
-    if( false === ($rclass->getParentClass() || $rclass->getParentClass() == 'ApplicationController' || $rclass->getParentClass() == 'ActionController')) {
+    if( false === ($rclass->getParentClass() || $rclass->getParentClass() == 'ApplicationController' 
+      || $rclass->getParentClass() == 'ActionController')
+    ) {
       throw new Exception('Expected `' . $controller_class . '` to extend ApplicationController(recommended) or ActionControler');
     }
 
-    $this->context->logger()->debug(str_replace(APP_PATH, '${'.$this->context->config()->application_name().'}', $controller_file) . ' --> ' . $controller_class);
+    $this->context->logger()->debug(str_replace(APP_PATH, 
+      '${'.$this->context->config()->application_name().'}', $controller_file) . ' --> ' . $controller_class
+    );
 
     return $rclass->newInstance( $this->context );
 

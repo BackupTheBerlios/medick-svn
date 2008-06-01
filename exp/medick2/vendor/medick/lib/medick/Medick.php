@@ -1,6 +1,6 @@
 <?php
 
-// $Id: $
+// $Id$
 
 require 'medick/Object.php';
 require 'medick/ErrorHandler.php';
@@ -49,6 +49,7 @@ class Medick extends Object {
     Medick::$frameworks[]= $name;
   }
 
+  // XXX: to be removed
   public static function reload_framework($name) {
     if(self::framework_loaded($name))
       spl_autoload_register('__'.$name.'_autoload');
@@ -56,17 +57,19 @@ class Medick extends Object {
       self::load_framework($name);
   }
 
+  // XXX: to be removed
   public static function unload_framework($name) {
     if(self::framework_loaded($name)) 
       spl_autoload_unregister('__'.$name.'_autoload');
   }
 
+  // XXX: to be removed
   public static function framework_loaded($name) {
     return isset(Medick::$frameworks[$name]);
   }
 
   public static function version() {
-    return '2.0.10';
+    return '2.0.11';
   }
 
   public static function dump($o) {
