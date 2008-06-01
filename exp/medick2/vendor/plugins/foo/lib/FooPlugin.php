@@ -2,7 +2,7 @@
 
 // $Id: $
 
-class FooPlugin extends Object implements IPlugin {
+class FooPlugin extends AbstractPlugin implements IPlugin {
 
   public $metadata;
 
@@ -14,6 +14,8 @@ class FooPlugin extends Object implements IPlugin {
       'url'    => 'http://example.com/foo_plugin'
     );
     $context->logger()->debugf( "Plugin %s loaded", $this->name() );
+
+    parent::__construct( $context );
   }
  
   public function metadata() {
