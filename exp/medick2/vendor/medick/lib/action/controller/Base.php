@@ -57,9 +57,9 @@ class ActionController extends Object {
     // validate the action
     $this->__validate_action();
 
-    // collect before filters now
+    $this->__setup_active_record();
 
-    // execute those filters
+    // collect and execute before filters now
 
     // execute the action
     $this->__execute_action();
@@ -68,9 +68,7 @@ class ActionController extends Object {
     if(false === $this->action_performed)
       $this->render();
 
-    // collect after filters
-
-    // execute after filters
+    // collect and execute after filters
 
     // Medick::dump( $request );
     return $response;
@@ -201,6 +199,10 @@ class ActionController extends Object {
 
   private function __execute_action() {
     $this->execution_chain->exec_action();
+  }
+
+  private function __setup_active_record() {
+    ActiveRecord::__setup( $this->context );
   }
 
 }
